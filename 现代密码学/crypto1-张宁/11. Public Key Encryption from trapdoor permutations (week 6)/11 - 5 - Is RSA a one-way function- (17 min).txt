@@ -1,0 +1,272 @@
+The next question, we're going to ask:
+is RSA really an one-way function?
+In other words, is it really hard to
+invert RSA without knowing the trapdoor?
+So, if an attacker wanted to invert the RSA function,
+well, what the attacker has, is basically the public key,
+namely he has N and e. And now, he is given x to the e
+and his goal is to recover x. OK, so the question really is:
+given x to the e modulo N, how hard is it to
+recover x? So, what we're really asking is,
+how hard is it to compute e'th roots modulo a composite?
+If this problem turns out to be hard, then RSA is in fact an one-way function.
+If this problem turns out to be easy, which
+of course we don't believe it's easy, then RSA would actually be broken.
+So, it turns out the best algorithm for this problem
+requires us to first factor the modulus N.
+And then, once we factored the modulus, we have already
+seen last week, that it's easy to compute the e'th root modulo p,
+it's easy to compute the e'th root modulo q.
+And, then given both those e'th roots, it's actually easy to combine them together,
+using what's called the Chinese remainder theorem
+and actually recover the e'th root modulo N.
+So, once we are able to factor the modulus,
+computing e'th roots modulo N becomes easy.
+But,  factoring  the modulus, as far as
+we know, is a very, very difficult problem.
+But a natural question is, is it true that in
+order to compute e'th roots modulo N, we have to
+factor the modulus N? As far as we know, the
+best algorithm for computing e'th roots
+modulo N requires factorization of N.
+But, who knows, maybe there is a short cut
+that allows us to compute e'th roots modulo N,
+without factoring the modulus. To show that
+that's not possible, we have to show a reduction.
+That is, we have to show that,
+if I give you an efficient algorithm for
+computing e'th roots modulo N, that
+efficient algorithm can be turned into a factoring algorithm.
+So, this is called a reduction. Namely, given an algorithm for
+e'th roots modulo N, we obtain a factoring algorithm.
+That would show that one cannot compute e'th roots modulo N
+faster than factoring the modulus.
+If we had such a result, it would show that
+actually breaking RSA, in fact is as hard as factoring.
+But, unfortunately, this is not really known at the moment.
+In fact, this is one of the oldest problems in public key crypto.
+So, just let me give you a concrete example.
+Suppose, I give you an algorithm that will compute cube roots modulo N.
+So, for any x in ZN, the algorithm will compute the cube root of x modulo N.
+My question is, can you show that using
+such an algorithm you can factor the modulus N?
+And, even that is not known. What is known,
+I'll tell you, is for example that for e equals 2,
+that is if I give you an algorithm for computing square roots modulo N,
+then in fact, that does imply factoring the modulus.
+So, computing square roots is in fact as hard as factoring the modulus.
+Unfortunately, if you think back to the definition of RSA,
+that required that e times d be 1 modulo phi(N).
+What that means is, that e necessarily needs to be relatively prime to phi(N).
+Right, this, what the first equation says is that e is invertible modulo phi(N).
+But, if e is invertible modulo phi(N), necessarily that means that
+e must be relatively prime to phi(N).
+But, phi(N), if you remember, that is equal to p minus 1 times q minus 1.
+And, since p and q are both large primes,  p - 1 times q - 1 is always even.
+And, as a result,  the GCD of 2 and phi(N) is equal to 2,
+because phi(N) is even. And therefore, the public
+exponent 2 is not relatively prime to phi(N).
+Which means that, even though we have a reduction
+from taking square roots to factoring,
+e equals 2 cannot be used as an RSA exponent.
+So, really the smallest RSA exponent that is legal is in fact e equals 3.
+But, for e equal 3, the question of whether computing cube roots
+is as hard as factoring, is an open problem.
+It's actually a lot of fun to think about this question.
+So, I would encourage you to think about it just a little bit.
+That is, if I give you an efficient algorithm for computing cube roots modulo N,
+can you use that algorithm to actually factor the modulus N?
+I will tell you that there is a little bit of evidence to say
+that a reduction like that,  actually doesn't exist, but it is very, very weak evidence.
+What this evidence says is  basically, if you
+give me a reduction of a very particular form.
+In other words, if your reduction is what's called algebraic,
+(I am not going to explain what that means here.)
+That is, if given a cube root oracle, you could actually show me an algorithm
+that would then factor. That reduction, by itself,
+would actually imply a factoring algorithm.
+Okay  so, that would say that if factoring is hard,
+a reduction actually doesn't  exist.
+But, as I say this is very weak evidence.
+Because, who is to say that the reduction needs to be algebraic.
+Maybe, there are some other types of reductions that
+we haven't really considered. So, I would
+encourage you to think a little bit about this
+question. It's actually quite interesting.
+How would you use a cube root algorithm to factor the modulus?
+But as I said, as far as we know, RSA is a one way function.
+In fact, breaking RSA, computing e'th roots that is, actually requires factoring the modulus.
+We all believe that's true, and that's the state of the art.
+But, now there has been a lot of work on trying to improve the performance of RSA.
+Either, RSA encryption or improve the performance of RSA decryption.
+And it turns out, there has been a number of false starts in this direction.
+So I want to show you, this wonderful example as a warning.
+So basically, this is an example of how not to improve the perfomance of RSA.
+So, you might think that if I wanted to speed up RSA decryption,
+remember decryption is done by raising the
+ciphertext to the power of d. And, you remember
+that the exponentiation algorithm ran in linear
+time in the size of d. Linear time in log of d.
+So, you might think to yourself, well if I wanted
+to speed up RSA decryption, why don't I just use a small d.
+I'll say, I'll say a decryption exponent that's on the order of 2 to the 128.
+So it's clearly big enough so that exhaustive search against d is not possible.
+But normally, the decryption exponent d would be as big as the modulus, say 2000 bits.
+By using d that's only 128 bits, I basically speed up RSA decryption by a factor of 20.
+Right, I went down from 2000 bits to 100 bits.
+So, exponentiation would run 20 times as fast.
+It turns out this is a terrible idea. Terrible, terrible idea, in the following sense.
+There is an attack by Michael Wiener that shows that, in fact,
+as soon as the private exponent d is less than the fourth root of the modulus.
+Let's see, if the modulus is around 2048 bits
+that means that if d is less that 2 to the 512, then RSA is completely, completely insecure.
+And, this is, it's insecure in the worst possible way.
+Namely, just given a public key and an e, you can very quickly recover the private key d.
+Well, so some folks said: well this attack works up to 512 bits.
+So, why don´t we make the modulus, say, you know 530 bits.
+Then, this attack actually wouldn't apply.
+But still, we get to speed up RSA decryption by a factor of 4,
+because we shrunk the exponent from 2000 bits to, say, 530 bits.
+Well it turns out, even that is not secure. In fact,
+there is an extension to Wiener's attack, that's actually much
+more complicated, that shows that if d
+is less than N to the 0.292, then also RSA is insecure.
+And in fact, the conjecture that this is true up to N to the 0.5.
+So even if d is like N to the 0.4999, RSA should still be insecure,
+although this is an open problem. It's again, a wonderful open problem,
+It's been open for like, what is it, 14 years now.
+And, nobody can progress beyond this 0.292.
+Somehow, it seems kind of strange, why would 0.292
+be the right answer and yet no one can go beyond 0.292.
+So, just to be precise, when I say that RSA is insecure,
+what I mean is just given the public key N and e,
+your goal is to recover the secret key d.
+If you are curious where 0.292 comes from,
+I'll tell you that what it is, it's basically 1 minus 1 over square root of 2.
+Now how could this possibly be the right answer to this problem?
+It's much more natural that the answer is N to the 0.5.
+But this is still an open problem. Again if you want to think about that,
+it's kind of a fun problem to work on.
+So the lesson in this is that one should not enforce any structure on d
+for improving the performance of RSA, and in fact
+now there's a slew of results like this that show
+that basically, any kind of tricks like this to try and improve RSA's performance
+is going to end up in disaster. So this is not the right way to improve RSA's performance.
+Initially I wasn't going to cover the details of Wiener's attack.
+But given the discussions in the class, I think some of you would enjoy seeing the details.
+All it involves is just manipulating some inequalities.
+If you're not comfortable with that, feel free to skip over this slide,
+although I think many of you would actually enjoy seeing the details.
+So let me remind you in Wiener's attack basically
+we're given the modulus and the RSA exponent N and e,
+and our goal is to recover d, the private exponent d,
+and all we know is that d is basically less than the fourth root of N.
+In fact, I'm going to assume that d is less than the fourth root of N divided by 3.
+This 3 doesn't really matter, but the dominating term here is that d is less than the 4th root of N.
+So let's see how to do it. So first of all, recall that
+because e and d are RSA public and private exponents,
+we know that e times d is 1 modulo phi(N). Well what does that mean?
+That means that there exists some integer k such that e times d is equal to k times phi(N) plus 1.
+Basically that's what it means for e times d to be 1 modulo phi(N).
+Basically some integer multiple of phi(N) plus 1.
+So now let's stare at this equation a little bit.
+And in fact this equation is the key equation in the attack.
+And what we're going to do is first of all divide both sides by d times phi(N).
+And in fact I'm going to move this term here to the left.
+So after I divide by d times phi(N), what I get is that
+e divided by phi(N) minus k divided by d is equal to 1 over d times phi(N).
+Okay, so all I did is I just divided by d times phi(N)
+and I moved the k times phi(N) term to the left-hand side.
+Now, just for the heck of it I'm going to add absolute values here.
+These will become useful in just a minute, but of course they don't change this equality at all.
+Now, phi(N) of course is almost N; phi(N) is very, very close to N, as we said earlier.
+And all I'm going to need then for this fraction is just to say that
+it's less than 1 over square root of N. It's actually much, much smaller
+than 1 over square root of N, it's actually on the order of 1 over N or even more than that,
+but for our purposes all we need is that this fraction is less than 1 over square root of N.
+Now let's stare at this fraction for just a minute.
+You realize that this fraction on the left here is a fraction that we don't actually know.
+We know e, but we don't know phi(N), and as a result we don't know e over phi(N).
+But we have a good approximation to e over phi(N). Namely we know that phi(N)
+is very close to N. Therefore e over phi(N) is very close to e over N.
+So we have a good approximation to this left-hand side fraction, namely e over N.
+What we really want is the right-hand side fraction,
+because once we get the right-hand side fraction,
+basically that's going to involve d, and then we'll be able to recover d. Okay, so let's see
+if we replace e over phi(N) by e over N, let's see what kind of error we're going to get.
+So to analyze that, what we'll do is first of all remind ourselves
+that phi(N) is basically N - p - q + 1,
+which means that N minus phi(N) is going to be less than p + q.
+Actually I should, to be precise I should really write p + q + 1, but you know,
+who cares about this 1, it's not, it doesn't really affect anything.
+So I'm just going to ignore it for simplicity.
+Okay, so N - phi(N) is less than p + q. Both p and q are roughly half the length of N,
+so you know, they're both kind of on the order of square root of N,
+so basically p + q we'll say is less than 3 times square root of N.
+Okay, so we're going to use this inequality in just a minute.
+But now we're going to start using the fact that we know something about d,
+namely that d is small. So if we look at this inequality here,
+d is less than the fourth root of N divided by 3.
+It's actually fairly easy to see that if I square both sides
+and I just manipulate things a little bit, it's [not] difficult to see that
+this directly implies the following relation,
+basically 1 over 2 d squared minus 1 over square root of N is greater than 3 over square root of N.
+As I said, this basically follows by squaring both sides, then taking the
+inverse of both sides, and then I guess multiplying one side by a half.
+Okay, so you can easily derive this relation, and we'll need this relation in just a minute.
+So now let's see, what we'd like to do is bound
+the difference of e over N and k over d. Well what do we know?
+By the triangular inequality, we know that this is equal to
+the distance between e over N and e over phi(N) plus
+the distance from e over phi(N) to k over d.
+This is just what's called a triangular inequality; this is just a property of absolute values.
+Now this absolute value here, we already know how to bound.
+If you think about it it's basically the bound that we've already derived.
+So we know that this absolute value here is basically less than 1 over square root of N.
+Now what do we know about this absolute value here? What is e over N minus e over phi(N)?
+Well let's do common denominators and see what we get.
+So the common denominator is going to be N times phi(N),
+and the numerator in this case is going to be e times phi(N) minus N.
+Which we know from this expression here is less than 3 times square root of N.
+So really what this numerator is going to be is e times 3 square root of N.
+The numerator is going to be less than e times 3 square root of N.
+So now I know that e is less than phi(N), so I know that e over phi(N) is less than 1.
+In other words, if I erase e and I erase phi(N) I've only made the fraction larger.
+Okay, so this initial absolute value is now going to be
+smaller than 3 square root of N over N, which is simply,
+3 square root of N over N is simply 3 over square root of N.
+Okay, but what do we know about 3 over square root of N?
+We know that it's less than 1 over 2 d squared minus 1 over square root of N.
+Okay, so that's the end of our derivation.
+So now we know that the first absolute value is less than 1 over 2 d squared minus square root of N.
+The second absolute value is less than 1 over square root of N.
+And therefore their sum is less than 1 over 2 d squared.
+And this is the expression that I want you to stare at.
+So here, let me circle it a little bit. So let me circle this part and this part.
+Now, so let's stare a little bit at this fraction here.
+And what we see is first of all, as before, now we know the value of e over N,
+and what we'd like to find out is the value k over d.
+But what do we know about this fraction k over d?
+We know somehow that the difference of these two fractions is really small;
+it's less than 1 over 2 d squared. Now this turns out to happen very infrequently,
+that k over d approximates e over N so well that
+the difference between the two is less than the square of the denominator of k over d.
+It turns out that that can't happen very often.
+It turns out that there are very few fractions of the form k over d that approximate another fraction
+so well that their difference is less than 1 over 2 d squared.
+And in fact the number of such fractions is going to be at most logarithmic in N.
+So now there's a continued fraction algorithm. It's a very famous fraction
+that basically what it will do is, from the fraction e over N,
+it will recover log(N) possible candidates for k over d.
+So we just try them all one by one until we find the correct k over d.
+And then we're done. We're done, because we know that,
+well e times d is 1 mod k, therefore d is relatively prime to k,
+so if we just represent k over d as a rational fraction, you know, numerator by denominator,
+the denominator must be d. And so we've just recovered, you know,
+we've tried all possible log(N) fractions that approximate e over N so well
+that the difference is less than 1 over 2 d squared.
+And then we just look at the denominator of all those fractions, and one of those denominators must be d.
+And then we're done; we've just recovered the private key.
+So this is a pretty cute attack. And it shows basically how,
+if the private exponent is small, smaller than the fourth root of N,
+then we can recover d completely, quite easily. Okay, so I'll stop here.

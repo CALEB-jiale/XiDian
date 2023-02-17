@@ -1,0 +1,330 @@
+In the last module we saw that number
+theory can be useful for key exchange.
+In this modlule we will review some basic facts
+of number theory that will help us build
+many public key systems next week. As we
+go through the material in this module it
+might help to pause the video from time to
+time to make sure all the examples are clear
+So as I said we're gonna use number
+theory to build key exchange protocols.
+We're gonna use number theory to build
+digital signatures, public encryption and many, many other things.
+But before we can
+do all that, we have to review some basic
+facts from number theory and in fact in
+this module we're gonna do a quick course
+on the relevant concept. If you'd like to
+review some of the material discussed in
+this module offline, I referenced at the
+end of the module a free textbook by
+Victor Shoup and I pointed to some
+specific chapters in his book that will
+explain the materials that we will cover
+here. So from here on I'm going to use the
+following notation. I'm going to use
+capital N to always denote a positive
+integer, and I'm going to use lower case p
+to always denote a positive prime number.
+Now I'd like to introduce the following
+notation, there's this funny Z that's
+written like two diagonal lines here with
+a subscript N I'm gonna use that to denote
+the sets as zero, one, two, up to N minus
+one. This is actually a very common
+notation that's used in Crypto, and so
+I'll stick to that here. So again, Z sub N
+denotes the set of integers 0,1 up to N-1. And in fact, this is not just a
+set of integers. We can do addition and
+multiplication in this set as long as we
+always multiply module of the number N.
+For those of you who know a little bit of
+algebra, I'll just say that Z sub N
+denotes a ring where addition and
+multiplication are done modulo N. This is
+very common notation in crypto, although
+in modern mathematics Z sub N sometimes
+denotes something else. But as I said I'm
+gonna keep on using Z sub N to denote the
+set of integers 0 to N-1 with
+addition and multiplication modulo N. So
+I want to make sure everybody's
+comfortable with modular arithmetic. And
+so let's just look at the number, say, N=12
+And let's just see some basic facts about modular arithmetic. So
+I'm gonna say that nine plus eight is
+seventeen; seventeen is five modulo
+twelve, so I'm gonna write that nine plus
+eight is equal to five in Z 12. Now
+can someone tell me how much is five times
+seven in Z12? In other words, how much is modular 12?
+Well, five times seven is 35. And if you recall, 36 is divisible by 12
+So five times seven is really -1 module of 12. 35 is minus
+one module of twelve. But minus one module
+of 12 is basically the same as 11,
+cuz I just add 12  to -1 and I
+get 11. And the next question is, how
+much is 5 - 7 seven in the Z12?
+Well, 5-7 is -2.
+-2 modulo 12, well, I just add 12
+to -2 and I get 10. As a result,
+we say that 5 - 7 is equal to
+10. So again, this is just to make sure
+everybody is comfortable with this notation of working
+in Z12. In other words, working in modulo 12.
+Now, I'd just like to make a
+general statement that, in fact,
+arithmetic in ZN, in other words,
+arithmetic modulo N works just as you
+would expect. So, for example, all the
+laws that you know about addition and
+multiplication work equally well in ZN.
+For example, the distributive law, X times
+Y plus Z, is still gonna be equal to X
+times Y plus X times Z. So many of the
+things that you know about arithmetic when
+working over the integers or in the reals,
+will translate to working in, ZN, namely
+working modulo N.
+So the next concept we need is what's called a greatest common
+divisor, or a GCD. And so suppose they
+give you two integers X and Y. We say that
+the GCD of X and Y is basically the
+greatest common divisor it's the largest
+number, the largest integer that divides
+both X and Y. So for example, what is the
+GCD of 12 and 18?
+Well the GCD is 6, because 6 divides both 12
+and 18,
+and it's the largest number that divides both 12 and 18.
+Now
+there is an important fact about GCD's in particular, if I give you two numbers, two
+integers X and Y, there will always exist
+two other integers, I will call them A and
+B, such that if I look at a times X + B
+times Y what I get is the GCD of X and Y.
+In other words the GCD of X and Y is a
+linear combination of X and Y using the
+integers A and B. So far let us look at a
+simple example, here, let's look at the
+GCD from before, so the integers for the
+GCD would be 2 times 12 Minus 1
+times 18. That's 24 minus 18,
+which is equal to 6. So the integers A
+and B in this case would be 2 and -1
+But this is just an example, and in
+fact, these integers, A and B will exist
+for any integers, X and Y. Now not only do
+A and B exist, in fact there's a very
+simple and efficient algorithm to find
+these integers, to find A and B. The
+algorithm is what's called the extended
+Euclidean algorithm. This is actually one
+of the prettiest algorithms from ancient
+Greek times, due to Euclid of course. I'm
+not gonna show you how this algorithm
+works here, I. It's a fairly simple
+algorithm. I'll just tell that in fact
+given X and Y, this algorithm will find A
+and B in time roughly quadratic in the
+logarithms of X and Y. We'll come back to
+that and discuss the, the performance of
+Euclid's algorithm I have a bit more
+detail in just a minute. But, for now all
+we need to know is that A and B can
+actually be found efficiently. Now, if the
+GCD of X and Y happens to be 1. In other
+words, 1 is the largest integer that
+divides both X and Y, then we say that X
+and Y are relatively prime. For example,
+the GCD of three and five, it's not
+difficult to see that it hap, that happens
+to be 1, Because both 3 and 5 are
+prime. The next topic we need to talk
+about is modulated inversion. So other
+than rationals we know what the inverse of
+a number is. In other words if I give you
+the number 2 the inverse of 2 is
+simply the fraction one half.
+the qestion is what about inverses when we, we
+work module N. Well, so the inverse of
+an element X in Z N is simply another
+element Y in Z N such that X times Y is
+equal to 1 in Z N. In other words X
+times Y is equal to 1 modulo N. And this
+number Y is denoted by X inverse. And it's
+not difficult to see that if, if Y exists,
+then in fact it's unique. And as I said,
+we'll use X inverse to denote the inverse
+of X. So let's look at a quick example.
+Suppose N is some odd integer, and I ask
+you what is the inverse of 2 in ZN?
+So it's not too difficult to see that the
+inverse of two in ZN in fact is N plus one
+over 2 and you can see that this is an
+integer because N is odd, therefore, N+1 is even and, therefore, (N+1)/2
+is in fact an integer and the
+range 1..N as required. Now why is (N+1)/2
+the inverse of two?
+Well, let's just multiply the 2 so we do
+2 times (N+1) over 2 and what do
+we get? Well, that's simply equal to N+1
+and N+1 is simply equal to
+1 in ZN. So since their product is equal
+to 1. We know that (N+1)/2
+is the inverse of 2 in ZN.
+Now we understand what a modular inverse is, the
+question is which elements actually have
+an inverse in ZN? And so there's a very
+simple lemma that says that if for an
+element X in ZN, that element has
+an inverse if and only if it is relatively
+prime to the modulus N, to the number N.
+So I'll say that again. X and ZN is
+invertible if and only if X is relatively
+prime to N. And let's quickly prove that.
+It's actually fairly simple to see. So
+suppose a GCD of X and N happens to be
+equal to one. So X is relatively prime to
+N. Well, by this property of GCD as we
+know that there exists integers A and B.
+Such that A times X plus B times N is
+equal to the GCD of X and N, which happens
+to be one. So A times X plus B times N is
+equal to 1. Now we can actually take
+this equation here and, and us it reduce
+it's modulo N. So what this means is that
+a times X is equal to one in Z, N. Once we
+reduce this equation modulo N this term
+simply falls off because B times N is
+divisible by N and therefore is 0
+modulo N. But what we just showed is that
+in fact X inverse is simply A in ZN. So
+because X is relatively prime to N, we
+were able to show that X is invertible by
+actually building the inverse of X modulo N
+Now what about the other direction?
+What happens if the GCD is greater than 1?
+Then we want to show that there is no
+inverse. But that's actually very easy to
+see because in this case, if you claim
+that A happens to be the inverse of X
+modulo N, well, let's look at a<i>x; a<i>X we know should be equal to 1 modulo N</i></i>
+But if the GCD(X,N) is
+bigger than 1, then the GCD(a<i>X,N)</i>
+is bigger than one. But, if the GCD
+of A times X and N is bigger than 1,
+then it's not possible that A<i>X is
+equal to 1. So A<i>X must also be</i></i>
+bigger than 1, and therefore, A cannot
+be the inverse of X module N.
+So this proves that, in fact, in, when the GCD is
+greater than 1, X cannot have an
+inverse, because there is no A, such that
+A times X is equal to one modulo N
+And this might be a bit confusing, so you
+might be best just to, do an example. So
+let's look at, let's suppose that the GCD
+of X and N happens to be equal to 2.
+I claim that X is therefore, is not
+invertible modular N. Well, why is that
+true? Well, for all A, we know that A
+times X is gonna be even, is even. And the
+reason we know that is because, well, 2
+divides X and 2 divides N. Well, since
+two divide X, 2 is also gonna divide A
+times X. And therefore, A times X must be
+even. But what that means is that there's
+no way that A times X is equal to 1 modulo N
+In particular, there's no way
+that A times X is equal to B times N + 1
+This simply can't happen, this
+equality must not hold. Because this side
+happens to be even, as we said. B times N
+for exactly the same reason is also even:
+N is divisible by two; therefore B times N
+is also divisible by two. So therefore B
+times N+1 is odd. And since even
+can't equal to odd, it's not possible that
+A times X is equal to some multiple of N+1. And in particular this means
+that A cannot be the inverse of X because
+A times X cannot be 1 mod N so X is not
+invertible modular N. So now we have a
+complete understanding of what are the
+invertible elements. Basically, we know
+that an element is invertible if and only
+if it's relatively prime to N. And what I
+like about this proof is I would say this
+is what's called a computer-science proof
+In the sense that not only does it prove
+to you that the inverse exists; it also
+shows you how to efficiently calculate the
+inverse. And the way we calculate the
+inverse, is basically by using this
+extending decreasing algorithm. Define the
+numbers A and B. And once we found the
+numbers A and B, we done because A is the
+inverse of X. And the numbers A and B can
+be found very efficiently. So along the
+way I've also shown you an algorithm for
+inverting elements, modulo N.
+Okay. So
+bear with me, and let's introduce this little more notation. So we're gonna denote by ZN as the set of invertible elements in
+Z N. In other words, ZN is the set
+of all elements in ZN such that GCD(X,N)=1
+Okay. But I want you, again, to think of ZN as
+basically those elements in ZN that have
+an inverse. So let's look at a few
+examples. So let's start with a prime p.
+We know that of the integers from zero to
+p-1, all of them are gonna be
+relatively primed to p except one
+integer--namely, the integer 0. Zero is
+not relatively primed to P, because the
+GCD(p,0)=0, not 1. So
+therefore, if p is a prime, the set ZP
+is simply ZP minus 0, Which means
+that everything in Z<u>P is invertible</u>
+except for 0. So if you like the size
+of ZP<i>, it's simply P-1. Now</i>
+let's look at our favorite integer again.
+So why don't you tell me what is Z12
+what is the set of invertible elements modulo 12?
+And the answer, of course, is all the numbers
+that are relatively primed to 12--namely,
+1, 5, 7, and 11. So, for
+example, 3, 4, 6--all of those are
+not invertible because they all have a, a
+non-trivial GCD with twelve, And as we
+said before, if I give you an element X
+and ZN<i>, you can find its inverse</i>
+using the extended Euclidean algorithm.
+You can find its inverse very efficiently,
+in fact, using this algorithm. So what we
+just learned is basically how to solve
+modular linear equations. In other words,
+if I give you a linear equation and I ask
+you to solve it mod N, it's actually very
+easy to do. All you do is you move B to
+the other side so you have a minus B, and
+then you multiply by A inverse. So the
+answer is minus B times A inverse. And you
+can find A inverse using the Euclidean
+algorithm. And once you have a inverse,
+you'd simply multiply it by minus B,
+modulo N, and that gives you the solution
+to this linear equation. Now the
+Euclidian algorithm actually takes time
+that's quadratic in logarithm of N. So it
+takes time proportional to log squared N.
+And as a result we say that this is a
+quadratic algorithm for solving linear
+equations, modulo N, and if fact this is
+the best know algorithm. And so if you
+think back to your high-school algebra
+days, after you learned how to solve
+linear equations, the next question was,
+well, what about quadratic equations. And
+that problem is actually quite
+interesting, and we're gonna see that in
+the next few segments.

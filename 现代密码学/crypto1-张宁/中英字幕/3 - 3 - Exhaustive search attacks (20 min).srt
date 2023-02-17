@@ -1,0 +1,1848 @@
+1
+00:00:00,348 --> 00:00:03,576
+Now that we understand how DES works, let's look at a few attacks on DES,
+
+2
+00:00:00,348 --> 00:00:03,576
+现在我们理解了DES攻击如何实现的，接下来我们来看几个针对DES攻击的例子
+
+3
+00:00:03,576 --> 00:00:06,594
+and we're going to start with an attack called exhaustive search.
+
+4
+00:00:03,576 --> 00:00:06,594
+我们将以穷举攻击开始
+
+5
+00:00:06,594 --> 00:00:12,817
+So our goal here is basically that given a few input-output pairs, (mi, ci),
+
+6
+00:00:06,594 --> 00:00:12,817
+我们的目标是对给出的输入输出对(mi,ci)
+
+7
+00:00:12,817 --> 00:00:16,867
+our goal is to find the key that maps these m's to the c's.
+
+8
+00:00:12,817 --> 00:00:16,867
+找到能够将m映射到c的密钥
+
+9
+00:00:16,867 --> 00:00:24,667
+In other words, our goal is to find the key that maps m1, m2, m3 into c1, c2, c3,
+
+10
+00:00:16,867 --> 00:00:24,667
+换句话说我们的目标是找到能将m1, m2, m3映射到c1, c2, c3的密钥
+
+11
+00:00:24,667 --> 00:00:27,867
+and as I said, our goal is to find the key that does this mapping.
+
+12
+00:00:24,667 --> 00:00:27,867
+正如我说过的，我们要找到完成这个映射的密钥
+
+13
+00:00:27,867 --> 00:00:30,800
+The first question is, how do we know that this key is unique?
+
+14
+00:00:27,867 --> 00:00:30,800
+首先要解决的问题是，我们怎么能知道这个密钥是唯一的？
+
+15
+00:00:30,800 --> 00:00:34,467
+And so, let's do a little bit of analysis to show that in fact
+
+16
+00:00:30,800 --> 00:00:34,467
+所以，让我们做一些分析来证明
+
+17
+00:00:34,467 --> 00:00:38,267
+just one pair is enough to completely constrain a DES key,
+
+18
+00:00:34,467 --> 00:00:38,267
+事实上，一对输入输出就足以完全限制住一个DES密钥了
+
+19
+00:00:38,267 --> 00:00:40,800
+and that's why this question makes sense.
+
+20
+00:00:38,267 --> 00:00:40,800
+所以这个问题可以解答
+
+21
+00:00:40,800 --> 00:00:43,352
+OK, so let's see. So we're going to prove this simple lemma.
+
+22
+00:00:40,800 --> 00:00:43,352
+让我们看如何证明这个简单的引理
+
+23
+00:00:43,352 --> 00:00:47,267
+Now let's assume that DES is what's called an ideal cipher.
+
+24
+00:00:43,352 --> 00:00:47,267
+现在假设DES是理想密码
+
+25
+00:00:47,267 --> 00:00:52,245
+So what is an ideal cipher? Basically we're going to pretend like DES is made up of
+
+26
+00:00:47,267 --> 00:00:52,245
+什么是理想密码？我们假定DES由
+
+27
+00:00:52,245 --> 00:00:58,867
+random invertible functions. In other words, for every key, DES implements a random invertible function.
+
+28
+00:00:52,245 --> 00:00:58,867
+随机可逆函数组成。换句话说，对每一个密钥，DES都应用了一个随机可逆函数
+
+29
+00:00:58,867 --> 00:01:04,528
+Since there are 2^56 keys in DES, we're going to pretend like DES really is a collection
+
+30
+00:00:58,867 --> 00:01:04,528
+由于DES中有2^56个密钥 我们假设DES是
+
+31
+00:01:04,528 --> 00:01:15,233
+of 2^56 functions that are invertible from {0,1}^64 to {0,1}^64. OK? So of course,
+
+32
+00:01:04,528 --> 00:01:15,233
+由2^56个函数组成的集合 这些函数在64位字符串上可逆 当然
+
+33
+00:01:15,233 --> 00:01:21,800
+DES is not a collection of 2^56 random functions, but we can idealize about the cipher and pretend
+
+34
+00:01:15,233 --> 00:01:21,800
+DES不是2^56个随机函数的集合 但是我们可以将密码理想化 假设
+
+35
+00:01:21,800 --> 00:01:25,380
+that it is such a collection. Then what can we say?
+
+36
+00:01:21,800 --> 00:01:25,380
+它是这样一个集合 这样我们能得到什么？
+
+37
+00:01:25,380 --> 00:01:31,115
+Then in fact it turns out that just given one message and ciphertext, you just give me
+
+38
+00:01:25,380 --> 00:01:31,115
+这样事实上证明仅给出一个消息和密文 只给出一对
+
+39
+00:01:31,115 --> 00:01:38,867
+one pair, message and ciphertext, there's already only one key that maps this message to that ciphertext.
+
+40
+00:01:31,115 --> 00:01:38,867
+消息和密文 这就已经使得仅有一个密钥能将这个信息映射成那个密文
+
+41
+00:01:38,867 --> 00:01:46,467
+So already just given one pair m and c, I can ask you, find me the key that maps m to c,
+
+42
+00:01:38,867 --> 00:01:46,467
+所以对已给出的一对m,c 我问你 如何找出将m映射成c的密钥
+
+43
+00:01:46,467 --> 00:01:53,000
+and the solution is very likely to be unique. In fact it's going to be unique with probability roughly 99.5%.
+
+44
+00:01:46,467 --> 00:01:53,000
+而且结果很可能是唯一的 事实上 这有大概99.5%的可能性
+
+45
+00:01:53,000 --> 00:01:58,467
+I should say that this statement is true for all m and c, and the probability is just over the choice
+
+46
+00:01:53,000 --> 00:01:58,467
+我要说这对所有的m和c都成立  而且这个可能性只在于
+
+47
+00:01:58,467 --> 00:02:02,467
+of the random permutations that make up the cipher.
+
+48
+00:01:58,467 --> 00:02:02,467
+如何选择组成密码的随机排列
+
+49
+00:02:02,467 --> 00:02:05,666
+So let's write a proof. This is fairly straightforward. So what we're basically asking is,
+
+50
+00:02:02,467 --> 00:02:05,666
+所以让我们写下一个证明 这是非常浅显易懂的 所以我们要问的是
+
+51
+00:02:05,666 --> 00:02:11,467
+what's the probability that there exists some key that's not equal to k such that,
+
+52
+00:02:05,666 --> 00:02:11,467
+存在不为k的密钥使得…
+
+53
+00:02:11,467 --> 00:02:19,111
+well, c we know is equal to DES(k, m) by defintion of c and m, but we're asking how likely is it
+
+54
+00:02:11,467 --> 00:02:19,111
+嗯 由c和m的定义已知c=DES(k,m) 我们要问
+
+55
+00:02:19,111 --> 00:02:24,103
+that there's this other key, k-prime, that also satisfies this equality?
+
+56
+00:02:19,111 --> 00:02:24,103
+存在其他密钥k' 同样满足这个等式的可能性是多少
+
+57
+00:02:24,103 --> 00:02:29,699
+You realize that if this is true, if such a key k-prime exists, then just given m and c,
+
+58
+00:02:24,103 --> 00:02:29,699
+你意识到如果这为真 如果这样的k’存在 那么仅给出m和c
+
+59
+00:02:29,699 --> 00:02:35,040
+you can't decide whether the right key is k or k-prime, because both of them work. OK?
+
+60
+00:02:29,699 --> 00:02:35,040
+你不能决定正确的密钥是k还是k' 因为它们都管用 对吧
+
+61
+00:02:35,040 --> 00:02:38,000
+But I want to argue that this happens with low probability.
+
+62
+00:02:35,040 --> 00:02:38,000
+但是我想说明的是 这发生的概率很低
+
+63
+00:02:38,000 --> 00:02:42,467
+Well, so what does it mean that there exists a key k-prime that satisfies this relation?
+
+64
+00:02:38,000 --> 00:02:42,467
+存在密钥k’满足这个关系的意味着什么
+
+65
+00:02:42,467 --> 00:02:48,133
+Well, we're asking, what's the probability that the first key, the all-zero key, satisfies it?
+
+66
+00:02:42,467 --> 00:02:48,133
+我们要问 第一个密钥 全0的密钥满足关系的可能性是多少
+
+67
+00:02:48,133 --> 00:02:52,037
+Or, the second key satisfies it. Or, the third key satisfies it. And so on and so forth.
+
+68
+00:02:48,133 --> 00:02:52,037
+或者第二个密钥满足它的概率 或者第三个 以此类推
+
+69
+00:02:52,037 --> 00:02:58,979
+So by the union bound, we can bound this probability by the sum over all keys k-prime,
+
+70
+00:02:52,037 --> 00:02:58,979
+所以根据集合上界 我们可以用所有密钥k'的和界定这个概率
+
+71
+00:02:58,979 --> 00:03:10,102
+over all 56-bit keys, of the probability that DES(k,m) is equal to DES(k-prime, m).
+
+72
+00:02:58,979 --> 00:03:10,102
+用所有56位的密钥 界定DES(k,m)=DES(k',m)的概率
+
+73
+00:03:10,102 --> 00:03:15,600
+OK? So we're asking, basically, what is this probability, for a fixed key k-prime,
+
+74
+00:03:10,102 --> 00:03:15,600
+对吧 所以我们问 对一个固定的密钥k’
+
+75
+00:03:15,600 --> 00:03:21,178
+that it happens to collide with the key k at the message m? Well, let's think about this for a second.
+
+76
+00:03:15,600 --> 00:03:21,178
+它与密钥k关于信息m碰撞的概率是多少 嗯 让我们考虑一下
+
+77
+00:03:21,178 --> 00:03:25,400
+Let's fix this value, let's suppose it's some fixed value. And then we're asking,
+
+78
+00:03:21,178 --> 00:03:25,400
+让我们确定它的值 假设它是确定的值 然后问
+
+79
+00:03:25,400 --> 00:03:31,348
+how likely is it that a random permutation, pi k-prime, at the point m,
+
+80
+00:03:25,400 --> 00:03:31,348
+随机序列πk'在m处恰好产生
+
+81
+00:03:31,348 --> 00:03:37,014
+happens to produce exactly the same output as the key k at the point m?
+
+82
+00:03:31,348 --> 00:03:37,014
+相同输出的概率是多少
+
+83
+00:03:37,014 --> 00:03:43,000
+Well, it's not difficult to answer and see that in fact this is, for a single key k-prime,
+
+84
+00:03:37,014 --> 00:03:43,000
+这不难解答 可以看出事实上对每一个单独的k’
+
+85
+00:03:43,000 --> 00:03:50,040
+the probability is at most one over 2^64. Right? There are 2^64 possible outputs for the permutation,
+
+86
+00:03:43,000 --> 00:03:50,040
+其概率最多是1/(2^64) 对吧 对这个序列有2^64个可能的输出
+
+87
+00:03:50,040 --> 00:03:55,822
+what's the probability that it lands exactly on this output, well, it's one over 2^64.
+
+88
+00:03:50,040 --> 00:03:55,822
+它恰好出现这一个输出的概率就是1/(2^64)
+
+89
+00:03:55,822 --> 00:04:00,652
+And we're summing over all 2^56 keys, so we just multiply the two,
+
+90
+00:03:55,822 --> 00:04:00,652
+然后我们把所有2^56个密钥的都加起来 仅需将这两个相乘
+
+91
+00:04:00,652 --> 00:04:06,758
+we get one over 2^8, which is basically one over 256. OK? So the probability
+
+92
+00:04:00,652 --> 00:04:06,758
+我们得到1/(2^8)  也就是1/256 对吧 所以
+
+93
+00:04:06,758 --> 00:04:12,099
+that the key is not unique is one over 256, therefore the probability that it is unique
+
+94
+00:04:06,758 --> 00:04:12,099
+密钥不唯一的概率是1/256 因此它唯一的概率
+
+95
+00:04:12,099 --> 00:04:18,800
+is one minus that, which is 99.5%. OK? So already, if you give me one plaintext-ciphertext pair,
+
+96
+00:04:12,099 --> 00:04:18,800
+是1-1/256 也就是99.5%  对吧 所以如果你给我一个明文-密文对
+
+97
+00:04:18,800 --> 00:04:23,430
+the key is completely determined. There's only one key that will map that plaintext
+
+98
+00:04:18,800 --> 00:04:23,430
+密钥就已经被决定了 只有一个密钥会将那个明文
+
+99
+00:04:23,430 --> 00:04:26,774
+to that ciphertext, and the question is just, can you find that key?
+
+100
+00:04:23,430 --> 00:04:26,774
+映射成那个密文 问题是 你能找到那个密钥吗
+
+101
+00:04:26,774 --> 00:04:32,933
+Now it turns out in fact if you give me two pairs, so you give me m1 and m2,
+
+102
+00:04:26,774 --> 00:04:32,933
+结果发现事实上如果你给我那样的两对 给出m1, m2
+
+103
+00:04:32,933 --> 00:04:37,780
+and their corresponding outputs, c1 and c2, the probability basically
+
+104
+00:04:32,933 --> 00:04:37,780
+和它们相关的输出c1和c2 基本的概率是
+
+105
+00:04:37,780 --> 00:04:41,821
+just do exactly the same analysis, the probability basically becomes one.
+
+106
+00:04:37,780 --> 00:04:41,821
+做同样的分析 这个概率就是1
+
+107
+00:04:41,821 --> 00:04:46,766
+That there's only one such key. OK, essentially, this is very, very, very close to 1,
+
+108
+00:04:41,821 --> 00:04:46,766
+就是仅有一个这样的密钥 好吧 本质上是非常非常接近1
+
+109
+00:04:46,766 --> 00:04:51,248
+and basically it says given two pairs, it's very very likely that only one key
+
+110
+00:04:46,766 --> 00:04:51,248
+基本可以说给出两对明文密文 非常可能仅有一个密钥
+
+111
+00:04:51,248 --> 00:04:56,031
+will map this pair of messages to this pair of ciphertexts, and as a result again,
+
+112
+00:04:51,248 --> 00:04:56,031
+能够将这对信息映射成这对密文 因此
+
+113
+00:04:56,031 --> 00:05:00,559
+we can ask, well, find me that unique key. And by the way, the same is true for AES,
+
+114
+00:04:56,031 --> 00:05:00,559
+我们可以问 找出那个唯一的密钥 顺便一提 这对AES也是一样的
+
+115
+00:05:00,559 --> 00:05:05,226
+if you look at AES-128, again, just given two input-output pairs,
+
+116
+00:05:00,559 --> 00:05:05,226
+如果是AES128的情况 只给出两对输入输出
+
+117
+00:05:05,226 --> 00:05:09,638
+there's going to be only one key with very high probability. So essentially now
+
+118
+00:05:05,226 --> 00:05:09,638
+有很大的概率仅有一个密钥 所以本质上
+
+119
+00:05:09,638 --> 00:05:14,654
+we can ask this exhaustive search problem, I give you two or three pairs, and I ask you,
+
+120
+00:05:09,638 --> 00:05:14,654
+我们可以提出这个穷举搜索问题 我给你两对或三对输入输出 然后问你
+
+121
+00:05:14,654 --> 00:05:19,228
+well, find me the key. So how are you going to do it? Well, you're going to do it by exhaustive search,
+
+122
+00:05:14,654 --> 00:05:19,228
+找出这个密钥 那你要怎么做 你将通过穷搜索来做到
+
+123
+00:05:19,228 --> 00:05:24,824
+essentially by trying all possible keys, one by one, until you find the right one.
+
+124
+00:05:19,228 --> 00:05:24,824
+本质上是通过一个一个尝试所有可能的密钥 直到你找到正确的那一个
+
+125
+00:05:24,824 --> 00:05:29,816
+So this is what's known as the DES challenge. So let me explain how the DES challenge worked.
+
+126
+00:05:24,824 --> 00:05:29,816
+所以这被称作DES难题 让我解释一下它是如何做到的
+
+127
+00:05:29,816 --> 00:05:34,333
+The challenge was issued by a company called RSA, and what they did is basically,
+
+128
+00:05:29,816 --> 00:05:34,333
+这个难题是被RSA公司放出的 他们做的事情基本上就是
+
+129
+00:05:34,333 --> 00:05:40,333
+they published a number of ciphertexts, but three of the ciphertexts had known plaintexts.
+
+130
+00:05:34,333 --> 00:05:40,333
+发布一些密文 但是其中三个密文有已知明文
+
+131
+00:05:40,333 --> 00:05:46,133
+So in particular, what they did is they took the message here: The unknown message is, colon,
+
+132
+00:05:40,333 --> 00:05:46,133
+他们特别要做的是 将这里的信息 “未知信息是 ：XXXX...”
+
+133
+00:05:46,133 --> 00:05:50,867
+and you can see they broke it up into blocks. If you look at these, these are basically
+
+134
+00:05:46,133 --> 00:05:50,867
+拆分成组 如果你观察这些组 他们基本上都是
+
+135
+00:05:50,867 --> 00:05:57,267
+eight-byte blocks. Eight bytes, as you know, is 64 bits, right, so each of these is 64 bits.
+
+136
+00:05:50,867 --> 00:05:57,267
+8字节的分组 如你所知 8个字节是64位 所以每个分组是64位
+
+137
+00:05:57,267 --> 00:06:01,651
+And then they encrypted them using a secret key. They encrypted them all using the same
+
+138
+00:05:57,267 --> 00:06:01,651
+然后他们用一个秘密密钥加密这些分组 他们用同样的密钥加密它们
+
+139
+00:06:01,651 --> 00:06:07,711
+secret key to get three ciphertexts. So this gives us three plaintext-ciphertext pairs,
+
+140
+00:06:01,651 --> 00:06:07,711
+来得到三个密文 所以这就给我们提供了三个明文密文对
+
+141
+00:06:07,711 --> 00:06:12,239
+and then they gave us a whole bunch of other ciphertexts, you know, c4, c5, c6,
+
+142
+00:06:07,711 --> 00:06:12,239
+而且也给了我们很多其他密文如c4，c5，c6
+
+143
+00:06:12,239 --> 00:06:16,372
+and the challenge was, decrypt these guys using the key that you found
+
+144
+00:06:12,239 --> 00:06:16,372
+现在面临的挑战是 用你通过对已给出的前三个明文密文对进行穷举搜索找到的密钥
+
+145
+00:06:16,372 --> 00:06:20,784
+from an exhaustive search over the first three pairs that you were given.
+
+146
+00:06:16,372 --> 00:06:20,784
+解密这些东西
+
+147
+00:06:20,784 --> 00:06:25,683
+OK. So that was called the DES challenge, and let me tell you a little bit
+
+148
+00:06:20,784 --> 00:06:25,683
+所以这叫做DES难题 让我告诉你需要多长时间解决它
+
+149
+00:06:25,683 --> 00:06:31,467
+about how long it took to solve it. So interestingly, in 1997, using an Internet search,
+
+150
+00:06:25,683 --> 00:06:31,467
+有趣的是 在1997年 通过互联网搜索
+
+151
+00:06:31,467 --> 00:06:36,574
+using distributed.net, basically, they were able to search through enough of the keyspace
+
+152
+00:06:31,467 --> 00:06:36,574
+使用分布式网络 通过搜索足够的秘钥空间
+
+153
+00:06:36,574 --> 00:06:42,779
+to find the correct key in about three months. You realize the keyspace has size 2^56,
+
+154
+00:06:36,574 --> 00:06:42,779
+能在三个月内找到那个正确的密钥 密钥的大小是2^56
+
+155
+00:06:42,779 --> 00:06:47,487
+but on average you only have to search through half the keyspace to find the key,
+
+156
+00:06:42,779 --> 00:06:47,487
+但是平均来说 你只需搜索一半的密钥空间就能找到这个密钥
+
+157
+00:06:47,487 --> 00:06:51,574
+and so it took them three months. Then, kind of a miraculous thing happened.
+
+158
+00:06:47,487 --> 00:06:51,574
+所以这花费了他们3个月 然后不可思议的事情发生了
+
+159
+00:06:51,574 --> 00:06:57,890
+The EFF actually contracted Paul Kocher to build special-purpose hardware to break DES.
+
+160
+00:06:51,574 --> 00:06:57,890
+EFF与Paul Kocher签订合约 为制造专用硬件来攻破DES
+
+161
+00:06:57,890 --> 00:07:03,416
+This was a machine called Deep Crack. It cost about 250,000 dollars, and it broke
+
+162
+00:06:57,890 --> 00:07:03,416
+这就是叫做Deep Crack的机器 它大概花费25万美元
+
+163
+00:07:03,416 --> 00:07:09,500
+the next DES challenge in only three days. Interestingly, by the way, RSA said that
+
+164
+00:07:03,416 --> 00:07:09,500
+它仅用三天就攻破了下一个DES难题 顺便一提 有趣的是 RSA说
+
+165
+00:07:09,500 --> 00:07:14,120
+they would pay ten thousand dollars for each solution of a challenge, so you can see
+
+166
+00:07:09,500 --> 00:07:14,120
+他们将会为每个难题的解答支付1万美元 所以你会发现
+
+167
+00:07:14,120 --> 00:07:18,439
+that this is not quite economical. They spent 250K, they got ten thousand dollars
+
+168
+00:07:14,120 --> 00:07:18,439
+这并不是很经济合算 他们花费25万美元而解决问题仅得到1万美元
+
+169
+00:07:18,439 --> 00:07:22,154
+for solving the challenge. The next thing that happened is in 1999,
+
+170
+00:07:18,439 --> 00:07:22,154
+下一件事情发生在1999年
+
+171
+00:07:22,154 --> 00:07:27,286
+RSA issued another challenge, and they said, well, I'm gonna solve it in half the time
+
+172
+00:07:22,154 --> 00:07:27,286
+RSA发布了另一个难题 而且他们说 用之前解决方案一半时间就能解决
+
+173
+00:07:27,286 --> 00:07:32,600
+of the previous solution, and so using both Deep Crack and the Internet search together,
+
+174
+00:07:27,286 --> 00:07:32,600
+所以在同时使用Deep Crack和互联网搜索的情况下
+
+175
+00:07:32,600 --> 00:07:35,622
+they were able to break DES in 22 hours.
+
+176
+00:07:32,600 --> 00:07:35,622
+他们仅用22小时就破解了DES
+
+177
+00:07:35,622 --> 00:07:40,498
+So the bottom line here is, essentially, DES is completely dead.
+
+178
+00:07:35,622 --> 00:07:40,498
+所以底线是 事实上DES完全不起作用
+
+179
+00:07:40,498 --> 00:07:45,351
+Essentially, if you forget, or you lose your DES 56-bit key, don't worry”
+
+180
+00:07:40,498 --> 00:07:45,351
+如果你忘记或者遗失了DES-56位的密钥 不要担心
+
+181
+00:07:45,351 --> 00:07:51,226
+within 22 hours, you can actually recover it and in fact, anyone can recover it, and so
+
+182
+00:07:45,351 --> 00:07:51,226
+在22小时内 你就能恢复它而且事实上任何人都能做到
+
+183
+00:07:51,226 --> 00:07:56,467
+DES essentially is dead and no longer secure. And just kind of a final nail in the coffin,
+
+184
+00:07:51,226 --> 00:07:56,467
+所以DES并不起作用也不再安全 有点像棺材上最后一个钉子
+
+185
+00:07:56,467 --> 00:08:03,765
+as hardware technology improved, there was another project called COPACABANA that used FPGAs,
+
+186
+00:07:56,467 --> 00:08:03,765
+随着硬件技术发展 出现另外一个使用FPGA的项目 叫做COPACABANA
+
+187
+00:08:03,765 --> 00:08:11,450
+just off-the-shelf FPGAs, only 120 FPGAs. It only cost 10,000 dollars. And they were able to break,
+
+188
+00:08:03,765 --> 00:08:11,450
+使用现货供应的FPGA 只用了120个 仅花1万美元 他们就能破解
+
+189
+00:08:11,450 --> 00:08:16,768
+to do an exhaustive key search in about seven days. So very, very cheap hardware, just off the shelf,
+
+190
+00:08:11,450 --> 00:08:16,768
+在7天内完成穷举密钥搜索 所以非常非常廉价的硬件 刚刚上市
+
+191
+00:08:16,768 --> 00:08:21,365
+you can break DES already very quickly. So the lesson from all this is essentially,
+
+192
+00:08:16,768 --> 00:08:21,365
+你已经可以非常快速地破解DES 所以这一系列中的这一课很关键
+
+193
+00:08:21,365 --> 00:08:26,467
+56-bit ciphers are totally, totally dead. And so the question is what to do.
+
+194
+00:08:21,365 --> 00:08:26,467
+56位的密码完全不起作用 所以问题是该怎么做
+
+195
+00:08:26,467 --> 00:08:30,700
+People really liked DES, it was deployed in a lot of places, there were a lot of implementations,
+
+196
+00:08:26,467 --> 00:08:30,700
+人们真的喜欢DES 它被使用在许多地方 许多的应用软件
+
+197
+00:08:30,700 --> 00:08:34,415
+there was a lot of hardware support for it, so the question was what to do.
+
+198
+00:08:30,700 --> 00:08:34,415
+也有很多支持它的硬件 所以问题是该怎么办
+
+199
+00:08:34,415 --> 00:08:37,933
+And so the first thing that came to mind is, well maybe we can take DES
+
+200
+00:08:34,415 --> 00:08:37,933
+所以第一个进入我们脑海的想法是 也许我们可以将DES
+
+201
+00:08:37,933 --> 00:08:42,681
+and we can kind of artificially expand the key size, so we strengthen it against
+
+202
+00:08:37,933 --> 00:08:42,681
+在某种程度上人工增大密钥的长度 所以我们加长它来抵御
+
+203
+00:08:42,681 --> 00:08:47,400
+this exhaustive search attack. And the first idea that comes to mind is basically,
+
+204
+00:08:42,681 --> 00:08:47,400
+穷举搜索攻击 第一个想到的主意是
+
+205
+00:08:47,400 --> 00:08:51,900
+well, let's iterate the block cipher a couple of times. And this is what's called Triple DES.
+
+206
+00:08:47,400 --> 00:08:51,900
+多次迭代分组密码 这被称作三重DES
+
+207
+00:08:51,900 --> 00:08:56,200
+So Triple DES is a general construction. Basically it says the following.
+
+208
+00:08:51,900 --> 00:08:56,200
+所以三重DES是一个总体的结构 它的具体如下
+
+209
+00:08:56,200 --> 00:08:59,957
+Suppose you gave me a block cipher E. So here, it has a keyspace K,
+
+210
+00:08:56,200 --> 00:08:59,957
+如果你给我一个分组密码E 在这 有一个密钥空间K
+
+211
+00:08:59,957 --> 00:09:03,974
+it has a message space M, and an output space of course M as well.
+
+212
+00:08:59,957 --> 00:09:03,974
+和消息空间M 当然也有输出空间M
+
+213
+00:09:03,974 --> 00:09:10,429
+Let's define the triple construction, which now uses three keys, and it's defined as follows,
+
+214
+00:09:03,974 --> 00:09:10,429
+让我们定义这个三重结构 它现在使用三个密钥 定义如下
+
+215
+00:09:10,429 --> 00:09:15,561
+basically, here, the triple construction uses three independent keys, encrypts the same
+
+216
+00:09:10,429 --> 00:09:15,561
+这个三重结构使用三个独立的密钥 加密同样的分组消息
+
+217
+00:09:15,561 --> 00:09:21,412
+message block as before, and what it does is, it will encrpyt using the key k3,
+
+218
+00:09:15,561 --> 00:09:21,412
+正如之前一样 它做的工作是 使用密钥K3加密分组消息
+
+219
+00:09:21,412 --> 00:09:29,098
+then it will decrypt using the key k2, then it will encrypt again using the key k1.
+
+220
+00:09:21,412 --> 00:09:29,098
+然后用密钥K2解密 再用密钥K1加密
+
+221
+00:09:29,098 --> 00:09:33,881
+OK so basically encrpyting three times, using three independent keys.
+
+222
+00:09:29,098 --> 00:09:33,881
+所以基本上是加密三次 使用三个独立的密钥
+
+223
+00:09:33,881 --> 00:09:40,104
+You might be wondering, why is it doing E, D, E, why not just do E, E, E?
+
+224
+00:09:33,881 --> 00:09:40,104
+你可能会疑惑 为什么是加密-解密-加密的顺序 而不是三次加密
+
+225
+00:09:40,104 --> 00:09:43,843
+Why do we have to have a D in the middle? Well, that's just for, uh, kind of a hack.
+
+226
+00:09:40,104 --> 00:09:43,843
+为什么我们在中间要解密一次 这是为了防止某种意义上的相撞
+
+227
+00:09:43,843 --> 00:09:50,019
+You notice what happens if you set up k1 equals k2 equals k3? What happens if all three keys
+
+228
+00:09:43,843 --> 00:09:50,019
+注意观察如果你将k1k2k3都设成相等会发生什么 如果三个密钥
+
+229
+00:09:50,019 --> 00:09:57,200
+are the same? Well, basically, what will happen is, one E and one D would cancel,
+
+230
+00:09:50,019 --> 00:09:57,200
+都相等会是什么情况呢 会发生一次加密和解密相抵消
+
+231
+00:09:57,200 --> 00:10:02,419
+and you would just get normal DES out. So it's just a hack so that if you have a hardware implementation
+
+232
+00:09:57,200 --> 00:10:02,419
+然后你将仅得到一般DES加密的结果 所以这就是一种碰撞 如果你有一个实现三重DES的硬件设施
+
+233
+00:10:02,419 --> 00:10:07,504
+of Triple DES, you can set all three keys to be the same, and you'll get a hardware implementation
+
+234
+00:10:02,419 --> 00:10:07,504
+你可以将所有三个密钥设成一样 然后你就得到了实现单一
+
+235
+00:10:07,504 --> 00:10:12,101
+of single DES. Of course it'll be three times as slow as a regular impelmentation of single DES,
+
+236
+00:10:07,504 --> 00:10:12,101
+DES的硬件 当然它的速度会是常规单一DES实现的三分之一罢了
+
+237
+00:10:12,101 --> 00:10:17,094
+but nevertheless, it's still an option. OK, so for Triple DES now we get a key size
+
+238
+00:10:12,101 --> 00:10:17,094
+然而 这也是一种选择 对于三重DES我们得到的密钥长度是
+
+239
+00:10:17,094 --> 00:10:25,499
+that's 3 times 56, which is 168 bits; this is, 168 bits is way too long to do an exhaustive search on.
+
+240
+00:10:17,094 --> 00:10:25,499
+3*56也就是168位  168位长到了无法实施穷举搜索的程度
+
+241
+00:10:25,499 --> 00:10:31,420
+That will take time 2^168, which is more than all the machines on earth working for ten years
+
+242
+00:10:25,499 --> 00:10:31,420
+穷搜索将花费是时间是2^168 地球上所有机器运行10年也不能
+
+243
+00:10:31,420 --> 00:10:36,800
+would be able to do. Unfortunately, of course, the cipher is three times slower than DES.
+
+244
+00:10:31,420 --> 00:10:36,800
+完成的工作 不幸的是 当然这个密码也会比DES慢两倍
+
+245
+00:10:36,800 --> 00:10:40,964
+So this is a real problem with Triple DES. Now I want to mention that in fact you might think
+
+246
+00:10:36,800 --> 00:10:40,964
+所以这才是三重DES真正的问题 现在我想说得是 你也许认为
+
+247
+00:10:40,964 --> 00:10:49,160
+Triple DES has security 2^168, but in fact, there is a simple attack that runs in time 2^118,
+
+248
+00:10:40,964 --> 00:10:49,160
+三重DES在2^168的时间内是安全的 但事实上 有一个简单攻击运行时间为2^118
+
+249
+00:10:49,160 --> 00:10:55,800
+and I want to show you how that attack works. OK? So” but in fact 2^118 is still a large number.
+
+250
+00:10:49,160 --> 00:10:55,800
+我们来看那个攻击是如何做到的 实际上2^118依然是一个很大的数
+
+251
+00:10:55,800 --> 00:11:02,814
+In fact, anything that's, kind of, bigger than 2^90 is considered sufficiently secure.
+
+252
+00:10:55,800 --> 00:11:02,814
+事实上 任何大于2^90的时间都可以认为足够安全
+
+253
+00:11:02,814 --> 00:11:06,668
+2^118 is definitely sufficiently secure against exhaustive search,
+
+254
+00:11:02,814 --> 00:11:06,668
+2^118当然对穷举搜索来说足够安全
+
+255
+00:11:06,668 --> 00:11:09,933
+and generally is considered a high enough level of security.
+
+256
+00:11:06,668 --> 00:11:09,933
+而且一般被认为是足够高的安全等级
+
+257
+00:11:09,933 --> 00:11:14,447
+So clearly Triple DES is three times as slow as DES. So the question is,
+
+258
+00:11:09,933 --> 00:11:14,447
+所以明显三重DES的速度是DES的三分之一 问题是
+
+259
+00:11:14,447 --> 00:11:18,467
+why did they repeat the cipher three times? Why not repeat the cipher just two times,
+
+260
+00:11:14,447 --> 00:11:18,467
+为什么将密码重复三次 为什么不仅将密码重复两次
+
+261
+00:11:18,467 --> 00:11:21,297
+or in particular, the question is, what's wrong with double DES?
+
+262
+00:11:18,467 --> 00:11:21,297
+更具体地说 二重DES存在什么问题呢
+
+263
+00:11:21,297 --> 00:11:25,546
+So here we have double DES. Basically you see it uses only two keys, and it uses only
+
+264
+00:11:21,297 --> 00:11:25,546
+我们来看这个二重DES 可以看到只用两个密钥 只需要
+
+265
+00:11:25,546 --> 00:11:30,979
+two applications of the block cipher, and as a result it's only going to be twice as slow as DES,
+
+266
+00:11:25,546 --> 00:11:30,979
+两次运用分组密码 结果速度只会比DES慢一倍
+
+267
+00:11:30,979 --> 00:11:36,067
+not three times as slow as DES. Well, the key length for double DES is 2 times 56, which is
+
+268
+00:11:30,979 --> 00:11:36,067
+而不是两倍 二重DES的密钥长度是2*56
+
+269
+00:11:36,067 --> 00:11:42,613
+112 bits, and in fact doing exhaustive search on a space of 112 bits is too much.
+
+270
+00:11:36,067 --> 00:11:42,613
+也就是112比特 事实上112位秘钥空间对穷举搜索也太长了
+
+271
+00:11:42,613 --> 00:11:47,400
+2^112 is too big of a number to do exhaustive search over such a large space.
+
+272
+00:11:42,613 --> 00:11:47,400
+穷举搜索无法在2^112如此大的空间中进行
+
+273
+00:11:47,400 --> 00:11:51,227
+So the question is, what's wrong with this construction. Well, it turns out
+
+274
+00:11:47,400 --> 00:11:51,227
+因而问题变成 这个结构有什么问题
+
+275
+00:11:51,227 --> 00:11:54,687
+this construction is completely insecure, and I want to show you an attack.
+
+276
+00:11:51,227 --> 00:11:54,687
+事实上 这个结构完全不安全 我给你们看一个攻击实例
+
+277
+00:11:54,687 --> 00:12:01,200
+So, suppose I'm given a bunch of inputs, say m1 to m10, and I'm given the corresponding outputs
+
+278
+00:11:54,687 --> 00:12:01,200
+假设我有一些输入 m1到m10 和对应的输出c1到c10
+
+279
+00:12:01,200 --> 00:12:09,060
+c1 to c10. What's my goal? Well, my goal is basically to find keys, you know, a pair of keys k1, k2,
+
+280
+00:12:01,200 --> 00:12:09,060
+我的目标是什么 我的目标是找出密钥 也就是一对密钥k1,k2
+
+281
+00:12:09,060 --> 00:12:17,559
+such that if I encrypt the message M using these keys, in other words if I do this encryption,
+
+282
+00:12:09,060 --> 00:12:17,559
+如果我用这两个密钥加密消息M 换句话说如果我对消息
+
+283
+00:12:17,559 --> 00:12:23,248
+this double DES encryption, then I get the ciphertext vector that was given to me.
+
+284
+00:12:17,559 --> 00:12:23,248
+进行二重DES加密 我将会得到已给出的密文向量
+
+285
+00:12:23,248 --> 00:12:28,067
+OK, so our goal is to solve this equation here. Now you stare at this equation a little bit,
+
+286
+00:12:23,248 --> 00:12:28,067
+所以我们的目标是解决这里的等式 你们看一会这个等式
+
+287
+00:12:28,067 --> 00:12:32,267
+and you realize, hey wait a minute, I can rewrite it in kind of an interesting way;
+
+288
+00:12:28,067 --> 00:12:32,267
+过一会而 我可以用一种有意思的方式重写它
+
+289
+00:12:32,267 --> 00:12:36,483
+I can apply the decryption algorithm, and then what I'll get is that I'm really looking for
+
+290
+00:12:32,267 --> 00:12:36,483
+我可以使用解密算法 然后我将得到我期望的
+
+291
+00:12:36,483 --> 00:12:43,960
+keys k1, k2 that satisfy this equation here, where basically all I did is I applied
+
+292
+00:12:36,483 --> 00:12:43,960
+密钥k1,k2 它们满足这里的等式 我所做的就是
+
+293
+00:12:43,960 --> 00:12:51,400
+the decryption algorithm using k1 to both sides. OK, now whenever you see an equation like this,
+
+294
+00:12:43,960 --> 00:12:51,400
+使用k1对两边进行解密 好 无论什么时候你看到像这样的等式
+
+295
+00:12:51,400 --> 00:12:55,918
+what just happened here is that we separated our variables into two sides,
+
+296
+00:12:51,400 --> 00:12:55,918
+需要做的事情是 我们将变量分割成两部分
+
+297
+00:12:55,918 --> 00:13:00,098
+the variables now appear on independent sides of the equation, and that usually means
+
+298
+00:12:55,918 --> 00:13:00,098
+现在变量单独出现在等式两边 这意味着
+
+299
+00:13:00,098 --> 00:13:04,579
+that there is a faster attack than exhaustive search, and in fact this attack is called
+
+300
+00:13:00,098 --> 00:13:04,579
+有一个比穷举搜索更快的攻击 事实上这个攻击被叫做
+
+301
+00:13:04,579 --> 00:13:09,107
+a meet-in-the-middle attack, where really the meet-in-the-middle is going to somehow
+
+302
+00:13:04,579 --> 00:13:09,107
+中间人攻击 而这中攻击将以某种方式
+
+303
+00:13:09,107 --> 00:13:14,169
+attack this particular point in the construction. OK, so we're going to try and find a key
+
+304
+00:13:09,107 --> 00:13:14,169
+就这一点来攻击这个结构 好 我们尝试找出一个密钥
+
+305
+00:13:14,169 --> 00:13:18,533
+that maps m to a particular value here, and maps c to the same value.
+
+306
+00:13:14,169 --> 00:13:18,533
+能将m映射成这里的一个特定值 而且将c映射成相同的值
+
+307
+00:13:18,533 --> 00:13:22,969
+OK, so let me show you how the attack works. So the first thing we're going to do is
+
+308
+00:13:18,533 --> 00:13:22,969
+我们来看这个攻击是如何做到的 首先
+
+309
+00:13:22,969 --> 00:13:26,220
+we're going to build a table. Here, let me clear up some space here.
+
+310
+00:13:22,969 --> 00:13:26,220
+我们要建一个表 在这 让我清理出一些空间
+
+311
+00:13:26,220 --> 00:13:31,096
+The first step is to build a table that for all possible values of k2,
+
+312
+00:13:26,220 --> 00:13:31,096
+第一步是建一个表 写出k2所有可能的值
+
+313
+00:13:31,096 --> 00:13:35,647
+encrypts m under that value. OK, so here we have this table, so you notice
+
+314
+00:13:31,096 --> 00:13:35,647
+用其加密m得到的值记在表上 所以在我们这有了这张表
+
+315
+00:13:35,647 --> 00:13:45,600
+these are all 2^56 Single DES keys, OK, so the table has 2^56 entries,
+
+316
+00:13:35,647 --> 00:13:45,600
+这里是所有2^56个一重DES的密钥 所以这个表有2^56项
+
+317
+00:13:45,600 --> 00:13:50,800
+and what we do is basically, for each entry, we compute the encryption of m
+
+318
+00:13:45,600 --> 00:13:50,800
+我们要做的是计算每一项 在用相应密钥加密m得到的结果
+
+319
+00:13:50,800 --> 00:13:54,641
+under the appropriate key. So this is the encryption of m under the all-zero key,
+
+320
+00:13:50,800 --> 00:13:54,641
+所以这是用全0密钥加密m的结果
+
+321
+00:13:54,641 --> 00:13:59,494
+the encryption of m under the one key, and at the bottom, we have the encryption of m
+
+322
+00:13:54,641 --> 00:13:59,494
+在一个密钥下加密m的结果 在底部是
+
+323
+00:13:59,494 --> 00:14:04,933
+under the all-one key. OK, so there are 2^56 entries, and we sort this table based on the second column.
+
+324
+00:13:59,494 --> 00:14:04,933
+用全1的密钥加密m的结果 所以这有2^56个项 然后我们根据第二列对这个表进行排序
+
+325
+00:14:04,933 --> 00:14:10,083
+OK, so far, so good. So by the way this takes times to build this table takes time 2^56,
+
+326
+00:14:04,933 --> 00:14:10,083
+目前一切良好 顺便一说建立这张表需要2^56的时间
+
+327
+00:14:10,083 --> 00:14:17,733
+and I guess we also want to sort, sorting takes n log n time, so it's 2^56 times log 2^56. OK.
+
+328
+00:14:10,083 --> 00:14:17,733
+我们也需要排序 排序需要nlogn的时间所以就是 2^56*log2^56
+
+329
+00:14:17,733 --> 00:14:21,733
+So now that we have this table, we've essentially built all possible values
+
+330
+00:14:17,733 --> 00:14:21,733
+现在我们得到了这张表 我们本质上得到了
+
+331
+00:14:21,733 --> 00:14:24,618
+in the forward direction for this point.
+
+332
+00:14:21,733 --> 00:14:24,618
+第一重加密的所有可能的值
+
+333
+00:14:24,618 --> 00:14:28,533
+Now what we're going to do is this meet-in-the-middle attack,
+
+334
+00:14:24,618 --> 00:14:28,533
+现在我们要做的就是中间人攻击
+
+335
+00:14:28,533 --> 00:14:33,094
+where now we try to go in the reverse direction with all possible keys k.
+
+336
+00:14:28,533 --> 00:14:33,094
+现在我们尝试用所有可能的密钥k向前推
+
+337
+00:14:33,094 --> 00:14:37,761
+Essentially we compute the decryption of c under all possible keys k1.
+
+338
+00:14:33,094 --> 00:14:37,761
+本质上我们就是计算 所有可能的密钥k1对c解密的结果
+
+339
+00:14:37,761 --> 00:14:43,333
+OK, so now for each potential decryption, remember the table holds all possible values
+
+340
+00:14:37,761 --> 00:14:43,333
+好了 所以现在记下每一个潜在的解密结果 记住这张表里的在中间点上所有可能的值
+
+341
+00:14:43,333 --> 00:14:49,580
+in the midpoint, so then for each possible decrpytion, we check, hey, is the decryption in the table,
+
+342
+00:14:43,333 --> 00:14:49,580
+然后对每一个可能的解密结果 我们检查它是否在表格中
+
+343
+00:14:49,580 --> 00:14:53,248
+in the second column in the table? If it is in the table, then aha, we found the match,
+
+344
+00:14:49,580 --> 00:14:53,248
+是否在表格的第二列中 如果是的话 哈 我们找到了这个配对
+
+345
+00:14:53,248 --> 00:14:58,055
+and then what do we know? We know that essentially, well, we found the match, so we know that
+
+346
+00:14:53,248 --> 00:14:58,055
+现在我们知道了什么 我们知道 本质上我们找到了这个配对
+
+347
+00:14:58,055 --> 00:15:04,557
+say for example a decryption using a particular key k1 happened to match this entry in the table,
+
+348
+00:14:58,055 --> 00:15:04,557
+举例来说 用特定的密钥k1解密的情况下 正好与表格中的这项相匹配
+
+349
+00:15:04,557 --> 00:15:11,151
+say, k2 or more generally ki, then we know that the encryption of m under ki
+
+350
+00:15:04,557 --> 00:15:11,151
+对k2或者更一般的情况下的ki 我们知道用ki加密m的结果
+
+351
+00:15:11,151 --> 00:15:17,513
+is equal to the decryption of c under k. OK, so we kind of build this meet-in-the-middle,
+
+352
+00:15:11,151 --> 00:15:17,513
+等于用k加密c的结果 好 所以我们差不多已经建立了中间相遇模型
+
+353
+00:15:17,513 --> 00:15:25,896
+where the two sides, you know, the encryption of m under ki and the decryption of c under k,
+
+354
+00:15:17,513 --> 00:15:25,896
+这两边 分别是用ki加密m的结果和用k加密c的结果
+
+355
+00:15:25,896 --> 00:15:32,490
+collided, but if they collided, then we know that in fact this pair, ki and k, is equal to
+
+356
+00:15:25,896 --> 00:15:32,490
+如果它们碰撞了 我们就知道 事实上这一对ki和k
+
+357
+00:15:32,490 --> 00:15:36,089
+the pair that we're looking for. And so we've just solved our challenge.
+
+358
+00:15:32,490 --> 00:15:36,089
+就是我们要找的那一对秘钥 所以我们解决了这一难题
+
+359
+00:15:36,089 --> 00:15:40,965
+So now let's look at what's the running time of this? Well, we had to build a table,
+
+360
+00:15:36,089 --> 00:15:40,965
+现在让我们来看一下这个的运行时间是多少 我们需要做一个表格
+
+361
+00:15:40,965 --> 00:15:47,867
+and sort it, and then for all possible decryptions, we had to do a search through the table.
+
+362
+00:15:40,965 --> 00:15:47,867
+然后排序 然后对所有可能的解密结果 在表格中搜索
+
+363
+00:15:47,867 --> 00:15:53,690
+So there were 2^56 possible decryptions, each search in a sorted table takes log(2^56) time,
+
+364
+00:15:47,867 --> 00:15:53,690
+所以有2^56个可能的解密结果 每次在已排序的表格中搜素需要log(2^56)的时间
+
+365
+00:15:53,690 --> 00:15:59,400
+if you just work it out this turns out to be 2^63, which is way, way, way, way, way smaller
+
+366
+00:15:53,690 --> 00:15:59,400
+如果你把它算出来就是2^63 这比2^112小得多
+
+367
+00:15:59,400 --> 00:16:07,413
+than 2^112. OK, so this is a serious attack, it's probably doable today, that runs in a total time
+
+368
+00:15:59,400 --> 00:16:07,413
+所以这是一个糟糕的攻击 在今天是可行的 完全可以接受 2^63的时间
+
+369
+00:16:07,413 --> 00:16:12,359
+of 2^63, which is about the same time as the exhaustive search attack on DES.
+
+370
+00:16:07,413 --> 00:16:12,359
+用时差不多和DES穷举搜索攻击一样
+
+371
+00:16:12,359 --> 00:16:16,446
+So really, double DES really didn't solve the exhaustive search problem,
+
+372
+00:16:12,359 --> 00:16:16,446
+所以二重DES不能解决穷举搜素问题
+
+373
+00:16:16,446 --> 00:16:19,650
+because, well, there's an attack on it that runs in about the same time
+
+374
+00:16:16,446 --> 00:16:19,650
+因为对此有一个攻击 其运行时间差不多
+
+375
+00:16:19,650 --> 00:16:23,086
+as exhaustive search on single DES. Now someone might complain
+
+376
+00:16:19,650 --> 00:16:23,086
+跟一次DES的穷举搜索攻击相等 有些人可能会抱怨
+
+377
+00:16:23,086 --> 00:16:26,895
+that in fact this algorithm, well, we have to store this big table,
+
+378
+00:16:23,086 --> 00:16:26,895
+因为事实上这个算法 必须要存储这张大表
+
+379
+00:16:26,895 --> 00:16:31,283
+so it takes up a lot of space, but you know, so be it. Nevertheless, the running time
+
+380
+00:16:26,895 --> 00:16:31,283
+需要占用很大的空间 那又怎样 无论如何 运行时间
+
+381
+00:16:31,283 --> 00:16:35,439
+is still quite small or significantly smaller than 2^112.
+
+382
+00:16:31,283 --> 00:16:35,439
+还是很小 或者说比2^112小很多
+
+383
+00:16:35,439 --> 00:16:39,248
+Now you notice, by the way, this same attack applies to Triple DES.
+
+384
+00:16:35,439 --> 00:16:39,248
+顺便说一句 现在你应该注意到了 一样的攻击可以应用在三重DES上
+
+385
+00:16:39,248 --> 00:16:42,267
+What you would do is you would implement the meet-in-the-middle attack against this point,
+
+386
+00:16:39,248 --> 00:16:42,267
+你所要做的就是对这一点实现中间人攻击
+
+387
+00:16:42,267 --> 00:16:47,867
+you would build a table of size 2^56 of all possible encryptions of m,
+
+388
+00:16:42,267 --> 00:16:47,867
+你要建立一张2^56大的表 包含m所有可能的加密结果
+
+389
+00:16:47,867 --> 00:16:53,000
+and then you would try to decrypt with all 2^112 keys until you find a collision,
+
+390
+00:16:47,867 --> 00:16:53,000
+然后你尝试用2^112个密钥进行解密 直到你找到碰撞的那一个
+
+391
+00:16:53,000 --> 00:16:56,639
+and when you find a collision, you have basically found k1, k2, k3.
+
+392
+00:16:53,000 --> 00:16:56,639
+当遇到碰撞时 你就已经发现了k1,k2,k3
+
+393
+00:16:56,639 --> 00:17:03,333
+OK, so even Triple DES has an attack that basically explores only 2^112 possible keys.
+
+394
+00:16:56,639 --> 00:17:03,333
+所以即使是三重DES也存在穷搜索2^112个可能的密钥就能实现的攻击
+
+395
+00:17:03,333 --> 00:17:08,087
+But 2^112 is a large enough number, so Triple DES in fact, as far as we know,
+
+396
+00:17:03,333 --> 00:17:08,087
+但是2^112是一个足够大的数 所以三重DES在目前来说
+
+397
+00:17:08,087 --> 00:17:13,706
+is sufficiently secure. I should mention that Triple DES is actually a NIST standard,
+
+398
+00:17:08,087 --> 00:17:13,706
+是足够安全的 我应该提醒的是 三重DES实际上是NIST的标准
+
+399
+00:17:13,706 --> 00:17:19,859
+and so Triple DES is actually used quite a bit, and in fact DES should never ever ever be used,
+
+400
+00:17:13,706 --> 00:17:19,859
+所以三重DES应用广泛 而且事实上 DES从来就不应该被使用
+
+401
+00:17:19,859 --> 00:17:24,867
+if for some reason you're forced to use some version of DES, use Triple DES, not DES.
+
+402
+00:17:19,859 --> 00:17:24,867
+如果因为某些原因你必须使用DES的某些版本 使用三重DES而不是DES
+
+403
+00:17:24,867 --> 00:17:29,310
+OK, I want to mention one more method for strengthening DES against exhaustive search attacks.
+
+404
+00:17:24,867 --> 00:17:29,310
+我还想再多说一个扩展DES以抵抗穷举搜索攻击的方法
+
+405
+00:17:29,310 --> 00:17:33,118
+This method actually is not standardized by NIST, because it doesn't defend against
+
+406
+00:17:29,310 --> 00:17:33,118
+这个方法实际上没有被NIST标准化 因为它不能抵抗
+
+407
+00:17:33,118 --> 00:17:37,692
+more subtle attacks on DES, but nevertheless if all you're worried about is exhaustive search,
+
+408
+00:17:33,118 --> 00:17:37,692
+更精妙的对DES的攻击 然而你所要担心的就是穷举搜索
+
+409
+00:17:37,692 --> 00:17:43,010
+and you don't want to pay the performance penalties of Triple DES, then this is an interesting idea.
+
+410
+00:17:37,692 --> 00:17:43,010
+而且你不想付出使用三重DES的代价 那么这个方法就是一个有趣的主意
+
+411
+00:17:43,010 --> 00:17:47,630
+So let me show you how it works. So let E be a block cipher that operates on n-bit blocks.
+
+412
+00:17:43,010 --> 00:17:47,630
+让我向你展示它是如何做到的 假设E是在n位分组上操作的分组密码
+
+413
+00:17:47,630 --> 00:17:53,319
+We're going to define the EX construction, and for DES we're going to get DESX, to be the following.
+
+414
+00:17:47,630 --> 00:17:53,319
+我们将接下来要定义EX结构 对DES来说 我们将得到DESX 如下
+
+415
+00:17:53,319 --> 00:17:59,733
+So we use three keys, k1, k2, k3, and then basically before encrpytion, we XOR with k3,
+
+416
+00:17:53,319 --> 00:17:59,733
+所以我们使用三个密钥k1k2k3 在加密之前与K3异或
+
+417
+00:17:59,733 --> 00:18:05,231
+then we encrypt using k2, and then after encryption we XOR with k1. That's it.
+
+418
+00:17:59,733 --> 00:18:05,231
+然后用K2加密 加密之后再与k1异或 就是这样
+
+419
+00:18:05,231 --> 00:18:09,387
+That's the whole construction. So basically, you'll notice it doesn't slow the block cipher much,
+
+420
+00:18:05,231 --> 00:18:09,387
+这就是整个结构 所以你会看到 它不会拖慢分组密码多少
+
+421
+00:18:09,387 --> 00:18:14,403
+because all we did is we applied the cipher plus two additional XORs, which are super fast.
+
+422
+00:18:09,387 --> 00:18:14,403
+因为我们做的仅是使用这个密码再加上两个额外的异或 异或的速度非常快
+
+423
+00:18:14,403 --> 00:18:20,092
+The key length for this is in fact, well, we got two keys that are as long as the block size,
+
+424
+00:18:14,403 --> 00:18:20,092
+这里密钥的长度实际上 嗯 我们有两个跟分组一样大小的密钥
+
+425
+00:18:20,092 --> 00:18:25,038
+and we got one key that's as long as the key size, so the total is 184 bits.
+
+426
+00:18:20,092 --> 00:18:25,038
+还有一个跟密钥大小一样的 所以一共是184位
+
+427
+00:18:25,038 --> 00:18:31,446
+Now, it turns out actually the best attack that's known is actually an attack that takes time 2^120,
+
+428
+00:18:25,038 --> 00:18:31,446
+事实证明已知的最好攻击耗时2^120
+
+429
+00:18:31,446 --> 00:18:37,158
+and this is actually fairly simple. So it's a generic attack on EX, it will always take time basically
+
+430
+00:18:31,446 --> 00:18:37,158
+那其实很简单 所以这是一个一般EX攻击 它所需的时间是
+
+431
+00:18:37,158 --> 00:18:41,222
+block size plus the key size, and it's a simple homework problem
+
+432
+00:18:37,158 --> 00:18:41,222
+分组大小加上密钥大小 这是一个简单的家庭作业
+
+433
+00:18:41,222 --> 00:18:43,892
+for you to try to figure out this attack. I think this is a good exercise.
+
+434
+00:18:41,222 --> 00:18:43,892
+为了让你们弄懂这个攻击 我想这是一个很好的练习
+
+435
+00:18:43,892 --> 00:18:48,867
+OK, in fact there is some analysis to show that there is no exhaustive search attack
+
+436
+00:18:43,892 --> 00:18:48,867
+好了事实上有分析表明没有穷举搜索攻击
+
+437
+00:18:48,867 --> 00:18:53,041
+on this type of construction, so it's a fine construction against exhaustive search,
+
+438
+00:18:48,867 --> 00:18:53,041
+可以破解这种结构 所以这是可以抵抗穷举搜索的很好的结构
+
+439
+00:18:53,041 --> 00:18:56,600
+but there are more subtle attacks on DES that we'll talk about in the next segment,
+
+440
+00:18:53,041 --> 00:18:56,600
+但是还有一些更精妙的DES攻击 我们将在下一节讨论
+
+441
+00:18:56,600 --> 00:18:59,566
+that basically this construction will not prevent.
+
+442
+00:18:56,600 --> 00:18:59,566
+而这种结构无法防范那些攻击
+
+443
+00:18:59,566 --> 00:19:05,789
+One thing that I want to point out, unfortunately I found this mistake in a number of products,
+
+444
+00:18:59,566 --> 00:19:05,789
+我想指出的一点是 很不幸 我在很多产品中发现这个错误
+
+445
+00:19:05,789 --> 00:19:12,383
+is if you just decide to XOR on the outside, or if you just decide to XOR on the inside,
+
+446
+00:19:05,789 --> 00:19:12,383
+那就是如果你决定在外部或者内部进行异或
+
+447
+00:19:12,383 --> 00:19:13,985
+as opposed to XOR-ing on both sides, which is what DESX does,
+
+448
+00:19:12,383 --> 00:19:13,985
+相对比与DESX那样在两边异或的情况
+
+449
+00:19:13,985 --> 00:19:18,165
+you notice DESX XORs both on the outside and on the inside,
+
+450
+00:19:13,985 --> 00:19:18,165
+你会注意到DESX在内部和外部都进行异或
+
+451
+00:19:18,165 --> 00:19:22,067
+If you just do one of them, then basically this construction does nothing
+
+452
+00:19:18,165 --> 00:19:22,067
+如果你只做其中一个 那么这个结构对保证你密码的安全性
+
+453
+00:19:22,067 --> 00:19:26,780
+to secure your cipher. It'll still be as vulnerable to exhaustive search
+
+454
+00:19:22,067 --> 00:19:26,780
+将毫无用处 它将在穷举搜索面前脆弱得像
+
+455
+00:19:26,780 --> 00:19:30,518
+as the original block cipher E. OK, so this is another homework problem,
+
+456
+00:19:26,780 --> 00:19:30,518
+原本的分组密码E一样 好了 所以这就是另一个家庭作业中的另一个问题
+
+457
+00:19:30,518 --> 00:19:34,094
+and actually you'll see that as part of our homeworks. OK.
+
+458
+00:19:30,518 --> 00:19:34,094
+实际上你会在我们的作业中看到那个问题
+
+459
+00:19:34,094 --> 00:19:37,809
+So this basically concludes our discussion of exhaustive search attacks,
+
+460
+00:19:34,094 --> 00:19:37,809
+这基本上就总结了我们对穷举搜索的讨论
+
+461
+00:19:37,809 --> 00:19:41,292
+and next we'll talk about more sophisticated attacks on DES.
+
+462
+00:19:37,809 --> 00:19:41,292
+下一次我们将讨论更复杂的DES攻击
+

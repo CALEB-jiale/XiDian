@@ -1,0 +1,1572 @@
+1
+00:00:00,000 --> 00:00:04,819
+Over the years it became clear that DES
+and triple DES are simply not designed for
+
+2
+00:00:00,000 --> 00:00:04,819
+多年来，DES和三重DES明显不是为硬件来设计的。
+
+3
+00:00:04,819 --> 00:00:09,116
+modern hardware and are too slow. As a
+result, NIS started a new process to
+
+4
+00:00:04,819 --> 00:00:09,116
+并且他们速度很慢。于是，NIS建立了一个新的标准化分组密码程序，
+
+5
+00:00:09,116 --> 00:00:13,820
+standardize in a new block cypher called
+the Advanced Encryption Standard or AES
+
+6
+00:00:09,116 --> 00:00:13,820
+叫做高级加密标准，简称AES。
+
+7
+00:00:13,820 --> 00:00:18,640
+for short. Nis started it's effort in 1997
+when it requested, proposals for a new
+
+8
+00:00:13,820 --> 00:00:18,640
+NIS请求了一个新的分组密码建议书并且在1977年开工。
+
+9
+00:00:18,640 --> 00:00:22,821
+block cipher. It received fifteen
+submissions a year later. And finally in
+
+10
+00:00:18,640 --> 00:00:22,821
+一年后，它一共收到了15份提议。最终在2000年，
+
+11
+00:00:22,821 --> 00:00:27,350
+the year 2000, it adopted the cypher
+called Rijndael the advanced encryption.
+
+12
+00:00:22,821 --> 00:00:27,350
+它采用了一个叫做Rijndael的高级加密标准
+
+13
+00:00:27,350 --> 00:00:32,471
+standard. This was a cypher designed in
+Belgium. We already said that it's block
+
+14
+00:00:27,350 --> 00:00:32,471
+这是当时在比利时设计的一套密码。我们要了解的是
+
+15
+00:00:32,471 --> 00:00:38,301
+size is 128 bits and it has three possible
+key sizes. 128 bits, 192, and 256. Now,
+
+16
+00:00:32,471 --> 00:00:38,301
+它的分组大小是128比特,并且可以有三种大小的密钥，128、192、256比特。
+
+17
+00:00:38,301 --> 00:00:44,504
+the assumption is that the larger the key
+size is, the more secure the block cipher
+
+18
+00:00:38,301 --> 00:00:44,504
+前提是密钥越长，作为一个为伪随机置换的分组密码安全性就越高。
+
+19
+00:00:44,504 --> 00:00:50,409
+is as a pseudo random permutation. But
+because it also has more rounds involved
+
+20
+00:00:44,504 --> 00:00:50,409
+但是，由于它同时也包含了更多的操作轮数，
+
+21
+00:00:50,409 --> 00:00:56,160
+in its operation. The slower the cipher
+becomes. So the larger the key supposedly,
+
+22
+00:00:50,409 --> 00:00:56,160
+使得密码变得更慢。所以，密钥越长，
+
+23
+00:00:56,160 --> 00:01:01,920
+the more secure the cipher, but also the
+slower it becomes. So for example, AES 128
+
+24
+00:00:56,160 --> 00:01:01,920
+密码就越安全，速度也就越慢。
+
+25
+00:01:01,920 --> 00:01:07,483
+is the fastest of these ciphers and AES
+256 is the slowest. Now AES is built as
+
+26
+00:01:01,920 --> 00:01:07,483
+例如，AES中128比特的密钥就是最快的而256比特就是最慢的。
+
+27
+00:01:07,483 --> 00:01:11,751
+what's called a substitution permutation
+network. It's not a Feistel network.
+
+28
+00:01:07,483 --> 00:01:11,751
+现在AES由一种代换-置换网络构建而成。这不是一种 Feistel 网络，
+
+29
+00:01:11,751 --> 00:01:16,135
+Remember that in a Feistel network, half
+the bit were unchanged from round to
+
+30
+00:01:11,751 --> 00:01:16,135
+记住这个，在Feistel结构中，一半的比特在一轮置换中是不变的。
+
+31
+00:01:16,135 --> 00:01:20,634
+round. In a substitution permutation
+network all the bits are changed in every
+
+32
+00:01:16,135 --> 00:01:20,634
+而在这种代换-置换网络中，所有的比特在每一轮置换中都会变。
+
+33
+00:01:20,634 --> 00:01:25,132
+round. And the network works as follows,
+so here we have the first round of the
+
+34
+00:01:20,634 --> 00:01:25,132
+这种网络工作如下，在代换-置换网络中的第一轮，
+
+35
+00:01:25,132 --> 00:01:29,516
+substitution permutation network, where
+the first thing we do is we XOR the
+
+36
+00:01:25,132 --> 00:01:29,516
+首先我们要做的是用轮密钥来异或初始状态，
+
+37
+00:01:29,516 --> 00:01:34,245
+current state with the round key. In this
+case the first round key. Then we go throught
+
+38
+00:01:29,516 --> 00:01:34,245
+第一轮的情况下是用第一个轮密钥。然后，
+
+39
+00:01:34,245 --> 00:01:38,687
+a substitution layer, where blocks of Date
+are replaced with other blocks based on
+
+40
+00:01:34,245 --> 00:01:38,687
+我们经过一个代换层，在这个代换层中，分组数据和代换表中的分组进行替换。
+
+41
+00:01:38,687 --> 00:01:43,269
+what the substitution table says. And then
+we go through a permutation layer where
+
+42
+00:01:38,687 --> 00:01:43,269
+然后我们进入置换层，在这里比特会被置换移位。
+
+43
+00:01:43,269 --> 00:01:47,921
+bits are permuted and shuffled around. And
+then we do this again. We XR with an X
+
+44
+00:01:43,269 --> 00:01:47,921
+然后，我们再来一遍，我们用轮密钥异或，
+
+45
+00:01:47,921 --> 00:01:52,285
+round key, we go thru a substitution
+phase, and we're permute to dance around.
+
+46
+00:01:47,921 --> 00:01:52,285
+再经过代换阶段，然后再置换
+
+47
+00:01:52,285 --> 00:01:56,892
+And so on, and so on, and so forth Until
+we reach the final round where we xor
+
+48
+00:01:52,285 --> 00:01:56,892
+然后再不厌其烦的进行下去，直到我们到达最后一轮
+
+49
+00:01:56,892 --> 00:02:01,675
+with the very last around key, and then
+out comes the output. Now, and important
+
+50
+00:01:56,892 --> 00:02:01,675
+并且在用最后一个轮密钥异或以后，就得到输出
+
+51
+00:02:01,675 --> 00:02:06,336
+point about this design. Is that, in fact,
+because of how it's built, every step in
+
+52
+00:02:01,675 --> 00:02:06,336
+现在这个设计最重要的就是它的结构网络中，
+
+53
+00:02:06,336 --> 00:02:10,829
+this network needs to be reversible, so
+that the whole thing is reversible. And so
+
+54
+00:02:06,336 --> 00:02:10,829
+每一步都必须是可逆的，才能让整个过程是可逆的。
+
+55
+00:02:10,829 --> 00:02:15,544
+the way we would, decrypt, essentially, is
+we would take the output and simply apply
+
+56
+00:02:10,829 --> 00:02:15,544
+解密的方式是我们利用输出和应用网络中的每一步来反向解密。
+
+57
+00:02:15,544 --> 00:02:20,203
+each step of the network in reverse order.
+So we start with the permutation step, and
+
+58
+00:02:15,544 --> 00:02:20,203
+所以我们先从置换开始，
+
+59
+00:02:20,203 --> 00:02:23,809
+we have to make sure that step is
+reversible. Then we look at the
+
+60
+00:02:20,203 --> 00:02:23,809
+确保这一步都是可逆的。
+
+61
+00:02:23,809 --> 00:02:28,246
+substitution layer, and we have to make
+sure this step is reversible. And this is
+
+62
+00:02:23,809 --> 00:02:28,246
+然后我们再看下代换层，也必须保证是可逆的。
+
+63
+00:02:28,246 --> 00:02:32,684
+very different from DES. In DES, if you
+remember, the substitution tables were not
+
+64
+00:02:28,246 --> 00:02:32,684
+而且这个DES非常不同。如果你有印象的话，
+
+65
+00:02:32,684 --> 00:02:36,716
+reversible at all. In fact, they
+map six bits to four bits. Whereas
+
+66
+00:02:32,684 --> 00:02:36,716
+就应该知道DES中的代换表不是可逆的因为它从6个比特映射成4个比特。
+
+67
+00:02:36,716 --> 00:02:40,604
+here, everything has to be reversible,
+otherwise it would be impossible to
+
+68
+00:02:36,716 --> 00:02:40,604
+然而在这里，所有的步骤都必须是可逆的，否则不可能解密。
+
+69
+00:02:40,604 --> 00:02:45,174
+decrypt. And of course the xor with the
+round key is reversible as well. Okay? So
+
+70
+00:02:40,604 --> 00:02:45,174
+当然和轮秘钥异或也要是可逆的才行。明白了没？
+
+71
+00:02:45,174 --> 00:02:51,064
+inversion of a substitution permutation
+network is simply done by applying all of
+
+72
+00:02:45,174 --> 00:02:51,064
+反向实现代换-置换网络是很容易的，只要把
+
+73
+00:02:51,064 --> 00:02:56,020
+the steps in the reverse order. So now
+that we understand the generic
+
+74
+00:02:51,064 --> 00:02:56,020
+所有的步骤反过来做一遍就可以了。现在我们理解了它的通用结构
+
+75
+00:02:56,020 --> 00:03:01,766
+construction. Lets look at the specifics
+of AES. So AES operates on a 128 bit block.
+
+76
+00:02:56,020 --> 00:03:01,766
+让我们来看看AES的一些特征.AES每个分组有128比特，
+
+77
+00:03:01,766 --> 00:03:07,656
+Which is sixteen bytes. So what we do with
+AES is we write those sixteen bytes as a
+
+78
+00:03:01,766 --> 00:03:07,656
+也就是16字节。所以我们把这16字节写成一个4×4的矩阵。
+
+79
+00:03:07,656 --> 00:03:12,771
+four by four matrix. Each cell in the
+matrix contains one byte. And then we
+
+80
+00:03:07,656 --> 00:03:12,771
+矩阵中每个单元占一个字节。然后我们
+
+81
+00:03:12,771 --> 00:03:17,292
+start with the first round so we XOR
+with the first round key and then apply a
+
+82
+00:03:12,771 --> 00:03:17,292
+从第一轮开始，我们用第一个轮密钥异或，然后在用一个确定的函数
+
+83
+00:03:17,292 --> 00:03:21,437
+certain function. That, includes
+substitutions and permutations and other
+
+84
+00:03:17,292 --> 00:03:21,437
+这个函数包括代换、置换和列混合在里面。
+
+85
+00:03:21,437 --> 00:03:26,027
+operations on the state. And again, these
+three functions that are applied here have
+
+86
+00:03:21,437 --> 00:03:26,027
+还有一点就是这三个被用到函数都需要是可逆的
+
+87
+00:03:26,027 --> 00:03:30,286
+to be invertible so that in fact the
+cypher can be decrypted. And then we xor
+
+88
+00:03:26,027 --> 00:03:30,286
+密码才能进行解密。然后我们用，
+
+89
+00:03:30,286 --> 00:03:34,655
+with the next round key and we do that
+again. Again we apply the round function
+
+90
+00:03:30,286 --> 00:03:34,655
+下一个轮密钥来异或，接着再做一次。再一次使用轮函数
+
+91
+00:03:34,655 --> 00:03:38,858
+and xor the round key. And we do that
+again and again and again. We do it ten
+
+92
+00:03:34,655 --> 00:03:38,858
+然后再一次进行异或。一直这样进行下去。
+
+93
+00:03:38,858 --> 00:03:43,227
+times. Although interestingly in the last
+round, the mix column step is actually
+
+94
+00:03:38,858 --> 00:03:43,227
+我们一共这样做10次。有趣的是，在最后一轮中，列混合操作没有了。
+
+95
+00:03:43,227 --> 00:03:48,691
+missing. And then finally, we XOR with the
+last rounds key, and out comes the output.
+
+96
+00:03:43,227 --> 00:03:48,691
+最后，我们用最后一个轮密钥来异或，然后就输出了结果。
+
+97
+00:03:48,691 --> 00:03:53,644
+Again, in every phase here, we always,
+always, always keep this four by four
+
+98
+00:03:48,691 --> 00:03:53,644
+并且，在这里的每一个数组，我们总是将它变换成4×4的矩阵。
+
+99
+00:03:53,644 --> 00:03:59,140
+array. And so the output is also four by
+four, which is sixteen bytes, which is 128
+
+100
+00:03:53,644 --> 00:03:59,140
+所以，最终的输出也总是4×4的矩阵，16字节，128比特。
+
+101
+00:03:59,140 --> 00:04:04,639
+bits. Now the long key themselves of
+course come from a sixteen byte AES key
+
+102
+00:03:59,140 --> 00:04:04,639
+那么，这些长密钥当然本身是来自16字节的AES秘钥。
+
+103
+00:04:04,860 --> 00:04:10,831
+using key expansion. So the key expansion
+maps from a sixteen bytes AES key
+
+104
+00:04:04,860 --> 00:04:10,831
+使用秘钥扩展得来的。所以这些来自16字节的AES秘钥密钥映射成11个密钥。
+
+105
+00:04:10,831 --> 00:04:16,875
+into eleven keys, each one being sixteen
+bytes. So these keys themselves are also a
+
+106
+00:04:10,831 --> 00:04:16,875
+成11个密钥，每个秘钥都是16字节。所以，这些密钥他们和初始状态异或时。
+
+107
+00:04:16,875 --> 00:04:21,915
+four by four array that's XORed into the
+current state. Okay, so that's the
+
+108
+00:04:16,875 --> 00:04:21,915
+就是4×4的矩阵。这就是AES工作的原理。
+
+109
+00:04:21,915 --> 00:04:26,116
+schematic of how AES works. And the only
+thing that's left to do is specify these
+
+110
+00:04:21,915 --> 00:04:26,116
+现在唯一剩下的就是把这三个函数列出来，
+
+111
+00:04:26,116 --> 00:04:30,318
+three functions, byte sub, shift row, and
+mixed column. And those are fairly easy to
+
+112
+00:04:26,116 --> 00:04:30,318
+他们就是字节代换、行移位和列混合。并且很容易将他们解释清楚
+
+113
+00:04:30,318 --> 00:04:34,415
+explain. So I'm just gonna give you the
+high level description of what they are.
+
+114
+00:04:30,318 --> 00:04:34,415
+那关于它们，我就给你们做一个高层次的描述。
+
+115
+00:04:34,415 --> 00:04:39,055
+And, those interested in the details can
+look it up online. So the way byte
+
+116
+00:04:34,415 --> 00:04:39,055
+有兴趣的人可以在网上找一些关于它们的细节。
+
+117
+00:04:39,055 --> 00:04:45,169
+substitution works, is literally it's one
+S box containing 256 bytes. And
+
+118
+00:04:39,055 --> 00:04:45,169
+字节代换，字面上来说，就是一个256字节的代换表（即S-盒）。
+
+119
+00:04:45,169 --> 00:04:50,721
+essentially, what it does is it applies
+the S box to every byte in the current
+
+120
+00:04:45,169 --> 00:04:50,721
+本质上，它的功能就是对当前状态的每一个字节应用S盒。
+
+121
+00:04:50,721 --> 00:04:56,273
+states. So, let me explain what I mean by
+that. So the current state is gonna be
+
+122
+00:04:50,721 --> 00:04:56,273
+让我来解释一下。初始状态是一个4×4的表，
+
+123
+00:04:56,273 --> 00:05:01,826
+this four by four, table. So here we have
+the four by four table. And to each
+
+124
+00:04:56,273 --> 00:05:01,826
+表中的每一个元素都可以应用S-盒。
+
+125
+00:05:01,826 --> 00:05:07,449
+element in this table, we apply the S box.
+So let's call it the A table. And then
+
+126
+00:05:01,826 --> 00:05:07,449
+我们就叫他表A。然后我们要做的是，
+
+127
+00:05:07,449 --> 00:05:12,859
+what we do is, essentially, for all four
+by four entries, essentially, the next
+
+128
+00:05:07,449 --> 00:05:12,859
+对所有的4X4的项，下一步，A[i,j].
+
+129
+00:05:12,859 --> 00:05:19,050
+step, Aij. Becomes the current step
+evaluated at the look up table. So we use
+
+130
+00:05:12,859 --> 00:05:19,050
+就变成这个查阅表中对应的值。
+
+131
+00:05:19,050 --> 00:05:24,904
+the current cell as an entry, as an index,
+into the look up table. And then the value
+
+132
+00:05:19,050 --> 00:05:24,904
+然后我们用当前的这个单元，作为一个索引，做一个指针，指向查阅表。
+
+133
+00:05:24,904 --> 00:05:30,144
+of the look up table is what's output.
+Okay. So, that's the first step. The next
+
+134
+00:05:24,904 --> 00:05:30,144
+然后这个表的中的值就是输出。好吧，这就是第一步。
+
+135
+00:05:30,144 --> 00:05:35,316
+step that happens is a shiftRow step,
+which is basically just a permutation. So
+
+136
+00:05:30,144 --> 00:05:35,316
+接下来就是行移位，它基本上就是一个置换。
+
+137
+00:05:35,316 --> 00:05:40,492
+essentially we kind of do a stick lick
+shift on each one of the rows. So you can
+
+138
+00:05:35,316 --> 00:05:40,492
+让我们把每一行进行一次循环移位。
+
+139
+00:05:40,492 --> 00:05:45,157
+see the second row is stick lick shifted
+by one position. This third row is
+
+140
+00:05:40,492 --> 00:05:45,157
+所以我们就看到第二行被移位了一次。
+
+141
+00:05:45,157 --> 00:05:49,556
+[inaudible] shifted by two positions and
+the third row is [inaudible] shifted by
+
+142
+00:05:45,157 --> 00:05:49,556
+第三行被移了两个位置。第四行被位移了三个位置
+
+143
+00:05:49,556 --> 00:05:54,064
+three positions. And the last thing we do
+is mix columns where literally we apply a
+
+144
+00:05:49,556 --> 00:05:54,064
+最后一个就是列混合，字面上来看就是
+
+145
+00:05:54,064 --> 00:05:58,626
+linear transformation to each one of these
+columns. So there's a certain matrix that
+
+146
+00:05:54,064 --> 00:05:58,626
+把每一列进行一次线性变换。这有一个矩阵，
+
+147
+00:05:58,626 --> 00:06:02,971
+multiplies each one of these columns and
+it becomes, the next column. So these
+
+148
+00:05:58,626 --> 00:06:02,971
+它乘以它中的每一列然后成为下一列。
+
+149
+00:06:02,971 --> 00:06:06,990
+linear transformation is applied
+independently to each one of the columns.
+
+150
+00:06:02,971 --> 00:06:06,990
+所以这些线性变换是彼此独立的。
+
+151
+00:06:06,990 --> 00:06:12,138
+Now, I should point out that, so far,
+shift rows and mixed columns are very easy
+
+152
+00:06:06,990 --> 00:06:12,138
+我要指出的是，目前为止，行移位和列混合式是非常简单就能用代码实现的。
+
+153
+00:06:12,138 --> 00:06:17,286
+to implement in code. And I should say
+that the [inaudible] institution itself is
+
+154
+00:06:12,138 --> 00:06:17,286
+并且字节变换也是很容易计算的，
+
+155
+00:06:17,286 --> 00:06:22,370
+also easily computable, so that you can
+actually write code that takes less than
+
+156
+00:06:17,286 --> 00:06:22,370
+你甚至用不到256字节就可以写下这些代码
+
+157
+00:06:22,370 --> 00:06:27,582
+256 bytes to write. And you can kind of
+shrink the description of AES by literally
+
+158
+00:06:22,370 --> 00:06:27,582
+所以你可以缩小AES的描述通过代码计算这个表，
+
+159
+00:06:27,582 --> 00:06:32,666
+storing code that computes the table
+rather than hardwiring the table into your
+
+160
+00:06:27,582 --> 00:06:32,666
+而不用把他们硬写进代码里实现。
+
+161
+00:06:32,666 --> 00:06:38,231
+implementation. And in fact, this is kind
+of a generic fact about AES, that if you
+
+162
+00:06:32,666 --> 00:06:38,231
+事实上，这是AES的一个普遍事实吧，
+
+163
+00:06:38,231 --> 00:06:43,906
+can have allowed no pre computation at
+all, including computing the S box on the
+
+164
+00:06:38,231 --> 00:06:43,906
+如果你不允许用预计算的话，包括即时计算S-盒。
+
+165
+00:06:43,906 --> 00:06:48,548
+fly. Then in fact you get a fairly small
+implementation of AES, so it, it could fit
+
+166
+00:06:43,906 --> 00:06:48,548
+事实上，你得到一个非常小的AES，
+
+167
+00:06:48,548 --> 00:06:52,567
+on very constrained environments where
+there isn't enough room to hold,
+
+168
+00:06:48,548 --> 00:06:52,567
+它可以适应没有足够空间储存非常复杂的代码的局限环境
+
+169
+00:06:52,737 --> 00:06:56,925
+complicated code. But of course, this will
+be the slowest implementation, because
+
+170
+00:06:52,737 --> 00:06:56,925
+不过当然，这肯定会非常慢，
+
+171
+00:06:56,925 --> 00:07:00,724
+everything is computed now on the fly, and
+as a result, the implementation,
+
+172
+00:06:56,925 --> 00:07:00,724
+因为任何东西都是飞速计算的，所以
+
+173
+00:07:00,724 --> 00:07:05,100
+obviously, is gonna be, slower than things
+that were pre-computed. And then there is
+
+174
+00:07:00,724 --> 00:07:05,100
+显而易见的，它会比那些可以预计算的要慢。
+
+175
+00:07:05,100 --> 00:07:09,060
+this trade off. For example if you have a
+lot of space, and you can support large
+
+176
+00:07:05,100 --> 00:07:09,060
+这就是交替使用。例如，你有大量空间，你可以支持大量的代码，
+
+177
+00:07:09,060 --> 00:07:12,821
+code. You can actually precompute quite a
+bit of the three steps that I just
+
+178
+00:07:09,060 --> 00:07:12,821
+你可以进行很多的预计算，关于刚才那三个步骤。
+
+179
+00:07:12,821 --> 00:07:16,681
+mentioned. In fact, there are multiple
+options of pre-computation, you can build
+
+180
+00:07:12,821 --> 00:07:16,681
+事实上，有多种预计算方法，你可以构建一个4K字节大的表格
+
+181
+00:07:16,681 --> 00:07:20,640
+a table that's only four kilobyte big. You
+can build a table that is even longer,
+
+182
+00:07:16,681 --> 00:07:20,640
+你可以构建一个更长的，可以是24K字节。
+
+183
+00:07:20,640 --> 00:07:24,154
+maybe 24 kilobytes. So basically you will
+have these big tables in your
+
+184
+00:07:20,640 --> 00:07:24,154
+所以，你可以在你的应用里使用这些很大的表格。
+
+185
+00:07:24,154 --> 00:07:27,866
+implementation. But then your actual
+performance is going to be really good,
+
+186
+00:07:24,154 --> 00:07:27,866
+然后你的实际性能就会非常的好
+
+187
+00:07:27,866 --> 00:07:31,776
+because all your doing is just table
+look-ups and XORs. You're not doing
+
+188
+00:07:27,866 --> 00:07:31,776
+因为所有你所做的仅仅是查表和异或。
+
+189
+00:07:31,776 --> 00:07:35,339
+any other complicated arithmetic. And as a
+result, if you can do a lot of
+
+190
+00:07:31,776 --> 00:07:35,339
+你没有做其他任何复杂的算法。所以，你可以做很多预计算
+
+191
+00:07:35,339 --> 00:07:39,376
+pre-computation, these three steps here,
+ByteSub and ShiftRow and MixColumn
+
+192
+00:07:35,339 --> 00:07:39,376
+我前面说的，字节代换、行移位、列混合
+
+193
+00:07:39,376 --> 00:07:43,406
+can be converted just into a
+number, a small number of table lookups
+
+194
+00:07:39,376 --> 00:07:43,406
+可以只进行一些少量的查表和一些异或。
+
+195
+00:07:43,406 --> 00:07:48,073
+and some XOR. All you can do is
+just compute the S box, so now your
+
+196
+00:07:43,406 --> 00:07:48,073
+所有你可以做的计算只需要计算S-盒，
+
+197
+00:07:48,073 --> 00:07:53,002
+implementation would just have 256 bytes.
+Hard coded The rest would just be code
+
+198
+00:07:48,073 --> 00:07:53,002
+现在你的应用只有256个字节。硬性编码剩下的部分，
+
+199
+00:07:53,002 --> 00:07:57,124
+that's actually computing these three
+functions. The performance would be slower
+
+200
+00:07:53,002 --> 00:07:57,124
+其实是用来运算这三个函数，最后的结果肯定比
+
+201
+00:07:57,124 --> 00:08:01,091
+than in the previous step but the code
+footprint would also be smaller. So in
+
+202
+00:07:57,124 --> 00:08:01,091
+先前的要慢得多，即便是代码可能更少
+
+203
+00:08:01,091 --> 00:08:04,955
+overall, there's this nice tradeoff
+between code size and performance. So on
+
+204
+00:08:01,091 --> 00:08:04,955
+总的来说代码大小和性能之间有一个很好的平衡点
+
+205
+00:08:04,955 --> 00:08:08,870
+high-end machines, on high-end servers,
+where you can afford to have a lot of
+
+206
+00:08:04,955 --> 00:08:08,870
+在高端机器、服务器上，你可以承受大量代码
+
+207
+00:08:08,870 --> 00:08:12,992
+code, you can precompute and store these
+big tables and get the best performance.
+
+208
+00:08:08,870 --> 00:08:12,992
+就可以预先计算，把这些打表存到代码里以获得最好的性能。
+
+209
+00:08:12,992 --> 00:08:17,216
+Whereas on low-end machines like eight
+byte smart cards or think of like an eight
+
+210
+00:08:12,992 --> 00:08:17,216
+然而，一个低档次的机器，例如8比特的智能卡或者一个8比特的手表
+
+211
+00:08:17,216 --> 00:08:21,390
+byte wristwatch, you would actually have a
+relatively small implementation of AES.
+
+212
+00:08:17,216 --> 00:08:21,390
+如果你有一个相当小的AES
+
+213
+00:08:21,390 --> 00:08:25,910
+But as a result of course it won't be so
+fast. So here's an example that's a little
+
+214
+00:08:21,390 --> 00:08:25,910
+结果就是它肯定不会很快。这有一个不常用的例子
+
+215
+00:08:25,910 --> 00:08:30,266
+unusual, suppose you wanted to implement
+AES in Javascript so you can send an AES
+
+216
+00:08:25,910 --> 00:08:30,266
+假设你想用Javascript来实现AES，你可以发送一个AES文档给浏览器浏览器就可以自己用AES
+
+217
+00:08:30,266 --> 00:08:34,351
+library to the browser and have the
+browser actually do AES by itself. So in
+
+218
+00:08:30,266 --> 00:08:34,351
+浏览器就可以自己用AES
+
+219
+00:08:34,351 --> 00:08:38,871
+this case what you'd like to, to is you'd
+like to both shrink the code size, so that
+
+220
+00:08:34,351 --> 00:08:38,871
+所以，在那种情况下，你可能会缩小代码尺寸，
+
+221
+00:08:38,871 --> 00:08:43,445
+on the network there's minimum traffic to
+send a library over to the browser but, at
+
+222
+00:08:38,871 --> 00:08:43,445
+好让网络有一个最小的传输，在发送文档给浏览器的时候。
+
+223
+00:08:43,445 --> 00:08:47,751
+the same time, you'd like the browser
+performance to be as fast as possible. And
+
+224
+00:08:43,445 --> 00:08:47,751
+但是同时，你想让浏览器效率尽可能的快，
+
+225
+00:08:47,751 --> 00:08:52,347
+so this is something that we did a while
+ago essentially the idea is that the code
+
+226
+00:08:47,751 --> 00:08:52,347
+所以有个办法我们以前就做过，就是
+
+227
+00:08:52,347 --> 00:08:56,888
+that actually gets send to the browser
+doesn't have any pre compute table and as
+
+228
+00:08:52,347 --> 00:08:56,888
+代码发送给浏览器时不做任何预计算的表，
+
+229
+00:08:56,888 --> 00:09:01,263
+a result is fairly small code. But then
+the minute it lands on the browser, what
+
+230
+00:08:56,888 --> 00:09:01,263
+结果就是一个非常小的代码，但当它到达浏览器时
+
+231
+00:09:01,263 --> 00:09:05,471
+the browser will do is actually pre
+compute all the tables. So in some sense
+
+232
+00:09:01,263 --> 00:09:05,471
+浏览器将要做的是预计算这些表。
+
+233
+00:09:05,471 --> 00:09:09,651
+the code goes from just being small and
+compact. It gets bloated with all these
+
+234
+00:09:05,471 --> 00:09:09,651
+所以，某种意义上说，代码将会小而简洁。
+
+235
+00:09:09,651 --> 00:09:13,626
+precomputed tables. But those are stored
+on the laptop, which presumably has a lot
+
+236
+00:09:09,651 --> 00:09:13,626
+但在遇到预计算表时就会膨胀。这些都是储存在笔记本上的，
+
+237
+00:09:13,626 --> 00:09:17,404
+of memory. And then once you have the
+precomputed tables you actually encrypt
+
+238
+00:09:13,626 --> 00:09:17,404
+并且有大量的内存。然后一旦你拥有了预计算表，你就可以用他们来加密了
+
+239
+00:09:17,404 --> 00:09:21,232
+using them. And that's how you get the
+best performance. Okay? So if you have to
+
+240
+00:09:17,404 --> 00:09:21,232
+就是这样，你就可以拥有了最好的性能。
+
+241
+00:09:21,232 --> 00:09:24,913
+stand in implementation AES over the
+network, you can kind of get the best of
+
+242
+00:09:21,232 --> 00:09:24,913
+所以，如果你使用网络来实现AES，你可能就是世界上最快的。
+
+243
+00:09:24,913 --> 00:09:28,740
+all worlds. Whereas, the code over the
+network is small, but when it reaches the
+
+244
+00:09:24,913 --> 00:09:28,740
+无论怎样，代码通过网络时候是很小的，不过当它到达目标客户端时，
+
+245
+00:09:28,740 --> 00:09:32,985
+target client, it can kind of inflate
+itself. And then get the best performance
+
+246
+00:09:28,740 --> 00:09:32,985
+它可以让它自己膨胀起来，并且在客户端处理加密的时候
+
+247
+00:09:32,985 --> 00:09:37,832
+as it's doing encryption on the clients.
+Now AES is such a popular block cipher,
+
+248
+00:09:32,985 --> 00:09:37,832
+变得高效。现在AES是一套非常流行的分组密码，
+
+249
+00:09:37,832 --> 00:09:42,986
+now essentially when you build crypto into
+products essentially your supposed to be
+
+250
+00:09:37,832 --> 00:09:42,986
+现在，当你需要对产品加密时，你很有可能想到使用AES，
+
+251
+00:09:42,986 --> 00:09:48,078
+using AES, and as a result Intel actually
+put AES support into the processor itself.
+
+252
+00:09:42,986 --> 00:09:48,078
+并且Intel可以让处理器支持AES。
+
+253
+00:09:48,078 --> 00:09:52,679
+So since Westmere there are special
+instructions in the Intel processor to
+
+254
+00:09:48,078 --> 00:09:52,679
+Westmere,自从这款特殊指令的Intel处理器问世，加快了AES的速度。
+
+255
+00:09:52,679 --> 00:09:57,771
+help accelerate AES. And so I listed these
+instructions here. They come in two pairs,
+
+256
+00:09:52,679 --> 00:09:57,771
+并且我在这里列出这些产品。他们有两部分，aesenc和aesenclast,
+
+257
+00:09:57,771 --> 00:10:02,955
+aesenc and aesenclast. And then, there's aesekygenassist. So, let me explain
+
+258
+00:09:57,771 --> 00:10:02,955
+以及aesekygenassist.那么，让我来解释下他们是做什么的。
+
+259
+00:10:02,955 --> 00:10:07,992
+what they do. So, aesenc essentially
+implements one round of AES. Namely, apply
+
+260
+00:10:02,955 --> 00:10:07,992
+aesenc实质上执行了一轮AES加密
+
+261
+00:10:07,992 --> 00:10:13,005
+the three functions in the XOR with the
+round key. And aesenclast basically
+
+262
+00:10:07,992 --> 00:10:13,005
+也就是那三个函数和轮密钥异或的那部分。
+
+263
+00:10:13,005 --> 00:10:17,480
+implements the last round of AES.
+Remember, the last round didn't have the
+
+264
+00:10:13,005 --> 00:10:17,480
+aesenclast实际上执行了AES的最后一轮。记住，最后一轮中
+
+265
+00:10:17,480 --> 00:10:22,262
+mix columns phase. It only had the subs
+bytes and shift rows. And so that's why
+
+266
+00:10:17,480 --> 00:10:22,262
+是没有列混合的，只有字节代换和行移位。
+
+267
+00:10:22,262 --> 00:10:27,167
+the aesenclast does. And the way you
+call these instructions is using 128 byte
+
+268
+00:10:22,262 --> 00:10:27,167
+这就是为什么aesenclast这么做。并且
+
+269
+00:10:27,167 --> 00:10:32,255
+registers which correspond to the states
+of AES. And so you would have one register
+
+270
+00:10:27,167 --> 00:10:32,255
+你使用128字节的寄存器正好和AES的状态一致。
+
+271
+00:10:32,255 --> 00:10:37,241
+containing the states and one register
+containing the current round key. And then
+
+272
+00:10:32,255 --> 00:10:37,241
+所以，你会用一个寄存器来存放状态，用一个寄存器来存放轮密钥。
+
+273
+00:10:37,241 --> 00:10:42,383
+when you call AES on these two registers,
+basically, they would run one round of AES
+
+274
+00:10:37,241 --> 00:10:42,383
+然后，当你访问这两个寄存器上的AES时，它们将运行AES的一轮
+
+275
+00:10:42,383 --> 00:10:47,589
+and place the result inside of this XMM
+one state register. And as a result if you
+
+276
+00:10:42,383 --> 00:10:47,589
+并且把结果放在一个XMM的寄存器中。并且
+
+277
+00:10:47,589 --> 00:10:52,731
+wanted to implement the whole AES. All you
+would do is, call aesenc nine times. Then
+
+278
+00:10:47,589 --> 00:10:52,731
+如果你想要实现整个AES，你要做的就是调用aesenc 9次。
+
+279
+00:10:52,731 --> 00:10:58,064
+you would call aesenclast one time. These
+ten instructions are basically the entire
+
+280
+00:10:52,731 --> 00:10:58,064
+然后你再调用aesenclast一次。这10个指令，基本上就是整个的AES应用
+
+281
+00:10:58,064 --> 00:11:03,029
+implementation of AES. That's it. It's that
+easy to implement AES on this hardware
+
+282
+00:10:58,064 --> 00:11:03,029
+这就是为什么AES在硬件上很容易实现的原因，
+
+283
+00:11:03,029 --> 00:11:07,164
+and they claim because these operations
+are now done inside the processor not
+
+284
+00:11:03,029 --> 00:11:07,164
+并且声称这些运算都只在处理器内部完成
+
+285
+00:11:07,164 --> 00:11:11,246
+using external instructions that are
+implemented in the processor. They claim
+
+286
+00:11:07,164 --> 00:11:11,246
+并不使用外部指令。还声称
+
+287
+00:11:11,246 --> 00:11:15,540
+that they can get a fourteen X speedup
+over say an implementation that's running
+
+288
+00:11:11,246 --> 00:11:15,540
+它们可以得到一个14倍的X加速，说在以
+
+289
+00:11:15,540 --> 00:11:19,888
+in the same hardware but implementing AES without these special instructions. So
+
+290
+00:11:15,540 --> 00:11:19,888
+同样硬件运行的AES应用没有特殊的指令。
+
+291
+00:11:19,888 --> 00:11:24,182
+this is quite a significant speed up and
+the facts are now lots of Products that
+
+292
+00:11:19,888 --> 00:11:24,182
+所以，这是一个标志性的加速，并且现在已经有由特殊指令
+
+293
+00:11:24,182 --> 00:11:28,160
+make use of these special instructions.
+And let's just say that this is not
+
+294
+00:11:24,182 --> 00:11:28,160
+构成的产品大量应用了。然后，让我们来说下，这并不是Intel的一个特例。
+
+295
+00:11:28,160 --> 00:11:31,819
+specific to Intel, if you're in
+AMD and they also implemented.
+
+296
+00:11:28,160 --> 00:11:31,819
+假如你使用的是AMD,那么在他们的bulldozer结构里也用相似
+
+297
+00:11:31,819 --> 00:11:36,009
+exactly kinda similar instructions in
+their bulldozer architecture and further
+
+298
+00:11:31,819 --> 00:11:36,009
+的指令来实现，在他们的产品或未来的产品中。
+
+299
+00:11:36,009 --> 00:11:40,146
+and future architectures. Okay, so let's
+talk about the security of AES. I wanna
+
+300
+00:11:36,009 --> 00:11:40,146
+好吧，下面让我们来讨论下AES的安全性。
+
+301
+00:11:40,146 --> 00:11:44,442
+mention just two attacks here. Obviously,
+AES has been studied quite a bit. But the
+
+302
+00:11:40,146 --> 00:11:44,442
+这里我想说两种攻击。显而易见，AES被研究很多了。
+
+303
+00:11:44,442 --> 00:11:48,579
+only two attacks on the full AES are the
+following two. So, first of all, if you
+
+304
+00:11:44,442 --> 00:11:48,579
+不过只有两个攻击在全部AES上。就是接下来要讲的
+
+305
+00:11:48,579 --> 00:11:52,504
+wanted to do key recovery, the best
+attack, basically, is only four times
+
+306
+00:11:48,579 --> 00:11:52,504
+首先，假如你想要做密钥恢复，最好的攻击，只有
+
+307
+00:11:52,504 --> 00:11:56,923
+faster than exhaustive search. Which mean
+that instead of a hundred and. 28 bits
+
+308
+00:11:52,504 --> 00:11:56,923
+穷举搜索的4倍快。这就意味着
+
+309
+00:11:56,923 --> 00:12:02,665
+key, really you should be thinking of AES.
+Is 126 bit key. Cause exhaustive search,
+
+310
+00:11:56,923 --> 00:12:02,665
+相当于你只用考虑126比特的AES密钥而不是128比特的。
+
+311
+00:12:02,665 --> 00:12:07,641
+really it's gonna four times faster than
+it should. Of course due to the 126, it's
+
+312
+00:12:02,665 --> 00:12:07,641
+事实上，它确实是穷举搜索的4倍快，当然由于是126比特
+
+313
+00:12:07,641 --> 00:12:12,546
+still. More time than we have to compute,
+and this really does not hurt the security
+
+314
+00:12:07,641 --> 00:12:12,546
+依然超过了我们的计算范围，并且这没有破坏AES的安全性。
+
+315
+00:12:12,546 --> 00:12:17,490
+alias. The more significant attack is,
+actually, on AES-256. It turns out there's a
+
+316
+00:12:12,546 --> 00:12:17,490
+更有影响力的破解办法是，AES-256.
+
+317
+00:12:17,490 --> 00:12:22,662
+weakness in the key expansion design of
+aes which allows for, what's called a
+
+318
+00:12:17,490 --> 00:12:22,662
+他利用了扩展密钥的一个弱点
+
+319
+00:12:22,662 --> 00:12:27,641
+related key attack. So, what's a related
+key attack? Essentially, if you give me
+
+320
+00:12:22,662 --> 00:12:27,641
+叫做相关密钥攻击。什么是相关密钥攻击？
+
+321
+00:12:27,641 --> 00:12:32,684
+about two to the 100 input output pairs
+for aes, but from four related keys. So,
+
+322
+00:12:27,641 --> 00:12:32,684
+假如你给我2的100次方个AES输入输出对，而且来自4个相关密钥，
+
+323
+00:12:32,684 --> 00:12:37,680
+these are keys that are very closely
+related, namely key number one. Is just
+
+324
+00:12:32,684 --> 00:12:37,680
+这些密钥关系比较紧密，换句话说，K1只经过
+
+325
+00:12:37,680 --> 00:12:42,272
+one bit flip of key #two, which is just
+one flip, bit flip of key #three, which is
+
+326
+00:12:37,680 --> 00:12:42,272
+一个比特的反转成为K2，K2也只经过一次反转就成为K3，
+
+327
+00:12:42,272 --> 00:12:47,157
+just one flip bit flip of key #four. These
+are very closely related keys, if you like
+
+328
+00:12:42,272 --> 00:12:47,157
+再反转成为K4.这些密钥关系非常紧密，
+
+329
+00:12:47,157 --> 00:12:51,925
+your [inaudible] distances very short. But
+if you do that, then, in fact, there is a
+
+330
+00:12:47,157 --> 00:12:51,925
+如果你想要你的密钥间距离很短的话。但是如果你那样做的话。
+
+331
+00:12:51,925 --> 00:12:56,752
+two to the 100 attack. Now you should say,
+well, two to the 100 is still impractical.
+
+332
+00:12:51,925 --> 00:12:56,752
+事实上，有2的100次方次攻击。你可能会说2的100次方是不切实际的。
+
+333
+00:12:56,752 --> 00:13:01,117
+This is still more time than we can
+actually run today. But nevertheless, the
+
+334
+00:12:56,752 --> 00:13:01,117
+然而这仍超出我们现在的计算能力。
+
+335
+00:13:01,117 --> 00:13:05,198
+fact that it's so much better than an
+exhaustive search attack, it's so much
+
+336
+00:13:01,117 --> 00:13:05,198
+然而，它已经比穷举搜索好太多了，它比2的256次方好太多，
+
+337
+00:13:05,198 --> 00:13:09,386
+better than two to the 56, is kind of a
+limitation of the cipher. But generally,
+
+338
+00:13:05,198 --> 00:13:09,386
+这是密码的一个限制。但是一般来说
+
+339
+00:13:09,386 --> 00:13:13,521
+it's not a significant limitation, because
+it requires related keys. And so, in
+
+340
+00:13:09,386 --> 00:13:13,521
+这不是一个很有效的限制，因为它需要相关密钥。
+
+341
+00:13:13,521 --> 00:13:17,924
+practice, of course, you're supposed to be
+choosing your keys at random, so that you
+
+342
+00:13:13,521 --> 00:13:17,924
+所以，实际上，你应该随机选择你的密钥，让你的密钥在系统中
+
+343
+00:13:17,924 --> 00:13:22,166
+have no related keys in your system. And
+as a result, this attack wouldn't apply.
+
+344
+00:13:17,924 --> 00:13:22,166
+没有相关性。结果就会是这个攻击不奏效。
+
+345
+00:13:22,166 --> 00:13:26,200
+But if you do have related keys, then
+there's a problem. So this is the end of
+
+346
+00:13:22,166 --> 00:13:26,200
+但是如果你选择的相关密钥，就会出现问题。
+
+347
+00:13:26,200 --> 00:13:30,130
+the segment, and in the next segment we're
+gonna talk about more provably secure
+
+348
+00:13:26,200 --> 00:13:30,130
+那么，这一小节就要结束了，在下一节中，
+
+349
+00:13:30,130 --> 00:13:31,702
+constructions for block ciphers.
+
+350
+00:13:30,130 --> 00:13:31,702
+我们将要讨论一些在结构上可证明安全的分组密码。
+

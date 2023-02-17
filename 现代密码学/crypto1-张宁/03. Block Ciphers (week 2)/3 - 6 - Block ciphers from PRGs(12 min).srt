@@ -1,0 +1,754 @@
+1
+00:00:00,000 --> 00:00:04,388
+In this segment we ask whether we can
+build block ciphers from simpler
+
+2
+00:00:04,388 --> 00:00:09,456
+primitives like pseudo random generators.
+The answer is yes. So to begin with, let's
+
+3
+00:00:09,456 --> 00:00:14,215
+ask whether we can build pseudo random
+functions as opposed to pseudo random
+
+4
+00:00:14,215 --> 00:00:18,789
+permutations from a pseudo random
+generator. Can we build a PRF from a PRG?
+
+5
+00:00:18,789 --> 00:00:23,873
+Our ultimate goal though is to build a
+block cipher which is a PRP. And we'll get
+
+6
+00:00:23,873 --> 00:00:29,130
+to that at the end. Okay, for now we build
+a PRF. So let's start with a PRG that
+
+7
+00:00:29,130 --> 00:00:34,590
+doubles its inputs so the seeds for the
+PRG is an element in K and the output is
+
+8
+00:00:34,590 --> 00:00:39,420
+actually two elements in K. So here we
+have a schematic of the generator, that
+
+9
+00:00:39,420 --> 00:00:44,296
+basically takes his input of C and K, and
+outputs two elements, in K as its output.
+
+10
+00:00:44,296 --> 00:00:48,992
+And now what does it mean for this purity
+to be secure, recall this means that
+
+11
+00:00:48,992 --> 00:00:52,965
+essentially the output is
+indistinguishable from a random element
+
+12
+00:00:52,965 --> 00:00:58,355
+inside of K squared Now it turns out that
+it's very easy to define basically what's
+
+13
+00:00:58,355 --> 00:01:03,455
+called a one bit PRF from this PRG. So
+what's a one bit PRF is basically a PRF
+
+14
+00:01:03,455 --> 00:01:08,360
+who's domain is only one bit. Okay, so
+it's a PRF that just takes one bit as
+
+15
+00:01:08,360 --> 00:01:13,461
+input. Okay, and the way we'll do it is
+we'll say is if the input bit X is zero
+
+16
+00:01:13,461 --> 00:01:18,627
+I'll put the left output and if the input
+bit X is one then I'll put the right
+
+17
+00:01:18,627 --> 00:01:23,678
+output of the PRF. Okay, in symbols we
+basically have what we wrote here. Now it
+
+18
+00:01:23,678 --> 00:01:28,523
+is straightforward to show, that in fact G
+is a secure PRG, then this one bit PRF is
+
+19
+00:01:28,523 --> 00:01:32,901
+in fact a secure PRF. If you think about
+it for a second, this really is not
+
+20
+00:01:32,901 --> 00:01:37,571
+[inaudible]. Its really just stating the
+same thing twice. So i will leave it for
+
+21
+00:01:37,571 --> 00:01:42,241
+you to think about this briefly and see
+and convince yourself that in fact this
+
+22
+00:01:42,241 --> 00:01:46,853
+theorem is true. The real questions is
+whether we can build a PRF, that actually
+
+23
+00:01:46,853 --> 00:01:51,756
+has a domain that is bigger than one bit.
+Ideally we would like the domain to be 128
+
+24
+00:01:51,756 --> 00:01:56,425
+bits, just say as a [inaudible] has. So
+the question is can we build 128 bit PRS
+
+25
+00:01:56,425 --> 00:02:01,197
+from a pseudo random generator. Well so
+let's see if we can make progress. So the
+
+26
+00:02:01,197 --> 00:02:05,970
+first thing we're gonna do is we're gonna
+say, well again, let's start with a PRG
+
+27
+00:02:05,970 --> 00:02:10,863
+that doubles its input let's see if we can
+build a PRG that quadruples its inputs.
+
+28
+00:02:10,863 --> 00:02:15,797
+Okay? So it goes from K to K to the fourth
+instead of K to K squared. Okay, so let's
+
+29
+00:02:15,797 --> 00:02:20,809
+see how to do this. So here we start with
+our original PRG that just doubles its
+
+30
+00:02:20,809 --> 00:02:25,884
+inputs, now remember that the fact that
+his is a PRG means that the output of the
+
+31
+00:02:25,884 --> 00:02:30,771
+PRG is indistinguishable from two random
+values in K. Well, if the output looks
+
+32
+00:02:30,771 --> 00:02:35,847
+like two random values in K, we can simply
+apply the generator again to those two
+
+33
+00:02:35,847 --> 00:02:40,358
+outputs. So let's say we apply the
+generator once to the left output, and
+
+34
+00:02:40,358 --> 00:02:45,342
+once to the rights outputs. And we are
+going to call the output of that, this
+
+35
+00:02:45,342 --> 00:02:50,448
+quadruple of elements, we are, are going
+to call that G1K. And i wrote down in
+
+36
+00:02:50,448 --> 00:02:55,554
+symbols what this generator does, but you
+can see basically from this figure,
+
+37
+00:02:55,554 --> 00:03:00,862
+exactly how the generator works. So now
+that we have a generator from K to K to
+
+38
+00:03:00,862 --> 00:03:06,170
+the fourth, We actually get a two bit PRF.
+Namely, what we will do is, we will say,
+
+39
+00:03:06,170 --> 00:03:11,410
+given two bits, 000110 or eleven, wills
+imply output the appropriate block that
+
+40
+00:03:11,410 --> 00:03:16,070
+the output of G1K. Okay, so now we can
+basically have a PRF that takes four
+
+41
+00:03:16,070 --> 00:03:21,061
+possible inputs as opposed to just two
+possible inputs as before. So the question
+
+42
+00:03:21,061 --> 00:03:26,113
+you should be asking me is why is this G1
+case secure? Why is it a secure PRG? That
+
+43
+00:03:26,113 --> 00:03:30,611
+is why is this quadruple of outputs
+indistinguishable from random. And so
+
+44
+00:03:30,611 --> 00:03:35,664
+let's do a quick proof of this, we'll just
+do a simple proof by pictures. So here's
+
+45
+00:03:35,664 --> 00:03:40,408
+our generator that we want to prove is
+secure. And what that means is that we
+
+46
+00:03:40,408 --> 00:03:45,399
+want to argue that this distribution is
+indistinguishable from a random fordable
+
+47
+00:03:45,399 --> 00:03:49,292
+in K to the fourth. Okay so our goal is to
+prove that these two are
+
+48
+00:03:49,292 --> 00:03:53,887
+indistinguishable. Well let's do it one
+step at a time. We know that the generator
+
+49
+00:03:53,887 --> 00:03:58,028
+is a secure generator, therefore in fact
+the output of the first level is
+
+50
+00:03:58,028 --> 00:04:02,453
+indistinguishable from random. In other
+words, if we replace the first level by
+
+51
+00:04:02,453 --> 00:04:06,991
+truly random strings these two are truly
+random picked in the key space, then no
+
+52
+00:04:10,267 --> 00:04:11,359
+efficient adversary should be able to
+distinguish these two distributions. In
+
+53
+00:04:11,359 --> 00:04:15,954
+fact, if you could distinguish these two
+distributions, it's easy to show that you
+
+54
+00:04:15,954 --> 00:04:20,768
+would break the original PRG. Okay, but
+essentially you see that the reason we can
+
+55
+00:04:20,768 --> 00:04:25,581
+do this replacement, we can replace the
+output of G, with truly random values, is
+
+56
+00:04:25,581 --> 00:04:30,578
+exactly because of the definition of the
+PRG, which says the out put of the PRG is
+
+57
+00:04:30,578 --> 00:04:35,391
+indistinguishable from random, so we might
+as well just put random there, and no
+
+58
+00:04:35,391 --> 00:04:40,265
+efficient adversary can distinguish the
+resulting two distributions. Okay, so far
+
+59
+00:04:40,265 --> 00:04:45,018
+so good, but now we can do the same thing
+again to the left hand side. In other
+
+60
+00:04:45,018 --> 00:04:49,710
+words, we can replace these two pseudo
+random outputs, by truly random outputs.
+
+61
+00:04:49,710 --> 00:04:53,925
+And again because the generator G is
+secure, no efficient adversary can tell
+
+62
+00:04:54,091 --> 00:04:57,807
+the difference between these two
+distributions. But differently, if an
+
+63
+00:04:57,807 --> 00:05:02,077
+adversary can distinguish these two
+distributions, then we would also give an
+
+64
+00:05:02,077 --> 00:05:06,707
+attack on the generator G. And now finally
+we're gonna do this one last time. We're
+
+65
+00:05:06,707 --> 00:05:11,280
+gonna replace this pseudo random pair By a
+truly random pair, and low and behold we
+
+66
+00:05:11,280 --> 00:05:15,672
+get the actual distribution that we were
+shooting for, we would get a distribution
+
+67
+00:05:15,672 --> 00:05:19,851
+that is really made of four independent
+blocks. And so now we have proved this
+
+68
+00:05:19,851 --> 00:05:23,279
+transition basically that these two
+indistinguishable, these two
+
+69
+00:05:23,279 --> 00:05:27,243
+indistinguishable, and these two
+indistinguishable, and therefore these two
+
+70
+00:05:27,243 --> 00:05:31,475
+are indistinguishable, which is what we
+wanted to prove. Okay so this is kind of
+
+71
+00:05:31,475 --> 00:05:35,760
+the high level idea for the proof, it is
+not too difficult to make this rigorous,
+
+72
+00:05:35,760 --> 00:05:39,792
+but i just wanted to show you kinda
+intuition for how the proof works. Well,
+
+73
+00:05:39,792 --> 00:05:44,363
+if we were able to extend the generators
+outputs once, there's nothing preventing
+
+74
+00:05:44,363 --> 00:05:48,822
+us from doing it again so here is a
+generator G1 that outputs four elements in
+
+75
+00:05:48,822 --> 00:05:53,337
+the key space. And remember the output
+here is indistinguishable from our random
+
+76
+00:05:53,337 --> 00:05:57,909
+four couple, that's what we just proved.
+And so there's nothing preventing us from
+
+77
+00:05:57,909 --> 00:06:02,480
+applying the generator again. So we'll
+take the generator apply it to this random
+
+78
+00:06:02,480 --> 00:06:07,221
+looking thing and we should be able to get
+this random looking thing. This pair over
+
+79
+00:06:07,221 --> 00:06:11,511
+here that's random looking. And we can do
+the same thing again, and again, and
+
+80
+00:06:11,511 --> 00:06:16,405
+again. And now basically we've built a new
+generator that outputs elements in K to
+
+81
+00:06:16,405 --> 00:06:21,261
+the eighth, as opposed to K to the fourth.
+And again the proof of security is very
+
+82
+00:06:21,261 --> 00:06:26,056
+much the same as the one I just showed you
+essentially you gradually change the
+
+83
+00:06:26,056 --> 00:06:30,612
+outputs into truly random outputs. So we
+would change this to a truly random
+
+84
+00:06:30,612 --> 00:06:35,168
+output, then this, then that, then this,
+then that and so on and so forth. Until
+
+85
+00:06:35,168 --> 00:06:39,724
+finally we get something that's truly
+random and therefore the original two
+
+86
+00:06:39,724 --> 00:06:44,396
+distributions we started with G2K and
+truly random are indistinguishable. Okay,
+
+87
+00:06:44,396 --> 00:06:49,325
+so far so good. So now we have a generator
+that outputs elements in K to the eighth.
+
+88
+00:06:49,325 --> 00:06:54,016
+Now if we do that basically we get a three
+bit PRF. In other words, at zero, zero,
+
+89
+00:06:54,016 --> 00:06:58,884
+zero this PRF would output this block, and
+so on and so forth until one, one, one it
+
+90
+00:06:58,884 --> 00:07:03,163
+would output this block. Now the
+interesting thing is that in fact this PRF
+
+91
+00:07:03,163 --> 00:07:07,695
+is easy to compute. For example, suppose
+we wanted to compute the PRF at the point
+
+92
+00:07:07,695 --> 00:07:11,948
+one zero one. Okay, it's a three bit PRF.
+Okay so one zero one. How would we do
+
+93
+00:07:11,948 --> 00:07:16,536
+that? Well basically we would start from
+the original key K. And now we would apply
+
+94
+00:07:16,536 --> 00:07:20,620
+the generator G but we would only pay
+attention to the right output of G,
+
+95
+00:07:20,620 --> 00:07:25,040
+because the first bit is one. And then we
+will apply the generator again, but we
+
+96
+00:07:25,040 --> 00:07:29,516
+would only pay attention to the left of
+the output of the generator because the
+
+97
+00:07:29,516 --> 00:07:33,864
+second bit is zero. And then we would
+apply the generator again and only pay
+
+98
+00:07:33,864 --> 00:07:38,588
+attention to the right outputs because the
+third bit is one and that would be the
+
+99
+00:07:38,588 --> 00:07:43,140
+final output. Right, so you can see that,
+that lead us to 101, and in fact because
+
+100
+00:07:43,140 --> 00:07:47,461
+the [inaudible] generator is pseudo
+random, we know that, in particular that,
+
+101
+00:07:47,461 --> 00:07:52,796
+this output here is pseudo random. Okay,
+so this gives us a three bit PRF. Well, if
+
+102
+00:07:52,796 --> 00:07:58,632
+it worked three times, there's no reason
+why it can't work N times. And so if we
+
+103
+00:07:58,632 --> 00:08:03,501
+apply this transformation again and again,
+we arrive at what's called a GGMPRF. Ggm
+
+104
+00:08:03,501 --> 00:08:07,956
+stands for Goldreich, Goldwasser and
+Micali these are the inventors of
+
+105
+00:08:07,956 --> 00:08:12,528
+this PRF and the way it works is as
+follows. So we start off with a generator
+
+106
+00:08:12,528 --> 00:08:17,279
+just doubles its outputs, and now we're
+able to build a PRF that acts on a large
+
+107
+00:08:17,279 --> 00:08:22,236
+domain mainly a domain of size zero one to
+the N. Or N could be as big as 128 or even
+
+108
+00:08:22,236 --> 00:08:26,897
+more. So let's see, suppose we're given an
+input in 01 to the N, let me show you how
+
+109
+00:08:26,897 --> 00:08:31,274
+to evaluate the PRF. Well by now you
+should actually have a good idea for how
+
+110
+00:08:31,274 --> 00:08:35,480
+to do it. Essentially we start from the
+original key and then we apply the
+
+111
+00:08:35,480 --> 00:08:40,255
+generator and we take either the left or
+the right side depending on the bit X0 and
+
+112
+00:08:40,255 --> 00:08:44,746
+then we arrive at the next key, K1. And
+then we apply the generator again and we
+
+113
+00:08:44,746 --> 00:08:49,444
+take the left or the right side depending
+on X1 and we arrive at the next key. And
+
+114
+00:08:49,444 --> 00:08:54,730
+then we do this again and again, until
+finally we are arrive at the output. So we
+
+115
+00:08:54,730 --> 00:08:59,818
+have processed all end bits, and we arrive
+at the output of this function. And
+
+116
+00:08:59,818 --> 00:09:05,170
+basically we can prove security again
+pretty much along the same lines as we did
+
+117
+00:09:05,170 --> 00:09:10,324
+before, and we can show that if G is a
+secure PRG, then in fact we get a secure
+
+118
+00:09:10,324 --> 00:09:14,917
+PRF, on 01 to the N, on a very large
+domain. So that's fantastic. Now we have
+
+119
+00:09:14,917 --> 00:09:19,064
+we have essential, we have a PRF that's
+provably secure, assuming that the
+
+120
+00:09:19,064 --> 00:09:23,495
+underlying generator is secure, and the
+generator is supposedly much easier to
+
+121
+00:09:23,495 --> 00:09:28,153
+build than an actual PRF. And in fact it
+works on blocks that can be very large, in
+
+122
+00:09:28,153 --> 00:09:33,296
+particular, 01 to the 128th, which is what
+we needed. So you might ask well why isn't
+
+123
+00:09:33,296 --> 00:09:39,122
+this thing being used in practice? And the
+reason is, that it's actually fairly slow.
+
+124
+00:09:39,122 --> 00:09:44,597
+So imagine we plug in as a generator we
+plug in the salsa generator. So now to
+
+125
+00:09:44,597 --> 00:09:50,142
+evaluate this PRF at a 128 bit inputs, we
+would basically have to run the salsa
+
+126
+00:09:50,142 --> 00:09:55,617
+generator 128 times. One time per bit of
+the input. But then we would get a PRF
+
+127
+00:09:55,617 --> 00:10:01,513
+that's 128 times slower than the original
+salsa. And that's much, much, much slower
+
+128
+00:10:01,513 --> 00:10:06,227
+than AES. Aes is a heuristic PRF. But
+nevertheless it's much faster then what we
+
+129
+00:10:06,227 --> 00:10:10,585
+just got here. And so even though this is
+a very elegant construction, it's not used
+
+130
+00:10:10,585 --> 00:10:14,522
+in practice to build pseudo random
+functions although in a week we will be
+
+131
+00:10:14,522 --> 00:10:18,915
+using this type of construction to build a
+message integrity mechanism. So the last
+
+132
+00:10:18,915 --> 00:10:23,183
+step, is basically now that we've built a
+PRF, the questions is whether we can
+
+133
+00:10:23,183 --> 00:10:27,729
+actually build the block cypher. In other
+words, can we actually build a secure PRP
+
+134
+00:10:27,729 --> 00:10:32,054
+from a secure PRG. Everything we've done
+so far is not reversible. Again if you
+
+135
+00:10:32,054 --> 00:10:36,600
+look at this construction here, we can't
+decrypt basically given the final outputs.
+
+136
+00:10:36,600 --> 00:10:40,535
+It is not possible to go back or at least
+we don't know how to go back the, the
+
+137
+00:10:40,535 --> 00:10:44,520
+original inputs. So now the question of
+interest is so can we actually solve the
+
+138
+00:10:44,520 --> 00:10:48,654
+problem we wanted solve initially? Mainly,
+can we actually build a block cipher from
+
+139
+00:10:48,654 --> 00:10:53,540
+a secure PRG? So ill let you think about
+this for a second, and mark the answer. So
+
+140
+00:10:53,540 --> 00:10:57,718
+of course I hope everyone said the answer
+is yes and you already have all the
+
+141
+00:10:57,718 --> 00:11:01,896
+ingredients to do it. In particular, you
+already know how to build a PRF from a
+
+142
+00:11:01,896 --> 00:11:06,395
+pseudo random generator. And we said that
+once we have a PRF we can plug it into the
+
+143
+00:11:06,395 --> 00:11:10,573
+Luby-Rackoff construction, which if you
+remember, is just a three-round feistel.
+
+144
+00:11:10,573 --> 00:11:14,750
+So we said that if you plug a secure PRF
+into a three-round feistel, you get a
+
+145
+00:11:14,750 --> 00:11:19,044
+secure PRP. So combining these two
+together, basically gives us a secure PRP
+
+146
+00:11:19,044 --> 00:11:23,328
+from a pseudo random generator. And this
+is provably secure as long as the
+
+147
+00:11:23,328 --> 00:11:28,075
+underlying generator is secure. So it's a
+beautiful result but unfortunately again
+
+148
+00:11:28,075 --> 00:11:32,475
+it's not used in practice because it's
+considerably slower than heuristics
+
+149
+00:11:32,475 --> 00:11:36,725
+constructions like AES. Okay so
+this completes our module on constructing
+
+150
+00:11:36,725 --> 00:11:40,456
+pseudo random permutations, and pseudo
+random functions. And then in the next
+
+151
+00:11:40,456 --> 00:11:44,287
+module we're gonna talk about how to use
+these things to do proper encryption.

@@ -1,0 +1,448 @@
+Before we start with the technical
+material, I want to tell you a little bit
+about the history of cryptography. There's
+a beautiful book on this topic by David
+Kahn called the codebreakers. It covers
+the history of cryptography all the way
+from the Babylonian era, to the
+present. Here, I'm just going to give you
+a few examples of historical ciphers, all
+of which are badly broken. So to talk
+about ciphers the first thing I'm going to
+do is introduce our friends Alice and Bob,
+who are gonna be with us for the rest of
+the quarter. So Alice and Bob are trying
+to communicate securely and there is an
+attacker who's trying to eavesdrop on
+their conversation. So to communicate
+securely, they're going to share a secret
+key, which I'll denote by K. They both know
+the secret key. But the attacker does not
+know anything about this key K.
+So now they're gonna use a cipher, which
+is a pair of algorithms, an
+encryption algorithm denoted by E, and a
+decryption algorithm, D. These algorithms
+work as follows: the encryption algorithm
+E takes the message M as inputs. And it
+takes as inputs, the key K. I'm gonna
+put a wedge above the key input just
+to denote the fact that this input is
+really the key input. And then it outputs
+a ciphertext. Which is the encryption of
+the message M using the key K. I'm always
+gonna write the key first. Now, and when I
+write: = what I mean is that the
+expression defines what C what the
+variable C stands for. Now the ciphertext
+is transmitted over the internet to Bob,
+somehow. Actually it could be transmitted
+over the internet. Could be transmitted
+using an encrypted file system, it doesn't
+really matter, but when the ciphertext
+reaches Bob, he can plug it into the
+decryption algorithm and give the
+decryption algorithm the same key K.
+Again, I'm gonna put a wedge here as well. To
+denote the key inputs and the decryption
+algorithm outputs the original plaintext
+message. Now the reason we say that these
+are symmetric ciphers is that both the
+encrypter and decrypter actually use the
+same key K. As we'll see later
+in the course, there are ciphers where the
+encrypter uses one key and the decrypter
+uses a different key. But here we're just
+going to focus on symmetric cipher where
+both sides use the same key. Okay, so let
+me give you a few historic examples of
+ciphers. The first example, the simplest
+one is called the substitution cipher. I
+am sure all of you played the substitution
+ciphers when you were in kindergarten.
+Basically a key for a substitution cipher
+is a substitution table that basically
+says how to map our letters. So here for
+example the letter A would be mapped to C,
+the letter B would be mapped to W the
+letter C would be mapped to N so on and so
+forth and then the letter Z would be
+mapped, say, to A. So this is one example
+of a key for a substitution cipher. So just
+to practice the notation we introduced
+before, the encryption of a certain
+message using this key, let's say the
+message is BCZA, the encryption of this
+message using this key here would be, is
+done by substituting one letter at a time.
+So B becomes W, C becomes N, Z becomes A,
+and A becomes C. So the encryption of BCZA
+is WNAC, and this defines the ciphertext.
+Similarly we can decrypt the ciphertext using the same key and of course
+we'll get back the original message.
+Okay. So, just for historical
+reasons, there is one example of something
+that's related to the substitution cipher
+called the Caesar cipher. The Caesar
+cipher, actually, is not really a cipher
+at all. And the reason is that it doesn't
+have a key. What a Caesar cipher is, is
+basically a substitution cipher where the
+substitution is fixed. Namely, it's a
+shift by three. So A becomes D, B becomes
+E, C becomes F and so on and so forth.
+What is it, Y becomes B and Z becomes C.
+It's a fixed substitution that's applied
+to all plaintext messages. So, again,
+this is not a cipher, because there is no
+key, the key is fixed. So if an attacker
+knows how our encryption scheme works, he
+can easily decrypt the message. The key is
+not random, and therefore, decryption is
+very easy once you understand how the
+scheme actually works. Okay, so now, let's
+go back to the substitution cipher, where
+the keys really are chosen at random, the
+substitution tables are chosen at random.
+And let's see how we break this
+substitution cipher. Turns out to be very
+easy to break. The first question is, how
+big is the key space? How many different
+keys are there, assuming we have 26
+letters? So, I hope all of you said that,
+the number of keys is 26 factorial,
+because, a key, a substitution key, is
+simply a table, a permutation of all 26
+letters. The number of permutations of 26
+letters, is 26 factorial. If you calculate
+this out, twenty-sixth factorial is about
+two to the 88th, which means that
+describing a key in a substitution cipher
+takes about 88 bits. So, each key is
+represented by about 88 bits. Now, this is
+a perfectly fine size for a keyspace. In
+fact, we're gonna be seeing ciphers that
+are perfectly secure, or, you know, that
+are adequately secure, with key spaces
+that are roughly of this size. However,
+even though the substitution cipher has a
+large key space of size 2^88, it's
+still terribly insecure. So let's see how
+to break it. And to break it, we're going
+to be using letter frequencies. So the
+first question is, what is the most
+frequent letter in English text? So I
+imagine all of you know that, in fact, E
+is the most common letter. And that is
+gonna, if we make it quantitative, that's
+gonna help us break a substitution cipher.
+So just given the ciphertext, we can
+already recover the plaintext. So the way
+we do that is, first of all, using
+frequencies of English letters. So here's
+how this works. So you give me an
+encrypted message using the substitution
+cipher. All I know is that the plaintext
+is in English and I know that the letter E
+is the most frequent letter in English.
+And in fact, it appears 12.7 percent of
+the time in standard English texts. So
+what I'll do is I'll look at the ciphertext you gave me and I'm going to count
+how many times every letter appears. Now
+the most common letter in the ciphertext
+is going to be the encryption of the
+letter E with very high probability. So
+now I'm able to recover one entry in the
+key table. Mainly the letter, mainly now I
+know what the letter E maps to. The
+next, most common letter in English is the
+letter T, that appears about 9.1 percent
+of the time. So now again, I count how
+many times each letter appears in the
+ciphertext. And the second most frequent
+letter is very likely to be the encryption
+of the letter T. So now I've recovered a
+second entry in the key table. And I can
+continue this way. In fact, the letter A
+is the next most common letter; it appears
+8.1 percent of the time. So now I can
+guess that the third most common letter in
+the ciphertext is the encryption of the
+letter A. And now I've recovered three
+entries in the key table. Well, so now
+what do I do? The remaining letters in
+English appear roughly same amount of
+time, other than some rare letters like Q
+and X. But we're kinda stuck at this
+point. We figured out three entries in
+the key table but what do we do next? So,
+the next idea is to use frequencies of
+pairs of letters. Sometimes these are
+called digrams. So, what I'll do is, I'll
+count how many times each pair of letters
+appears in the cipher text, and, I know
+that in English, the most common pairs of
+letters are things like, HE, AN. IN, I
+guess TH is another common pair of
+letters. And so I know that the most
+common pair of letters in the ciphertext
+is likely to be the encryption of one of
+these four pairs. And so by trial and
+error I can sort of figure out more entry ...
+more elements in the key table and again
+by more trial and error this way by
+looking at trigrams. I can actually figure
+out the entire key table. So the bottom
+line here is that in fact the substitution
+cipher is vulnerable to the worst possible
+type of attack namely a ciphertext only
+attack. Just given the ciphertext the
+attack that can recover the decryption key
+and therefore recover the original plaintext. So there's really no point in
+encrypting anything using the substitution
+cipher, because the attacker can easily
+decrypt it all; you might as well send
+your plaintext completely in the clear.
+So, now we're gonna fast-forward to the
+Renaissance, and, I guess we're moving
+from the Roman Era to the Renaissance, and
+look at a cipher designed by a fellow
+named Vigener, who lived in the
+sixteenth century. He designed a couple
+of ciphers. Here I'm gonna show you a
+variant of one of his ciphers, this is
+called a Vigener cipher. So, in a
+Vigener cipher, the key is a
+word. In this case the word, is CRYPTO,
+it's got six letters in it. And then to
+encrypt a message, what you do is, you
+write the message under the key. So in
+this case the message is "WHAT A NICE DAY
+TODAY" and then you replicate the key as
+many times as needed to cover the message.
+And then the way you encrypt is basically,
+you add the key letters to the message
+letters, modulo 26. So just to give
+you an example here, for example, if you
+add Y and A, you get Z. If you add T and
+A, you get U. And you do this for all the
+letters. And remember, whenever you add,
+you add modulo 26. So if you go past Z,
+you go back to A. So, that's the
+Vigener cipher. And in fact,
+decryption is just as easy as encryption.
+Basically, the way you would decrypt is,
+again, you would write the ciphertext
+under the key. You would replicate the key
+and then you would subtract the key from
+the ciphertext to get the original plain
+text message. So, breaking the Vigener
+cipher is actually quite easy. Let me
+show you how you do it. The first thing we
+need to do is we need to assume that we
+know the length of the key. So let's just
+assume we know that. In this case, the
+length of the key is six. And then what we
+do is we break the cipher text into groups
+of six letters each, okay? So we're gonna
+get a bunch, a bunch of groups like this.
+Each one, contains six letters. And then
+we're gonna look at, the first letter in
+each group. Okay? So, in this case, yes,
+we're looking at the first letter, every
+six characters. Now, what do we know about
+these six letters? We know that, in fact,
+they're all encrypted using the same
+letter in the ciphertext. All of these
+are encrypted using the letter c. In other
+words. Z L W is a shift by three of the
+plaintext letters. So if we collect all
+these letters then the most common letter
+among the set is likely to be the
+encryption of E, right? E is the most
+common letter in English, therefore, if I
+look at every sixth letter, the most
+common letter in that set is likely to be
+the encryption of the letter E. Ahah! So
+let's just suppose that in fact the most
+common letter every sixth letter happens
+to be the letter H. Then we know that E
+plus the first letter of the key is equal
+to H. That says that the first letter of
+the key is equal to H minus E. And in fact
+that is the letter C. So now we've
+recovered the first letter of the key. Now
+we can continue doing this with the second
+letter. So we look at the second letter in
+every group of six characters and again,
+we repeat the same exercise. We find
+the most common letter among the sets and
+we know that the most, this most common
+letter is likely the encryption of E and
+therefore whatever this letter, whatever
+this most common letter is if we
+subtract 'E' from it we're going to get the
+second letter of the key. And so on and so
+forth. With, the third letter every six
+characters. And this way we recover, the
+entire key. And that allows us to
+decrypt, the message. Now, the only caveat
+is that I had to assume ahead of time that
+I know the length of the key, which in
+this case is six. But if I don't know the
+length of the key ahead of time, that's
+not a problem either. What I would do is I
+would run this decryption procedure,
+assuming the key length is one. Then I'd
+run it assuming the key length is two.
+Then I would run it assuming the key
+lengths is three. And so on, and so on,
+and so on, until finally I get a message.
+I get a decryption that makes sense,
+that's sensical. And once I do that I know
+that I've kind of recovered the right
+length of the key and I know that
+I've also recovered the right key and
+therefore the right message. Okay? So
+very, very quickly, you can recover, you
+can decrypt Vigener cyphers. Again,
+this is a ciphertext only attack. The
+interesting thing is, Vigener had a
+good idea here. This addition mod
+26 is actually a good idea, and we'll see
+that later, except it's executed very
+poorly here. And so we'll correct that, a
+little bit later. Okay, we're gonna
+fast-forward now from the Renaissance to, to the nineteenth century where
+everything became electric. And so people
+wanted to design ciphers that use electric
+motors. In particular, these ciphers are
+called rotor machines because they use
+rotors. So an early example is called the
+Hibber machine which uses a single motor.
+Here you have a picture of this machine.
+The, the motor, the, I guess the rotor is
+over here. And the secret key is captured
+by this disc here, it's embedded inside of
+this disc, which rotates by one notch
+every time you press a key on the
+typewriter, okay? So every time you, that
+you hit a key, the disc rotates by one
+notch. Now what does this key do? Well,
+the key actually encodes a substitution
+table. So ... and therefore, the disc actually
+is the secret key. And as I said, this
+disc encodes a substitution table. In this
+case, if you happen to press C as the
+first letter, output would be the letter
+T. And then the disc would rotate by one
+notch. After rotating, rotating by one
+notch, the new substitution table becomes
+the one shown here. You see that E,
+basically, moves up, and then the
+remaining letters move down. So imagine
+this is basically a two dimensional
+rendering of the disc rotating by one
+notch. Then you press the next letter. And
+the disc rotates again. You notice again N
+moved up and the remaining letters moved
+down. So in particular, if we hit the
+letter C three times, the first time we
+would output, the output would be T, the
+second time the output would be S, and the
+third time the output wold be K. So this
+is how the single rotor machine works and
+as it turned out very quickly after it was
+advertised it was again broken basically
+using letter frequency, digram
+frequencies and trigram frequencies. It's
+not that hard given enough ciphertext to
+directly recover the secret key and then
+the message. Again, a ciphertext only
+attack. So to kind of work against these
+frequency attacks, these statistical
+attacks, these rotor machines became more
+and more complicated over time. Until
+finally, I'm sure you've all heard of the
+Enigma. The Enigma is a kind of
+complicated rotor machine. It uses
+three, four, or five rotors. There are
+different versions of the Enigma
+machine. Here you see an example of the
+Enigma machine with three rotors. The
+secret key in the Enigma machine is the
+initial setting of the rotors. Okay. So in
+the case of three rotors there would be 26
+cubed possible different keys. When you
+type on the typewriter basically these
+rotors here rotate at different rates.  Oh,
+forgot to say this is a diagram of an Enigma
+machine using four rotors. As you type on
+the typewriter the rotors rotate and
+output the appropriate, letters of, the
+ciphertext. So in this case the number
+of keys is 26 to the fourth, which is two
+to the eighteen, which is relatively a
+small key space. Today you can kind of,
+brute-force a search using a computer
+through two to the eighteen different
+keys, very, very quickly. You know, my
+wristwatch can do it in just a few
+seconds, I guess. And so, these, this
+Enigma machine was, already was using
+relatively small key spaces. But I'm sure
+you've all heard that the British
+cryptographers at Bletchley Park were
+able to mount ciphertext only attacks on
+the Enigma machine. They were able to
+decrypt German ciphers back in World, in
+World War Two. And that played an
+important role in many different battles
+during the war. After the war, I guess
+that was the end kind of the mechanical
+age and started the digital age where
+folks were using computers. And as the
+world kind of migrated to using computers,
+the government realized that it's buying a
+lot of digital equipment from industry.
+And so they wanted industry to use a good
+cipher so that when it buys equipment from
+the, from industry, it would be getting
+equipment with, with a decent cipher. And
+so the government put out this request for
+proposal for a data encryption standard,
+a Federal data encryption standard. And
+we're gonna talk about this effort, in
+more detail later on in the course, but in
+1974 a group at IBM put together a cipher
+that became known as DES, data encryption
+standard, which became a Federal standard
+for encrypting data. The key space for DES
+is two to the 56, which is relatively
+small these days, but was large enough
+back in 1974. And another interesting
+thing about DES is, rather than, unlike
+rotor machines which encrypt one character
+at a time the data encryption standard
+encrypts 64 bits at a time, namely eight
+characters at a time. And we'll see the
+significance of this later on in the
+course. Because DES uses such
+a small key space, these days it can be
+broken by a brute-force search and so
+these days DES is considered
+insecure and should not be used in
+projects. Unfortunately, it is used in
+some legacy systems, but it definitely is
+on its way out and definitely should not
+be used in new projects. Today there are
+new ciphers, things like the advanced
+encryption standard which uses 128 bit
+keys. Again, we'll talk about the advanced
+encryption standards in much more detail
+later on in the course. There are many,
+many other types of ciphers. I mentioned
+Salsa20 here. We'll see why in just a
+minute. But this is all for the quick
+historical survey and now we can get into
+the more technical material.

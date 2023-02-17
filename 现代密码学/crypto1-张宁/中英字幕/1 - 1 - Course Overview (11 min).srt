@@ -1,0 +1,1164 @@
+1
+00:00:00,000 --> 00:00:03,785
+大家好，我是Dan Boneh ，很高兴大家来听我的密码学课程
+
+2
+00:00:00,000 --> 00:00:03,785
+Hello, my name is Dan Boneh, and I'd like to welcome you to my course on cryptography
+
+3
+00:00:03,785 --> 00:00:07,522
+这个学季我将在斯坦福大学教授这门课程。我尝试
+
+4
+00:00:03,785 --> 00:00:07,522
+that I'll be teaching at Stanford University this quarter. This quarter, I'm experimenting
+
+5
+00:00:07,522 --> 00:00:11,652
+将课程录成下来，以便同学们在网上观看
+
+6
+00:00:07,522 --> 00:00:11,652
+with recording the lectures and having the students watch the lectures online.
+
+7
+00:00:11,652 --> 00:00:15,438
+事实上，欢迎任何人来观看我的视频并加入我们的课程
+
+8
+00:00:11,652 --> 00:00:15,438
+In fact, anyone is welcome to watch the lectures, and join the course.
+
+9
+00:00:15,438 --> 00:00:19,211
+这是一个实验，所以让我们看它进行得如何。
+
+10
+00:00:15,438 --> 00:00:19,211
+This is an experiment, so we'll see how it goes. My goals for this
+
+11
+00:00:19,211 --> 00:00:23,151
+这门课程主要是讲授密码学基本原型是怎样工作的
+
+12
+00:00:19,211 --> 00:00:23,151
+course are basically to teach you how cryptographic primitives work.
+
+13
+00:00:23,151 --> 00:00:27,449
+但更重要的是，我要教你们如何正确的使用密码学原型
+
+14
+00:00:23,151 --> 00:00:27,449
+But more importantly I'd like to teach you how to use cryptographic primitives correctly
+
+15
+00:00:27,449 --> 00:00:30,928
+以及推导构建加密机制的安全性，我们将会看到各种各样
+
+16
+00:00:27,449 --> 00:00:30,928
+and reason about the security of your constructions. We will see various
+
+17
+00:00:30,928 --> 00:00:35,175
+抽象的密码学原型，还会做一些安全性证明
+
+18
+00:00:30,928 --> 00:00:35,175
+abstractions of cryptographic primitives, and we'll do some security proofs.
+
+19
+00:00:35,175 --> 00:00:39,013
+我的目标是在课程结束后，你们能够推导加密机制的安全性
+
+20
+00:00:35,175 --> 00:00:39,013
+My goal is that by the end of the course you'll be able to reason about the security of cryptographic
+
+21
+00:00:39,013 --> 00:00:43,211
+能够破解不安全的加密机制
+
+22
+00:00:39,013 --> 00:00:43,211
+constructions and be able to break ones that are not secure.
+
+23
+00:00:43,211 --> 00:00:47,424
+关于我希望你们怎么上这门课，简单说两句，首先
+
+24
+00:00:43,211 --> 00:00:47,424
+Now I'd like to say a few words on how I would like you to take the class. First of all,
+
+25
+00:00:47,424 --> 00:00:51,688
+我非常推荐你们上课做笔记，所以我真的
+
+26
+00:00:47,424 --> 00:00:51,688
+I'm a big believer in taking notes as you listen to the lectures. So I would really
+
+27
+00:00:51,688 --> 00:00:55,953
+鼓励大家用自己的话总结归纳并记下笔记
+
+28
+00:00:51,688 --> 00:00:55,953
+encourage you to summarize and take notes in your own words of the material that's being presented.
+
+29
+00:00:55,953 --> 00:00:59,909
+提醒一下，录像的讲课速度相对于正常的课程会快很多
+
+30
+00:00:55,953 --> 00:00:59,909
+Also I should mention that on the videos, I'm able to go much faster
+
+31
+00:00:59,909 --> 00:01:03,865
+所以我建议大家
+
+32
+00:00:59,909 --> 00:01:03,865
+than I would go in a normal classroom. And so I would encourage you to
+
+33
+00:01:03,865 --> 00:01:07,924
+periodically pause the video and think about the material that's being covered
+
+34
+00:01:03,865 --> 00:01:07,924
+经常性地暂停视频，思考讲课内容
+
+35
+00:01:07,924 --> 00:01:12,038
+and not move forward until the material is clear in your mind. Also from time to time,
+
+36
+00:01:07,924 --> 00:01:12,038
+直到弄清楚了之后再继续
+
+37
+00:01:12,038 --> 00:01:15,961
+the video will pause and pop-up questions will come up.
+
+38
+00:01:12,038 --> 00:01:15,961
+偶尔视频自动暂停，会有弹出问题
+
+39
+00:01:15,961 --> 00:01:20,347
+These are intended to kinda help you along with the material, and I would really encourage you to answer
+
+40
+00:01:15,961 --> 00:01:20,347
+它们是帮助大家理解讲座内容的
+
+41
+00:01:20,347 --> 00:01:24,682
+those questions by yourselves rather than skip them. Usually the questions
+
+42
+00:01:20,347 --> 00:01:24,682
+我鼓励大家自主回答这些问题而不是跳过他们
+
+43
+00:01:24,682 --> 00:01:28,811
+are about the material that has just been covered, and so it shouldn't be too difficult to answer
+
+44
+00:01:24,682 --> 00:01:28,811
+通常这些问题都是关于刚刚讲过的内容，所以解答这些问题并不难
+
+45
+00:01:28,811 --> 00:01:32,991
+the questions. So I would really encourage you to do them rather than skip them.
+
+46
+00:01:28,811 --> 00:01:32,991
+我真的建议你们去解答它们而不是略过它们
+
+47
+00:01:32,991 --> 00:01:37,016
+Now, by now I'm sure everybody taking the class knows that cryptography is used
+
+48
+00:01:32,991 --> 00:01:37,016
+现在，我确信上这门课的大家都知道密码学在计算机领域无处不在
+
+49
+00:01:37,016 --> 00:01:41,843
+everywhere computers are. It's a very common tool that's used to protect data.
+
+50
+00:01:37,016 --> 00:01:41,843
+它是用来保护数据的常用工具
+
+51
+00:01:41,843 --> 00:01:46,760
+For example, web traffic is protected using a protocol called HTTPS.
+
+52
+00:01:41,843 --> 00:01:46,760
+例如，网站流量是使用HTTPS协议保护的
+
+53
+00:01:46,760 --> 00:01:51,193
+Wireless traffic, for example, Wi-Fi traffic is protected using the, WPA2
+
+54
+00:01:46,760 --> 00:01:51,193
+无线流量，例如WiFi，是使用WPA2保护
+
+55
+00:01:51,193 --> 00:01:55,656
+protocol, that's part of 801.11i. Cell phone traffic is protected
+
+56
+00:01:51,193 --> 00:01:55,656
+WAP是801.11i的一部分，手机流量是使用GSM加密机制保护的
+
+57
+00:01:55,656 --> 00:02:00,177
+using an encryption mechanism in GSM. Bluetooth
+traffic is protected using cryptography,
+
+58
+00:01:55,656 --> 00:02:00,177
+蓝牙流量是使用密码学保护的，等等
+
+59
+00:02:00,177 --> 00:02:04,640
+and so on. We're gonna see how these various systems work. In fact, we're gonna
+
+60
+00:02:00,177 --> 00:02:04,640
+我们将看到各种各样的系统是怎样工作的
+
+61
+00:02:04,640 --> 00:02:09,276
+cover SSL, and in fact, even 802.11i in quite a bit of detail. And you'll see how
+
+62
+00:02:04,640 --> 00:02:09,276
+实际上，我们还将介绍SSL，802.11i的一些细节
+
+63
+00:02:09,276 --> 00:02:13,275
+these system work in practice. Cryptography is also used for protecting files
+
+64
+00:02:09,276 --> 00:02:13,275
+你们将会看到这些系统实际应用上是怎么工作的
+
+65
+00:02:13,275 --> 00:02:17,564
+that are stored on disc by encrypting them. So if the disc is stolen,
+
+66
+00:02:13,275 --> 00:02:17,564
+密码学也可以用来加密保护在硬盘上的文件，如果硬盘被盗
+
+67
+00:02:17,564 --> 00:02:22,444
+the files are not compromised. It's also used for content protection. For example
+
+68
+00:02:17,564 --> 00:02:22,444
+文件也不会被窃取，这也适用于保护内容。例如
+
+69
+00:02:22,444 --> 00:02:27,480
+when you buy DVDs and Blu-Ray disks, the movies on these disks are encrypted, in
+
+70
+00:02:22,444 --> 00:02:27,480
+当你买DVD和或者蓝光碟时，光盘上的电影将被加密
+
+71
+00:02:27,480 --> 00:02:32,516
+particular DVD uses a system called CSS, the Content Scrambling System, CSS, and
+
+72
+00:02:27,480 --> 00:02:32,516
+DVD使用的是CSS加密系统，也叫内容扰乱系统
+
+73
+00:02:32,516 --> 00:02:37,934
+Blu-Ray uses a system called AACS. We'll talk about how CSS and AACS work.
+
+74
+00:02:32,516 --> 00:02:37,934
+蓝光碟使用的是AACS加密系统，我们将介绍CSS和AACS是如何工作的
+
+75
+00:02:37,934 --> 00:02:43,033
+It turns out that CSS is a fairly easy system to break.
+
+76
+00:02:37,934 --> 00:02:43,033
+事实证明CSS是很容易被破解的系统
+
+77
+00:02:43,033 --> 00:02:48,132
+And we'll talk about how, we'll do some cryptanalysis and actually show how to break encryption that's used in CSS.
+
+78
+00:02:43,033 --> 00:02:48,132
+我们将学习如何破解CSS系统，对CSS中使用的密码系统进行分析和破解
+
+79
+00:02:48,132 --> 00:02:52,532
+Cryptography is also used for user authentication and in many, many, many
+
+80
+00:02:48,132 --> 00:02:52,532
+密码学也可以被用来做用户认证
+
+81
+00:02:52,532 --> 00:02:56,832
+other applications that we'll talk about in the next segments.  Now I wanna go back
+
+82
+00:02:52,532 --> 00:02:56,832
+在接下来的我们讨论的非常多的应用中。
+
+83
+00:02:56,832 --> 00:03:00,642
+to secure communication, and talk about the case where, here, we have a laptop
+
+84
+00:02:56,832 --> 00:03:00,642
+现在让我们谈回保密通信，讨论这种情况：我们有一台笔记本电脑
+
+85
+00:03:00,642 --> 00:03:04,753
+trying to communicate with a web server. This is a good time to also introduce our friends,
+
+86
+00:03:00,642 --> 00:03:04,753
+正尝试与网络服务器通信，这是一个介绍我们朋友们的好机会
+
+87
+00:03:04,753 --> 00:03:08,964
+Alice and Bob, who are gonna be with us throughout the quarter. Essentially Alice
+
+88
+00:03:04,753 --> 00:03:08,964
+Alice和Bob，他们将陪我们度过整个学季
+
+89
+00:03:08,964 --> 00:03:13,305
+is trying to communicate securely with Bob. Here Alice is on the laptop and Bob
+
+90
+00:03:08,964 --> 00:03:13,305
+Alice总是想要和Bob进行安全通信，Alice在笔记本的一端
+
+91
+00:03:13,305 --> 00:03:18,223
+is on the server. The protocol that's used to do that is called HTTPS, but in fact,
+
+92
+00:03:13,305 --> 00:03:18,223
+Bob在服务器的一端，使用的协议是HTTPS协议，但其实
+
+93
+00:03:18,223 --> 00:03:22,717
+the actual protocol is called SSL. Sometimes it's called TLS.
+
+94
+00:03:18,223 --> 00:03:22,717
+实际使用的协议是SSL，有时也被叫做TLS
+
+95
+00:03:22,717 --> 00:03:27,695
+And the goals of these protocols is to basically make sure that as this data travels across the
+
+96
+00:03:22,717 --> 00:03:27,695
+这些协议的目的是确保数据在网络传输时
+
+97
+00:03:27,695 --> 00:03:32,492
+network, an attacker first of all can't eavesdrop on this data. Second of all, an
+
+98
+00:03:27,695 --> 00:03:32,492
+首先，攻击者无法窃取数据
+
+99
+00:03:32,492 --> 00:03:37,592
+attacker can't modify the data while it's in the network. So no eavesdropping and no tampering.
+
+100
+00:03:32,492 --> 00:03:37,592
+其次，攻击者不能再修改数据，即无窃听，无篡改
+
+101
+00:03:37,592 --> 00:03:42,413
+Now as I said the protocol that's used to secure web traffic called TLS
+
+102
+00:03:37,592 --> 00:03:42,413
+现在我们来谈谈我们用来保护网页安全的TLS
+
+103
+00:03:42,413 --> 00:03:46,998
+actually consists of two parts. The first part is called the handshake protocol
+
+104
+00:03:42,413 --> 00:03:46,998
+它由两部分组成，第一部分称为握手协议
+
+105
+00:03:46,998 --> 00:03:51,955
+where Alice and Bob talk with one another and at the end of the handshake
+
+106
+00:03:46,998 --> 00:03:51,955
+Alice和Bob相互交谈，在握手的最后
+
+107
+00:03:51,955 --> 00:03:56,601
+handshake basically a shared secret key appears between the two of them. So both
+
+108
+00:03:51,955 --> 00:03:56,601
+双方共享一个密钥
+
+109
+00:03:56,601 --> 00:04:01,093
+Alice and Bob know this secret key, but an attacker looking at the conversation has
+
+110
+00:03:56,601 --> 00:04:01,093
+所以Alice和Bob双方都知道这个密钥，观察这个通信的攻击者
+
+111
+00:04:01,093 --> 00:04:05,167
+no idea what the key K is. Now, the way you established your secret key, the way
+
+112
+00:04:01,093 --> 00:04:05,167
+不知道这个会话的密钥k。现在，建立密钥的过程
+
+113
+00:04:05,167 --> 00:04:09,503
+you do the handshake, is using public key cryptography techniques, which we're gonna talk
+
+114
+00:04:05,167 --> 00:04:09,503
+握手过程，都用到了公钥密码技术，这个我们将在
+
+115
+00:04:09,503 --> 00:04:13,473
+about in the second part of the course. Now once Alice and Bob have the shared key,
+
+116
+00:04:09,503 --> 00:04:13,473
+课程的第二部讨论。现在一旦Alice和Bob共享了密钥
+
+117
+00:04:13,473 --> 00:04:17,025
+you can use this key to communicate securely by properly
+
+118
+00:04:13,473 --> 00:04:17,025
+你可以使用这个密钥安全通信，恰当地
+
+119
+00:04:17,025 --> 00:04:21,364
+encrypting data between them. And in fact this is gonna be the first part of the course,
+
+120
+00:04:17,025 --> 00:04:21,364
+加密他们相互传递的数据。事实上，这就是本课程的第一部分
+
+121
+00:04:21,364 --> 00:04:25,740
+which is essentially once the two sides have a shared secret key, how do they use
+
+122
+00:04:21,364 --> 00:04:25,740
+也就是双方共享共享密钥后，
+
+123
+00:04:25,740 --> 00:04:30,060
+that secret key to encrypt and protect data that goes back and forth between them?
+
+124
+00:04:25,740 --> 00:04:30,060
+怎么使用密钥加密并保护通信数据
+
+125
+00:04:30,060 --> 00:04:34,404
+Now, as I said, another application of cryptography is to protect
+
+126
+00:04:30,060 --> 00:04:34,404
+正如我所说，密码学的另一个应用是用来保护
+
+127
+00:04:34,404 --> 00:04:38,934
+files on disk. So, here you have a file that happens to be encrypted, so that even
+
+128
+00:04:34,404 --> 00:04:38,934
+硬盘上的文件。现在你有一个已加密文件
+
+129
+00:04:38,934 --> 00:04:43,407
+if the disk is stolen, an attacker can't actually read the contents in the file.
+
+130
+00:04:38,934 --> 00:04:43,407
+即使你的硬盘被偷了，攻击者也不能读取硬盘中的文件内容
+
+131
+00:04:43,407 --> 00:04:47,881
+And, if an attacker tries to modify the data on disk, the data in the file while
+
+132
+00:04:43,407 --> 00:04:47,881
+如果攻击者试图修改磁盘上的数据，
+
+133
+00:04:47,881 --> 00:04:52,241
+it's on disk, when Alice tries to decrypt this file, that will be detected, and
+
+134
+00:04:47,881 --> 00:04:52,241
+当Alice试图解密文件时，改动会被检测出来
+
+135
+00:04:52,241 --> 00:04:56,205
+she'll then basically ignore the contents of the file. So we have both
+
+136
+00:04:52,241 --> 00:04:56,205
+Alice便会忽略文件内容
+
+137
+00:04:56,205 --> 00:05:00,999
+confidentiality and integrity for files stored on disk. Now I want to make a minor philosophical
+
+138
+00:04:56,205 --> 00:05:00,999
+所以我们能保证存在磁盘的文件的保密性和完整性，这里有一点哲学的东西
+
+139
+00:05:00,999 --> 00:05:06,098
+point, that in fact storing encrypted files on disk is very much the same
+
+140
+00:05:00,999 --> 00:05:06,098
+事实上，在硬盘上储存加密文件
+
+141
+00:05:06,098 --> 00:05:10,872
+as protecting communication between Alice and Bob. In particular, when you
+
+142
+00:05:06,098 --> 00:05:10,872
+和Alice和Bob保密通信类似。尤其是
+
+143
+00:05:10,872 --> 00:05:15,379
+store files on disk, it's basically Alice who stores the file today wants to read
+
+144
+00:05:10,872 --> 00:05:15,379
+当在磁盘上储存文件时，基本上Alice保存的是明天还要看的文件
+
+145
+00:05:15,379 --> 00:05:19,580
+the file tomorrow. So rather than communicating between two parties Alice and Bob,
+
+146
+00:05:15,379 --> 00:05:19,580
+所以与Alice和Bob两方间的通信不同
+
+147
+00:05:19,580 --> 00:05:23,713
+in the case of a stored disk encryption, it's Alice today who is
+
+148
+00:05:19,580 --> 00:05:23,713
+所以对硬盘储存文件加密的是今天的Alice
+
+149
+00:05:23,713 --> 00:05:27,966
+communicating with Alice tomorrow. But really the two scenarios, secure
+
+150
+00:05:23,713 --> 00:05:27,966
+和明天的Alice通信，但这两种情形：
+
+151
+00:05:27,966 --> 00:05:32,632
+communications, and secure files, are kind of philosophically the same. Now, the
+
+152
+00:05:27,966 --> 00:05:32,632
+安全通信和安全文件，从哲学上来说是一样的
+
+153
+00:05:32,632 --> 00:05:37,001
+building block for securing traffic is what's called symmetric encryption
+
+154
+00:05:32,632 --> 00:05:37,001
+以分组的形式保护流量的技术叫做对称式加密
+
+155
+00:05:37,001 --> 00:05:41,666
+systems. And we're gonna talk, in the first half of the course extensively about
+
+156
+00:05:37,001 --> 00:05:41,666
+在本课的第一部分，我们将详细介绍对称加密机制
+
+157
+00:05:41,666 --> 00:05:46,035
+symmetric encryption systems. So in a symmetric encryption system, basically, the two parties,
+
+158
+00:05:41,666 --> 00:05:46,035
+所以在对称加密机制中，
+
+159
+00:05:46,035 --> 00:05:50,699
+Alice and Bob, share a secret key k, which the attacker does not
+
+160
+00:05:46,035 --> 00:05:50,699
+Alice和Bob共享密钥k，攻击者不知道密钥k
+
+161
+00:05:50,699 --> 00:05:55,069
+know. Only they know the secret key k. Now, they're gonna use a cipher which
+
+162
+00:05:50,699 --> 00:05:55,069
+只有他们知道密钥k，现在他们将使用密钥安全通信
+
+163
+00:05:55,069 --> 00:05:59,755
+consists of these two algorithms, E and D. E is called an encryption algorithm and D
+
+164
+00:05:55,069 --> 00:05:59,755
+这个密钥由E算法和D算法组成，E是加密算法
+
+165
+00:05:59,755 --> 00:06:04,179
+is called the decryption algorithm. The encryption algorithm takes the message and
+
+166
+00:05:59,755 --> 00:06:04,179
+D是解密算法，加密算法把信息和密钥作为输入
+
+167
+00:06:04,179 --> 00:06:08,051
+the key as inputs, and produces a corresponding ciphertext. And the
+
+168
+00:06:04,179 --> 00:06:08,051
+并生成对应的密文
+
+169
+00:06:08,051 --> 00:06:12,564
+decryption algorithm does the opposite. It takes the ciphertext as input along with the key
+
+170
+00:06:08,051 --> 00:06:12,564
+解密算法则正好相反，它以密文和密钥作为输入
+
+171
+00:06:12,564 --> 00:06:16,594
+key and produces the corresponding message. Now, a very important point that
+
+172
+00:06:12,564 --> 00:06:16,594
+并生成相应的明文信息，这里我要强调一点
+
+173
+00:06:16,594 --> 00:06:21,108
+I would like to stress. I'm only gonna say this once now and never again, but it is an
+
+174
+00:06:16,594 --> 00:06:21,108
+尽管它非常重要，但我只说一遍，不再重复
+
+175
+00:06:21,108 --> 00:06:25,467
+extremely important point. And that is: that the algorithms E and D, the actual
+
+176
+00:06:21,108 --> 00:06:25,467
+算法E，D，是向公众
+
+177
+00:06:25,467 --> 00:06:30,400
+encryption algorithms are publicly known. Adversary knows exactly how they work. The
+
+178
+00:06:25,467 --> 00:06:30,400
+公开的加密算法。攻击者是知道算法是怎么工作的
+
+179
+00:06:30,400 --> 00:06:34,411
+only thing that's kept secret is the secret key k. Other than that
+
+180
+00:06:30,400 --> 00:06:34,411
+只有密钥k是保密的
+
+181
+00:06:34,411 --> 00:06:38,880
+everything else is completely public and it's really important to realize that you
+
+182
+00:06:34,411 --> 00:06:38,880
+其他所有东西都是公开的，明白这点很重要
+
+183
+00:06:38,880 --> 00:06:43,080
+should only use algorithms that are public because those algorithms have been
+
+184
+00:06:38,880 --> 00:06:43,080
+你应该使用公开的加密算法
+
+185
+00:06:43,080 --> 00:06:47,685
+peer-reviewed by a very large community of hundreds of people for many, many, many years,
+
+186
+00:06:43,080 --> 00:06:47,685
+因为这种算法已经由数以百计的业内人士检查了很多很多年
+
+187
+00:06:47,685 --> 00:06:52,460
+and these algorithms only begin to be used once this community has shown that
+
+188
+00:06:47,685 --> 00:06:52,460
+而且只有算法被业内证实无法破解时，这个算法才能开始被使用
+
+189
+00:06:52,460 --> 00:06:56,952
+they cannot be broken, essentially. So in fact, if somebody comes to you and says, hey, I have a proprietary
+
+190
+00:06:52,460 --> 00:06:56,952
+事实，如果有个人跟你说，我有一个私人加密方法
+
+191
+00:06:56,952 --> 00:07:01,500
+cipher that you might want to use, the answer usually should be that
+
+192
+00:06:56,952 --> 00:07:01,500
+问你要不要试试，答案通常是
+
+193
+00:07:01,500 --> 00:07:06,162
+you stick to standards, to standard algorithms, and not use a proprietary
+
+194
+00:07:01,500 --> 00:07:06,162
+坚持使用标准算法，摒弃专有算法
+
+195
+00:07:06,162 --> 00:07:10,710
+cipher. In fact, there are many examples of proprietary ciphers that, as soon as
+
+196
+00:07:06,162 --> 00:07:10,710
+实际上，有很多专有加密算法的例子
+
+197
+00:07:10,710 --> 00:07:14,690
+they were reverse engineered, they were easily broken by simple analysis.
+
+198
+00:07:10,710 --> 00:07:14,690
+一旦他们被逆向工程法分析，很容易被分析破解
+
+199
+00:07:14,690 --> 00:07:19,716
+Now, even in the simple cases of symmetric encryption which we're gonna discuss
+
+200
+00:07:14,690 --> 00:07:19,716
+现在，即使是我们在前半部分讨论的对称加密的简单情况下，
+
+201
+00:07:19,716 --> 00:07:24,782
+in the first half of the course, there are actually two cases that we're gonna discuss in turn.
+
+202
+00:07:19,716 --> 00:07:24,782
+实际上也有两种情况，我们将逐一讨论。
+
+203
+00:07:24,782 --> 00:07:29,974
+The first, is when every key is only used to encrypt a
+
+204
+00:07:24,782 --> 00:07:29,974
+第一种，每个密钥只加密一个信息
+
+205
+00:07:29,974 --> 00:07:34,597
+single message, we call these one time keys. Okay. So for example, when you
+
+206
+00:07:29,974 --> 00:07:34,597
+我们称之为一次一密，例如
+
+207
+00:07:34,597 --> 00:07:39,853
+encrypt email messages, it's very common that every single email is encrypted using
+
+208
+00:07:34,597 --> 00:07:39,853
+当你加密邮件信息时，通常不同的邮件
+
+209
+00:07:39,853 --> 00:07:44,922
+a different symmetric key. Yeah? Different symmetric cipher key. Because the key is
+
+210
+00:07:39,853 --> 00:07:44,922
+使用不同的对称密钥加密，对吧？不同的对称密钥
+
+211
+00:07:44,922 --> 00:07:49,588
+used to encrypt only one message there are actually fairly efficient and simple ways of
+
+212
+00:07:44,922 --> 00:07:49,588
+因为一个密钥只加密一个信息
+所以有很多加密方法
+
+213
+00:07:49,588 --> 00:07:54,090
+encrypting messages using these one time keys and we'll discuss those actually
+
+214
+00:07:49,588 --> 00:07:54,090
+非常有效和简洁地使用一次密钥加密信息
+我们将在下一模块讨论这些方法
+
+215
+00:07:54,090 --> 00:07:58,371
+in the next module. Now there are many cases in fact where keys
+
+216
+00:07:54,090 --> 00:07:58,371
+实际上，有很多时候一个密钥需要加密多个信息
+
+217
+00:07:58,371 --> 00:08:02,488
+need to be used to encrypt multiple messages. We call these many time keys.
+
+218
+00:07:58,371 --> 00:08:02,488
+我们称这些为多次密钥
+
+219
+00:08:02,488 --> 00:08:06,715
+For example, when you encrypt files in a file system the same key is used
+
+220
+00:08:02,488 --> 00:08:06,715
+例如，在一个文件系统里用同一个密钥加密很多不同的文件
+
+221
+00:08:06,715 --> 00:08:11,326
+to encrypt many many, different files. And it turns out if the key is now going to be used to encrypt
+
+222
+00:08:06,715 --> 00:08:11,326
+事实证明如果用同一个密钥加密多个信息
+
+223
+00:08:11,326 --> 00:08:15,662
+multiple messages we need a little bit of more machinery to make sure that the
+
+224
+00:08:11,326 --> 00:08:15,662
+我们需要更多的机制来确保加密系统的安全
+
+225
+00:08:15,662 --> 00:08:19,729
+encryption system is secure. In fact after we talk about the one-time keys, we
+
+226
+00:08:15,662 --> 00:08:19,729
+事实上，在我们介绍了一次一密之后
+
+227
+00:08:19,729 --> 00:08:23,570
+will move over and talk about encryption modes that are specifically designed for
+
+228
+00:08:19,729 --> 00:08:23,570
+我们还将介绍专门为多次密钥设计的加密模式
+
+229
+00:08:23,570 --> 00:08:27,505
+many-time keys. And we'll see that there are a couple more steps that need to be taken to
+
+230
+00:08:23,570 --> 00:08:27,505
+我们将会看到为了确保信息安全采取的一系列步骤
+
+231
+00:08:27,505 --> 00:08:31,267
+ensure security in those cases. Okay, the last point I wanna make
+
+232
+00:08:27,505 --> 00:08:31,267
+好了，最后说一点
+
+233
+00:08:31,267 --> 00:08:35,346
+is that there are a couple of important things to remember about cryptography. First of all,
+
+234
+00:08:31,267 --> 00:08:35,346
+关于密码学有几点很重要，首先
+
+235
+00:08:35,346 --> 00:08:39,689
+cryptography, of course, is a fantastic tool for protecting information in computer systems.
+
+236
+00:08:35,346 --> 00:08:39,689
+密码学，是用来保护计算机系统中信息的一个很有效的工具
+
+237
+00:08:39,689 --> 00:08:43,820
+However, it's also very important that cryptography has its limitations.
+
+238
+00:08:39,689 --> 00:08:43,820
+然而，同样重要的是，密码学也有它的局限性
+
+239
+00:08:43,820 --> 00:08:48,225
+First of all, cryptography is really not the solution to all security problems.
+
+240
+00:08:43,820 --> 00:08:48,225
+首先，密码学不能解决所有安全问题
+
+241
+00:08:48,225 --> 00:08:52,546
+For example, if you have software bugs then very often cryptography is not
+
+242
+00:08:48,225 --> 00:08:52,546
+例如，如果你的软件经常出现bug
+那么很可能密码学就帮不了你
+
+243
+00:08:52,546 --> 00:08:56,925
+going to be able to help you. Similarly, if you're worried about social engineering attacks,
+
+244
+00:08:52,546 --> 00:08:56,925
+类似的，如果你担心受到社会工程学攻击
+
+245
+00:08:56,925 --> 00:09:01,587
+where the attacker tries to fool the user into taking actions
+
+246
+00:08:56,925 --> 00:09:01,587
+例如攻击者试图欺骗用户去做会不利于用户的事
+
+247
+00:09:01,587 --> 00:09:05,966
+that are going to hurt the user, then cryptography is very often actually not
+
+248
+00:09:01,587 --> 00:09:05,966
+那么密码学也帮不了你╮(╯▽╰)╭
+
+249
+00:09:05,966 --> 00:09:10,328
+going to help you. So it's very important that although it's a fabulous tool, it's not the
+
+250
+00:09:05,966 --> 00:09:10,328
+尽管密码学是极好的工具
+
+251
+00:09:10,328 --> 00:09:14,798
+solution to all security problems. Now another very important point is that cryptography
+
+252
+00:09:10,328 --> 00:09:14,798
+它也解决不了所有的安全问题，另外非常重要的一点是
+
+253
+00:09:14,798 --> 00:09:19,108
+essentially becomes useless if it's implemented incorrectly. So, for example,
+
+254
+00:09:14,798 --> 00:09:19,108
+如果没有正确地使用，密码学也将变为无用。例如
+
+255
+00:09:19,108 --> 00:09:23,270
+there are a number of systems that work perfectly fine. And we'll see examples of those
+
+256
+00:09:19,108 --> 00:09:23,270
+有很多系统在正常工作，我们会看到这些系统
+
+257
+00:09:23,270 --> 00:09:27,487
+systems, that, in fact, allow Alice and Bob to communicate. And,
+
+258
+00:09:23,270 --> 00:09:27,487
+允许Alice和Bob进行通信
+
+259
+00:09:27,487 --> 00:09:31,595
+in fact, messages that Alice sent to Bob, Bob can receive and decrypt. However,
+
+260
+00:09:27,487 --> 00:09:31,595
+实际上，Alice发送信息给Bob，Bob收到信息并解密
+
+261
+00:09:31,595 --> 00:09:35,776
+because cryptography is implemented incorrectly, the systems are completely insecure.
+
+262
+00:09:31,595 --> 00:09:35,776
+但是，由于密码学被不当使用，系统实际上非常的不安全
+
+263
+00:09:35,776 --> 00:09:40,537
+Actually I should say that I like to mention an old encryption standard
+
+264
+00:09:35,776 --> 00:09:40,537
+这里我应该提及一个古老的加密标准WEP
+
+265
+00:09:40,537 --> 00:09:45,240
+called WEP this is used for encrypting Wi-Fi traffic. WEP contains many
+
+266
+00:09:40,537 --> 00:09:45,240
+WEP用来加密WiFi流量，WEP有很多的错误。
+
+267
+00:09:45,240 --> 00:09:49,942
+mistakes in it and often when I wanna show you how not to do things in cryptography
+
+268
+00:09:45,240 --> 00:09:49,942
+经常我在课上给你们演示在密码学里什么事不能做的时候
+
+269
+00:09:49,942 --> 00:09:54,581
+I will point to how things were done in WEP as an example. So for me, it's very fortunate to have an example,
+
+270
+00:09:49,942 --> 00:09:54,581
+我就会以WEP的内容为例，所以对于我来说，有这样的一个例子很幸运
+
+271
+00:09:54,581 --> 00:09:58,610
+a protocol I can point to for how not to do things. And finally, a very
+
+272
+00:09:54,581 --> 00:09:58,610
+一个可以指出什么不该做的案例，最后
+
+273
+00:09:58,610 --> 00:10:02,540
+important point that I'd like you to remember is that cryptography is not
+
+274
+00:09:58,610 --> 00:10:02,540
+很重要的一点请记住，密码学不是让
+
+275
+00:10:02,540 --> 00:10:06,270
+something you should try to invent and design yourself. As I said, there are
+
+276
+00:10:02,540 --> 00:10:06,270
+你自己设计发明。正如我所说
+
+277
+00:10:06,270 --> 00:10:09,902
+standards in cryptography, standard cryptographic primitives which we're gonna discuss
+
+278
+00:10:06,270 --> 00:10:09,902
+密码学有自己的标准，我们将会在这门课程中详细讨论
+
+279
+00:10:09,902 --> 00:10:13,795
+at length during this course. And primarily you're supposed to use
+
+280
+00:10:09,902 --> 00:10:13,795
+这些标准化的密码学原型。你只需要使用这些标准密码原型
+
+281
+00:10:13,795 --> 00:10:17,656
+these standard cryptographic primitives, and not invent things, these primitives,
+
+282
+00:10:13,795 --> 00:10:17,656
+不是发明它们
+
+283
+00:10:17,656 --> 00:10:21,624
+yourself. The standards have all gone through, many years of
+
+284
+00:10:17,656 --> 00:10:21,624
+这些原型已经经历了数年来人们的检测
+
+285
+00:10:21,624 --> 00:10:25,860
+review by hundreds of people, and that's not something that's going to happen to an ad hoc  design.
+
+286
+00:10:21,624 --> 00:10:25,860
+它们不是随意设计的
+
+287
+00:10:25,860 --> 00:10:29,668
+And, as I said, over the years there are many examples of
+
+288
+00:10:25,860 --> 00:10:29,668
+正如我所说，许多年来
+
+289
+00:10:29,668 --> 00:10:33,797
+ad hoc designs that were immediately broken as soon as they were analyzed.
+
+290
+00:10:29,668 --> 00:10:33,797
+许多随意设计的加密机制一经分析就立刻被破解。
+

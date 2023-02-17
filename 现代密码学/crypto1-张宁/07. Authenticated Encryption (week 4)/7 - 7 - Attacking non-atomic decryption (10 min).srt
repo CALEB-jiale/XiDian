@@ -1,0 +1,643 @@
+1
+00:00:00,000 --> 00:00:03,722
+In the last segment, we looked at a
+padding Oracle attack that completely
+
+2
+00:00:03,722 --> 00:00:08,005
+breaks an authenticated encryption system.
+I hope this attack convinces you that you
+
+3
+00:00:08,005 --> 00:00:10,979
+shouldn't implement authenticated
+encryption on your own cause you might end
+
+4
+00:00:10,979 --> 00:00:15,950
+up exposing yourself to a padding oracle
+attack or a timing attack or any other
+
+5
+00:00:15,959 --> 00:00:19,936
+such attack. Instead you should be using
+standards like GCM or any other of the
+
+6
+00:00:19,936 --> 00:00:23,710
+standardized authenticated encryption
+modes as implemented in many crypto
+
+7
+00:00:23,710 --> 00:00:27,712
+libraries. In this segment, I'm gonna show
+you another very clever attack on an
+
+8
+00:00:27,712 --> 00:00:31,770
+authenticated encryption system. And I
+hope after you see this attack, you'll be
+
+9
+00:00:31,770 --> 00:00:35,468
+completely convinced not to invent and
+implement your own authenticated
+
+10
+00:00:35,468 --> 00:00:39,526
+encryption systems. But instead, always
+use one of the standard schemes, like GCM
+
+11
+00:00:39,526 --> 00:00:44,380
+or others. So this particular attack that
+I want to show you is an attack on the SSH
+
+12
+00:00:44,380 --> 00:00:48,996
+binary packet protocol. So SSH is a
+standard secure remote shell application
+
+13
+00:00:48,996 --> 00:00:53,679
+that uses a protocol between a client
+and the sever. It has a key exchange
+
+14
+00:00:53,679 --> 00:00:58,794
+mechanism and once two sides exchange keys,
+SSH uses what's called the binary packet
+
+15
+00:00:58,794 --> 00:01:03,662
+protocol to send messages back and forth
+between the client and the server. Now
+
+16
+00:01:03,662 --> 00:01:09,731
+here is how SSH works, so recall that SSH
+uses what we called encrypt-and-MAC. Okay
+
+17
+00:01:09,731 --> 00:01:13,707
+so technically what happens is every SSH
+packet begins with a sequence number, and
+
+18
+00:01:13,707 --> 00:01:18,245
+then the packet contains the packet
+length, the length of the CBC pad, the
+
+19
+00:01:18,245 --> 00:01:24,020
+actual payload follows, then the CBC pad
+follows. Now this whole red block here is
+
+20
+00:01:24,020 --> 00:01:29,867
+CBC encrypted also with a chained IV, so
+this is also vulnerable to the CPA attacks
+
+21
+00:01:29,867 --> 00:01:34,191
+that we discussed before. But
+nevertheless, this whole red packet is
+
+22
+00:01:34,191 --> 00:01:39,033
+encrypted using CBC encryption. And then
+the entire clear text packet is MAC-ed.
+
+23
+00:01:39,033 --> 00:01:43,169
+And the MAC is sent in the clear, along
+with the packet. So I want you to remember
+
+24
+00:01:43,169 --> 00:01:48,837
+that the MAC is computed over plain text
+packets, and then the MAC is sent in the
+
+25
+00:01:48,837 --> 00:01:53,597
+clear. This is what we call encrypt-and-MAC. 
+And we said that this is not a good
+
+26
+00:01:53,597 --> 00:01:58,330
+way to do things, because MACs have no
+confidentiality requirements. And by sending
+
+27
+00:01:58,330 --> 00:02:03,064
+the MAC of the clear text in the clear,
+you might be exposing information about
+
+28
+00:02:03,064 --> 00:02:06,347
+the clear text. But this is not the
+mistake that I want to show you here. I
+
+29
+00:02:06,347 --> 00:02:09,702
+want to show you a much more clever attack.
+So first, let's look at how decryption
+
+30
+00:02:09,702 --> 00:02:16,068
+works in SSH. So what happens is, first of
+all, the server decrypts the encrypted
+
+31
+00:02:16,068 --> 00:02:21,520
+packet length field only. So it only
+decrypts these particular first few bytes.
+
+32
+00:02:21,520 --> 00:02:26,440
+Then it will go ahead and read from the
+network, as many bytes as specified in the
+
+33
+00:02:26,440 --> 00:02:31,000
+packet length field. It's gonna decrypt the
+remaining cipher text blocks using CBC
+
+34
+00:02:31,000 --> 00:02:35,740
+decryption. Then, once it's recovered the
+entire SSH packet, it will go ahead and
+
+35
+00:02:35,740 --> 00:02:40,540
+check the MAC of the plain text, and
+report an error if the MAC happens to be
+
+36
+00:02:40,540 --> 00:02:45,645
+invalid. Now the problem here is that the
+packet length field is decrypted and then
+
+37
+00:02:45,645 --> 00:02:50,107
+used directly to determine the length of
+the packet before any authentication has
+
+38
+00:02:50,107 --> 00:02:54,780
+taken place. In fact, it's not possible to
+verify the MAC of the packet length field
+
+39
+00:02:54,780 --> 00:02:58,647
+because we haven't recovered the entire
+packet yet and as a result we cannot check
+
+40
+00:02:58,647 --> 00:03:04,074
+the MAC. But nevertheless the protocol uses
+the packet length before verifying that the MAC
+
+41
+00:03:04,074 --> 00:03:09,501
+is valid. So it turns out this introduces a
+very, very cute attack. And I'm only
+
+42
+00:03:09,501 --> 00:03:12,943
+gonna describe a very simplified version
+of this attack, just to get the idea
+
+43
+00:03:12,943 --> 00:03:17,244
+across. So here's the idea. Suppose the
+attacker intercepted a particular cipher
+
+44
+00:03:17,244 --> 00:03:23,037
+text block, namely the direct AES
+encryption of the message block M. And now
+
+45
+00:03:23,037 --> 00:03:27,092
+he wants to recover this M. And I
+emphasize that this intercepted
+
+46
+00:03:27,092 --> 00:03:31,418
+cipher text is only one block length.
+It's one AES block. So here's what the
+
+47
+00:03:31,418 --> 00:03:37,073
+attacker is gonna do. Well, he's gonna
+send a packet to the server that starts
+
+48
+00:03:37,073 --> 00:03:41,062
+off as normal. It's basically, starts off
+with a sequence number and then he's going
+
+49
+00:03:41,062 --> 00:03:46,304
+to inject his captured cipher text as the
+first cipher text block that's sent to the
+
+50
+00:03:46,304 --> 00:03:51,237
+server. Now, what is the server going to
+do? The server is gonna decrypt the first
+
+51
+00:03:51,237 --> 00:03:57,270
+few bytes of this first AES block and he's
+going to interpret the first few bytes as
+
+52
+00:03:57,270 --> 00:04:01,973
+the length fields of the packet. The next
+thing that's gonna happen is, the server
+
+53
+00:04:01,973 --> 00:04:06,842
+is gonna expect this many bytes, before it
+checks that the MAC is valid. And so what
+
+54
+00:04:06,842 --> 00:04:12,089
+the attacker is gonna do, is, he's gonna
+feed the server one byte at a time. So the
+
+55
+00:04:12,089 --> 00:04:15,390
+server will read one byte, and then
+another byte, and then another byte.
+
+56
+00:04:15,390 --> 00:04:20,007
+Eventually, the server will read as many
+bytes as the length field specifies, at
+
+57
+00:04:20,007 --> 00:04:24,625
+which point, it will check that the MAC is
+valid. And of course, the attacker was
+
+58
+00:04:24,625 --> 00:04:29,477
+just feeding the server junk bytes. And as
+a result, the MAC is not gonna verify, and
+
+59
+00:04:29,477 --> 00:04:33,978
+the server will send a MAC error. But you
+realize that what happened here, the
+
+60
+00:04:33,978 --> 00:04:38,362
+attacker was counting how many bytes it
+sent to the server. And so it knows
+
+61
+00:04:38,362 --> 00:04:43,097
+exactly how many bytes were sent at the
+time that it receives the MAC error from
+
+62
+00:04:43,097 --> 00:04:48,288
+the server. So that tells it that the
+decryption of the first 32 bits of its
+
+63
+00:04:48,288 --> 00:04:54,177
+cypher text C are exactly equal to the
+number of bytes that were sent before it
+
+64
+00:04:54,177 --> 00:04:57,374
+saw the MAC error. So this is a very
+clever attack. So let me say it one more
+
+65
+00:04:57,374 --> 00:05:02,556
+time to make sure this is clear. So again,
+the attacker has a one block cipher text C
+
+66
+00:05:02,556 --> 00:05:07,407
+that it wants to decrypt and let's pretend
+that when C is decrypted the 32 most
+
+67
+00:05:07,407 --> 00:05:12,309
+significant bits of the plain text happen
+to be the number five. In this case, what
+
+68
+00:05:12,309 --> 00:05:17,092
+the attacker will see, is the following
+behavior. The server is gonna decrypt the
+
+69
+00:05:17,092 --> 00:05:21,815
+challenge block c and he's gonna obtain
+the number five as the length field. So,
+
+70
+00:05:21,815 --> 00:05:26,777
+now, the attacker is gonna feed the server
+one byte at a time and after the attacker
+
+71
+00:05:26,777 --> 00:05:31,500
+feeds the server five bytes the server
+says, hey, I've just recovered the entire
+
+72
+00:05:31,500 --> 00:05:35,984
+packet, let me check the MAC. The MAC is
+likely to be false and, then, it will
+
+73
+00:05:35,984 --> 00:05:41,156
+send, bad MAC error. So after five bytes
+are read off the network the attacker is
+
+74
+00:05:41,156 --> 00:05:45,447
+gonna see a bad MAC error and then the
+attacker learns that the most significant
+
+75
+00:05:45,447 --> 00:05:51,689
+32 bits of the decrypted block is equal to
+the number five. So there. So, you just
+
+76
+00:05:51,689 --> 00:05:56,705
+learned the 32 most significant bits of
+C. So this is a very significant attack,
+
+77
+00:05:56,705 --> 00:06:01,731
+because the attacker just learned 32 bits
+of the decrypted cipher text block. And
+
+78
+00:06:01,731 --> 00:06:05,767
+since he can apply this attack to any
+cipher text block he wants, he can
+
+79
+00:06:05,767 --> 00:06:11,410
+basically learn the first 32 bits of every
+cipher text block in a very long message.
+
+80
+00:06:11,410 --> 00:06:15,542
+So what just happened here? Well, there
+are actually two things that were wrong in
+
+81
+00:06:15,542 --> 00:06:19,340
+this design. The first one is the
+decryption operation is non-atomic. In
+
+82
+00:06:19,340 --> 00:06:25,206
+other words, the decryption algorithm
+doesn't take a whole packet as input, and
+
+83
+00:06:25,206 --> 00:06:29,903
+respond with a whole plain text as output,
+or with the word reject. Instead, the
+
+84
+00:06:29,903 --> 00:06:34,362
+decryption algorithm partially decrypts
+the cipher text, namely to obtain the
+
+85
+00:06:34,362 --> 00:06:39,476
+length field, and then it waits to recover
+as many bytes as needed and then it
+
+86
+00:06:39,476 --> 00:06:43,924
+completes the decryption process. So these
+nonatomic decryption operations are fairly
+
+87
+00:06:43,924 --> 00:06:48,500
+dangerous, and generally, they should be
+avoided. In this example, this nonatomic
+
+88
+00:06:48,500 --> 00:06:52,791
+decryption happens to break authenticated
+encryption. The other problem that
+
+89
+00:06:52,791 --> 00:06:57,105
+happened is that the length field was used
+before it was properly authenticated. And
+
+90
+00:06:57,105 --> 00:07:01,470
+this is another issue that should never be
+done. So the encryption field should never
+
+91
+00:07:01,470 --> 00:07:05,388
+be used before the field is actually
+authenticated. So let me ask you, if you
+
+92
+00:07:05,388 --> 00:07:09,449
+had the option of redesigning SSH what is
+the minimum change that you would do to
+
+93
+00:07:09,449 --> 00:07:13,754
+make SSH resist this attack? And let me
+tell you that multiple answers might be
+
+94
+00:07:13,754 --> 00:07:18,259
+correct. One option is to send a length
+field in the clear, just as in the case of
+
+95
+00:07:18,259 --> 00:07:22,741
+TLS. In this case, there's no opportunity
+for an attacker to submit chosen cipher
+
+96
+00:07:22,741 --> 00:07:26,998
+text attack, because, well, the length
+field is never decrypted. And so there's
+
+97
+00:07:26,998 --> 00:07:31,603
+no decryption taking place that the attacker 
+can abuse. Replacing encrypt-and-MAC
+
+98
+00:07:31,603 --> 00:07:36,211
+by encrypt-then-MAC doesn't have any
+impact because this attack would apply
+
+99
+00:07:36,211 --> 00:07:39,935
+either way. The problem is that the length
+field is used before it's authenticated
+
+100
+00:07:39,935 --> 00:07:44,243
+and that would have to happen either way.
+So a better mode of encryption doesn't
+
+101
+00:07:44,243 --> 00:07:48,498
+actually help. Another option is to MAC
+the length field separately so that now
+
+102
+00:07:48,498 --> 00:07:52,591
+the server can read the length field,
+check that the MAC for just the length
+
+103
+00:07:52,591 --> 00:07:56,845
+field is valid, and then it would know how
+many subsequent bytes to read before
+
+104
+00:07:56,845 --> 00:08:00,916
+checking MAC field on the entire packet.
+The last option is actually one that
+
+105
+00:08:00,916 --> 00:08:04,906
+works, but is terribly inefficient, and it
+would expose the server to a denial of
+
+106
+00:08:04,906 --> 00:08:09,322
+service attack, so I'm not going to mark
+it as a valid answer. So the main lesson
+
+107
+00:08:09,322 --> 00:08:14,295
+to remember is, don't implement or design
+your own authenticated encryption system.
+
+108
+00:08:14,295 --> 00:08:18,723
+Just use the standards like GCM. But if
+for some reason, you can't use the
+
+109
+00:08:18,723 --> 00:08:22,572
+standards, and you have to implement your
+own authenticated encryption system, then
+
+110
+00:08:22,572 --> 00:08:28,356
+use encrypt-then-MAC. And make sure not
+to repeat the mistakes of the last two
+
+111
+00:08:28,356 --> 00:08:33,228
+segments, namely don't use a length field
+before the length field is authenticated.
+
+112
+00:08:33,228 --> 00:08:37,388
+And more generally, don't use any
+decrypted field before that field is
+
+113
+00:08:37,388 --> 00:08:40,991
+authenticated. Okay so this is the end of
+our discussion of authenticated
+
+114
+00:08:40,991 --> 00:08:44,985
+encryption. I wanted to point out a couple
+of papers on authenticated encryption that
+
+115
+00:08:44,985 --> 00:08:49,588
+you could use as further reading. The
+first one is a very cute one on the order
+
+116
+00:08:49,588 --> 00:08:53,918
+of encryption and authentication that talks
+about whether one should do encrypt-then-MAC
+
+117
+00:08:53,918 --> 00:08:56,796
+or MAC-then-encrypt and it
+shows that one is correct and one is
+
+118
+00:08:56,796 --> 00:08:59,912
+incorrect. It's a good read and there's a
+lot of information in that paper. The
+
+119
+00:08:59,912 --> 00:09:04,476
+second discusses OCB mode, which is a very
+efficient way of building authenticated
+
+120
+00:09:04,476 --> 00:09:08,984
+encryption. In particular, it looks at a
+variant of OCB with associated data as we
+
+121
+00:09:08,984 --> 00:09:13,548
+discussed when we described OCB. The last
+three papers are attack papers. The first
+
+122
+00:09:13,548 --> 00:09:17,890
+one describes the padding oracle attack
+that we discussed in the last segment.
+
+123
+00:09:17,890 --> 00:09:23,398
+This one here describes the length attack
+that we just described in this segment.
+
+124
+00:09:23,398 --> 00:09:28,838
+And the last one describes a number of
+attacks on encryptions that just use CPA
+
+125
+00:09:28,838 --> 00:09:34,038
+security without adding integrity. So this
+last paper actually provides a number of
+
+126
+00:09:34,038 --> 00:09:38,518
+good examples for why CPA security by
+itself should never, ever, ever be used
+
+127
+00:09:38,518 --> 00:09:43,116
+for encryption. Remember the only thing
+you're allowed to use is authenticated
+
+128
+00:09:43,116 --> 00:09:47,302
+encryption for confidentiality. Or if all
+you need is integrity with no
+
+129
+00:09:47,302 --> 00:09:49,660
+confidentiality then you just use a MAC.

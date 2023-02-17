@@ -1,0 +1,1328 @@
+1
+00:00:00,000 --> 00:00:03,416
+Now that we understand what is
+deterministic encryption, let's see some
+
+2
+00:00:03,416 --> 00:00:07,025
+constructions that provide security
+against deterministic chosen plaintext
+
+3
+00:00:07,025 --> 00:00:11,297
+attacks. So, first let me remind you that
+the deterministic encryption is needed,
+
+4
+00:00:11,297 --> 00:00:15,733
+for example, when encrypting a data base
+index and later we wanna look up records
+
+5
+00:00:15,733 --> 00:00:19,675
+using the encrypted index. Because the
+encryption is deterministic we're
+
+6
+00:00:19,675 --> 00:00:24,275
+guaranteed that when we do the lookup the
+encrypted index is gonna be identical to the
+
+7
+00:00:24,275 --> 00:00:28,491
+encrypted index that was sent to the
+database when the record was written to
+
+8
+00:00:28,491 --> 00:00:33,145
+the database. And so, this deterministic
+encryption allows us a very simple or fast
+
+9
+00:00:33,145 --> 00:00:37,363
+way to do lookups based on encrypted
+indices. The problem was that we said the
+
+10
+00:00:37,363 --> 00:00:41,506
+deterministic encryption can't possibility
+be secure against a general chosen
+
+11
+00:00:41,506 --> 00:00:46,075
+plaintext attack because if the attacker
+sees two cipher texts that are equal
+
+12
+00:00:46,075 --> 00:00:50,377
+it learns that the underlying encrypted
+messages are the same. So, then we defined
+
+13
+00:00:50,377 --> 00:00:54,734
+this concept of deterministic chosen plain
+text security which means that we have
+
+14
+00:00:54,734 --> 00:00:58,983
+security as long as the encryptor never
+encrypts the same message more than once
+
+15
+00:00:58,983 --> 00:01:03,468
+using a given key. In particular, this
+key, message pair is only used once, for
+
+16
+00:01:03,468 --> 00:01:08,152
+every encryption, either the key changes,
+or the message changes. And then as I
+
+17
+00:01:08,152 --> 00:01:12,775
+said, formally we define this CPA,
+deterministic CPA security game, and our
+
+18
+00:01:12,775 --> 00:01:17,764
+goal in this segment is to actually give
+constructions that are deterministic CPA
+
+19
+00:01:17,764 --> 00:01:22,463
+secure. So the first construction we're
+gonna look at is what's called SIV,
+
+20
+00:01:22,463 --> 00:01:26,552
+synthetic IV's. And the way this
+construction works is as follows. Imagine
+
+21
+00:01:26,552 --> 00:01:30,873
+we have a general CPA secure encryption
+system. So here's the key and here's the
+
+22
+00:01:30,873 --> 00:01:35,302
+message and we are gonna denote by R the
+randomness that's used by the encryption
+
+23
+00:01:35,302 --> 00:01:39,623
+algorithm. Remember that a CPA secure
+system that doesn't use nonsense has to be
+
+24
+00:01:39,623 --> 00:01:44,051
+randomized and so we're explicitly gonna
+write down this variable R to denote the
+
+25
+00:01:44,051 --> 00:01:47,940
+random string that's used by the
+encryption algorithm as it's doing the
+
+26
+00:01:47,940 --> 00:01:52,045
+encryption. For example if we're using
+randomized counter mode, r would be the
+
+27
+00:01:52,045 --> 00:01:56,664
+random IV that's used by randomized counter
+mode. And of course C is the resulting
+
+28
+00:01:56,664 --> 00:02:01,904
+ciphertext. Now, in addition, we're also
+going to need a pseudo random function, f,
+
+29
+00:02:01,904 --> 00:02:06,691
+that what it does, is it takes our
+arbitrary messages in the message space
+
+30
+00:02:06,691 --> 00:02:11,477
+and outputs a strings, R, that can be used
+as randomness for the CPA secure
+
+31
+00:02:11,477 --> 00:02:16,502
+encryption scheme. So, the little, r, over
+here is actually a member of the big R set. Okay.
+
+32
+00:02:16,502 --> 00:02:21,592
+And we're going to assume this is a, f is
+a pseudo random function that maps messages
+
+33
+00:02:21,592 --> 00:02:26,500
+to random strings. Now the way SIV works
+is as follows. It's going to use two keys
+
+34
+00:02:26,500 --> 00:02:31,348
+K1 and K2 to encrypt the message M. And
+what it does, is the first thing is going
+
+35
+00:02:31,348 --> 00:02:36,437
+to apply the pseudo random function f to
+the message M to derive randomness for the
+
+36
+00:02:36,437 --> 00:02:41,406
+CPA secure encryption scheme E. And then
+it's going to encrypt the message M using
+
+37
+00:02:41,406 --> 00:02:46,253
+the randomness that it just derived. This
+is going to give us a cipher text C and
+
+38
+00:02:46,253 --> 00:02:51,273
+then it's going to output this cipher text
+C Okay. So that's how this SIV mode works.
+
+39
+00:02:51,273 --> 00:02:56,342
+Basically it first derives the randomness
+from the message being encrypted, and then
+
+40
+00:02:56,342 --> 00:03:01,049
+it uses this derived randomness to
+actually encrypt the message to obtain the
+
+41
+00:03:01,049 --> 00:03:05,696
+cipher text. Now I'd like to point out for
+example, if the encryption scheme E
+
+42
+00:03:05,696 --> 00:03:10,173
+happened to be randomized counter mode.
+Then the randomness R would just be the
+
+43
+00:03:10,173 --> 00:03:14,525
+random IV which would actually be output
+along with the cipher text. So this means
+
+44
+00:03:14,525 --> 00:03:18,665
+that the cipher text is a little bit
+longer than the plain text. But the point
+
+45
+00:03:18,665 --> 00:03:22,698
+here isn't to generate a short cipher
+text. Rather the point here is to make
+
+46
+00:03:22,698 --> 00:03:26,679
+sure that the encryption scheme is
+deterministic, so if we encrypt the same
+
+47
+00:03:26,679 --> 00:03:30,713
+message multiple times, every time we
+should obtain the same cipher text. And
+
+48
+00:03:30,713 --> 00:03:34,959
+indeed every time, we'll obtain the same
+randomness, R, and as a result, every time
+
+49
+00:03:34,959 --> 00:03:39,050
+we'll obtain the same cipher text C. So
+it's fairly easy to show that this
+
+50
+00:03:39,050 --> 00:03:43,584
+encryption scheme really is semantically
+secure under the deterministic chosen
+
+51
+00:03:43,584 --> 00:03:48,060
+plaintext attack. The reason that's so
+is because we apply the pseudo random
+
+52
+00:03:48,060 --> 00:03:52,708
+function F to distinct messages. Well if
+we apply F to distinct messages then the
+
+53
+00:03:52,708 --> 00:03:57,357
+random string that F generates is going to
+look like just truly random strings. A
+
+54
+00:03:57,357 --> 00:04:02,177
+different random string for every message.
+And as a result the CPA secure encryption
+
+55
+00:04:02,177 --> 00:04:06,596
+scheme E is always applied using truly
+random strings. And that's exactly the
+
+56
+00:04:06,596 --> 00:04:10,463
+situation where it is CPA secure. So
+because these R's are just random
+
+57
+00:04:10,463 --> 00:04:14,838
+indistinguishable from brand new strings,
+the resulting system is in fact gonna be
+
+58
+00:04:14,838 --> 00:04:18,999
+CPA secure. So this is just the intuition
+for why this works and it's actually
+
+59
+00:04:18,999 --> 00:04:23,040
+fairly straightforward to actually
+formalize this into a complete proof. Now,
+
+60
+00:04:23,040 --> 00:04:27,057
+I should emphasize that this is actually
+well suited for messages that are more
+
+61
+00:04:27,057 --> 00:04:30,722
+than one AES block. In fact, for short
+messages, we're gonna see a slightly
+
+62
+00:04:30,722 --> 00:04:34,438
+different encryption scheme that's
+actually better suited for these short
+
+63
+00:04:34,438 --> 00:04:38,505
+messages. Okay, now the really cool thing
+about SIV is that, actually, we get cipher
+
+64
+00:04:38,505 --> 00:04:42,803
+text integrity for free. In fact we don't
+have to use a special Mac if we want to
+
+65
+00:04:42,803 --> 00:04:47,307
+add integrity. In a sense SIV already has
+a built in integrity mechanism. And let me
+
+66
+00:04:47,307 --> 00:04:51,486
+explain what I mean by that. First of all,
+our goal was to build what's called
+
+67
+00:04:51,486 --> 00:04:55,340
+deterministic authenticated encryption.
+Dae. Deterministic Authenticated
+
+68
+00:04:55,340 --> 00:04:59,681
+Encryption. Which basically means that
+deterministic CPA security and cipher text
+
+69
+00:04:59,681 --> 00:05:04,023
+integrity. Remember cipher text integrity
+means that the attacker gets to ask for
+
+70
+00:05:04,023 --> 00:05:08,527
+the encryptions of messages of his choice
+and then he shouldn't be able to produce
+
+71
+00:05:08,527 --> 00:05:12,831
+another cipher text that decrypts to a
+valid message. Okay, so I want to claim
+
+72
+00:05:12,831 --> 00:05:17,892
+that in fact SIV automatically gives a
+cipher text integrity without the need for
+
+73
+00:05:17,892 --> 00:05:22,831
+an embedded MAC or anything else. So let's
+see why. In particular, let's look at a
+
+74
+00:05:22,831 --> 00:05:27,769
+special case of SIV when the underlying
+encryption scheme is randomized counter
+
+75
+00:05:27,769 --> 00:05:32,398
+mode. Okay, so we'll call this SIV-CTR
+again to denote SIV where we're using
+
+76
+00:05:32,398 --> 00:05:37,388
+randomized counter mode. Alright. So let
+me remind you again how SIV works in this
+
+77
+00:05:37,388 --> 00:05:42,189
+case. Well, so we take our message, here,
+we take our message, and then we apply a
+
+78
+00:05:42,189 --> 00:05:46,682
+PRF to it. And that derives an IV. And
+then that IV is going to be used to
+
+79
+00:05:46,682 --> 00:05:51,122
+encrypt the message using randomized
+counter mode. Okay. So in particular,
+
+80
+00:05:51,122 --> 00:05:55,890
+we're gonna use this PRF FTCRr for F
+counter, for randomized counter mode and
+
+81
+00:05:55,890 --> 00:06:00,659
+essentially evaluate this FCTR at Iv, IV
+plus one up to IV plus L. And, then, we
+
+82
+00:06:00,659 --> 00:06:05,613
+had sorta that with the message. And that
+gives us the final ciphertext. Okay. So,
+
+83
+00:06:05,613 --> 00:06:10,258
+this is SIV with a randomized counter
+mode. Now, let's see how decryption is
+
+84
+00:06:10,258 --> 00:06:15,139
+gonna work. And during decryption we're
+gonna add one more check, and that's
+
+85
+00:06:15,139 --> 00:06:20,859
+going to provide ciphertext integrity. So let's see
+how decryption is going to work. So here
+
+86
+00:06:20,859 --> 00:06:25,420
+we have our input cipher text that
+contains the IV and the cipher text. Well,
+
+87
+00:06:25,420 --> 00:06:30,514
+the first thing we're going to do is we're
+going to decrypt the cipher text using the
+
+88
+00:06:30,514 --> 00:06:35,252
+given IV, and that will give us candidate
+plain text. Now we're gonna reapply the
+
+89
+00:06:35,252 --> 00:06:39,813
+PRF F from the definition of SIV to this
+message. Now if a message is valid, we
+
+90
+00:06:39,813 --> 00:06:44,492
+should be getting the same IV that the
+[adversary??] supplied as part of the cipher
+
+91
+00:06:44,492 --> 00:06:48,994
+text. If we get a different IV, then we
+know that this message is not a valid
+
+92
+00:06:48,994 --> 00:06:53,863
+message and we simply reject the cipher
+text. So this is really cute. It's a very
+
+93
+00:06:53,863 --> 00:06:58,838
+simple kinda built in check to make sure
+that the cipher text is valid, right. We
+
+94
+00:06:58,838 --> 00:07:03,875
+simply check that after decryption if
+we re-derive the IV we would actually get
+
+95
+00:07:03,875 --> 00:07:08,425
+the correct IV. And if not we reject the
+message. And I claim that this simple check
+
+96
+00:07:08,425 --> 00:07:12,461
+during decryption is enough to [actually??] provide
+ciphertext integrity. And therefore,
+
+97
+00:07:12,461 --> 00:07:17,095
+deterministic authenticated encryption. So
+I'll state this in a simple theorem.
+
+98
+00:07:17,095 --> 00:07:22,100
+Basically to say, that if F is a secure
+PRF, and in counter mode that's derived
+
+99
+00:07:22,100 --> 00:07:27,560
+from FCTR is CPA secure, then the result
+is in fact a deterministic authenticated
+
+100
+00:07:27,560 --> 00:07:32,231
+encryption system. Now the proof for this
+is not too difficult. In two sentences,
+
+101
+00:07:32,231 --> 00:07:36,707
+let me just show you the rough intuition
+for why this is true. So, all we have to
+
+102
+00:07:36,707 --> 00:07:41,471
+argue is just cipher text integrity. So we
+already argued before that the system has
+
+103
+00:07:41,471 --> 00:07:46,235
+deterministic CPA security, all we have to
+argue is just cipher text integrity. So to
+
+104
+00:07:46,235 --> 00:07:50,425
+argue that the system has cipher text
+integrity, let's think again how the
+
+105
+00:07:50,425 --> 00:07:54,442
+cipher text integrity game works.
+Adversary asks for the encryption of a
+
+106
+00:07:54,442 --> 00:07:58,919
+bunch of messages of his choice. And he
+gets the resulting cipher text. Then, his
+
+107
+00:07:58,919 --> 00:08:03,807
+goal is to produce a new valid cipher
+text. Well, if that valid cipher text upon
+
+108
+00:08:03,807 --> 00:08:09,712
+decryption, decrypts to some completely
+new message. Then when we plug this new
+
+109
+00:08:09,712 --> 00:08:14,978
+message into the PRF F, we're just going to
+get some random IV and it's very unlikely
+
+110
+00:08:14,978 --> 00:08:20,181
+to hit the IV that the adversary supplied
+in the cipher text that he output. So
+
+111
+00:08:20,181 --> 00:08:25,070
+therefore that says that when the advisory
+outputs his forged cipher text, the
+
+112
+00:08:25,070 --> 00:08:29,772
+message in that forged cipher text
+basically should be equal to one of the
+
+113
+00:08:29,772 --> 00:08:34,770
+messages in his chosen message queries.
+Otherwise, again the IV that you get is
+
+114
+00:08:34,770 --> 00:08:39,623
+simply not gonna be equal to the IV in the
+forged safe index with very high
+
+115
+00:08:39,623 --> 00:08:44,262
+probability. But if the message is equal
+to one of the messages that the adversary
+
+116
+00:08:44,262 --> 00:08:48,577
+queried us on, well then, the cipher text
+that we're gonna get is also gonna be
+
+117
+00:08:48,577 --> 00:08:53,003
+equal to one of the cipher texts that we
+supplied to the adversary. But then his
+
+118
+00:08:53,003 --> 00:08:57,484
+forgery is simply one of the cipher texts
+that we gave to him. And therefore, this
+
+119
+00:08:57,484 --> 00:09:02,021
+is not a valid forgery. He has to give us
+a new cipher text to win the cipher text
+
+120
+00:09:02,021 --> 00:09:06,332
+integrity game. But he gave us one of our
+old cipher texts. So, this is the rough
+
+121
+00:09:06,332 --> 00:09:10,530
+intuition. I hope, I kinda went through it
+quickly. I hope it kinda makes sense. If
+
+122
+00:09:10,530 --> 00:09:14,781
+it doesn't then it's not the end of the
+world. I'm gonna reference the paper that
+
+123
+00:09:14,781 --> 00:09:18,980
+describes SIV at the end of the module.
+And if you wanna see this in more detail
+
+124
+00:09:18,980 --> 00:09:22,916
+you can read and take a look inside of
+that paper. But, regardless, this is a
+
+125
+00:09:22,916 --> 00:09:27,167
+very cute idea that I wanted to show you
+where kinda the fact that we derive the
+
+126
+00:09:27,167 --> 00:09:31,418
+randomness for deterministic counter mode
+using a PRF. Also, gives us an integrity
+
+127
+00:09:31,418 --> 00:09:35,999
+check when we actually do the decryption.
+Okay. So this SIV is a good mode for doing
+
+128
+00:09:35,999 --> 00:09:40,800
+deterministic encryption when you need to,
+particularly if the messages are long. If
+
+129
+00:09:40,800 --> 00:09:45,542
+the messages are very short, say they're
+less than sixteen bytes, in fact there's a
+
+130
+00:09:45,542 --> 00:09:50,285
+better way to do it, and that's the method
+that I wanna show you now. So the second
+
+131
+00:09:50,285 --> 00:09:54,739
+construction is actually trivial. All
+we're gonna do is we're gonna use a PRP
+
+132
+00:09:54,739 --> 00:09:59,482
+directly. So here's what we do. So suppose
+(E, D) is a secure PRP. So E will encrypt, and
+
+133
+00:09:59,482 --> 00:10:06,052
+D will decrypt. And I claim that if we use
+E directly, that already gives us
+
+134
+00:10:06,052 --> 00:10:11,642
+deterministic CPA security. So let me show you very quickly why. So suppose F is
+a truly random invertible function from X
+
+135
+00:10:11,642 --> 00:10:15,642
+to X. Okay. So remember a PRP is
+indistinguishable from a truly random
+
+136
+00:10:15,642 --> 00:10:20,106
+invertible function, so let's pretend that
+we actually do have a truly random
+
+137
+00:10:20,106 --> 00:10:24,801
+invertible function. Now in experiment
+zero what the attacker is gonna see while
+
+138
+00:10:24,801 --> 00:10:29,470
+he submits a bunch of messages, you know
+the messages on the left. And what he's
+
+139
+00:10:29,470 --> 00:10:34,550
+gonna see is basically the evaluation of f
+on the messages on the left that he
+
+140
+00:10:34,550 --> 00:10:39,694
+supplied. Well, in the deterministic CPA
+game, all these messages are distinct, and
+
+141
+00:10:39,694 --> 00:10:44,838
+so all he's gonna get back are just q
+distinct random values in X. That's all he
+
+142
+00:10:44,838 --> 00:10:50,006
+sees. Yes, there's Q distinct random
+values in X. Now let's think about
+
+143
+00:10:50,006 --> 00:10:55,989
+experiment one. In experiment one, he gets
+to see the encryptions of messages on the
+
+144
+00:10:55,989 --> 00:11:01,757
+right, okay, the M11 to MQ1. Well, again,
+all these messages are all distinct so all
+
+145
+00:11:01,757 --> 00:11:07,227
+he gets to see are just Q random distinct
+values in X. Well these two distributions,
+
+146
+00:11:07,227 --> 00:11:11,308
+in experiment zero and experiment one,
+therefore are identical. Basically, in
+
+147
+00:11:11,308 --> 00:11:15,606
+both cases what he gets to see are just Q
+distinct random values in X. And as a
+
+148
+00:11:15,606 --> 00:11:19,795
+result, he can't distinguish experiment
+zero from experiment one. And since he
+
+149
+00:11:19,795 --> 00:11:24,251
+can't do this for a truly random function,
+he also can't do this for the PRP. Ok,
+
+150
+00:11:24,251 --> 00:11:29,529
+so that explains why directly encrypting
+with a PRP already gives us a CPA secure
+
+151
+00:11:29,529 --> 00:11:34,485
+system very, very, very simple to use.
+That says that if all we wanna do is
+
+152
+00:11:34,485 --> 00:11:39,441
+encrypt short messages, say, less than
+sixteen bytes, then all we need to do is
+
+153
+00:11:39,441 --> 00:11:44,655
+to directly encrypt them using AES and the
+result will, in fact, be deterministic CPA
+
+154
+00:11:44,655 --> 00:11:49,997
+secure. So, if your indices are less than
+sixteen bytes directly using AES is a fine
+
+155
+00:11:49,997 --> 00:11:53,821
+thing to do. Notice however, that's not
+gonna provide any integrity. And we're
+
+156
+00:11:53,821 --> 00:11:57,989
+gonna see how to add integrity in just a
+minute. But the question for you is, what
+
+157
+00:11:57,989 --> 00:12:02,544
+do we do if we have longer than sixteen
+byte messages? Well, one option is to use
+
+158
+00:12:02,544 --> 00:12:07,157
+SIV. But what if we actually wanted to use
+this construction too. It's actually an
+
+159
+00:12:07,157 --> 00:12:11,598
+interesting question. Can we construct
+PRP's that have message spaces that are
+
+160
+00:12:11,598 --> 00:12:16,154
+bigger than just sixteen bytes? If you
+remember in the past we constructed PRFs
+
+161
+00:12:16,154 --> 00:12:20,652
+on that had large message spaces from
+PRFs that had small message spaces. Here,
+
+162
+00:12:20,652 --> 00:12:25,436
+we're going to construct PRPs with large
+message spaces from PRFs that have small
+
+163
+00:12:25,436 --> 00:12:30,172
+message spaces. So, here's how we do it.
+So suppose E D is a secure PRP that
+
+164
+00:12:30,172 --> 00:12:35,611
+operates on N bit blocks. There's a
+standard mode called EME that actually
+
+165
+00:12:35,611 --> 00:12:41,491
+will construct a PRP that operates on
+capital N bit blocks, where capital N is
+
+166
+00:12:41,491 --> 00:12:46,284
+much, much bigger than little n. So this
+would allow us to do deterministic
+
+167
+00:12:46,284 --> 00:12:50,866
+encryption on much larger messages than
+just sixteen bytes. In fact it could be as
+
+168
+00:12:50,866 --> 00:12:55,262
+long as we want. So let's see how EME
+works. It's a bit daunting at first but
+
+169
+00:12:55,262 --> 00:12:59,698
+it's not a difficult construction. So,
+let's see how it works. So, EME uses two
+
+170
+00:12:59,698 --> 00:13:04,484
+keys, K and L, and in fact in the real EME
+L is derived from K. But for our purposes,
+
+171
+00:13:04,484 --> 00:13:09,096
+let's just pretend that K and L are two
+distinct keys. The first thing we do, is
+
+172
+00:13:09,096 --> 00:13:13,840
+we take our message X and we break it up
+into blocks. And then we XOR each block
+
+173
+00:13:13,840 --> 00:13:18,730
+with a certain padding function, okay? So
+we use the secret key L to derive a pad
+
+174
+00:13:18,913 --> 00:13:23,681
+using this, you know function P that I'm
+not gonna explain here. We derive a
+
+175
+00:13:23,681 --> 00:13:28,949
+different pad for each one of the blocks
+and we XOR that pad. Into the block. The
+
+176
+00:13:28,949 --> 00:13:35,348
+next thing we do is we apply the PRP E
+using the Key K, to each of these blocks,
+
+177
+00:13:35,348 --> 00:13:41,230
+and we're gonna call these outputs PP0,
+PP1, and PP2. The next thing we do is we
+
+178
+00:13:41,230 --> 00:13:46,350
+XOR all these ppp's together and we call
+the result MP. Actually this XOR
+
+179
+00:13:46,350 --> 00:13:51,341
+doesn't need to be there. We call the
+result of the XOR MP. The next thing we
+
+180
+00:13:51,341 --> 00:13:56,591
+do we XOR all these ppp's together and we
+call the result MP. We encrypt this MP
+
+181
+00:13:56,591 --> 00:14:01,781
+using E and the key K. We call the outputs of
+this encryption MC. Okay. So then we use
+
+182
+00:14:01,781 --> 00:14:06,792
+the XOR MP and MC and this gives us
+another PM, which we use to derive one
+
+183
+00:14:06,792 --> 00:14:12,064
+more pad, and then we XOR this output
+of this pad with all the PPP's to get
+
+184
+00:14:12,064 --> 00:14:17,205
+these CCC's, [laugh], and then we XOR
+all these C C C's together that gives us
+
+185
+00:14:17,205 --> 00:14:22,411
+a value of C C C zero, which we then
+encrypt one more time with all these E's,
+
+186
+00:14:22,411 --> 00:14:27,878
+we do one more padding with all these P's
+and that actually finally gives us the
+
+187
+00:14:27,878 --> 00:14:32,975
+output of EME. Okay, so like I said,
+this may look a little daunting, but in
+
+188
+00:14:32,975 --> 00:14:38,483
+fact there's a theorem that shows that if
+the underlying block cipher E is a secure
+
+189
+00:14:38,483 --> 00:14:42,971
+PRP, then in fact. This construction, EME,
+is a secure PRP on this larger block, you
+
+190
+00:14:42,971 --> 00:14:47,140
+know, zero, one to the capital N. The nice
+thing about this construction is you
+
+191
+00:14:47,140 --> 00:14:50,877
+notice that it's very parallel and
+actually that's why it's a little
+
+192
+00:14:50,877 --> 00:14:55,082
+complicated. Counted every block. It's
+encrypted in parallel, so if you have a
+
+193
+00:14:55,082 --> 00:14:59,577
+multi-core processor, you can use all your
+cores to encrypt all the blocks at the
+
+194
+00:14:59,577 --> 00:15:04,635
+same time and then there would be one kind
+of sequential step to compute this, check
+
+195
+00:15:04,635 --> 00:15:09,242
+sum of, all the outputs and then one more
+parallel around to encrypt one more time
+
+196
+00:15:09,242 --> 00:15:13,232
+and then finally you get the outputs.
+These function Ps, by the way, that
+
+197
+00:15:13,232 --> 00:15:17,503
+generate the pads, are very, very simple
+functions. They take constant time so
+
+198
+00:15:17,503 --> 00:15:22,130
+we're just going to ignore them in terms
+of performance. So the bottom line is
+
+199
+00:15:22,130 --> 00:15:27,661
+performance here. You notice it requires
+two applications of E per input block. And
+
+200
+00:15:27,661 --> 00:15:33,362
+it turns out this can actually be slower
+than SIV, if SIV is implemented properly
+
+201
+00:15:33,362 --> 00:15:38,711
+with a very fast PRF to derive the
+randomness. Then in fact SIV can be twice
+
+202
+00:15:38,711 --> 00:15:43,790
+as fast, as this particular mode of
+operation. For this reason I say that the
+
+203
+00:15:43,790 --> 00:15:48,234
+PRP construction is very good for short
+messages, whereas SIV is good if you h, if
+
+204
+00:15:48,234 --> 00:15:52,892
+you want to encrypt longer messages in a
+deterministic fashion. But now what if we
+
+205
+00:15:52,892 --> 00:15:57,320
+wanted to add integrity to this PRP-based
+mechanism? So, can we achieve
+
+206
+00:15:57,320 --> 00:16:02,635
+deterministic authenticated encryption
+using the PRP mechanism where we directly
+
+207
+00:16:02,635 --> 00:16:06,971
+encrypt the message using a PRP? And it
+turns out the answer is yes and it's
+
+208
+00:16:06,971 --> 00:16:10,587
+actually again, a very simple
+encryption scheme that you should know
+
+209
+00:16:10,587 --> 00:16:14,637
+about. Basically what we're going to do is
+we're going to take our message and we're
+
+210
+00:16:14,637 --> 00:16:18,639
+going to append a bunch of zeros to this
+message and then we're going to apply the
+
+211
+00:16:18,639 --> 00:16:22,304
+PRP and that's it. And that's going to
+give us the cipher text. Now, very, very
+
+212
+00:16:22,304 --> 00:16:26,017
+simple. Just append zeros and encrypt
+using a PRP. When we decrypt, we're going
+
+213
+00:16:26,017 --> 00:16:30,018
+to look at these least significant bits of
+the resulting plain text and if they're
+
+214
+00:16:30,018 --> 00:16:33,731
+not equal to zero, we're just going to
+reject the cipher text. And if they are
+
+215
+00:16:33,731 --> 00:16:37,430
+equal to zero, we're going to output the
+message as valid. Okay, so that's it,
+
+216
+00:16:37,430 --> 00:16:41,074
+that's the whole system, very, very
+simple. Simply append zeroes during
+
+217
+00:16:41,074 --> 00:16:45,511
+encryption, and then check that the zeroes
+are there when you decrypt. And I claim
+
+218
+00:16:45,511 --> 00:16:49,630
+that this very simple mechanism actually
+provides deterministic authenticated
+
+219
+00:16:49,630 --> 00:16:53,433
+encryption, assuming, of course, that
+you've appended enough zeroes. And in
+
+220
+00:16:53,433 --> 00:16:57,183
+particular, if you append N zeroes, you
+need one over two to the N to be
+
+221
+00:16:57,183 --> 00:17:01,144
+negligible. And if so, then, in fact, this
+direct PRP based encryption, in fact,
+
+222
+00:17:01,144 --> 00:17:05,146
+provides deterministic authenticated
+encryption. So let me see why. Well, we
+
+223
+00:17:05,146 --> 00:17:10,310
+already argued that the system is CPA
+secure, so all we have to argue is that it
+
+224
+00:17:10,310 --> 00:17:15,352
+provides cipher text integrity. And again,
+that's easy to see. Let's look at the
+
+225
+00:17:15,352 --> 00:17:20,619
+cipher text game. So the adversary
+is gonna choose let's say a truly random
+
+226
+00:17:20,619 --> 00:17:25,700
+permutation. So a truly random, invertible
+function, on the input space. In this case
+
+227
+00:17:25,700 --> 00:17:30,348
+the input space is the message space and
+the N zero bits. Now what does the
+
+228
+00:17:30,348 --> 00:17:34,995
+adversary get to do? Well he gets to
+submit q messages, and then he receives
+
+229
+00:17:34,995 --> 00:17:40,138
+the encryption of those Q messages. Mainly
+he receives the PRP at his chosen points
+
+230
+00:17:40,138 --> 00:17:45,516
+concatenated with N zeros. Okay, that's
+what it basically it means to query the
+
+231
+00:17:45,733 --> 00:17:50,355
+CPA challenger. So in case of a random
+permutation, he simply gets to see, the
+
+232
+00:17:50,355 --> 00:17:54,829
+value of this permutation at Q points of
+his choice, but only concatenated with N
+
+233
+00:17:54,829 --> 00:17:59,193
+zeroes. And now, what's his goal in the
+cipher text integrity game? Well, his goal
+
+234
+00:17:59,193 --> 00:18:03,888
+is to produce some new cipher text that's
+different from the cipher text that he was
+
+235
+00:18:03,888 --> 00:18:08,087
+given, that's gonna decrypt properly.
+Well, what does it mean that it decrypts
+
+236
+00:18:08,087 --> 00:18:12,935
+properly? It means that if, when we apply,
+Pi inverse To the cipher text C, it had
+
+237
+00:18:12,935 --> 00:18:17,568
+better be the case that the N least
+significant bytes of C are all zeros. And
+
+238
+00:18:17,568 --> 00:18:22,141
+the question is how likely is that to
+happen? Well, so let's think about this.
+
+239
+00:18:22,141 --> 00:18:26,774
+So basically we have a truly random
+permutation and the adversary got to see
+
+240
+00:18:26,774 --> 00:18:31,707
+the value of this permutation as Q points.
+How likely is he to produce a new point
+
+241
+00:18:31,707 --> 00:18:36,643
+that, when inverted, happens to have N zeroes
+as the least significant bits? What we're
+
+242
+00:18:36,643 --> 00:18:41,646
+doing here is basically we're evaluating
+the permutation Pi inverse at the point c.
+
+243
+00:18:41,646 --> 00:18:46,108
+And since Pi inverse is a random
+permutation, how likely is it to have its
+
+244
+00:18:46,108 --> 00:18:52,206
+n least significant bits be equal to zero?
+So it isn't hard to see that the answer
+
+245
+00:18:52,206 --> 00:18:56,137
+is, is, at most, the probability's at
+most, one over two to the N. Because,
+
+246
+00:18:56,137 --> 00:19:00,967
+again, basically, the permutation is gonna
+output a random element inside of, X times
+
+247
+00:19:00,967 --> 00:19:05,459
+0 1 to the N. And that element is gonna end
+with N zeroes, but basically
+
+248
+00:19:05,459 --> 00:19:10,065
+with the probability one over two to the
+N. And as a result, the adversary wins the
+
+249
+00:19:10,065 --> 00:19:14,707
+game with negligible probability, Because,
+this value is negligible. So that's the
+
+250
+00:19:14,707 --> 00:19:18,761
+end of this segment. I wanted you to see
+these two very cute deterministic
+
+251
+00:19:18,761 --> 00:19:23,145
+authenticated encryption schemes. The
+first one we called SIV, where I said you
+
+252
+00:19:23,145 --> 00:19:27,803
+would use randomized counter mode and you
+just arrived at randomness for randomized
+
+253
+00:19:27,803 --> 00:19:32,077
+counter mode from a PRF applied to the
+message. And the very cute idea here is
+
+254
+00:19:32,077 --> 00:19:36,241
+that during decryption you can simply
+recompute the IV from the, from the decrypted
+
+255
+00:19:36,241 --> 00:19:40,789
+message and verify that that IV is what's
+given to you in the cipher text. And that
+
+256
+00:19:40,789 --> 00:19:44,789
+simple check is actually enough to
+guarantee authenticated encryption or
+
+257
+00:19:44,789 --> 00:19:49,198
+rather deterministic authenticated
+encryption. So this mode is, is the way
+
+258
+00:19:49,198 --> 00:19:54,046
+you would encrypt an index in a database
+if the index was large. If the index
+
+259
+00:19:54,046 --> 00:19:59,209
+happens to be short, maybe say, its eight
+bytes if it's an 8-byte user ID, then you
+
+260
+00:19:59,209 --> 00:20:04,246
+can directly use a PRP and the way you
+would do is, is you would append zeros to
+
+261
+00:20:04,246 --> 00:20:09,026
+those eight bytes. And then those zeros
+will be used as an integrity check when
+
+262
+00:20:09,026 --> 00:20:13,642
+you decrypt and again if you append, are
+able to append enough zeros, then in fact
+
+263
+00:20:13,813 --> 00:20:17,915
+this also provides deterministic
+authenticated encryption. As an aside, I
+
+264
+00:20:17,915 --> 00:20:22,758
+showed you that there's a way to build the
+wide block PRP from a narrow PRP and that
+
+265
+00:20:22,758 --> 00:20:26,843
+particular mode of operation is called
+EME. So we're gonna refer EME
+
+266
+00:20:26,843 --> 00:20:28,355
+actually in the next segment.

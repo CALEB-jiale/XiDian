@@ -1,0 +1,2018 @@
+﻿1
+00:00:00,000 --> 00:00:04,090
+In the previous segment we saw how to
+build public key encryption from trapdoor
+
+2
+00:00:00,000 --> 00:00:04,090
+在上一节里我们了解了如何从陷门函数中构建公钥加密，
+
+3
+00:00:04,090 --> 00:00:08,390
+functions, in this segment we're going to
+build a classic trapdoor function called
+
+4
+00:00:04,090 --> 00:00:08,390
+在这一节我们将构造一个经典的陷门函数—RSA.
+
+5
+00:00:08,390 --> 00:00:13,295
+首先让我们先来回顾一下什么是陷门函数。
+
+6
+00:00:08,390 --> 00:00:13,295
+RSA. But first let's quickly review what a
+trapdoor function is. So recall that a
+
+7
+00:00:13,295 --> 00:00:17,283
+回想下陷门函数由三种算法组成。分别是密钥生成模式算法，
+
+8
+00:00:13,295 --> 00:00:17,283
+trapdoor function is made up of three
+algorithms. There is a key generation
+
+9
+00:00:17,283 --> 00:00:21,056
+函数本身和函数的逆。
+
+10
+00:00:17,283 --> 00:00:21,056
+algorithm, the function itself, and the
+inverse of the function. The key
+
+11
+00:00:21,056 --> 00:00:25,313
+密钥生成模式算法输出一个公钥和一个私钥。在这种情况下，
+
+12
+00:00:21,056 --> 00:00:25,313
+generation algorithm outputs a public key
+and a secret key. And in this case, in
+
+13
+00:00:25,313 --> 00:00:29,786
+这公钥将定义一个函数，这个函数会将一集合X映射到本身。
+
+14
+00:00:25,313 --> 00:00:29,786
+this lecture the public key is going to
+define a function that maps the set X onto
+
+15
+00:00:29,786 --> 00:00:33,882
+之所以我把这些叫做陷门排列，与陷门函数相对照，
+
+16
+00:00:29,786 --> 00:00:33,882
+itself. Which is why I call these things
+trapdoor permutations, as opposed to
+
+17
+00:00:33,882 --> 00:00:37,978
+仅仅是因为这个函数将X映射到本身，
+
+18
+00:00:33,882 --> 00:00:37,978
+trapdoor functions, simply because the
+function maps X onto itself, whereas a
+
+19
+00:00:37,978 --> 00:00:43,356
+然而陷门函数可能会将一集合X映射到一任意集合Y。
+
+20
+00:00:37,978 --> 00:00:43,356
+trapdoor function might map the set X to
+some arbitrary set Y. Now given the public
+
+21
+00:00:43,356 --> 00:00:47,819
+key, the function, as we say, basically
+defines this function from the set X to
+
+22
+00:00:43,356 --> 00:00:47,819
+现在给这个函数赋予一公钥，正如我们所说的，定义这函数是从集合X到集合X的。
+
+23
+00:00:47,819 --> 00:00:52,914
+the set X. And then given the secret key,
+we can invert this function. So this
+
+24
+00:00:47,819 --> 00:00:52,914
+然后给一个私钥，我们能反转这个函数。
+
+25
+00:00:52,914 --> 00:00:57,401
+function F evaluates the function in the
+forward direction, and this function F
+
+26
+00:00:52,914 --> 00:00:57,401
+所以函数F从正面评估本身，反转，也就是
+
+27
+00:00:57,401 --> 00:01:02,059
+inverse, which means the secret key SK,
+computes F in the reverse direction. Now
+
+28
+00:00:57,401 --> 00:01:02,059
+通过私钥SK从反面计算函数F。
+
+29
+00:01:02,059 --> 00:01:06,489
+we say that the trapdoor permutation is
+secure if the function defined by the
+
+30
+00:01:02,059 --> 00:01:06,489
+如果被公钥定义的函数事实上是单向函数则陷门置换是安全的，
+
+31
+00:01:06,489 --> 00:01:11,033
+public key is in fact a one-way function,
+which means that it's easy to evaluate,
+
+32
+00:01:06,489 --> 00:01:11,033
+也就是说评估容易但没有陷门，
+
+33
+00:01:11,033 --> 00:01:15,404
+but without the trapdoor, the secret
+trapdoor, it's difficult to invert. Before
+
+34
+00:01:11,033 --> 00:01:15,404
+秘密的陷门是很难反转的。
+
+35
+00:01:15,404 --> 00:01:20,076
+we look at our first example of a trapdoor
+permutation, I want to do a quick review
+
+36
+00:01:15,404 --> 00:01:20,076
+在看第一个例子之前，我想对将用到的必需的一些算法
+
+37
+00:01:20,076 --> 00:01:24,467
+of some necessary arithmetic facts that
+we're gonna need. And in particular,
+
+38
+00:01:20,076 --> 00:01:24,467
+做一个快速回顾。特别地，
+
+39
+00:01:24,467 --> 00:01:28,632
+let's look at some arithmetic facts
+modulo composites. So here we have our
+
+40
+00:01:24,467 --> 00:01:28,632
+让我们来看一些以复合体为模的算法实例，所以有模数N,
+
+41
+00:01:28,632 --> 00:01:33,192
+modulus N, which happens to be a product
+of two primes, and you should be thinking
+
+42
+00:01:28,632 --> 00:01:33,192
+它恰好是两个素数产生的，取两大致等价的数P，Q，
+
+43
+00:01:33,192 --> 00:01:37,864
+of P and Q as roughly equal size numbers,
+since particular P and Q are both roughly
+
+44
+00:01:33,192 --> 00:01:37,864
+使二者恰好大致上是N的平方根
+
+45
+00:01:37,864 --> 00:01:42,407
+on the size of square root of N. So both
+are roughly the same size. Recall that we
+
+46
+00:01:37,864 --> 00:01:42,407
+二者大致相同。
+
+47
+00:01:42,407 --> 00:01:46,834
+denoted by ZN the set of integers from
+zero to N minus one, and we said that we
+
+48
+00:01:42,407 --> 00:01:46,834
+回想一下,我们用ZN来表示从0到N - 1的一组整数,
+
+49
+00:01:46,834 --> 00:01:51,318
+can do addition and multiplication module N. We denoted by ZN star the set of
+
+50
+00:01:46,834 --> 00:01:51,318
+我们可以用模N来做加法和乘法。我们用ZN*来标记其中的可逆元素。
+
+51
+00:01:51,318 --> 00:01:55,801
+invertible elements in ZN. So these are
+all the elements, which have a modular
+
+52
+00:01:51,318 --> 00:01:55,801
+所以所有的元素都有模块化的倒数。
+
+53
+00:01:55,801 --> 00:02:00,925
+inverse. And we said that actually X is
+invertible if and only if it's relatively
+
+54
+00:01:55,801 --> 00:02:00,925
+我们说X是可逆的当且仅当它与N互质。
+
+55
+00:02:00,925 --> 00:02:05,928
+prime to N. Moreover, I also told you that
+the number of invertible elements in ZN
+
+56
+00:02:00,925 --> 00:02:05,928
+另外，我也会告诉你可逆元素的数量用这个函数φ(N)来表示。
+
+57
+00:02:05,928 --> 00:02:11,147
+star is denoted by this function phi(N). So phi(N)
+is the number of invertible elements in ZN
+
+58
+00:02:05,928 --> 00:02:11,147
+所以φ(N)就是ZN中可逆元素的数目，
+
+59
+00:02:11,147 --> 00:02:15,814
+star, And I told you that when N is a
+product of two distinct primes, then in
+
+60
+00:02:11,147 --> 00:02:15,814
+当N是由两个不同的素数产生时，
+
+61
+00:02:15,814 --> 00:02:20,788
+fact phi(N) is equal to (P - 1) times (Q - 1) and if you extend that out, you
+
+62
+00:02:15,814 --> 00:02:20,788
+事实上φ(N)等于(P - 1)乘以(Q - 1)，如果你延长，
+
+63
+00:02:20,788 --> 00:02:26,007
+see that this is really equal to (N - P - Q + 1). Now remember that I said
+
+64
+00:02:20,788 --> 00:02:26,007
+这确实是等于(N - P - Q + 1)。现在记住我说的
+
+65
+00:02:26,007 --> 00:02:30,858
+that P and Q are on the order of square
+root of N which means that P + Q is
+
+66
+00:02:26,007 --> 00:02:30,858
+P和Q是N的平方根，P+Q也是N的平方根。
+
+67
+00:02:30,858 --> 00:02:35,675
+also on the order of square root of N.
+Which means that really phi(N) is on the
+
+68
+00:02:30,858 --> 00:02:35,675
+那么φ(N)大约是（N - 2） N的平方根
+
+69
+00:02:35,675 --> 00:02:41,050
+order of N minus two square root of N. So,
+in other words, it's very, very close to
+
+70
+00:02:35,675 --> 00:02:41,050
+换句话说，它会非常非常接近于N
+
+71
+00:02:41,050 --> 00:02:45,158
+N. Basically, subtracting the square root
+of N from a number, this is from, N is
+
+72
+00:02:41,050 --> 00:02:45,158
+基本上，从一个数减去N的平方根，
+
+73
+00:02:45,158 --> 00:02:49,425
+going to be a huge number in our case,
+like 600 digits. And so subtracting from a
+
+74
+00:02:45,158 --> 00:02:49,425
+N将是一个巨大的数字在我们的例子中,像600位数。
+
+75
+00:02:49,425 --> 00:02:53,533
+600 digit number, the square root of that
+600 digit number, namely a 300 digit
+
+76
+00:02:49,425 --> 00:02:53,533
+从一个600位数中减去,这个600位数字的平方根,也就是一个300位数字，
+
+77
+00:02:53,533 --> 00:02:57,534
+number, hardly affects the size of the
+number. Which means that phi(N) is really,
+
+78
+00:02:53,533 --> 00:02:57,534
+几乎不影响这个数字的大小。也就是φ(N)是真的
+
+79
+00:02:57,534 --> 00:03:01,908
+really, really close to N, and I want you
+to remember that, because we will actually
+
+80
+00:02:57,534 --> 00:03:01,908
+真的真的很接近N，我想让你记住，因为我们时不时的会用到这个，
+
+81
+00:03:01,908 --> 00:03:06,122
+be using this now and again. And so the
+fact that phi(N) is really close to N, means
+
+82
+00:03:01,908 --> 00:03:06,122
+所以这个事实，意味着
+
+83
+00:03:06,122 --> 00:03:11,094
+that if we choose a random element modulo
+N It's very, very, very likely to be in ZN
+
+84
+00:03:06,122 --> 00:03:11,094
+如果我们选一个随机元素模N，它会非常非常非常有可能是ZN*。
+
+85
+00:03:11,094 --> 00:03:15,633
+star. So it's very unlikely that by
+choosing a random element in ZN, we will
+
+86
+00:03:11,094 --> 00:03:15,633
+所以这是非常不可能的通过选一个随机元素，我们最终将
+
+87
+00:03:15,633 --> 00:03:20,085
+end up choosing an element that is not
+invertable. Okay. So just remember that,
+
+88
+00:03:15,633 --> 00:03:20,085
+选出不可逆的一元素。所以就记住，
+
+89
+00:03:20,085 --> 00:03:25,479
+that in fact almost all elements in ZN are
+actually invertible. And the last thing
+
+90
+00:03:20,085 --> 00:03:25,479
+事实上几乎所有的ZN中的元素都是可逆的。
+
+91
+00:03:25,479 --> 00:03:30,939
+that we'll need is Euler's theorem, which
+we covered last week, which basically says
+
+92
+00:03:25,479 --> 00:03:30,939
+最后我们需要学习的就是欧拉定理，我们上周学过的，
+
+93
+00:03:30,939 --> 00:03:36,332
+that for any element X in ZN star, if I
+raise X to the power of phi(N), I get one, in
+
+94
+00:03:30,939 --> 00:03:36,332
+对于ZN*中任一元素，如果我把X加到φ(N)上，我会得到ZN中一个数。
+
+95
+00:03:36,332 --> 00:03:42,527
+ZN. So in other words, I get 1 modulo N. I'll say it one more time because this
+
+96
+00:03:36,332 --> 00:03:42,527
+换句话说，，我得到1模N。我再说一次
+
+97
+00:03:42,527 --> 00:03:47,466
+is gonna be critical to what's coming.
+Again X to the phi(N) is equal to 1 modulo
+
+98
+00:03:42,527 --> 00:03:47,466
+因为这对下面要说的是至关重要的。X加到φ(N)上等价于1模N。
+
+99
+00:03:47,466 --> 00:03:51,997
+N. So now that we have the necessary
+background we can actually describe the
+
+100
+00:03:47,466 --> 00:03:51,997
+现在我们要有必需的背景来描述RSA陷门置换。
+
+101
+00:03:51,997 --> 00:03:55,927
+RSA trapdoor permutation. This is a classic,
+classic, classic construction in
+
+102
+00:03:51,997 --> 00:03:55,927
+这是一个很经典很经典的概念在密码学中，
+
+103
+00:03:55,927 --> 00:04:00,811
+cryptography that was first published in
+Scientific American back in 1977, this is
+
+104
+00:03:55,927 --> 00:04:00,811
+它是在1977年首次被刊登在科学美国人封面上的，
+
+105
+00:04:00,811 --> 00:04:05,576
+a very well known article in cryptography.
+And ever since then, this was 35 years
+
+106
+00:04:00,811 --> 00:04:05,576
+这个一篇周所周知的文章在密码学界。从那时到现在，它有35年了，
+
+107
+00:04:05,576 --> 00:04:10,340
+ago, the RSA trapdoor permutation has been used
+extensively in cryptographic applications.
+
+108
+00:04:05,576 --> 00:04:10,340
+RSA陷门置换被广泛地应用在用密码写的应用程序中。
+
+109
+00:04:10,340 --> 00:04:15,110
+For example, SSL and TLS use RSA both for
+certificates and for key exchange. There
+
+110
+00:04:10,340 --> 00:04:15,110
+例如，SSL和TLS用RSA来进行认证和密钥交换。
+
+111
+00:04:15,110 --> 00:04:19,452
+are many secure email systems and secure
+file systems that use RSA to encrypt
+
+112
+00:04:15,110 --> 00:04:19,452
+有许多安全的电子邮件系统和安全的文件系统用RSA来加密邮件和文件
+
+113
+00:04:19,452 --> 00:04:23,515
+emails and encrypt files in the file
+system. And there are many, many, many
+
+114
+00:04:19,452 --> 00:04:23,515
+在文件系统中。还有许多许多其他这个系统的应用程序。
+
+115
+00:04:23,515 --> 00:04:27,690
+other applications of this system. So this
+is a very, very classic, crypto
+
+116
+00:04:23,515 --> 00:04:27,690
+所以它是一个非常非常经典的加密结构，
+
+117
+00:04:27,690 --> 00:04:32,541
+construction, and I'll show you how it
+works. I should say that RSA is named for
+
+118
+00:04:27,690 --> 00:04:32,541
+我会向你展示它是如何工作的。
+
+119
+00:04:32,541 --> 00:04:37,150
+its inventors, Ron Rivest, Adi Shamir and
+Len Adleman, who were all at MIT at the
+
+120
+00:04:32,541 --> 00:04:37,150
+RSA是以它的发明者Ron Rivest, Adi Shamir和Len Adleman命名的
+
+121
+00:04:37,150 --> 00:04:41,758
+time they made this important discovery.
+So now we're ready to describe the RSA
+
+122
+00:04:37,150 --> 00:04:41,758
+他们都是在MIT完成这项重要的工作的
+
+123
+00:04:41,758 --> 00:04:46,425
+trapdoor permutation. To do that, I have
+to describe the key generation algorithm,
+
+124
+00:04:41,758 --> 00:04:46,425
+那么我们来描述RSA陷门置换，首先我需要描述密钥产生算法
+
+125
+00:04:46,425 --> 00:04:50,159
+the function A and the function AE 1.
+So let's see. So the way the key
+
+126
+00:04:46,425 --> 00:04:50,159
+函数A和函数AE
+
+127
+00:04:50,159 --> 00:04:54,826
+generation algorithm works is as follows:
+What we do is we generate two primes, P
+
+128
+00:04:50,159 --> 00:04:54,826
+密钥产生算法是这样做的：
+
+129
+00:04:54,826 --> 00:04:59,143
+and Q, each would be, say on the order of
+1000 bits, so, you know, roughly 300
+
+130
+00:04:54,826 --> 00:04:59,143
+我们生成2个素数P、Q，每个大约1000比特，300十进制位
+
+131
+00:04:59,143 --> 00:05:03,751
+digits, and then the RSA modulus is simply
+going to be the product of those two
+
+132
+00:04:59,143 --> 00:05:03,751
+RSA模就等于两个素数的乘积
+
+133
+00:05:03,751 --> 00:05:08,801
+primes. The next thing we do is we pick
+two exponents, e and d, such that e times
+
+134
+00:05:03,751 --> 00:05:08,801
+然后我们选择两个指数e和d，使得e乘d等于1模φ(N)
+
+135
+00:05:08,801 --> 00:05:13,894
+d is 1 modulo phi(N). What this means is
+that e and d first of all are relatively
+
+136
+00:05:08,801 --> 00:05:13,894
+这意味着e和d首先与φ(N)互素
+
+137
+00:05:13,894 --> 00:05:19,051
+prime to phi(N) and second of all they're
+actually modular inverses of one another,
+
+138
+00:05:13,894 --> 00:05:19,051
+其次它们互为模φ(N)的逆
+
+139
+00:05:19,051 --> 00:05:24,014
+modulo phi(N). And then we output the public
+key as the pair N,e and the
+
+140
+00:05:19,051 --> 00:05:24,014
+然后我们输出公钥对(N,e)
+
+141
+00:05:24,014 --> 00:05:29,172
+secret key is the secret key N,d. I should mention that the exponent e,
+
+142
+00:05:24,014 --> 00:05:29,172
+私钥为(N,d)
+
+143
+00:05:29,172 --> 00:05:34,586
+that the number e is sometimes called the
+encryption exponent and the exponent d is
+
+144
+00:05:29,172 --> 00:05:34,586
+这个指数e有时称为加密指数
+
+145
+00:05:34,586 --> 00:05:39,135
+sometimes called the decryption exponent.
+And you'll see why I keep referring to
+
+146
+00:05:34,586 --> 00:05:39,135
+指数d有时称为解密指数
+
+147
+00:05:39,135 --> 00:05:43,189
+these as exponents in just a second. Now
+the way the RSA function itself is
+
+148
+00:05:39,135 --> 00:05:43,189
+马上你就会知道为什么我称它为指数
+
+149
+00:05:43,189 --> 00:05:46,902
+defined is really simple. For simplicity
+I'm gonna define it as the function
+
+150
+00:05:43,189 --> 00:05:46,902
+RSA函数定义是很简单的。简单起见，我称之为从ZN*到ZN*的函数
+
+151
+00:05:46,902 --> 00:05:51,801
+from ZN star to ZN star. And the way
+the function is defined is simply given an
+
+152
+00:05:46,902 --> 00:05:51,801
+这个函数定义为给定输入X
+
+153
+00:05:51,801 --> 00:05:57,001
+我们取X在ZN中的e次幂
+
+154
+00:05:51,801 --> 00:05:57,001
+input X, all we do is we simply take X and
+raise it to the power of e in ZN. So we
+
+155
+00:05:57,001 --> 00:06:02,137
+因此我们只需计算X^e mod N
+
+156
+00:05:57,001 --> 00:06:02,137
+just compute X to the e, modulo N. That's
+it. And then to decrypt, what we do is we
+
+157
+00:06:02,137 --> 00:06:07,451
+解密时，给定输入Y，我们只需计算Y的d次幂模N
+
+158
+00:06:02,137 --> 00:06:07,451
+simply, given an input Y, we simply raise
+Y to the power of d, modulo N. And that's
+
+159
+00:06:07,451 --> 00:06:12,483
+现在你知道我把e,d称为指数的原因了
+
+160
+00:06:07,451 --> 00:06:12,483
+it. So now you can see why as I refer to e
+and d as exponents. They're the things
+
+161
+00:06:12,483 --> 00:06:17,767
+它们是X和Y的指数。因此我们来快速验证F^-1确实是F的逆
+
+162
+00:06:12,483 --> 00:06:17,767
+that X and Y are being raised to. So let's
+quickly verify that F inverse really does
+
+163
+00:06:17,767 --> 00:06:22,673
+我们来看计算Y^d时会发生什么
+
+164
+00:06:17,767 --> 00:06:22,673
+invert the function F. So let's see what
+happens when we compute Y to the d. So
+
+165
+00:06:22,673 --> 00:06:27,515
+假设Y正好是函数RSA在X的值
+
+166
+00:06:22,673 --> 00:06:27,515
+suppose Y itself happens to be the RSA
+function of some value X. In which case,
+
+167
+00:06:27,515 --> 00:06:33,045
+这时Y^d等于RSA(X)^d
+
+168
+00:06:27,515 --> 00:06:33,045
+what Y to the d is, is really RSA of X to
+the power of d. While X by itself is
+
+169
+00:06:33,045 --> 00:06:39,006
+即等于X^e mod N。因此Y^d等于X^ed mod N
+
+170
+00:06:33,045 --> 00:06:39,006
+simply gonna be X to the e modulo N, And
+therefore, Y to the d is simply X to the e
+
+171
+00:06:39,006 --> 00:06:44,896
+这里又使用了指数相乘规则
+
+172
+00:06:39,006 --> 00:06:44,896
+times d modulo N. Again, just using rules
+of exponentiation, the exponents multiply,
+
+173
+00:06:44,896 --> 00:06:50,857
+所以我们得到X^(ed)。但ed等于什么呢？
+
+174
+00:06:44,896 --> 00:06:50,857
+so we get X to the e times d. But what do
+we know about e times d? e times d we said
+
+175
+00:06:50,857 --> 00:06:57,390
+ed等于1 mod φ(N)。这说明存在某个整数k
+
+176
+00:06:50,857 --> 00:06:57,390
+is one modulo phi(N). And what that means is
+there exists some integer such that e
+
+177
+00:06:57,390 --> 00:07:04,177
+使得ed=kφ(N)+1，也就是说ed=1 mod φ(N)
+
+178
+00:06:57,390 --> 00:07:04,177
+times d is equal to K times phi(N) plus one.
+This is what it means that e times d is
+
+179
+00:07:04,177 --> 00:07:09,820
+因此我们把ed换成kφ(N)+1
+
+180
+00:07:04,177 --> 00:07:09,820
+one modulo phi(N). So, we can simply replace e
+times d by K times phi(N)+1. So, that's
+
+181
+00:07:09,820 --> 00:07:14,453
+我写在这里。我们有X^(kφ(N)+1)
+
+182
+00:07:09,820 --> 00:07:14,453
+what I wrote here. So, we have X to the
+power of K times phi(N)+1. But now again
+
+183
+00:07:14,453 --> 00:07:19,868
+现在再用指数法则，我们能把式子重写为（X^φ(N))^k*x
+
+184
+00:07:14,453 --> 00:07:19,868
+just using rules of exponentiation, we can
+re-write this as X to the power of phi(N) to
+
+185
+00:07:19,868 --> 00:07:24,827
+这与kφ(N)+1作为指数相同
+
+186
+00:07:19,868 --> 00:07:24,827
+the power of K times X. This is really the
+same thing as K times phi(N)+1 as the
+
+187
+00:07:24,827 --> 00:07:29,917
+我只是把指数放在不同项上
+
+188
+00:07:24,827 --> 00:07:29,917
+exponent. I just kind of separated the
+exponent into it's different components.
+
+189
+00:07:29,917 --> 00:07:35,137
+现在通过欧拉定理，我们知道X^φ(N)等于1
+
+190
+00:07:29,917 --> 00:07:35,137
+Now, X to the phi(N) by Euler's theorem, we know
+that X to the phi(N) is equal to one. So what
+
+191
+00:07:35,137 --> 00:07:41,394
+所以整个乘积等于多少？因为X^φ(N)=1
+
+192
+00:07:35,137 --> 00:07:41,394
+is this whole product equal to? Well since
+X to the phi(N) is equal to one, one to
+
+193
+00:07:41,394 --> 00:07:45,961
+1^k=1，因此整个式子就等于1
+
+194
+00:07:41,394 --> 00:07:45,961
+the K is also equal to one, so this whole
+thing over here is simply equal to one.
+
+195
+00:07:45,961 --> 00:07:50,757
+只剩下X，因此我们证明了
+
+196
+00:07:45,961 --> 00:07:50,757
+And what we're left with is X. So what we
+just proved is that if I take the output of
+
+197
+00:07:50,757 --> 00:07:55,210
+如果计算RSA函数的输出的d次幂，就得到X
+
+198
+00:07:50,757 --> 00:07:55,210
+the RSA function and raise it to the power
+of 'd', I get back X. Which means that
+
+199
+00:07:55,210 --> 00:07:59,663
+这说明d次幂就是RSA函数的逆
+
+200
+00:07:55,210 --> 00:07:59,663
+raising to the power of 'd' basically
+inverts the RSA function, which is what we
+
+201
+00:07:59,663 --> 00:08:04,638
+就是这样。这就是函数的完整描述
+
+202
+00:07:59,663 --> 00:08:04,638
+wanted to show. So that's it, that's the
+whole description of the function, we've
+
+203
+00:08:04,638 --> 00:08:08,972
+我们描述了密钥的产生，函数自身，即计算e次幂模N
+
+204
+00:08:04,638 --> 00:08:08,972
+described the key generation. The function
+itself, which is simply raising things to
+
+205
+00:08:08,972 --> 00:08:13,410
+函数的逆，即计算d次幂模N
+
+206
+00:08:08,972 --> 00:08:13,410
+the power of e modulo N, and the inversion
+function which is simply raising things to
+
+207
+00:08:13,410 --> 00:08:17,483
+接下来的问题是，为什么这个函数是安全的
+
+208
+00:08:13,410 --> 00:08:17,483
+the power of d, also modulo N. The next
+question is, why is this function secure?
+
+209
+00:08:17,483 --> 00:08:21,609
+换句话说，为什么函数是单向的，如果我只有公钥但没有私钥？
+
+210
+00:08:17,483 --> 00:08:21,609
+In other words, why is this function one
+way if all I have is just a public key,
+
+211
+00:08:21,609 --> 00:08:26,409
+为了说明函数是单向的
+
+212
+00:08:21,609 --> 00:08:26,409
+but I don't have the secret key? And so to
+argue that this function is one way we
+
+213
+00:08:26,409 --> 00:08:31,454
+我们表述RSA假设，它告诉我们RSA是一个单向置换
+
+214
+00:08:26,409 --> 00:08:31,454
+basically state the RSA assumption which
+basically says that the RSA function is a
+
+215
+00:08:31,454 --> 00:08:36,626
+正式的表达是这样
+
+216
+00:08:31,454 --> 00:08:36,626
+one way permutation. And formally the way
+we state that is that, basically for all
+
+217
+00:08:36,626 --> 00:08:41,416
+对于所有的有效算法A，如果产生两个随机素数p和q
+
+218
+00:08:36,626 --> 00:08:41,416
+efficient algorithms, A, it so happens
+that if I generate two primes p and q,
+
+219
+00:08:41,416 --> 00:08:46,397
+把它们相乘再模N，然后随机在ZN*中取y
+
+220
+00:08:41,416 --> 00:08:46,397
+random primes p and q. I multiply them to
+get to modulus N and then I choose a
+
+221
+00:08:46,397 --> 00:08:51,103
+然后把模数，指数和y给算法A
+
+222
+00:08:46,397 --> 00:08:51,103
+random 'y' in ZN star. And now I give
+the modulus, the exponent and this 'y' to
+
+223
+00:08:51,103 --> 00:08:55,893
+我得到RSA在y的逆的概率
+
+224
+00:08:51,103 --> 00:08:55,893
+algorithm A, the probability that I'll get
+the inverse of RSA at the point Y, mainly
+
+225
+00:08:55,893 --> 00:09:00,336
+也就是得到y^(1/e)的概率
+
+226
+00:08:55,893 --> 00:09:00,336
+I'll get Y to the power of one over E.
+That's really what the inverse is. This
+
+227
+00:09:00,330 --> 00:09:04,600
+这个事件的概率可以忽略不计。因此这种假设叫做RSA假设。
+
+228
+00:09:00,330 --> 00:09:04,600
+probability is negligible. So this
+assumption is called the RSA assumption.
+
+229
+00:09:04,600 --> 00:09:09,330
+它指出RSA是一种提供公共密钥的单向置换。
+
+230
+00:09:04,600 --> 00:09:09,330
+It basically states that RSA is a one way
+permutation just given the public [key?]. And
+
+231
+00:09:09,330 --> 00:09:13,950
+并且这是一种暗门置换因为其中包含暗门。
+
+232
+00:09:09,330 --> 00:09:13,950
+therefore, it is a trapdoor permutation
+because it has a trapdoor. And makes this
+
+233
+00:09:13,950 --> 00:09:19,500
+并且这使得每个知道暗门的人都很容易作反置。所以我们现在有了一个安全
+
+234
+00:09:13,950 --> 00:09:19,500
+easy to invert for anyone who knows the
+trap door. So now that we have a secure
+
+235
+00:09:19,500 --> 00:09:23,710
+的暗门置换。我们可以简单地把它插入到我们为公共密钥加密的函数中，
+
+236
+00:09:19,500 --> 00:09:23,710
+trap door permutation, we can simply plug
+that into our construction for public key
+
+237
+00:09:23,710 --> 00:09:27,820
+这就得到了世界上第一个公共密钥加密系统。
+
+238
+00:09:23,710 --> 00:09:27,820
+encryption, and get our first real world
+public key encryption system. And so what
+
+239
+00:09:27,820 --> 00:09:32,360
+我们要做到就是简单地将RSA的暗门置换插入
+
+240
+00:09:27,820 --> 00:09:32,360
+we'll do is we'll simply plug the, the RSA
+trapdoor permutation into the iso standard
+
+241
+00:09:32,360 --> 00:09:36,150
+我们之前已经见过的iso标准函数中。所以，回想一下，
+
+242
+00:09:32,360 --> 00:09:36,150
+construction that we saw in the previous
+segment. So, if you recall, that
+
+243
+00:09:36,150 --> 00:09:40,200
+这个结构基于一个必须提供认证加密的对称加密系统。
+
+244
+00:09:36,150 --> 00:09:40,200
+construction was based on a symmetric
+encryption system that had to provide
+
+245
+00:09:40,200 --> 00:09:44,430
+这个结构还基于哈希函数。
+
+246
+00:09:40,200 --> 00:09:44,430
+authenticated encryption. And it was also
+based on a hash function. Then mapped
+
+247
+00:09:44,610 --> 00:09:48,860
+然后映射进RS是A的世界，它将元素映射进
+
+248
+00:09:44,610 --> 00:09:48,860
+while transferring it into the world of
+RSA, it maps elements in
+
+249
+00:09:48,860 --> 00:09:54,200
+ZN，映射进对称密钥系统中的私密密钥里。 And now the
+
+250
+00:09:48,860 --> 00:09:54,200
+ZN, into secret keys for the
+symmetric key system. And now the
+
+251
+00:09:54,200 --> 00:09:58,940
+这时加密体系工作的方式很容易描述。一般来说，算法G
+
+252
+00:09:54,200 --> 00:09:58,940
+way the encryption scheme works is really
+easy to describe. Basically algorithm G
+
+253
+00:09:58,940 --> 00:10:03,750
+只运行RSA密钥算法并且产生一个公共密钥和一个私密密钥。
+
+254
+00:09:58,940 --> 00:10:03,750
+just runs the RSA key generation algorithm
+and produces a public key and a secret
+
+255
+00:10:03,750 --> 00:10:07,810
+就像之前一样，所以你会发现公共密钥包含加密指数
+
+256
+00:10:03,750 --> 00:10:07,810
+key. Just as before. So you notice the
+public key contains the encryption
+
+257
+00:10:07,810 --> 00:10:11,940
+私密密钥包含解密指数。
+
+258
+00:10:07,810 --> 00:10:11,940
+exponent and the, secret key contains the
+decryption exponent. And the way we
+
+259
+00:10:11,940 --> 00:10:16,290
+并且我们是按顺序加密。接下来，我们要从ZN中随机地选取一个X。
+
+260
+00:10:11,940 --> 00:10:16,290
+encrypt is as follows. Well, we're going
+to choose a random X in ZN. We're going
+
+261
+00:10:16,290 --> 00:10:21,460
+我们要对这个X申请使用RSA函数。 我们要从这个X中通过哈希函数演绎出一个对称密钥
+
+262
+00:10:16,290 --> 00:10:21,460
+to apply the RSA function to this X, we're
+going to deduce a symmetric key from this
+
+263
+00:10:21,460 --> 00:10:26,450
+因此我们通过X计算出H并获得密钥K，接着输出Y和
+
+264
+00:10:21,460 --> 00:10:26,450
+X by hashing it, so we compute H of X to
+obtain the key K, and then we output this
+
+265
+00:10:26,450 --> 00:10:31,130
+在对称密钥K下的信息加密后的结果。
+
+266
+00:10:26,450 --> 00:10:31,130
+Y along with the encryption of the message
+under the symmetric key K. And in
+
+267
+00:10:31,130 --> 00:10:35,930
+事实上，哈希函数H是运用了SHA-256来进行加密计算的，
+
+268
+00:10:31,130 --> 00:10:35,930
+practice, the hash function H would be
+just implemented just using SHA-256, and
+
+269
+00:10:35,930 --> 00:10:40,970
+因此你才可以运用SHA-256的输出来生成一个稍后用来
+
+270
+00:10:35,930 --> 00:10:40,970
+you would use the output of SHA-256 to
+generate a symmetric key that could then
+
+271
+00:10:40,970 --> 00:10:45,680
+作为对称加密的助手的对称密钥。这就是加密的过程。
+
+272
+00:10:40,970 --> 00:10:45,680
+be used for the symmetric encryption
+assistant. So that's how we would encrypt
+
+273
+00:10:45,680 --> 00:10:50,080
+接下来解密的过程和我们之前学过的很相似，
+
+274
+00:10:45,680 --> 00:10:50,080
+and then the way we would decrypt is
+pretty much as we saw in the previous
+
+275
+00:10:50,080 --> 00:10:54,950
+第一个步骤，是用私密密钥
+
+276
+00:10:50,080 --> 00:10:54,950
+segment, where the first thing we would do
+is we would use the secret key to invert
+
+277
+00:10:54,950 --> 00:10:59,750
+倒置密文的报头。所以我们可以计算出RSA在Y下的倒置
+
+278
+00:10:54,950 --> 00:10:59,750
+the header of the ciphertext. So we would
+compute RSA invert of Y, that would give
+
+279
+00:10:59,750 --> 00:11:04,560
+这样会得到一个值X. 接下来对X使用哈希函数，我们可以得到密钥K。
+
+280
+00:10:59,750 --> 00:11:04,560
+us the value X. Then we would apply the
+hash function to X so that this would give
+
+281
+00:11:04,560 --> 00:11:09,190
+接下来对密文中的对称系统运行解密算法
+
+282
+00:11:04,560 --> 00:11:09,190
+us the key K. And then we would run the
+decryption algorithm for the symmetric
+
+283
+00:11:09,190 --> 00:11:15,170
+这样就可以得到原始信息M。
+
+284
+00:11:09,190 --> 00:11:15,170
+system on the ciphertext and that would
+produce the original message m. And then
+
+285
+00:11:15,170 --> 00:11:19,100
+我们之前还学过一个理论，如果RSA的暗门排列是安全的。
+
+286
+00:11:15,170 --> 00:11:19,100
+we stated a theorem in the previous
+segment to say that if the RSA trapdoor
+
+287
+00:11:19,100 --> 00:11:23,080
+ES和Ds，那么对称加密系统[inaudible]
+
+288
+00:11:19,100 --> 00:11:23,080
+permutation is secure, Es and Ds, the
+symmetric encryption scheme [inaudible]
+
+289
+00:11:23,080 --> 00:11:27,170
+会提供经过验证的加密。正如我们所说，H只是一种随机的预报。
+
+290
+00:11:23,080 --> 00:11:27,170
+provides authenticated encryption. And as
+we said, H is just random oracle. It's,
+
+291
+00:11:27,330 --> 00:11:31,420
+它只是一种从ZN到密钥区的随机函数。
+
+292
+00:11:27,330 --> 00:11:31,420
+you know, kind of a random function from
+ZN to the key space. Then, in fact, this
+
+293
+00:11:31,420 --> 00:11:35,720
+事实上，这种安全挑选密文的系统是一种很好的可以用作公共密钥的系统。
+
+294
+00:11:31,420 --> 00:11:35,720
+system is chosen cipher text secure, and
+is a good public key system to use.
+
+295
+00:11:36,240 --> 00:11:41,720
+那么现在我们就得到了第一个优质公共密钥系统运用的例子。
+
+296
+00:11:36,240 --> 00:11:41,720
+So now that we have our first example of a
+good public key system to use, I wanna
+
+297
+00:11:41,720 --> 00:11:46,970
+这里我要提示大家RSA不能用于加密的情况。
+
+298
+00:11:41,720 --> 00:11:46,970
+quickly warn you about how not to use RSA
+for encryption. And this again something
+
+299
+00:11:46,970 --> 00:11:51,100
+这又是我们之前讲过的内容。现在我又要重复一遍，
+
+300
+00:11:46,970 --> 00:11:51,100
+that we said in the previous segment. And
+I'm going to repeat it here, except I'm
+
+301
+00:11:51,100 --> 00:11:55,530
+把之前的理论针对RSA再讲一遍，所以我喜欢把这个称为RSA课本。
+
+302
+00:11:51,100 --> 00:11:55,530
+going to make it specific to RSA. So
+I'd like to call this, textbook RSA.
+
+303
+00:11:55,530 --> 00:11:59,400
+当你要使用RSA加密时
+
+304
+00:11:55,530 --> 00:11:59,400
+Which basically is the first thing that
+comes to mind when you think about
+
+305
+00:11:59,400 --> 00:12:03,670
+也就是私密密钥和公共密钥像之前那样规定
+
+306
+00:11:59,400 --> 00:12:03,670
+encrypting using RSA, namely, the secret
+key and the public key will be as before.
+
+307
+00:12:03,670 --> 00:12:08,160
+此处我们不用哈希函数得到对称密钥的方法，
+
+308
+00:12:03,670 --> 00:12:08,160
+But now instead of running through, a hash
+function to generate a symmetric key, what
+
+309
+00:12:08,160 --> 00:12:12,330
+而是直接用RSA加密来得到信息M。
+
+310
+00:12:08,160 --> 00:12:12,330
+we would do is we would directly use RSA
+to encrypt the given message M. And then
+
+311
+00:12:12,330 --> 00:12:16,200
+我们首先想到的是直接用解密指数对密文进行解密
+
+312
+00:12:12,330 --> 00:12:16,200
+we would directly use the decryption
+exponent to decrypt the cipher text and
+
+313
+00:12:16,200 --> 00:12:20,770
+得到纯文本M. 我要把这种称为RSA课本，因为 because there are many
+
+314
+00:12:16,200 --> 00:12:20,770
+obtain the plain text M. I'm going to call
+this textbook RSA, because there are many
+
+315
+00:12:20,770 --> 00:12:25,350
+有很多种讲解RSA用这种方式来加密的课本。但是这么说是完全的错误。
+
+316
+00:12:20,770 --> 00:12:25,350
+textbooks that describe RSA encryption in
+this way. And this is completely wrong.
+
+317
+00:12:25,350 --> 00:12:29,490
+这不是RSA加密的方式。这是一种不安全的系统。特别是，
+
+318
+00:12:25,350 --> 00:12:29,490
+This is not how RSA encryption works.
+It's an insecure system. In particular,
+
+319
+00:12:29,490 --> 00:12:33,930
+它是对称性加密，所以它可能不能保证语义安全。
+
+320
+00:12:29,490 --> 00:12:33,930
+it's deterministic encryption, and so it
+can't possibly be semantically secure, but
+
+321
+00:12:33,930 --> 00:12:38,540
+但是事实上有很多攻击存在，比如我接下来给你们展示一分钟内的一个攻击
+
+322
+00:12:33,930 --> 00:12:38,540
+in fact there are many attacks exist that
+I'm going to show you an attack in just a
+
+323
+00:12:38,540 --> 00:12:42,700
+但是这里我想讲清楚的一点，
+
+324
+00:12:38,540 --> 00:12:42,700
+minute, but the message that I want to
+make clear here, is that RSA, all it is,
+
+325
+00:12:42,700 --> 00:12:47,150
+是RSA是一个暗门置换。对它自己来说，不是一个加密系统。 You have to
+
+326
+00:12:42,700 --> 00:12:47,150
+is a trap door permutation. By itself
+it's not an encryption system. You have to
+
+327
+00:12:47,150 --> 00:12:51,420
+我们必须完善一下它，比如加上ISO标准，使他成为一个加密系统。
+
+328
+00:12:47,150 --> 00:12:51,420
+embellish it with this ISO standard for
+example, to make it into an encryption
+
+329
+00:12:51,420 --> 00:12:55,820
+仅仅就自己来说，这只是个函数。那么如果我们用课本RSA的话
+
+330
+00:12:51,420 --> 00:12:55,820
+system. By itself, all it is, is just a
+function. So let's see what goes wrong if
+
+331
+00:12:55,820 --> 00:13:00,220
+我们会犯什么错误呢。换句话说，如果你想直接用RSA加密一条消息，
+
+332
+00:12:55,820 --> 00:13:00,220
+you try to use textbook RSA, In other
+words, if you try to encrypt a message
+
+333
+00:13:00,220 --> 00:13:04,970
+我会给你一个来自互联网上的攻击，
+
+334
+00:13:00,220 --> 00:13:04,970
+using RSA directly. And I'll give you an
+example attack from the world of the web.
+
+335
+00:13:04,975 --> 00:13:09,725
+假设我们有个网络服务器，它有一个RSA私密密钥。我们用N和D来表示。
+
+336
+00:13:04,975 --> 00:13:09,725
+So imagine we have a web server. The web
+server has an RSA secret key. Here's it's
+
+337
+00:13:09,725 --> 00:13:14,738
+我们有一个浏览器正在尝试建立一个安全的SSL会话
+
+338
+00:13:09,725 --> 00:13:14,738
+denoted by N and D. And here we have a web
+browser who's trying to establish a secure
+
+339
+00:13:14,738 --> 00:13:19,124
+通过web服务器。所以SSL的工作方式为
+
+340
+00:13:14,738 --> 00:13:19,124
+session, a secure SSL session, with the web
+server. So the way SSL works is that the
+
+341
+00:13:19,124 --> 00:13:23,401
+由浏览器发送客户你好这样的消息开始
+
+342
+00:13:19,124 --> 00:13:23,401
+web browser starts off by sending this
+client hello message saying, hey, I want
+
+343
+00:13:23,401 --> 00:13:27,787
+你好，我想和你建立一个安全会话。web服务器即响应相应服务器的消息
+
+344
+00:13:23,401 --> 00:13:27,787
+to set up a secure session with you. The
+web server responds with a server hello
+
+345
+00:13:27,787 --> 00:13:32,430
+消息包括了服务器的公钥。之后浏览器将运行
+
+346
+00:13:27,787 --> 00:13:32,430
+message that contains the server's public
+key And then the web browser will go ahead
+
+347
+00:13:32,430 --> 00:13:36,615
+并且生成一个随机的预主密钥K，它将用K加密
+
+348
+00:13:32,430 --> 00:13:36,615
+and generate a random what's called a
+premaster secret K, it will encrypt the
+
+349
+00:13:36,615 --> 00:13:40,692
+预主密钥并用密文发送给服务器
+
+350
+00:13:36,615 --> 00:13:40,692
+premaster secret using K and send the
+result in ciphertext over to the web
+
+351
+00:13:40,692 --> 00:13:44,932
+服务器会进行解密得到K
+
+352
+00:13:40,692 --> 00:13:44,932
+server. The web server will decrypt and
+then the web server will also get K, so
+
+353
+00:13:44,932 --> 00:13:49,336
+所以两者会得到一个共享密钥，用来进行之间的安全会话
+
+354
+00:13:44,932 --> 00:13:49,336
+now the two have a shared key that they
+can use to then secure a session between
+
+355
+00:13:49,336 --> 00:13:53,630
+如果我们直接使用RSA函数来加密K会出什么错误?
+
+356
+00:13:49,336 --> 00:13:53,630
+them. So I want to show you what goes
+wrong if we directly use the RSA function
+
+357
+00:13:53,630 --> 00:13:57,762
+换句话说，如果直接将K加密为k的e次方模N
+
+358
+00:13:53,630 --> 00:13:57,762
+for encrypting K. In other words, if
+directly K is encrypted as K to the e
+
+359
+00:13:57,762 --> 00:14:02,828
+为了论证，我们假设K为一个64比特的密钥
+
+360
+00:13:57,762 --> 00:14:02,828
+modulo N. Just for the sake of argument
+let's suppose that K is a 64-bit key.
+
+361
+00:14:02,828 --> 00:14:08,097
+我们将K取一在0到2的64次方范围内的整数
+
+362
+00:14:02,828 --> 00:14:08,097
+We're going to treat K as an integer in
+the range as zero to 2 to the 64.
+
+363
+00:14:08,097 --> 00:14:13,100
+更准确的说是2的64次方减一，现在我们继续往下
+
+364
+00:14:08,097 --> 00:14:13,100
+More precisely two to the 64 minus one,
+and now what we're going to do is the
+
+365
+00:14:13,100 --> 00:14:18,302
+首先，假设K取大致相等的一串数
+
+366
+00:14:13,100 --> 00:14:18,302
+following. First of all, suppose it so
+happens that K factors into a product of
+
+367
+00:14:18,302 --> 00:14:23,705
+我们把K写成K1乘K2，并且K1和K2都为整数
+
+368
+00:14:18,302 --> 00:14:23,705
+roughly equal sized numbers. So K we can
+write as K1 times K2, where K1 and K2 are
+
+369
+00:14:23,705 --> 00:14:29,745
+并且都小于2的34次方。事实证明这种情况发生
+
+370
+00:14:23,705 --> 00:14:29,745
+integers. And both are say less than two
+to the 34. So, it turns out this happens
+
+371
+00:14:29,745 --> 00:14:34,508
+的概率约为百分之二十，所以有五分之一的情况下K可以这么写
+
+372
+00:14:29,745 --> 00:14:34,508
+with probability roughly twenty percent so
+one in five times K can actually be
+
+373
+00:14:34,508 --> 00:14:39,740
+但是现在如果将K，K=K1×K2加入方程式中
+
+374
+00:14:34,508 --> 00:14:39,740
+written in this way. But, now if we plug
+this K, K=K1 x K2 if we plug that into the
+
+375
+00:14:39,740 --> 00:14:45,241
+定义你看到的密文可以简单地用K1×K2替换K
+
+376
+00:14:39,740 --> 00:14:45,241
+equation that defines the cipher text you
+see that we can simply substitute K by K1 x k2
+
+377
+00:14:45,241 --> 00:14:50,875
+然后我们就可以把K1换到另一边。这个方程式就结束了
+
+378
+00:14:45,241 --> 00:14:50,875
+and then we can move k1 to the other side.
+So then we end up with this equation here,
+
+379
+00:14:50,875 --> 00:14:55,897
+即K1的e次方分之C等于K2的e次方。注意，如果我在两边
+
+380
+00:14:50,875 --> 00:14:55,897
+namely C over K1 to the e is equal to K2 to the e. You notice if I multiply both
+
+381
+00:14:55,897 --> 00:15:00,659
+同乘K1的e次方，就得到了C等于K1×K2的e次方
+
+382
+00:14:55,897 --> 00:15:00,659
+sides by K1 to the e, I get that C is
+equal to K1 times K2 to the e,
+
+383
+00:15:00,659 --> 00:15:06,374
+得到的就是这个方程。我只是把K用K1×K2替换
+
+384
+00:15:00,659 --> 00:15:06,374
+which is precisely this equation here.
+Okay, so all I did is I just replaced K by
+
+385
+00:15:06,374 --> 00:15:11,955
+然后再用K1的e次方分开。现在这看起来很熟悉吧
+
+386
+00:15:06,374 --> 00:15:11,955
+K1 times K2 and then divided by K1 to the
+e. So by now this should look familiar to
+
+387
+00:15:11,955 --> 00:15:16,146
+这个方程中现在有两个变量。C会被攻击者知道
+
+388
+00:15:11,955 --> 00:15:16,146
+you. So now we have two variables in this
+equation, of course. C is known to the
+
+389
+00:15:16,146 --> 00:15:20,092
+E和N也会被攻击者知道
+
+390
+00:15:16,146 --> 00:15:20,092
+attacker, E is known to the attacker, and
+N is known to the attacker. The two
+
+391
+00:15:20,092 --> 00:15:24,518
+而这个方程的两个变量为K1和K2,我们将其
+
+392
+00:15:20,092 --> 00:15:24,518
+variables in this equation are K1 and
+K2, and we've separated them into a
+
+393
+00:15:24,518 --> 00:15:28,891
+分到方程的两边，结果我们可以做一个这个方程的中间的满足攻击
+
+394
+00:15:24,518 --> 00:15:28,891
+different side of the equation, and as a
+result we can do now a meet in the middle
+
+395
+00:15:28,891 --> 00:15:33,157
+现在来解决中间的满足攻击
+
+396
+00:15:28,891 --> 00:15:33,157
+attack on this equation. So let's do the
+meet in the middle attack. What we would
+
+397
+00:15:33,157 --> 00:15:37,524
+建立一个包含左边式子所有可能值的表
+
+398
+00:15:33,157 --> 00:15:37,524
+do is we would build a table of all
+possible values Of the left-hand side. So
+
+399
+00:15:37,524 --> 00:15:43,392
+K1的e次方分之C的所有可能值，有2的34次方个
+
+400
+00:15:37,524 --> 00:15:43,392
+all possible values of C over K1 to the E,
+there are 2 to the 34 of them. And then,
+
+401
+00:15:43,584 --> 00:15:48,878
+而右边的所有可能值，即K2的e次方的所有可能值
+
+402
+00:15:43,584 --> 00:15:48,878
+for all possible values on the right-hand
+side, [inaudible] for all possible values
+
+403
+00:15:48,878 --> 00:15:54,175
+第一步，我们要检查这个值是否在表中
+
+404
+00:15:48,878 --> 00:15:54,175
+of K2 to the e, we're gonna check whether
+this value here lives in the table that we
+
+405
+00:15:54,175 --> 00:15:58,749
+如果我们发现一个碰撞
+
+406
+00:15:54,175 --> 00:15:58,749
+constructed in step one. And if it is then
+we found a collision, and basically we
+
+407
+00:15:58,749 --> 00:16:03,265
+我们基本上就得到这个方程的解法了。当我们找到一个K2的e次方的元素
+
+408
+00:15:58,749 --> 00:16:03,265
+have a solution to this equation. So as
+soon as we find an element of the form K2
+
+409
+00:16:03,265 --> 00:16:07,962
+在第一步建立的表中时，我们就解了这个方程
+
+410
+00:16:03,265 --> 00:16:07,962
+to the E that lives in the table that
+we built in step one, we've solved this
+
+411
+00:16:07,962 --> 00:16:12,717
+并得到K1和K2。一旦我们找到了K1和K2
+
+412
+00:16:07,962 --> 00:16:12,717
+equation and we found K1 and K2. And
+of course once we found K1 and K2,
+
+413
+00:16:12,717 --> 00:16:16,950
+我们就可以很简单地通过K1×K2将K还原出来
+
+414
+00:16:12,717 --> 00:16:16,950
+we can easily recover K simply by
+multiplying them. So then we multiply K1
+
+415
+00:16:16,950 --> 00:16:21,428
+所以我们将K1×K2得到密钥K，所以我们已经破坏了加密系统
+
+416
+00:16:16,950 --> 00:16:21,428
+and K2 and we get, the secret key
+K. Okay? So, we've broken, basically,
+
+417
+00:16:21,428 --> 00:16:25,604
+这花了多长时间？通过强行计算
+
+418
+00:16:21,428 --> 00:16:25,604
+this, this encryption system. And how long
+did it take? Well, by brute force, we
+
+419
+00:16:25,604 --> 00:16:29,890
+我们大概打破了2的64次方的时间，只要尝试所有可能的密钥
+
+420
+00:16:25,604 --> 00:16:29,890
+could have broken it in time 2 to the 64,
+simply by trying all possible keys. But
+
+421
+00:16:29,890 --> 00:16:33,792
+但是攻击者在步骤一就花了2的34次方时间
+
+422
+00:16:29,890 --> 00:16:33,792
+this attack, you notice, it took 2 to
+the 34 time for step number one. Well, it
+
+423
+00:16:33,792 --> 00:16:38,353
+可能还不止这么长，因为我们不得不做取幂
+
+424
+00:16:33,792 --> 00:16:38,353
+took a little bit more than 2 to the 34,
+'cause we had to do these exponentiations.
+
+425
+00:16:38,518 --> 00:16:42,969
+步骤二也需要2的34次方时间，可能因为取幂而多于这个时间
+
+426
+00:16:38,518 --> 00:16:42,969
+It took 2 to the 34 time for step two
+against slightly more than two to the 34
+
+427
+00:16:42,969 --> 00:16:47,530
+所以这整个算法需要2的40次方时间
+
+428
+00:16:42,969 --> 00:16:47,530
+because of the exponentiations. So let's
+say that the whole algorithm took time two
+
+429
+00:16:47,530 --> 00:16:52,277
+关键是，这大大减少了所需时间
+
+430
+00:16:47,530 --> 00:16:52,277
+to the 40. The point is that this is much,
+much less time due to the 64. So here you
+
+431
+00:16:52,277 --> 00:16:56,667
+下面是一个例子，如果你直接使用RSA加密，换句话说
+
+432
+00:16:52,277 --> 00:16:56,667
+have an example. Where if you encrypt
+using RSA directly, in other words you
+
+433
+00:16:56,667 --> 00:17:01,296
+你直接计算出K的e次方，模N而不通过ISO标准
+
+434
+00:16:56,667 --> 00:17:01,296
+directly compute, K to the E, mod N,
+instead of going through the ISO standard,
+
+435
+00:17:01,296 --> 00:17:05,983
+你会受到攻击，并且并行起来比穷举搜索更快
+
+436
+00:17:01,296 --> 00:17:05,983
+for example, then you get an attack that
+runs much faster than exhaustive search.
+
+437
+00:17:05,983 --> 00:17:10,730
+你受到的攻击运行需要2的40次方时间，而不是2的64次方
+
+438
+00:17:05,983 --> 00:17:10,730
+You get an attack that runs in time two to
+the 40, rather than time two to the 64.
+
+439
+00:17:10,730 --> 00:17:14,985
+这是个好例子，说明密码可以破译如果直接用RSA陷门置换
+
+440
+00:17:10,730 --> 00:17:14,985
+Okay, so this is a cute example of how
+things can break if you use the RSA
+
+441
+00:17:14,985 --> 00:17:19,299
+来加密信息。这里需要记住的是
+
+442
+00:17:14,985 --> 00:17:19,299
+trapdoor permutation directly to
+encrypt a message. So the message to
+
+443
+00:17:19,299 --> 00:17:23,670
+千万不要直接使用RSA来加密。你得通过加密机制来加密
+
+444
+00:17:19,299 --> 00:17:23,670
+remember here, is never, ever, ever use
+RSA directly to encrypt. You have to use to go
+
+445
+00:17:23,670 --> 00:17:27,868
+就像ISO标准一样
+
+446
+00:17:23,670 --> 00:17:27,868
+through an encryption mechanism. For
+example, like the ISO standard. And in
+
+447
+00:17:27,868 --> 00:17:32,354
+事实上，下一节我们就会看到其他方式来使用RSA建立
+
+448
+00:17:27,868 --> 00:17:32,354
+fact, in the next segment we are going to
+see other ways of using RSA to build
+
+449
+00:17:32,354 --> 00:17:33,620
+公用密钥加密
+
+450
+00:17:32,354 --> 00:17:33,620
+public key encryption.
+

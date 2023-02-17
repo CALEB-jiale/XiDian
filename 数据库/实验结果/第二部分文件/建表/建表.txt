@@ -1,0 +1,59 @@
+-- 1.	建立login表
+use stumanage;
+
+create table login
+(
+id int not null unique auto_increment,
+username varchar(100) not null unique,
+password varchar(100) not null,
+role tinyint not null default 0
+)
+
+
+-- 2.	建立course表
+use stumanage;
+
+create table course
+(
+id int not null unique auto_increment,
+cno varchar(100) not null unique,
+cname varchar(100) not null,
+credit int not null,
+semester int not null,
+feature varchar(100) not null,
+tname varchar(100) not null,
+check (credit>=0 and semester>=1 and semester<=8 and feature in ('必修课','选修课'))
+)
+
+
+-- 3.	建立student表
+use stumanage;
+
+create table student
+(
+id int not null unique auto_increment,
+sno int not null unique,
+sname varchar(100) not null,
+sex varchar(100) not null,
+school varchar(100) not null,
+major varchar(100) not null,
+sclass int not null,
+date int not null,
+check (sex in ('男','女'))
+)
+
+
+-- 4.	建立sc表
+use stumanage;
+
+create table sc
+(
+id int not null unique auto_increment,
+sno int not null,
+cno varchar(100) not null,
+exam int not null default 0,
+grade int not null default 0,
+foreign key (sno) references student(sno),
+foreign key (cno) references course(cno),
+check (exam>=0 and exam<=2 and grade>=0 and grade<=100)
+)

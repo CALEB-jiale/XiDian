@@ -1,0 +1,290 @@
+In this module I wanna show you another
+approach to key exchange based on the
+concept of public key encryption. So again
+just to remind you of the settings, we
+have our friends Alice and Bob as usual,
+and they're both to exchange a secret key
+K. The eavesdropper gets to see the
+messages they send to one another, but
+even though he shouldn't learn anything
+about the key K that, that they exchanged.
+And as usual in this module we're only
+going to be looking at eavesdropping
+security. That is we don't allow the
+attacker to tamper with data or to mount
+any other form of active attack. So, just
+to remind you, earlier in this module we
+saw an inefficient mechanism based on
+generic block ciphers. In the previous
+segment we saw the Diffie-Hellman key
+exchange mechanism which has an
+exponential gap between the work that the
+participants have to do versus the work
+that the attacker has to do. And in fact
+this Diffie-Hellman protocol is used all
+over the web very frequently. In this
+segment I want to show you, a different
+approach based on public key encryption.
+So, what is public encryption? So just as
+in the case of symmetric encryption, there's an encryption algorithm and a
+decryption algorithm. However, here the
+encryption algorithm is given one key,
+which we're going to call a public key.
+Let's call this the public key that
+belongs to Bob. And the decryption algorithm is given a different key, we'll
+call it a secret key. That also belongs to
+Bob. So these two keys are sometimes
+called a key pair. One half of the pair is
+the public key and the other half of the
+pair is the secret key. Now the way you
+encrypt this as usual, a message would
+come in, the encryption algorithm would
+generate a cipher text, that is the
+encryption of this message using the given
+public key. And then when the cipher text
+is given to the decryption algorithm, the
+decryption algorithm basically outputs the
+corresponding, message. So, as I said, PK
+is called the public key and SK is called
+the secret key. So more precisely, what is
+public encryption? Well, public encryption
+is actually made up of three algorithms,
+G, E, and D. Algorithm G is what's called
+a key generation algorithm. When you run
+algorithm G, it will output two keys, the
+public key and the secret key. The
+encryption algorithm basically, given the
+public key in the message, will output the
+corresponding cipher text. And the
+decryption algorithm, given the secret key
+in the cipher text, will output the
+message or it will output bottom if an
+error occurred. And as usual we have the
+usual consistency properties that say that
+for any public key and secret key that
+could have been output by the key generation
+algorithm if we encrypt the message using
+the public key and then decrypt using the
+secret key we should get the original
+message back. Now, what does it mean for a
+public key system to be secure? Well, we
+use the same concept of semantic security
+that we used before, except the game is now
+a little bit different. So let me
+explain, how we define semantic security
+for a public key system. So here, the
+challenger is gonna run the key generation
+algorithm to generate a public key and a
+secret key pair, and he's gonna give the
+public key to the adversary. The
+challenger keeps the secret key to
+himself. What the adversary will do is he
+will output two equal length messages M0 and
+M1 as before and then the challenger will
+give him the encryption of M0 or M1. As
+usual we define two experiments: experiment
+zero and experiment one. In experiment
+zero the adversary is given the encryption
+of M0. In experiment one the adversary is
+given the encryption of M1 and then the
+adversary's goal is to guess which
+encryption he was given. Was he given the
+encryption of M0 or was he given
+encryption of M1. And we refer to his
+guess as the output of experiment zero or
+experiment one. One thing I want to
+emphasize is that in the case of public
+encryption there's no need to give the
+attacker the ability to mount a chosen
+plaintext attack. Why is that? Well in
+the case of a symmetric key system, the
+attacker had to request the encryption of
+messages of his choice. In the case of a
+public key system, the attacker has the
+public key and therefore he can by
+himself, encrypt for himself any message
+that he wants. He doesn't need the
+challenger's help to create encryptions of
+messages of his choice. And as a result,
+in a public key setting, a chosen
+plaintext attack is inherent. There's no
+reason to give the attacker extra power to
+mount a chosen plaintexts attack. And
+that's why we never discussed chosen
+plaintext queries in the context of
+defining semantic security for public key
+systems. Now that we defined the game
+we're going to say that a public key system
+GED is semantically secure if
+basically the attacker cannot distinguish
+experiment zero from experiment one. In
+other words, the adversary's probability
+of outputting one in experiment zero is
+about the same as his probability of
+outputting one in experiment one. So again,
+the attacker can't tell whether he was
+given the encryption of M0 or the
+encryption of M1. Now that we understand
+what a public key encryption is let's see
+how to use it to establish a shared
+secret. See here are our friends Alice and
+Bob. Alice will start off by generating a
+random public key secret key pair for
+herself using the key generation
+algorithm. And then she's going to send to
+bob the public key PK. And she also says,
+hey this message is from Alice. What Bob
+will do is he will generate a random 128
+bit value X and he will send back to Alice
+saying hey this message is from Bob and he
+will send back the encryption of X under
+Alice's public key. Alice will receive
+this cipher text, she will decrypt it
+using her secret key and that will give
+her the value X and now this value X can
+be used basically as a shared secret
+between the two of them. I wanna emphasize
+that this protocol is very different from
+the Diffie-Hellman protocol that we saw in
+the last segment in the sense that here
+the parties have to take turns, In the
+sense that Bob cannot send his message
+until he receives the message from Alice.
+In other words, Bob cannot encrypt X to
+Alice's public key until he receives the
+public key from Alice. In the
+Diffie-Hellman protocol however the two
+parties could send their messages at
+arbitrary times and there was no ordering
+enforced on those messages. As a result we
+had this nice application of
+Diffie-Hellman, where, everybody could
+post their messages to Facebook, for
+example. And then just by looking at
+Facebook profiles, any pair would already
+have a shared key, without any need for
+additional communication. Here, this is
+not quite true, even if everybody posts
+their public key to Facebook, there would
+still be a need to send this message
+before a shared key can be established. So
+now that we understand protocol the first
+question we need to ask is why is this
+protocol secure. And as usual we're only
+gonna look at eavesdropping security. So
+in this protocol the attacker gets to see
+the public key and the encryption of X
+under the public key and what he wants to
+get is basically this value X. Now we know
+that the system the public key system that
+we used is semantically secure, what that
+means is that the attacker cannot
+distinguish the encryption of X, From the
+encryption of something random. In other
+words, just given encryption of X, the
+attacker can't tell whether the plain text
+is X or just some random junk that was
+chosen from M, And because of that, that
+basically says that just by looking at
+messages in this protocol, the value of X
+is indistinguishable in the attacker's
+view from a random element in M and as a
+result, X can be used as a session key
+between the two parties. It's just a
+random value which the attacker cannot
+actually guess other than by trying all
+possible values in M. Then I should say
+that showing that these two distributions
+are distinguishable follows directly from
+semantic security and in fact it's a
+simple exercise to show that if the
+attacker could distinguish this
+distribution from that distribution then
+the attacker could also break semantic
+security. And as usual even though this
+protocol is secure against eavesdropping,
+it's completely insecure against the
+man-in-the-middle attack. So let's see a
+simple man in the middle attack. Well so
+here we have Alice generating her public
+key secret key pair. At the same time the
+man in the middle is also going to
+generate his own public key secret key
+pair. And now when Alice sends her public
+key over to Bob, The man in the middle
+will intercept that and instead he'll say
+yeah this is a message from Alice, but
+Alice's public key is p K prime. So now
+Bob receives this message, he thinks he
+got a message from Alice, what he'll send
+back is, well he's going to choose his
+random X, and he'll send back the
+encryption of X under PK prime. The man in
+the middle is going to intercept this
+message, and he's going to replace it with
+something else. So, his goal is to make
+sure that the key exchange succeeds, in
+other words Alice thinks that she got a
+message from Bob, and yet the man in the
+middle should know exactly what the
+exchanged secret is. So what should the man in
+the middle send to Alice in this case? So
+yeah let's call the cipher text C. What
+the man in the middle will do is he will
+decrypt the cipher text C using his own
+secret key that will reveal X to the man
+in the middle. And then he's going to go
+ahead and encrypt X under Alice's public
+key, send the value back to Alice. Alice
+will obtain this X and as far as she's
+concerned, she just did a key exchange
+with Bob, where both of them learned the
+value X, but the problem of course is that
+the man in the middle also knows the value
+X. So this protocol becomes completely
+insecure once the man in the middle can
+tamper with messages from Alice to Bob and
+from Bob to Alice. So again we have to do something to this protocol to make it secure and
+we're gonna see how to do that, actually,
+in two weeks after we introduce digital
+signatures. So now that I've show you that
+public encryption implies key exchange
+security against eavesdropping. The next
+question is how do we construct public key
+encryption systems? And it turns out that
+these constructions generally rely on
+number theory and some algebra, and just
+like the Diffie-Hellman protocol relied on
+some algebra. And so before we go into
+these protocols in more detail what I'd
+like to do is kind of take a quick detour.
+In the next module we're going to look at
+the relevant number theory background.
+We'll just do one module on this and then
+come back and talk about these public key
+constructions and more constructions for
+key exchange. So this is the end of this
+module. And as further reading, I just
+wanted to point to this paper that shows
+if in fact all we do is rely on symmetric
+ciphers and hash functions then
+Merkle puzzles are optimal for key
+exchange and in fact we cannot achieve
+more than a quadratic gap as long as we
+treat the primitives we're given as a
+black box. So basically this shows that a
+quadratic gap is the best possible and
+also I wanted to point to another paper
+that kind of summarizes some of these key
+exchange mechanisms that we talked about,
+key exchange using public key cryptography
+and key exchange using Diffie-Hellman. You
+can take a look at this paper and it kind
+of will give you a look ahead into what's
+coming and how to make these key exchange
+protocols secure against man in the middle
+and not just secure against eavesdropping.
+Okay so that's the end of this module and
+in the next module we'll take a brief
+detour and do a kind of a brief overview
+of algebra and number theory.

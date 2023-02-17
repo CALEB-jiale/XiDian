@@ -1,0 +1,344 @@
+In this segment, we're gonna continue with
+a few more tools from discrete
+probability, and I want to remind everyone
+that if you wanna read more about this,
+there's more information in wiki books
+article that is linked over here. So first
+let's do a quick recap of where we are. We
+said that the discrete probability is
+always defined over a finite set, which
+we're gonna denote by U, and typically for
+us, U is going to be the set of all N bit
+binary strings, which we denote by zero
+130 N. Now a probability distribution P
+over this universe U is basically a
+function that assigns to every element in
+the universe a weight in the interval zero
+to one, such that if we sum the weight of
+all these elements, the sum basically sums
+up to one. Now we have said that subset of
+the universe is what called an event, and
+we said that probability of an event is
+basically the sum of all the weights of
+all the elements in the event and we said
+that probability of an event is some real
+numbers in the interval zero to one And I
+would remind everyone the basically
+probability of the entire universe is
+basically the one by the fact that sum of
+all the weights sums up to one. Then we
+define what a random variable is Formally,
+a random variable is a, is a function from
+the universe of some other sets But the
+thing that I want you to remember is that
+the random variable takes, values in some
+set v And, in fact, the random variable
+defines the distribution on this set v. So
+the next concept we need is what's called
+independence And I'm gonna very briefly
+define this If you want to read more about
+independence, please go ahead and look at
+the wiki books article. But essentially we
+say that two events A and B are
+independent of one another if When you
+know that event A happens, that tells you
+nothing about whether event B actually
+happened or not. Formally, the way we
+define independence is to say that, the
+probability of A and B, namely, that both
+events happened, is actually=to the
+probability of event A the probability of
+event B So mult iplication, in some sense,
+the fact that probabilities multiply under
+conjunction, captures the fact that these
+events are independent And as I said, if
+you wanna read more about that, please
+take a look at the background material.
+Now the same thing can be said for random
+variables. So suppose we have two random
+variables x and y. They take values in
+some set v. Then we say that these random
+variables are independent if the
+probability that x = a, and y = b is equal
+to the product of these two probabilities.
+Basically what this means is, even if you
+know that x = a, that tells you nothing
+about the value of y. Okay, that, that's
+what this multiplication means And again
+this needs to hold for all A and B in the
+space of values of these random variables
+So, just again to job your memory If
+you've seen this before, a very quick
+example. Suppose we look at the, set of,
+of two bit strings So, zero, zero, zero,
+one, one zero and, one, one And suppose we
+choose a random, from this set. Okay so we
+randomly choose one of these four elements
+with equal probability. Now let's define
+two random variables. X is gonna be the
+least significant bit that was generated,
+and Y is gonna be the most significant bit
+generated. So I claim that, these random
+variables, x and y, are independent of one
+another. And the way to see that
+intuitively, is to realize that choosing r
+uniformly, from the set of four elements
+is basically the same as flipping a coin
+An unbiased coin twice. The first bit
+corresponds to the outcome of the first
+flip and the second bit corresponds to the
+outcome of the second flip And of course
+there are four possible outcomes. All four
+outcomes are equally likely which is why
+we get the uniform distributions over two
+bit strings Now our variables X and Y. Y
+the independents Basically if I tell you
+result of the first flip namely I tell you
+the lest signify bit of R So I tell you
+how the first coin you know whether it
+fell on its head or fell on its tails.
+That tells you nothing about the result of
+the second flip. Which is why intuitively,
+you might, you might expect these random
+variables to be independent of one
+another. But formally, we would have to
+prove that, for, all 01 pairs, the
+probability of, x=0 and y=0, x=1, y=1, and
+so on. These probabilities multiply. Let's
+just do it for one of these pairs. So
+let's look at the probability that x is =
+to zero, and y is = to zero. Well, you see
+that the probability that x is equal to
+zero and y is equal to zero is basically
+the probability that r is equal to zero,
+zero And what's the probability that r is
+equal to zero, zero? Well, by the uniform
+distribution, that's basically equal to
+one-fourth. What it's one over side of the
+set which is one fourth in this case And
+well low and behold that's in fact these
+probably provability multiply Because
+again the probability that X is equal to
+zero. The probability that lest signify
+bit of R is equal to zero. This
+provability is exactly one half because
+there is exactly two elements that have
+their, lest signify bit equals to zero.
+Two out of four elements gives you a
+provability of one half And similarly the
+probability that Y is equal to zero is
+also one half so in fact the provability
+multiplies. Okay, so that's, this concept
+of independence And the reason I wanted to
+show you that is because we're gonna look
+at an, an important property of XOR that
+we're gonna use again and again. So before
+we talk about XOR, let me just do a very
+quick review of what XOR is. So, of
+course, XOR of two bits means the addition
+of those bits, modular two. So just too
+kind of, make sure everybody's on the same
+page If we have two bits, so 0001, ten and
+eleven. Their XOR or the truth table of
+the XOR is basically just the addition
+modular two. As you can see, one+1 is= to
+two, modular two. That's=to zero. So this
+is the truth table for [inaudible] XOR And
+I'm always going to denote XOR by the
+circle with a + inside And then when I
+wanna apply XOR to bit strings, I apply
+the, addition modular two operation,
+bitwise. So, for example, the XOR of these
+two strings would be, 110, and I guess
+I'll let you fill out the rest of the
+XORs, just to make sure we're all on the
+same page. So of course is comes out to
+one, one zero one. Now, we're gonna be
+doing a lot of XORing in this class. In
+fact, there's a classical joke that the
+only think cryptographers know how to do
+is just XOR things together But I want to
+explain to you why we see XOR so
+frequently in cryptography. Basically, XOR
+has a very important property, and the
+property is the following. Suppose we have
+a random variable y. That's distributed
+arbitrarily over 01 to the n. So we know
+nothing about the distribution of y But
+now, suppose we have an independent random
+variable that happens to be uniformly
+distributed also over 01 to the n. So it's
+very important that x is uniform. N's
+independent of y. So now let's define the
+random variable which is the XOR of x and
+y. Then I claim that no matter what
+distribution y started with, this z is
+always going to be a uniform, random
+variable. So in other words if I take an
+arbitrarily malicious distribution and I
+XOR with independent uniform random
+variable what I end up with is a uniform
+random variable. Okay and this again is
+kind of a key property that makes x or
+very useful for crypto. So this is
+actually a very simple factor to prove,
+let's just go ahead and do it, let's just
+prove it for one bit so for n = one. Okay,
+so the way we'll do it is we'll basically
+write out the probability distributions
+for the various random variables. So let's
+see, for the random variable y. Well, the
+random variable can be either zero or one.
+And let's say that P0 is the probability
+that it's = to zero, and P1 is the
+probability that it's =to one. Okay, so
+that's one of our tables. Similarly, we're
+gonna have a table for the variable x.
+Well, the variable x is much easier.
+That's a uniform random variable. So the
+probability that it's=to zero is exactly
+one half The probability that's it's=to
+one is also exactly one half. Now, let's
+write out the probabilities for the join
+di stribution. In, in other words, let's
+see what the probability, is for the
+various, joint values of y and x. In other
+words, how likely is, it that y is zero,
+and x is zero. Y is zero, and x is one. Y
+is one and x is zero, and eleven. Well, so
+what we do is, basically, because we
+assume the variables are independent, all
+we have to do is multiply the
+probabilities. So The probability that y
+is equal to zero is p zero. Probability
+that x is equal to zero is one-half. So
+the proximity that, we get 00 as exactly p
+zero over two. Similarly for zero one
+we'll get p zero over two, for one zero
+we'll get p one over two And for 1-1,
+again, the probability that y is=to one,
+and x is=to one, Well, that's P1  the
+probability that x is=to one, which is a
+half, so it's P1 over two. Okay? So those
+are the four, probabilities for the
+various options for x and y. So now, let's
+analyze, what is the probability that z is
+equal to zero? Well, the probability that
+z is=to zero is basically the same as the
+probability that, let's write it this way,
+xy. Is=to 00. Or xy is=to, eleven. Those
+are the two possible cases that z is=to
+zero Because z is the XOR of x and y. Now,
+these events are disjoint, so, this
+expression can simply be written as the
+sum of the two expressions given above. So
+basically, it's the probability that xy
+is=to 00, plus the probability that xy,
+is=to eleven. So now we can simply look up
+these probabilities in our table. So the
+probability that xy is equal to 00 is
+simply p zero over two, and the
+probability that xy is equal to one, one
+is simply p one over two. So we get P0
+over two +P1 over two But what do we kn-,
+what do we know about P0 and P1? Well,
+it's a probability distribution.
+Therefore, P0+P1 must =one And therefore,
+this fraction here must= to a half. P0+P1
+is =to one. So therefore, the sum of these
+two terms must = a half And we're done.
+Basically, we proved that the probability
+that z is = to zero. Is one half,
+therefore the probability that z is equal
+to one is also one half. Therefore z is a
+unif orm random variable. So the simple
+theorem is the main reason why x o is so
+useful in cartography. The last thing I
+wanna show you about discreet probability
+is what's called the birthday paradox And
+I'm gonna do it really fast here Because
+we're gonna come back later on, and talk
+about this in more detail. So, the
+birthday paradox says the following
+suppose I choose n random variables in our
+universe u. Okay And it just so happens
+that these variables are independent of
+one another. They actually don't have to
+be uniform. All we need to assume is that
+they're distributed in the same way. The
+most important property though is that
+they're independent of one another. So the
+theorem says that if you choose roughly
+the square root of the size of u elements,
+we're kind of this one point two here, it
+doesn't really matter. But if you choose
+square root of the size of u elements,
+then basically there's a good chance that
+there are two elements that are the same.
+In other words, if you sample about square
+root a few times, then it's likely that
+two of your samples. [inaudible] will be
+equal to each other. And by the way, I
+should point out that this inverted e,
+just means exists. So there exists in
+[inaudible] I and j such that r I is equal
+to r j. So here's a concrete example.
+We'll actually see many, many times.
+Suppose our universe consist of all
+strings of length of one hundred and
+twenty eight bits. So the size of you is
+gigantic it's actually two to the hundred
+and twenty eight. It's a very, very large
+set But it so happens if you sample say
+around two the sixty four times from the
+set. This is about the square root of U
+then is very likely that two of your
+sample messages will actually be the same.
+So why is, this called the paradox? Well,
+traditionally it's described in terms of
+people's birthdays. So you would think
+that each of these samples would be
+someone's birthday And so the question is
+how many people need to get together so
+that there are two people that have the
+same birthday? So, just as a simple cal
+culation you can see there are 365 days in
+the year, so you would need about 1.2
+times the square root of 365 people until
+the probability that two of them have the
+same birthday is more than a half. This if
+I'm not mistaken is about 24, which means
+that if 24 random people get together in a
+room it's very likely that two of them
+will actually have the same birthday. This
+is why it's called a paradox, because 24
+supposedly is a smaller number than you
+would expect. Interestingly, people's
+birthdays are not actually uniform across
+all 365 days of the year. There's actually
+a bias towards December. >> But, I guess
+that's not, that's not relative to the
+discussion here. >> The last thing I
+wanted to do is just show you the birthday
+paradox a bit more concretely. So, suppose
+we have a universe of about a million
+samples, then you can see that when we
+sample roughly 1200 times, the probability
+that we get, we sample the same number,
+the same element twice is roughly half But
+the probability of sampling the same
+number twice actually converges very
+quickly to one. You can see that if we
+about 2200 items, then the probability
+that two of those items are the same,
+already is 90 percent and You know, 3000
+then it's basically one. So this
+conversion is very quickly to one as soon
+as he goes beyond the square root of the
+size of the universe. So we're gonna come
+back and study the birthday paradox in
+more detail later on, but I just for now,
+wanted you to know what it is. So that's
+the end of this segment, and then in the
+next segment we'll start with our first
+example of encryption systems. [sound]

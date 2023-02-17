@@ -1,0 +1,427 @@
+In the previous lecture, we looked at a public key
+encryption system that is built from the RSA,
+or more generally from trapdoors functions.
+In this lecture, we are going to look at public key encryption
+schemes that are build from the Diffie-Hellman protocol.
+So, first recall that a public key encryption system is
+made up of three algorithms. There is a key
+generation algorithm that I will denote by Gen,
+that basically generates a public key and a
+secret key. And then there are two algorithms: E
+and D that encrypt and decrypt. And the point is
+the encryption algorithm encrypts using the
+public key and the decryption algorithm decrypts
+using the secret key. The physical world analogy for
+public key encryption is a locked box, where anyone
+can put a message inside the box and then lock the
+box, that corresponds to the public key and then
+no one can open this box, except the person who has
+the secret key, that has the key can put it in the
+lock, unlock the box and the recover the message in
+the box. Now, in the previous lecture, we looked at
+a number of applications for public key encryption.
+In particular, we looked at the key exchange
+application, in fact, this is how public key encryption
+is used in SSL, where the server sends its public
+key to the browser, the browser chooses a secret
+and then encrypts the secret using the server's
+public key, sends it back to the server, the
+server decrypts and now both the browser and the
+server have a common secret that they can then
+use to encrypt data, going back and forth, between
+them. So, in the interactive settings, such as in a
+networking protocol, public key encryption would
+primarily be used for setting up shared symmetric key
+which the two parties can then use to exchange
+information. However, there are many settings
+where interaction is simply not possible and then
+public key encryption is directly used to encrypt
+messages. One example of this is secure email.
+The email system in some sense is designed to be non-
+interactive, in the sense that the sender sends an
+email, the email travels from relay to relay, to
+relay, until it finally arrives at the destination
+and the destination should be able to decrypt,
+without interacting with the sender at that point.
+That can be done basically, by the sender
+encrypting the message using the recipient's public
+key. The ciphertext would travel along the SMTP chain
+until it reaches the recipient. The recipient would
+use a secret key and recover the original sent
+message. However, there are many other cases
+where interaction is not possible and I want to show
+you two such cases. The first example is
+file systems. And in fact, public key encryption is a
+good way to manage file sharing, in an encrypted file
+system. So, let me show you what I mean
+by that. So, imagine we have our friend Bob
+here, who wants to store an encrypted file on some
+storage server. So, he will go ahead and write the
+encrypted file to the storage server. What he
+actually writes in the server is basically the
+following: he will generate a random file encryption key, we
+will call it 'K sub F' and then he will use the
+symmetric encryption system to encrypt the file
+using the key 'K sub F'. Then, he will encrypt the
+key 'K sub F', using his own public key. So public key
+of Bob. This will give Bob access to the file at a later
+time, right. Using his secret key, Bob can decrypt
+this header, recover 'K sub F'. Then he will
+decrypt the actual encrypted file and recover the
+plaintext file. So, decryption will work in two steps.
+However, Bob now wants also to give access to
+Alice, to this file. What he will do is, he will go
+ahead and in addition he will also include in the
+file header, an encyption of 'K sub F' under Alice's
+public key. OK. So, notice that there was no
+interaction here. All that Bob knows is Alice's public
+key and yet he was able to the make the file
+accesible to Alice at a later time.
+So, now Bob disappears and then Alice
+comes and accesses the disk at a later time.
+She will read the ciphertext, decrypt  her part of
+the header, recover Kf and then she can decrypt
+the symmetrically encrypted file and recover the
+actual file contents. Ok, so you can see that without
+any interaction, Bob was able to write to the file
+system and enable Alice to access the file, as well.
+Again, at the time that Alice was reading the file, there is no
+interaction with Bob, because maybe Bob is already
+inaccesible and yet Alice can still read the file
+recovered by herself.
+So, another example of a non-interactive
+application of public key encryption is what's called
+key escrow. Now, key escrow may actually sound
+like a bad thing but in fact it is a mandatory
+feature in corporate environments. So, the idea
+here is this. So imagine Bob writes data to a
+disk and then later Bob becomes inaccesible.
+Maybe Bob is fired. Maybe Bob is out sick.
+And somehow the company needs to have access to
+Bob's files. So having Bob be the only one
+able to decrypt these files is simply unacceptable in
+corporate settings. The corporation might need
+access to those files. So, the question is what to do.
+And the answer is to introduce this entity called
+a key escrow service. The way the system then
+would work is as follows:
+Basically, when Bob writes his file to disk, his
+system, as it's writing the file to this shared
+storage medium, what it would do of course, as before,
+it would encrypt the file using the file encryption key Kf.
+It would encrypt Kf using Bob's public key, but it would
+also encrypt Kf using an escrow service. So here,
+the escrow service is completely offline. We never
+talk to it unless we actually need its services.
+As Bob is writing the file, all he does is he simply writes
+the encryption of Kf under the escrow authority's
+public key into the file header. Now, later Bob
+disappears and now the company needs to recover
+Bob's file. What does it do? Well, at this point it would
+contact the escrow service. The escrow service
+would read this part of the header, use its secret
+key to decrypt the header and recover Kf and then use Kf
+to decrypt the actual file.
+Ok. So, in this way again you notice that  the escrow service was
+completely offline. There was no interaction with the
+escrow service until the point at which the escrow
+services were actually needed. And again, you can
+see that this is a very clean and elegant application
+of public key encryption. So, as I said in the
+previous lecture, we saw constructions for public
+key encryption based on trapdoor functions.
+In particular, we look at RSA. We looked at the
+generic construction we called ISO standard.
+We looked at constructions like OAEP+ and so on and so forth.
+In this lecture, we are going to look at public key
+constructions from the Diffie-Hellman protocol.
+This is another family of public key systems and
+I am going to show you how they work. These public
+key systems are generally called ElGamal public key
+encryption schemes. Taher ElGamal was actually Marty
+Hellman's student. He came up with this ElGamal
+encryption system as part of his PhD thesis.
+And, in fact, ElGamal encryption, for historical
+reasons, is used in an email encryption system called GPG,
+the GNU Privacy Guard. As usual, when we
+construct public key encryption systems, our goal is
+to build systems that have chosen ciphertext security,
+so that they are secure both against eavesdropping
+and tampering attacks. So, before I show you the ElGamal
+system let's do a very brief review of the Diffie-Hellman
+protocol. So, in my description here, I am going
+to abstract a little bit from the version that we saw last
+week. In fact, I just going to use the concept
+of a finite cyclic group. In fact, we have an arbitrary finite
+cyclic group, for example, it could be the group (Zp) star,
+but it could also be the points of an elliptic curve.
+And as I mentioned, there are some benefits to doing
+Diffie-Hellman over an elliptic curve. But, for simplicity,
+I am just going to refer to G as an abstract finite
+cyclic group, but in your heads you should be
+thinking G is the group (Zp) and let's suppose
+that the group has order n for some integer n.
+Now, we are going to fix a generator g of this group
+and all this means, is basically, if you look at the
+successive powers of g, that basically you get
+all the elements in the group G. You notice,
+because the group has order n, we know that
+g to the power of n is equal to 1. And, therefore
+there is no reason to go beyond the n-1st power
+of g. g to the n is equal to 1 so that we just wrap around.
+Ok. So, we have this cyclic group G. We have this
+generator whose powers gave us all the elements of
+G, and now let me remind you how the Diffie-Hellman
+protocol works. Basically, what Alice does is she  chooses a
+random a. She computes g to the a and sends it
+over to Bob. Bob chooses a random b. Let's see who
+remembers. What does Bob send over to Alice?
+So, Bob sends over to Alice g to the b and of
+course I should remind you that both g to the a and
+g to the b are just elements in this group G. Now,
+they can derive the shared secret, If you remember,
+the shared secret is g to the ab, and these equalities
+here shows that both sides can actually compute
+the shared secret given the values at their disposal.
+So, Alice for example, has B and she has a, and
+so raising B to the power of a, gives her the shared
+secret. The attacker, of course, the poor attacker
+he gets to see A and B and his goal is now,
+of course, he also gets to see the generated g, and
+his goal now is to compute g to the ab. But, we said that
+this is believed to be a hard problem. Given g, g to the a,
+and g to the b, in a group like  Zp<i>, computing g to </i>
+the ab is difficult. So, now let's see how to convert to
+the Diffie-Hellman protocol into an actual public key
+system. As I said, this was a brilliant idea due to
+Taher ElGamal. So, as before, we are going to fix our
+cyclic group G and a generator g inside of G.
+Now, here I wrote the Diffie-Hellman protocol again,
+except now we are going to assume that these guys
+are separated in time. These two steps do not have
+to occur simultaneously; they could actually take place
+at quite different times. The first step of the Diffie-Hellman
+protocol is what we are going to view as key
+generation. That is the public key is going to be
+this capital A  and the secret key is simply going to
+be the little a. So, you notice of course that
+extracting the secret key from the public key,
+namely extracting the little a from capital A is a
+discrete log problem. So, that recovering a secret
+key is actually difficult. Ok, now this gives us our public key.
+So, now at a later time Bob wants to encrypt a
+message to Alice, encrypted using her public key.
+So how does Bob encrypt? Well, what he is going to do is
+he's going to compute his contribution to the Diffie-Hellman
+protocol. Namely, he is going to send over g to the
+little b. Of course, he is going to choose this little b
+at random and now he is going to compute by
+himself the shared secret. So, he is going to
+compute by himself g to the ab. From this g to the ab
+he is going to derive a symmetric key for a
+symmetric encryption system and then he is going to
+encrypt the message m using this symmetric key
+that he just derived. And that is the pair he is going to
+send. So, he is going to send over his contribution
+to the Diffie-Hellman protocol plus the symmetric
+encryption of the message m that he wants to send
+over to Alice. Ok, so you can see basically, we are
+doing the exact same thing as we would do in the Diffie-Hellman
+protocol except now we, Bob directly immediately is using
+his Diffie-Hellman secret to encrypt the message  that he
+wants to send over to Alice.
+Now, what does Alice do to decrypt?
+Basically, she is going also to compute the
+Diffie-Hellman secret. Remember, that now she just
+received Bob's contribution to the Diffie-Hellman
+protocol and she has her secret key a. So, she can
+compute also the Diffie-Hellman secret, namely
+g to the ab, from which she is going to derive the
+symmetric encryption key k. And then, she is going
+to decrypt the message to recover the actual
+plaintext. Ok, so that is the intuition for how we
+convert the Diffie-Hellman protocol into a public key
+system. By the way, this was kind of an interesting
+development at the time that it came out,  partially
+because, you notice this is a randomized encryption scheme.
+So, every time Bob encrypts a message, it is
+required that he choose a new random b and
+encrypt the message using this new random b.
+So, let's see the ElGamal system,  actually in more
+detail. So, now actually let's  view it as an actual
+public key encryption system. Namely, algorithm Gen,
+algorithm E and algorithm D.
+So, as usual, we are going to fix our finite cyclic
+group of order n. Another ingredient that we are going
+to need is a symmetric encryption system. So, I am
+going to refer to it as E sub s, and D sub s. These are the
+encryption and decryption algorithms of a symmetric
+encryption system that happens to provide
+authenticated encryption. And, the key space for
+this system is capital K. And, then we are also going
+to need a hash function that maps pairs of elements
+in the group, namely elements in G squared into
+the key space. Now, here is how the public key
+encryption system works. So, I have to describe
+three algorithms. Algorithm that generates the
+public key and the secret key, and then the  encryption
+and decryption algorithms. So, the key generation
+algorithm works as follows: All we do is basically,
+build up Alice's contribution to the Diffie-Hellman
+protocol. What we are going to do is going to choose a
+random generator g in G and then we are going to
+choose a random exponent a. The secret key is
+going to be a and then the public key is going to be
+the generator g and Alice's contribution to the
+Diffie-Hellman protocol. The reason, by the way,
+we don't use a fix generator, is because it
+allows us to somewhat use a weaker assumption,
+improving security. And, so it is actually better to
+choose a random generator every time. It is easy
+enough to choose a random generator. All we do, is we
+take the generator that we started with and then we
+raise it to some power that is relatively prime to n.
+That will give us another generator. A random
+generator of the group capital G. Ok. So, you can
+see here that again the public key is simply Alice's
+contribution to the Diffie-Hellman protocol. And, the
+secret key is the random a that she chose. Now, how
+do we encrypt and decrypt? Well, when Bob wants
+to encrypt the message, he is going to use the
+public key. Remember, it consists of  g and h.
+Here, he wants to encrypt a message m.
+So, here is what he is going to do. So, he is going
+to choose his contribution to the Diffie-Hellman protocol.
+So, this is the secret b that he would normally
+choose in Diffie-Hellman. And, now he is going to
+compute g to the b, which is actually his message,
+that gets send to Alice in the Diffie-Hellman protocol.
+He is going to compute the Diffie-Hellman secret,
+that's h to the b. If you remember, h was g to the a,
+therefore, this value here is really g to the ab.
+That's the Diffie-Hellman secret. That is the one thing that
+the attacker doesn't actually know. Next, he is going
+to compute a symmetric key by basically hashing
+this pair u comma v. So, u, of course, is something
+that the attacker is going to know because that is
+going to be sent as part of the ciphertext. But v, the
+attacker isn't going to know. Again, for the proof of
+security, actually it helps to hash both u and v. So, we
+hash both of them together. Although, strictly speaking
+we just needed to hash v, because v is the only value
+that the attacker doesn't know. The attacker
+already knows u, because that's going to be part of the data
+that's sent on the network. So, anyhow, so Bob derives
+this symmetric key k, by hashing u and v. Then, he
+goes ahead and encrypts the message using the
+symmetric key k and finally he outputs his
+contribution to the Diffie-Hellman protocol.
+The value u and then the symmetric ciphertext that
+directly encrypts the message m.
+That's it. So, the ciphertext consists of these two
+parts and that is the thing that gets sent over the
+network. Let's see, how does Alice decrypt now.
+So, she is going to use her secret key a to decrypt
+and she receives here, Bob's contribution to the
+Diffie-Hellman protocol plus the symmetric
+encryption of the message that Bob sent.
+What she will do is she'll compute herself the Diffie-Hellman
+secret. If you remember, u to the a is simply g to the b
+to the a. Which is g to the ab. So, here Alice
+computed the Diffie-Hellman secret. And, now let me
+ask you, how does she derive the symmetric key k
+given the Diffie-Hellman secret, g to the ab and the
+ciphertext that she was given?
+Well, what she will do, is simply again, now she has
+u from the ciphertext and she has v, because she just
+computed it herself. So, now she can rederive the
+symmetric encryption key  by hashing u and v
+together to get the symmetric encryption key and
+then she just decrypts the ciphertext to get the
+actual plaintext. OK, so that's it. That is the whole
+encryption and decryption algorithm. In a picture,
+the way the ciphertext would look, is also
+as kind of what we saw in the last lecture. Basically,
+there would be a short header that contains u.
+Which as you recall, is g to the b. And, then the rest of the
+ciphertext would be the encryption of the message
+that is being sent, under the symmetric key k.
+And, then to decrypt, Alice would use this header
+to derive the Diffie-Hellman secret from which she
+will derive k and then decrypts the body, to get the
+original plaintext. By the way, I should note that
+the way I describe this system here, is actually not
+how ElGamal described it originally, this is
+in some sense a modern view about the ElGamal
+encryption, but it is pretty much equivalent to how
+ElGamal viewed it. So, now let's look at the
+performance of ElGamal. So, here what I wrote
+is the, kind of the time intensive steps of  ElGamal
+encryption. Namely, during encryption, there are
+these two exponentiations in the group G.
+Exponentiation, remember is a cubic time algorithm
+using the repeated squaring algorithm. And, as a
+result, it is fairly time intensive. When I say, time
+intensive, I mean, that on a modern processor it would
+take a few milliseconds to compute these
+exponentiations and during decryption, basically,
+the decryptor computes one exponentiation,
+namely, u to the a. This is the bottleneck during
+decryption. Ok, so you would think that encryption
+actually is, takes twice as long as decryption, because
+encryption requires two exponentiations, while
+decryption requires only one. It turns out, that
+is not entirely accurate because, you notice that the exponentiation
+during decryption is done to a variable basis.
+Namely, u changes every time. Whereas during
+encryption, the basis is fixed: g and h are derived
+from the public key and are fixed forever.
+So, in fact, in turns out that if you want to do
+exponentiation to a fixed basis, you can do a lot of
+precomputation. In particular, you can do all the
+squaring steps in the repeated squaring algorithm
+offline. So, here what you would do, you would
+compute all powers of 2 of g. So, you would
+compute g, g squared, g to the fourth, g to the
+eighth, go to the sixteenth, g to the thirty two, and so
+on and so forth. These are all the squaring steps of
+the repeated squaring algorithm you would do offline.
+The same thing for h. And, then when it comes time to
+actually do the real exponentiation all you need to do is just do the
+multiplications, to accumulate these powers of 2 into the
+exponent b, that you're trying to compute.
+So, if you think about it, this can actually speed up
+exponentiation by a factor of 3. In fact, it would
+speed up it even more if you allow me to store even
+larger tables. This is called a windowed exponentiation.
+But, regardless, if you allow the encryptor to
+store large tables that are derived from the public
+key, then in fact encryption is not going to be
+slower than decryption. In fact, encryption will be
+faster than decryption. But, again, this requires that
+the encryptor to precompute these large tables
+and store them around. So, if all the encryptor is
+doing, is just constantly encrypting to a single
+recipient, that can be done actually fairly fast using these
+precomputed tables. If the encryptor, for every
+message is encrypting to a different recipient, for
+example, if every time you send an email, you send
+an email to a different recipient, then, in fact, the
+encryption will be twice as slow as decryption.
+So, this is a good trick to keep in mind. In fact, most
+cryptolibraries don't do this. So, if you see that you
+are always encrypting to the same public key and
+for some reason your encryption process takes a
+lot of time, it's a bottleneck for you, keep in mind
+that you can actually really speed things up
+using precomputation.
+Of couse, if encryption is a bottleneck for you, you
+might as well be using RSA, where an RSA encryption
+is really fast. Ok, so that is the end of our
+description of ElGamal encryption. Now, the next
+question of course, is why is the system secure,
+in particular, can we prove that it's chosen
+ciphertext secure and more importantly, under what
+assumptions can we prove that the system is
+chosen ciphertext secure? So, we are going to
+discuss that in the next segment.

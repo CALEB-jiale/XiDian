@@ -1,0 +1,1191 @@
+1
+00:00:00,000 --> 00:00:04,010
+In this segment, I want to give a few
+examples of stream ciphers that are used in practice.
+
+2
+00:00:04,010 --> 00:00:07,072
+I'm gonna start with two old
+examples that actually are not
+
+3
+00:00:07,072 --> 00:00:11,017
+supposed to be used in new systems.
+But nevertheless, they're still fairly
+
+4
+00:00:11,017 --> 00:00:14,164
+widely used, and so I just want to mention
+the names so that you're familiar with
+
+5
+00:00:14,164 --> 00:00:19,087
+these concepts. The first stream cipher I
+want to talk about is called RC4, designed
+
+6
+00:00:19,087 --> 00:00:23,429
+back in 1987. And I'm only gonna give you
+the high-level description of it, and then
+
+7
+00:00:23,429 --> 00:00:27,818
+we'll talk about some weaknesses of RC4
+and leave it at that. So RC4 takes a
+
+8
+00:00:27,818 --> 00:00:32,702
+variable size seed, here I just gave
+as an example where it would take 128
+
+9
+00:00:32,702 --> 00:00:36,980
+bits as the seed size, which would then
+be used as the key for the stream cipher.
+
+10
+00:00:36,980 --> 00:00:41,738
+The first thing it does, is it expands the
+128-bit secret key into 2,048 bits, which
+
+11
+00:00:41,738 --> 00:00:46,382
+are gonna be used as the internal state
+for the generator. And then, once it's done
+
+12
+00:00:46,382 --> 00:00:51,197
+this expansion, it basically executes a
+very simple loop, where every iteration of
+
+13
+00:00:51,197 --> 00:00:55,898
+this loop outputs one byte of output. So,
+essentially, you can run the generator for
+
+14
+00:00:55,898 --> 00:01:00,653
+as long as you want, and generate one byte
+at a time. Now RC4 is actually, as I said,
+
+15
+00:01:00,653 --> 00:01:05,205
+fairly popular. It's used in the HTTPS
+protocol quite commonly actually.
+
+16
+00:01:05,205 --> 00:01:11,888
+These days, for example, Google uses RC4 in its
+HTTPS. It's also used in WEP as we
+
+17
+00:01:11,888 --> 00:01:15,686
+discussed in the last segment, but of
+course in WEP, it's used incorrectly and
+
+18
+00:01:15,686 --> 00:01:18,861
+it's completely insecure the way it's used
+inside of WEP. So over the years,
+
+19
+00:01:18,861 --> 00:01:23,886
+some weaknesses have been found in RC4, and as a
+result, it's recommended that new projects
+
+20
+00:01:23,886 --> 00:01:28,793
+actually not use RC4 but rather use a more
+modern pseudo-random generator as we'll
+
+21
+00:01:28,793 --> 00:01:34,059
+discuss toward the end of the segment. So
+let me just mention two of the weaknesses.
+
+22
+00:01:34,059 --> 00:01:39,561
+So the first one is, it's kind of bizarre
+basically, if you look at the second byte
+
+23
+00:01:39,561 --> 00:01:44,630
+of the output of RC4. It turns out the
+second byte is slightly biased. If RC4 was
+
+24
+00:01:44,630 --> 00:01:49,780
+completely random, the probability that the
+second byte happens to be equal to zero
+
+25
+00:01:49,780 --> 00:01:54,744
+would be exactly one over 256. There are
+256 possible bytes, the probability that
+
+26
+00:01:54,744 --> 00:01:59,646
+it's zero should be one over 256. It so
+happens that for RC4 the probability is
+
+27
+00:01:59,646 --> 00:02:04,486
+actually two over 256, which means that if
+you use the RC4 output to encrypt a
+
+28
+00:02:04,486 --> 00:02:09,574
+message the second byte is likely to not
+be encrypted at all. In other words it'll
+
+29
+00:02:09,574 --> 00:02:14,575
+be XOR-ed with zero with twice the
+probability that it's supposed to.
+
+30
+00:02:14,575 --> 00:02:19,436
+So two over 256, instead of one over 256.
+And by the way I should say that there's
+
+31
+00:02:19,436 --> 00:02:22,849
+nothing special about the second byte. It
+turns out the first and the third bytes
+
+32
+00:02:22,849 --> 00:02:27,818
+are also biased. And in fact it's now
+recommended that if you're gonna use RC4,
+
+33
+00:02:27,818 --> 00:02:32,800
+what you should do is ignore basically the
+first 256 bytes of the output and just
+
+34
+00:02:32,800 --> 00:02:37,246
+start using the output of the generator
+starting from byte 257. The first couple
+
+35
+00:02:37,246 --> 00:02:41,241
+of bytes turned out to be biased, so you
+just ignore them. The second attack that
+
+36
+00:02:41,241 --> 00:02:48,482
+was discovered is that in fact if you look
+at a very long output of RC4 it so happens
+
+37
+00:02:48,482 --> 00:02:53,863
+that you're more likely to get the
+sequence 00. In other words, you're more
+
+38
+00:02:53,863 --> 00:02:58,970
+likely to get sixteen bits, two bytes of
+zero, zero, than you should. Again, if RC4
+
+39
+00:02:58,970 --> 00:03:03,948
+was completely random the probability of
+seeing zero, zero would be exactly 1/256
+
+40
+00:03:03,948 --> 00:03:08,556
+squared. It turns out RC4 is a little
+biased and the bias is 1/256 cubed. It
+
+41
+00:03:08,556 --> 00:03:13,718
+turns out this bias actually starts after
+several gigabytes of data are produced by
+
+42
+00:03:13,718 --> 00:03:18,634
+RC4. But nevertheless, this is something
+that can be used to predict the generator
+
+43
+00:03:18,634 --> 00:03:23,120
+and definitely it can be used to
+distinguish the output of the generator
+
+44
+00:03:23,120 --> 00:03:28,097
+from a truly random sequence. Basically the
+fact that zero, zero appears more often
+
+45
+00:03:28,097 --> 00:03:32,414
+than it should is the distinguisher. And
+then in the last segment we talked about
+
+46
+00:03:32,414 --> 00:03:36,313
+related-key attacks that were used to
+attack WEP, that basically say that
+
+47
+00:03:36,313 --> 00:03:41,078
+if one uses keys that are closely related
+to one another then it's actually possible
+
+48
+00:03:41,078 --> 00:03:45,732
+to recover the root key. So these are the
+weaknesses that are known of RC4 and, as a
+
+49
+00:03:45,732 --> 00:03:50,217
+result, it's recommended that new systems
+actually not use RC4 and instead use a
+
+50
+00:03:50,217 --> 00:03:54,421
+modern pseudo-random generator. Okay,
+second example I want to give you is a
+
+51
+00:03:54,421 --> 00:03:59,131
+badly broken stream cipher that's used for
+encrypting DVD movies. When you buy a DVD
+
+52
+00:03:59,131 --> 00:04:03,504
+in the store, the actual movie is
+encrypted using a stream cipher called the
+
+53
+00:04:03,504 --> 00:04:07,933
+content scrambling system, CSS. CSS turns
+out to be a badly broken stream cipher,
+
+54
+00:04:07,933 --> 00:04:12,523
+and we can very easily break it, and I
+want to show you how the attack algorithm
+
+55
+00:04:12,523 --> 00:04:16,894
+works. We're doing it so you can see an
+example of an attack algorithm, but in
+
+56
+00:04:16,894 --> 00:04:21,435
+fact, there are many systems out there
+that basically use this attack to decrypt
+
+57
+00:04:21,435 --> 00:04:25,749
+encrypted DVDs. So the CSS stream cipher
+is based on something that hardware
+
+58
+00:04:25,749 --> 00:04:30,291
+designers like. It's designed to be a
+hardware stream cipher that is supposed to
+
+59
+00:04:30,291 --> 00:04:34,491
+be easy to implement in hardware, and is
+based on a mechanism called a linear
+
+60
+00:04:34,491 --> 00:04:38,749
+feedback shift register. So a linear
+feedback shift register is basically a register
+
+61
+00:04:38,749 --> 00:04:43,801
+that consists of cells where
+each cell contains one bit. Then basically
+
+62
+00:04:43,801 --> 00:04:49,046
+what happens is there are these taps into
+certain cells, not all the cells, certain
+
+63
+00:04:49,046 --> 00:04:54,134
+positions are called taps. And then these
+taps feed into an XOR and then at
+
+64
+00:04:54,134 --> 00:04:59,053
+every clock cycle, the shift register
+shifts to the left. The last bit falls off
+
+65
+00:04:59,053 --> 00:05:04,345
+and then the first bit becomes the result
+of this XOR. So you can see that
+
+66
+00:05:04,345 --> 00:05:08,703
+this is a very simple mechanism to implement, and in hardware takes very few
+
+67
+00:05:08,703 --> 00:05:13,622
+transistors. Just the shift right, the
+last bit falls off and the first bit just
+
+68
+00:05:13,622 --> 00:05:18,541
+becomes the XOR of the previous
+bits. So the seed for this LFSR
+
+69
+00:05:18,541 --> 00:05:23,460
+basically, is the initial state of the
+LFSR.
+
+70
+00:05:23,650 --> 00:05:28,538
+And it is the basis of a number of stream
+ciphers. So here are some examples. So, as
+
+71
+00:05:28,538 --> 00:05:33,362
+I said, DVD encryption uses two LFSRs.
+I'll show you how that works in just a
+
+72
+00:05:33,362 --> 00:05:38,060
+second. GSM encryption, these are
+algorithms called A51 and A52. And that
+
+73
+00:05:38,060 --> 00:05:43,456
+uses three LFSRs. Bluetooth encryption is
+an algorithm called, E zero. These are all
+
+74
+00:05:43,456 --> 00:05:48,534
+stream ciphers, and that uses four LFSRs.
+Turns out all of these are badly broken,
+
+75
+00:05:48,534 --> 00:05:53,245
+and actually really should not be trusted
+for encrypting traffic, but they're all
+
+76
+00:05:53,245 --> 00:05:56,705
+implemented in hardware, so it's a little
+difficult now to change what the hardware
+
+77
+00:05:56,705 --> 00:06:01,047
+does. But the simplest of these, CSS,
+actually has a cute attack on it, so let
+
+78
+00:06:01,047 --> 00:06:05,459
+me show you how the attack works. So,
+let's describe how CSS actually works. So,
+
+79
+00:06:05,459 --> 00:06:11,073
+the key for CSS is five bytes, namely 40
+bits, five times eight is 40 bits. The
+
+80
+00:06:11,073 --> 00:06:15,587
+reason they had to limit themselves to
+only 40 bits is that DVD encryption was
+
+81
+00:06:15,587 --> 00:06:19,941
+designed at a time where U.S. Export
+regulations only allowed for export of
+
+82
+00:06:19,941 --> 00:06:25,086
+crpyto algorithms where the key was
+only 40 bits. So the designers of CSS were
+
+83
+00:06:25,086 --> 00:06:30,206
+already limited to very, very short keys.
+Just 40 bit keys. So, their design works
+
+84
+00:06:30,206 --> 00:06:35,398
+as follows. Basically, CSS uses two
+LFSR's. One is a 17-bit LFSR. In other words,
+
+85
+00:06:35,398 --> 00:06:40,806
+the register contains
+17 bits. And the other one is a 25-bit LFSR,
+
+86
+00:06:40,806 --> 00:06:46,647
+it's a little bit longer, 25-bit
+LFSR. And the way these LFSRs are seeded
+
+87
+00:06:46,647 --> 00:06:51,870
+is as follows. So the key for the
+encryption, basically looks as follows.
+
+88
+00:06:51,870 --> 00:06:57,669
+You start off with a one, and you concatenate to it the first two bytes of
+
+89
+00:06:57,669 --> 00:07:02,947
+the key. And that's the initial state of the LFSR.
+
+90
+00:07:02,947 --> 00:07:08,256
+And then the second LFSR basically is intitialized the same way.
+
+91
+00:07:08,256 --> 00:07:14,012
+One concatenated the last three bytes of
+the key. And that's
+
+92
+00:07:14,012 --> 00:07:19,889
+loaded into the initial state of the LFSR.
+You can see that the first two bytes are
+
+93
+00:07:19,889 --> 00:07:25,411
+sixteen bits, plus leading one, that's
+seventeen bits overall, whereas the second
+
+94
+00:07:25,411 --> 00:07:31,217
+LFSR is 24 bits plus one which is 25 bits.
+And you notice we used all five bits of
+
+95
+00:07:31,217 --> 00:07:36,881
+the key. So then these LFSRs are basically
+run for eight cycles, so they generate
+
+96
+00:07:36,881 --> 00:07:42,333
+eight bits of output. And then they go
+through this adder that does basically
+
+97
+00:07:42,333 --> 00:07:48,197
+addition modulo 256. Yeah so this is an
+addition box, modulo 256. There's one more
+
+98
+00:07:48,197 --> 00:07:54,325
+technical thing that happens. In fact let's
+actually—also added is the carry from the
+
+99
+00:07:54,325 --> 00:07:59,723
+previous block. But that is not so
+important. That's a detail that's not so
+
+100
+00:07:59,723 --> 00:08:04,761
+relevant. OK, so every block, you notice
+we're doing addition modulo 256 and
+
+101
+00:08:04,761 --> 00:08:09,982
+we're ignoring the carry, but the carry is
+basically added as a zero or a one to the
+
+102
+00:08:09,982 --> 00:08:15,147
+addition of the next block. Okay? And then
+basically this output one byte per round.
+
+103
+00:08:15,147 --> 00:08:20,411
+Okay, and then this byte is then of course
+used, XOR-ed with the appropriate
+
+104
+00:08:20,411 --> 00:08:25,167
+byte of the movie that's being encrypted.
+Okay, so it's a very simple stream
+
+105
+00:08:25,167 --> 00:08:29,986
+cipher, it takes very little hardware to
+implement. It will run fast, even on very
+
+106
+00:08:29,986 --> 00:08:35,830
+cheap hardware and it will encrypt movies.
+So it turns out this is easy to break
+
+107
+00:08:35,830 --> 00:08:41,222
+in time roughly two to the seventeen. Now let me show you how.
+
+108
+00:08:41,222 --> 00:08:45,734
+So suppose you
+intercept the movies, so here we have an
+
+109
+00:08:45,734 --> 00:08:50,647
+encrypted movie that you want to decrypt.
+So let's say that this is all encrypted so
+
+110
+00:08:50,647 --> 00:08:55,279
+you have no idea what's inside of here.
+However, it so happens that just because
+
+111
+00:08:55,279 --> 00:08:59,970
+DVD encryption is using MPEG files, it so
+happens if you know of a prefix of the
+
+112
+00:08:59,970 --> 00:09:04,250
+plaintext, let's just say maybe this is
+twenty bytes. Well, we know if you
+
+113
+00:09:04,250 --> 00:09:08,589
+XOR these two things together, so in other words, you do the XOR here,
+
+114
+00:09:08,589 --> 00:09:13,523
+what you'll get is the initial segment of the PRG. So, you'll get the
+
+115
+00:09:13,523 --> 00:09:18,472
+first twenty bytes of the output of CSS,
+the output of this PRG. Okay, so now
+
+116
+00:09:18,472 --> 00:09:23,986
+here's what we're going to do. So we have
+the first twenty bytes of the output. Now
+
+117
+00:09:23,986 --> 00:09:31,405
+we do the following. We try all two to the
+seventeen possible values of the first
+
+118
+00:09:31,405 --> 00:09:37,088
+LFSR. Okay? So two to the seventeen
+possible values. So for each value, so for
+
+119
+00:09:37,088 --> 00:09:42,622
+each of these two to the seventeen initial
+values of the LFSR, we're gonna run the
+
+120
+00:09:42,622 --> 00:09:47,953
+LFSR for twenty bytes, okay? So we'll
+generate twenty bytes of outputs from this
+
+121
+00:09:47,953 --> 00:09:53,284
+first LFSR, assuming—for each one of the
+two to the seventeen possible settings.
+
+122
+00:09:53,284 --> 00:09:58,615
+Now, remember we have the full output of
+the CSS system. So what we can do is we
+
+123
+00:09:58,615 --> 00:10:03,814
+can take this output that we have. And
+subtract it from the twenty bites that we
+
+124
+00:10:03,814 --> 00:10:08,928
+got from the first LFSR, and if in fact our
+guess for the initial state of the first
+
+125
+00:10:08,928 --> 00:10:14,042
+LFSR is correct, what we should get
+is the first twenty-byte output of the
+
+126
+00:10:14,042 --> 00:10:19,222
+second LFSR. Right? Because that's by
+definition what the output of the CSS
+
+127
+00:10:19,222 --> 00:10:24,501
+system is. Now, it turns out that looking
+at a 20-byte sequence, it's very easy
+
+128
+00:10:24,501 --> 00:10:29,763
+to tell whether this 20-byte sequence
+came from a 25-bit LFSR or not. If it
+
+129
+00:10:29,763 --> 00:10:33,561
+didn't, then we know that our guess
+for the 17-bit LFSR was
+
+130
+00:10:33,561 --> 00:10:37,416
+incorrect and then we move on to the next
+guess for the 17-bit LFSR and
+
+131
+00:10:37,416 --> 00:10:41,904
+the next guess and so on and so forth.
+Until eventually we hit the right initial
+
+132
+00:10:41,904 --> 00:10:46,937
+state for the 17-bit LFSR, and
+then we'll actually get, we'll see that
+
+133
+00:10:46,937 --> 00:10:51,969
+the 20 bytes that we get as the
+candidate output for the 25-bit LFSR is
+
+134
+00:10:51,969 --> 00:10:56,936
+in fact a possible output for a 25-bit LFSR. And then, not only will we have
+
+135
+00:10:56,936 --> 00:11:02,164
+learned the correct initial state for the
+17-bit LFSR, we will have also
+
+136
+00:11:02,164 --> 00:11:07,523
+learned the correct initial state of the
+25-bit LFSR. And then we can predict the
+
+137
+00:11:07,523 --> 00:11:12,796
+remaining outputs of CSS, and of course,
+using that, we can then decrypt the rest of
+
+138
+00:11:12,796 --> 00:11:17,565
+the movie. We can actually recover the
+remaining plaintext. Okay. This is
+
+139
+00:11:17,565 --> 00:11:22,335
+things that we talked about before. So, I
+said this a little quick, but hopefully,
+
+140
+00:11:22,335 --> 00:11:27,331
+it was clear. We're also going to be doing
+a homework exercise on this type of stream
+
+141
+00:11:27,331 --> 00:11:31,444
+ciphers and you'll kind of get the point
+of how these attack algorithms
+
+142
+00:11:31,444 --> 00:11:36,018
+work. And I should mention that there are
+many open-source systems now that actually
+
+143
+00:11:36,018 --> 00:11:41,453
+use this method to decrypt CSS-encrypted
+data. Okay, so now that we've seen two
+
+144
+00:11:41,453 --> 00:11:45,888
+weak examples, let's move on to better
+examples, and in particular the better
+
+145
+00:11:45,888 --> 00:11:49,370
+pseudo-random generators come from what's
+called the eStream Project. This is a
+
+146
+00:11:49,370 --> 00:11:55,556
+project that concluded in 2008, and they
+qualify basically five different stream
+
+147
+00:11:55,556 --> 00:12:00,207
+ciphers, but here I want to present just
+one. So first of all the parameters for
+
+148
+00:12:00,207 --> 00:12:04,029
+these stream ciphers are a little
+different than what we're used to. So these
+
+149
+00:12:04,029 --> 00:12:08,340
+stream ciphers as normal they have a seed.
+But in addition they also have, what's
+
+150
+00:12:08,340 --> 00:12:12,821
+called a nonce and we'll see what a
+nonce is used for in just a minute. So
+
+151
+00:12:12,821 --> 00:12:17,487
+they take two inputs a seed and a nonce.
+We'll see what the nonce is used for in
+
+152
+00:12:17,487 --> 00:12:21,274
+just a second. And the of course they
+produce a very large output, so n here is
+
+153
+00:12:21,274 --> 00:12:26,603
+much, much, much bigger than s. Now, when
+I say nonce, what I mean is a value that's
+
+154
+00:12:26,603 --> 00:12:31,218
+never going to repeat as long as the key
+is fixed. And I'll explain that in more
+
+155
+00:12:31,218 --> 00:12:35,400
+detail in just a second. But for now, just
+think of it as a unique value that never
+
+156
+00:12:35,400 --> 00:12:40,527
+repeats as long as the key is the same.
+And so of course once you have this PRG,
+
+157
+00:12:40,527 --> 00:12:45,357
+you would encrypt, you get a stream cipher
+just as before, except now as you see, the
+
+158
+00:12:45,357 --> 00:12:49,955
+PRG takes as input both the key and the
+nonce. And the property of the nonce is
+
+159
+00:12:49,955 --> 00:12:56,350
+that the pair, k comma r, so the key comma
+the nonce, is never—never repeats. It's
+
+160
+00:12:56,350 --> 00:13:03,096
+never used more than once. So the bottom
+line is that you can reuse the key, reuse
+
+161
+00:13:03,096 --> 00:13:09,710
+the key, because the nonce makes the
+pair unique, because k and r are only
+
+162
+00:13:09,710 --> 00:13:16,135
+used once. I'll say they're unique. Okay
+so this nonce is kind of a cute trick that
+
+163
+00:13:16,135 --> 00:13:21,541
+saves us the trouble of moving to a new
+key every time. Okay, so the particular
+
+164
+00:13:21,541 --> 00:13:26,000
+example from the eStream that I want to
+show you is called Salsa twenty. It's a
+
+165
+00:13:26,000 --> 00:13:30,292
+stream cipher that's designed for both
+software implementations and hardware
+
+166
+00:13:30,292 --> 00:13:33,385
+implementations. It's kind of interesting.
+You realize that some stream ciphers are
+
+167
+00:13:33,385 --> 00:13:38,763
+designed for software, like RC4.
+Everything it does is designed to make
+
+168
+00:13:38,763 --> 00:13:42,689
+software implementation run fast, whereas
+other stream ciphers are designed for
+
+169
+00:13:42,689 --> 00:13:48,143
+hardware, like CSS, using an LFSR that's
+particularly designed to make hardware
+
+170
+00:13:48,143 --> 00:13:50,963
+implementations very cheap. It's also, the
+nice thing about that is that it's
+
+171
+00:13:50,963 --> 00:13:55,008
+designed so that it's both easy to
+implement it in hardware and its software
+
+172
+00:13:55,008 --> 00:13:59,747
+implementation is also very fast. So let
+me explain how Salsa works. Well, Salsa
+
+173
+00:13:59,747 --> 00:14:05,130
+takes either 128 or 256-bit keys. I'll
+only explain the 128-bit version of Salsa.
+
+174
+00:14:05,130 --> 00:14:11,244
+So this is the seed. And then it also
+takes a nonce, just as before, which
+
+175
+00:14:11,244 --> 00:14:15,425
+happens to be 64 bits. And then it'll
+generate a large output. Now, how does it
+
+176
+00:14:15,425 --> 00:14:21,060
+actually work? Well, the function itself
+is defined as follows. Basically, given
+
+177
+00:14:21,060 --> 00:14:26,378
+the key and the nonce, it will generate a
+very long, well, a long pseudorandom
+
+178
+00:14:26,378 --> 00:14:31,222
+sequence, as long as necessary. And it'll do
+it by using this function that I'll denote by
+
+179
+00:14:31,222 --> 00:14:35,653
+H. This function H takes three inputs.
+Basically the key. Well, the seed k,
+
+180
+00:14:35,653 --> 00:14:40,498
+the nonce r, and then a counter that
+increments from step to step. So it goes
+
+181
+00:14:40,498 --> 00:14:45,263
+from zero to one, two, three, four as long as
+we need it to be. Okay? So basically,
+
+182
+00:14:45,263 --> 00:14:49,956
+by evaluating this H on this k r, but using
+this incrementing counter, we can get a
+
+183
+00:14:49,956 --> 00:14:54,882
+sequence that's as long as we want. So all
+I have to do is describe how this function
+
+184
+00:14:54,882 --> 00:14:59,460
+H works. Now, let me do that here for you.
+The way it works is as follows. Well, we
+
+185
+00:14:59,460 --> 00:15:04,693
+start off by expanding the states into
+something quite large which is 64 bytes
+
+186
+00:15:04,693 --> 00:15:10,156
+long, and we do that as follows. Basically
+we stick a constant at the beginning, so
+
+187
+00:15:10,156 --> 00:15:15,552
+there's tao zero, these are four bytes,
+it's a four byte constant, so the spec for
+
+188
+00:15:15,552 --> 00:15:20,611
+Salsa basically gives you the value for
+tao zero. Then we put k in which is
+
+189
+00:15:20,611 --> 00:15:25,467
+sixteen bytes. Then we put another
+constant. Again, this is four bytes. And
+
+190
+00:15:25,467 --> 00:15:30,795
+as I said, the spec basically specifies
+what this fixed constant is. Then we put
+
+191
+00:15:30,795 --> 00:15:37,435
+the nonce, which is eight bytes. Then we
+put the index. This is the counter zero,
+
+192
+00:15:37,435 --> 00:15:43,063
+one, two, three, four, which is another
+eight bytes. Then we put another constant
+
+193
+00:15:43,063 --> 00:15:49,056
+tau two, which is another four bytes.
+Then we put the key again, this is another
+
+194
+00:15:49,056 --> 00:15:54,714
+sixteen bytes. And then finally we put the
+third constant, tau three, which is
+
+195
+00:15:54,714 --> 00:15:59,948
+another four bytes. Okay so as I said, if you
+sum these up, you see that you get 64
+
+196
+00:15:59,948 --> 00:16:05,249
+bytes. So basically we've expanded the key
+and the nonce and the counter into 64
+
+197
+00:16:05,249 --> 00:16:10,886
+bytes. Basically the key is repeated twice
+I guess. And then what we do is we apply a
+
+198
+00:16:10,886 --> 00:16:16,321
+function, I'll call this functional little h.
+Okay, so we apply this function, little h.
+
+199
+00:16:16,321 --> 00:16:21,659
+And this is a function that's one to one
+so it maps 64 bytes to 64 bytes. It's a
+
+200
+00:16:21,659 --> 00:16:26,005
+completely invertible function, okay? So
+this function h is, as I say, it's an
+
+201
+00:16:26,005 --> 00:16:30,260
+invertable function. So given the input
+you can get the output and given the
+
+202
+00:16:30,260 --> 00:16:34,906
+output you can go back to the input. And
+it's designed specifically so it's a- easy
+
+203
+00:16:34,906 --> 00:16:39,553
+to implement in hardware and b- on an x86,
+it's extremely easy to implement because
+
+204
+00:16:39,553 --> 00:16:44,199
+x86 has this SSE2 instruction set which
+supports all the operations you need to do
+
+205
+00:16:44,199 --> 00:16:48,622
+for this function. It's very, very fast.
+As a result, Salsa has a very fast stream
+
+206
+00:16:48,622 --> 00:16:52,764
+cipher. And then it does this basically
+again and again. So it applies this
+
+207
+00:16:52,764 --> 00:16:57,744
+function h again and it gets another 64
+bytes. And so on and so forth, basically
+
+208
+00:16:57,744 --> 00:17:05,318
+it does this ten times. Okay so the whole
+thing here, say repeats ten times, so
+
+209
+00:17:05,318 --> 00:17:17,961
+basically apply h ten times. And then by
+itself, this is actually not quite random.
+
+210
+00:17:17,961 --> 00:17:22,144
+It's not gonna look random because like we
+said, H is completely invertable. So given
+
+211
+00:17:22,144 --> 00:17:25,521
+this final output, it's very easy to
+just invert h and then go back to the original
+
+212
+00:17:25,521 --> 00:17:31,831
+inputs and then test that the input has
+the right structure. So you do one more
+
+213
+00:17:31,831 --> 00:17:36,979
+thing, which is to basically XOR the
+inputs and the final outputs. Actually,
+
+214
+00:17:36,979 --> 00:17:42,405
+sorry. It's not an XOR. It's actually an
+addition. So you do an addition word by
+
+215
+00:17:42,405 --> 00:17:47,762
+word. So if there are 64 bytes, you do a
+word-by-word addition four bytes at a
+
+216
+00:17:47,762 --> 00:17:52,980
+time, and finally you get the 64-byte
+output, and that's it. That's the whole
+
+217
+00:17:52,980 --> 00:17:57,175
+pseudo-random generator. So that, that's
+the whole function, little h. And as I
+
+218
+00:17:57,175 --> 00:18:01,758
+explained, this whole construction here is
+the function big H. And then you evaluate
+
+219
+00:18:01,758 --> 00:18:06,009
+big H by incrementing the counter I from
+zero, one, two, three onwards. And that
+
+220
+00:18:06,009 --> 00:18:10,408
+will give you a pseudo-random sequence
+that's as long as you need it to be. And
+
+221
+00:18:10,408 --> 00:18:15,325
+basically, there are no signifigant
+attacks on this. This has security that's
+
+222
+00:18:15,325 --> 00:18:20,371
+very close to two to the 128. We'll see
+what that means more precisely later on.
+
+223
+00:18:20,371 --> 00:18:25,417
+It's a very fast stream cipher, both in
+hardware and in software. And, as far as
+
+224
+00:18:25,417 --> 00:18:30,431
+we can tell, it seems to be unpredictable
+as required for a stream cipher. So I
+
+225
+00:18:30,431 --> 00:18:34,797
+should say that the eStream project
+actually has five stream ciphers like
+
+226
+00:18:34,797 --> 00:18:39,395
+this. I only chose Salsa 'cause I think
+it's the most elegant. But I can give you
+
+227
+00:18:39,395 --> 00:18:44,053
+some performance numbers here. So you can
+see, these are performance numbers on a
+
+228
+00:18:44,053 --> 00:18:48,768
+2.2 gigahertz, you know, x86 type machine.
+And you can see that RC4 actually is the
+
+229
+00:18:48,768 --> 00:18:53,017
+slowest. Because essentially, well it
+doesn't really take advantage of the
+
+230
+00:18:53,017 --> 00:18:57,475
+hardware. It only does byte operations.
+And so there's a lot of wasted cycles that
+
+231
+00:18:57,475 --> 00:19:01,182
+aren't being used. But the E-Stream
+candidates, both Salsa and other
+
+232
+00:19:01,182 --> 00:19:05,202
+candidate called Sosemanuk. I should say these
+are eStream finalists. These are
+
+233
+00:19:05,202 --> 00:19:09,588
+actually stream ciphers that are approved
+by the eStream project. You can see that
+
+234
+00:19:09,588 --> 00:19:13,712
+they have achieved a significant rate.
+This is 643 megabytes per second on this
+
+235
+00:19:13,712 --> 00:19:18,150
+architecture, more than enough for a movie
+and these are actually quite impressive
+
+236
+00:19:18,150 --> 00:19:22,432
+rates. And so now you've seen examples of
+two old stream ciphers that shouldn't be
+
+237
+00:19:22,432 --> 00:19:26,661
+used, including attacks on those stream ciphers.
+You've seen what the modern stream ciphers
+
+238
+00:19:26,661 --> 00:19:30,480
+look like with this nonce. And you
+see the performance numbers for these
+
+239
+00:19:30,480 --> 00:19:34,546
+modern stream ciphers so if you happen to
+need a stream cipher you could use one of
+
+240
+00:19:34,546 --> 00:19:37,991
+the eStream finalists. In particular you
+could use something like Salsa.

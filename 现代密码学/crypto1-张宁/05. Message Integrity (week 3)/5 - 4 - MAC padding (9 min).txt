@@ -1,0 +1,227 @@
+In the last segment we talked about the
+CBC-MAC and the NMAC, but throughout
+the segment we always assumed that the
+message length was a multiple of the block
+size. In this segment, we're going to see
+what to do when the message length is not
+a multiple of the block size. So recall
+that the encrypted CBC mac or ECBC-MAC for
+short uses pseudorandom permutation F to
+actually compute the CBC function as we
+discussed in the last segment. But in the
+last segment, we always assumed that the
+message itself could be broken into an
+integer number of blocks for the block
+cipher. And the question is what to do
+when the message length is not a multiple
+of the block size. So here we have a
+message where the last block actually is
+shorter than the full block and the
+question is how to compute the ECBC-MAC in
+that case. So the solution of course is to
+pad the message and the first pad that
+comes to mind is to simply pad the message
+with all zeros. In other words we take the
+last block and just add zeros to it until
+the last block becomes as long as one full
+block size. And so my question to you is
+whether the resulting MAC is secure. So
+the answer is no, the MAC is not secure.
+And let me explain why, basically the
+problem is that it's possible now to come
+up with messages so that message m and the
+message m concatenated zero happen to have
+exactly the same Pad. And as a result once
+we plug in both m and m||0 into ECBC we'll
+get the same tag out, which means that
+both m and m||0 have the
+same tag and therefore the attacker can
+mount an existential forgery. He would ask
+for the tag on the message m. And then he
+would output as its forgery the tag and the
+message m||0. And it's
+easy to say why that's the case. Basically, to be absolutely clear here, we have our
+message m. Which after padding becomes m000. So we had to add three
+0's to it. And here we have the message m
+zero, an m that ends with zero. And after
+padding, we basically now have to add two
+0's to it. And lo and behold, they become
+the same pad, so that they're gonna have
+exactly the same tag which allows the
+adversary to mount the existential forgery
+attack. So this is not a good idea. In
+fact appending all 0s is a terrible idea.
+And if you think about concrete case where
+this comes up imagine the automatic
+clearing house system used for clearing
+checks. I might have a check for a $100
+and the tag on that check. Well, now, the
+attacker basically could append a zero to
+my check and make it a check for $1000,
+and that wouldn't actually change the tag.
+So this ability to extend the message
+without changing the tag actually could
+have pretty disastrous consequences. So I
+hope this example convinces you that the
+padding function itself must be a one to
+one function. In other words, it should be
+the case that two distinct messages always
+map to two distinct padded messages. We
+shouldn't actually have a collision on the
+padding function. Another way of saying it
+is that the padding function must be
+invertible. That guarantees that the
+padding function is one to one. So a
+standard way to do this was proposed by
+the International Standards Organization
+ISO. What they suggested is basically,
+let's append the string 100000 to the end
+of the message to make the message be a
+multiple of the block length. Now to see
+that this padding is invertible, all we do
+is describe the inversion algorithm
+which simply is gonna scan the message
+from right to left, until it hits the
+first one and then it's gonna remove all
+the bits to the right of this one,
+including the one. And you see that once
+we've removed the pattern this way, we
+obtain the original message. So here's an
+example, so here we have a message where
+the last block happens to be shorter than
+the block length, and then we
+append the 1,0,0 string to it.
+It's very easy to see what the pad is,
+simply look for the first one from the
+right, we can remove this pad and recover
+the original message back. Now there's one
+corner case that's actually quite
+important, and that is what do we do if
+the original message length is already the
+multiple of a block size? In that case
+it's really very, very important that we
+add an extra dummy block. That contains
+the pad 1000. And again, I can't tell you
+how many products and standards have
+actually made this mistake where they
+didn't add a dummy block and as a result,
+the MAC is insecure because there's an
+easy existential forgery attack. And let
+me show you why. So suppose in case the
+message is a multiple of a block length,
+suppose we didn't add a dummy block and we
+literally MAC-ed this message here. Well,
+the result now is that if you look at
+the message which is a multiple of the
+block size and a message which is not a
+multiple of the block size but is padded
+to the block size, and imagine it so
+happens that this message m prime one
+happens to end with 1-0-0. At this point,
+you realize that here, the original
+message. Here, let me draw it this way.
+You realize that the original message
+after padding. Would become identical to
+the second message that was not padded at
+all. And as a result, if I ask for the tag
+on this message over here, I would obtain
+also the tag on the second message that
+happened to end in 1-0-0. Okay, so if we
+didn't add the dummy block, basically,
+again, the pad would be not invertible,
+because two different messages, two
+distinct messages, happen to map to the
+same padded result. Again, as a result,
+the MAC becomes insecure. So to summarize,
+this ISO standard is a perfectly fine way
+to pad, except you have to remember also
+to add a dummy block in case message is a
+multiple of the block length to begin
+with. Now some of you might be wondering
+if there is a padding scheme that never
+needs to add a dummy block, and the answer
+is that if you look at a deterministic
+padding function, then it's pretty easy to
+argue that there will always be cases
+where we need to pad, and the reason is
+just literally the number of messages that
+are multiples of the block length is much
+smaller than the total number of messages
+that need not be a multiple of the block
+length. And as a result we can't have a
+one to one function from this bigger
+set of all messages to the smaller set of
+messages which are a multiple of
+the block length. There will always be cases
+where we have to extend the original
+message and in this case that would
+correspond to adding this dummy padding
+block. However, there is a very clever
+idea called CMAC which shows that using a
+randomized padding function we can avoid
+having to ever add a dummy block. And so
+let me explain how CMAC works. So CMAC
+actually uses three keys. And, in fact,
+sometimes this is called a three key
+construction. So this first key, K, is
+used in the CBC, the standard CBC MAC
+algorithm. And then the keys, K1 and K2,
+are used just for the padding scheme at
+the very, very last block. And in fact in
+the CMAC standard, the keys K1, K2 are
+derived from the key K by some sort of a
+pseudo random generator. So the way CMAC
+works is as follows. Well, if the message
+happens to not be a multiple of a block
+length, then we append the ISO padding to
+it. But then we also XOR this last
+block with a secret key, K1, that the
+adversary doesn't know. However, if the
+message is a multiple of the block length,
+then of course, we don't append anything
+to it. But we XOR it with a different
+key, K2, that, again, the adversary
+doesn't actually know. So it turns out,
+just by doing that, it's now impossible to
+apply the extension attacks that we could
+do on the cascade function, and on
+raw CBC. Because the poor
+adversary actually doesn't know what is
+the last block that went into the
+function. He doesn't know K1, and therefore,
+he doesn't know the value at this
+particular point and as a result, he can't do
+an extension attack. In fact, this is a
+provable statement. And so that this
+construction here is simply by XOR-ing
+K1 or XOR-ing K2 is really a PRF.
+Despite not having to do a final
+encryption step after the raw CBC
+function is computed. So, that's one
+benefit, that there's no final encryption
+step. And the second benefit is that we resolve
+this ambiguity between whether padding did
+happen or padding didn't happen by using
+two different keys to distinguish the case
+that the message is a multiple of the block
+length versus the case where it's not but
+we have a pad appended to the message. So
+the two distinct keys resolve this
+ambiguity between the two cases, and as a
+result, this padding actually is
+sufficiently secure. And as I said,
+there's actually a nice security theorem
+that goes with CMAC that shows that the
+CMAC construction really is a pseudo-random
+function, with the same security
+properties as CBC-MAC. So I wanted to
+mention that CMAC is a federal standard
+standardized by NIST and if you now, these
+days, wanted to use a CBC-MAC for
+anything, you would actually be using CMAC
+as the standard way to do it. But
+particularly in CMAC, the underlying block
+cypher is AES and that gives us a secure
+CBC-MAC derived from AES. So that's the end
+on the segment and in the next segment
+we'll talk about a parallel MAC.

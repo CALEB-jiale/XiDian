@@ -1,0 +1,531 @@
+Now that we understand what is
+deterministic encryption, let's see some
+constructions that provide security
+against deterministic chosen plaintext
+attacks. So, first let me remind you that
+the deterministic encryption is needed,
+for example, when encrypting a data base
+index and later we wanna look up records
+using the encrypted index. Because the
+encryption is deterministic we're
+guaranteed that when we do the lookup the
+encrypted index is gonna be identical to the
+encrypted index that was sent to the
+database when the record was written to
+the database. And so, this deterministic
+encryption allows us a very simple or fast
+way to do lookups based on encrypted
+indices. The problem was that we said the
+deterministic encryption can't possibility
+be secure against a general chosen
+plaintext attack because if the attacker
+sees two cipher texts that are equal
+it learns that the underlying encrypted
+messages are the same. So, then we defined
+this concept of deterministic chosen plain
+text security which means that we have
+security as long as the encryptor never
+encrypts the same message more than once
+using a given key. In particular, this
+key, message pair is only used once, for
+every encryption, either the key changes,
+or the message changes. And then as I
+said, formally we define this CPA,
+deterministic CPA security game, and our
+goal in this segment is to actually give
+constructions that are deterministic CPA
+secure. So the first construction we're
+gonna look at is what's called SIV,
+synthetic IV's. And the way this
+construction works is as follows. Imagine
+we have a general CPA secure encryption
+system. So here's the key and here's the
+message and we are gonna denote by R the
+randomness that's used by the encryption
+algorithm. Remember that a CPA secure
+system that doesn't use nonsense has to be
+randomized and so we're explicitly gonna
+write down this variable R to denote the
+random string that's used by the
+encryption algorithm as it's doing the
+encryption. For example if we're using
+randomized counter mode, r would be the
+random IV that's used by randomized counter
+mode. And of course C is the resulting
+ciphertext. Now, in addition, we're also
+going to need a pseudo random function, f,
+that what it does, is it takes our
+arbitrary messages in the message space
+and outputs a strings, R, that can be used
+as randomness for the CPA secure
+encryption scheme. So, the little, r, over
+here is actually a member of the big R set. Okay.
+And we're going to assume this is a, f is
+a pseudo random function that maps messages
+to random strings. Now the way SIV works
+is as follows. It's going to use two keys
+K1 and K2 to encrypt the message M. And
+what it does, is the first thing is going
+to apply the pseudo random function f to
+the message M to derive randomness for the
+CPA secure encryption scheme E. And then
+it's going to encrypt the message M using
+the randomness that it just derived. This
+is going to give us a cipher text C and
+then it's going to output this cipher text
+C Okay. So that's how this SIV mode works.
+Basically it first derives the randomness
+from the message being encrypted, and then
+it uses this derived randomness to
+actually encrypt the message to obtain the
+cipher text. Now I'd like to point out for
+example, if the encryption scheme E
+happened to be randomized counter mode.
+Then the randomness R would just be the
+random IV which would actually be output
+along with the cipher text. So this means
+that the cipher text is a little bit
+longer than the plain text. But the point
+here isn't to generate a short cipher
+text. Rather the point here is to make
+sure that the encryption scheme is
+deterministic, so if we encrypt the same
+message multiple times, every time we
+should obtain the same cipher text. And
+indeed every time, we'll obtain the same
+randomness, R, and as a result, every time
+we'll obtain the same cipher text C. So
+it's fairly easy to show that this
+encryption scheme really is semantically
+secure under the deterministic chosen
+plaintext attack. The reason that's so
+is because we apply the pseudo random
+function F to distinct messages. Well if
+we apply F to distinct messages then the
+random string that F generates is going to
+look like just truly random strings. A
+different random string for every message.
+And as a result the CPA secure encryption
+scheme E is always applied using truly
+random strings. And that's exactly the
+situation where it is CPA secure. So
+because these R's are just random
+indistinguishable from brand new strings,
+the resulting system is in fact gonna be
+CPA secure. So this is just the intuition
+for why this works and it's actually
+fairly straightforward to actually
+formalize this into a complete proof. Now,
+I should emphasize that this is actually
+well suited for messages that are more
+than one AES block. In fact, for short
+messages, we're gonna see a slightly
+different encryption scheme that's
+actually better suited for these short
+messages. Okay, now the really cool thing
+about SIV is that, actually, we get cipher
+text integrity for free. In fact we don't
+have to use a special Mac if we want to
+add integrity. In a sense SIV already has
+a built in integrity mechanism. And let me
+explain what I mean by that. First of all,
+our goal was to build what's called
+deterministic authenticated encryption.
+Dae. Deterministic Authenticated
+Encryption. Which basically means that
+deterministic CPA security and cipher text
+integrity. Remember cipher text integrity
+means that the attacker gets to ask for
+the encryptions of messages of his choice
+and then he shouldn't be able to produce
+another cipher text that decrypts to a
+valid message. Okay, so I want to claim
+that in fact SIV automatically gives a
+cipher text integrity without the need for
+an embedded MAC or anything else. So let's
+see why. In particular, let's look at a
+special case of SIV when the underlying
+encryption scheme is randomized counter
+mode. Okay, so we'll call this SIV-CTR
+again to denote SIV where we're using
+randomized counter mode. Alright. So let
+me remind you again how SIV works in this
+case. Well, so we take our message, here,
+we take our message, and then we apply a
+PRF to it. And that derives an IV. And
+then that IV is going to be used to
+encrypt the message using randomized
+counter mode. Okay. So in particular,
+we're gonna use this PRF FTCRr for F
+counter, for randomized counter mode and
+essentially evaluate this FCTR at Iv, IV
+plus one up to IV plus L. And, then, we
+had sorta that with the message. And that
+gives us the final ciphertext. Okay. So,
+this is SIV with a randomized counter
+mode. Now, let's see how decryption is
+gonna work. And during decryption we're
+gonna add one more check, and that's
+going to provide ciphertext integrity. So let's see
+how decryption is going to work. So here
+we have our input cipher text that
+contains the IV and the cipher text. Well,
+the first thing we're going to do is we're
+going to decrypt the cipher text using the
+given IV, and that will give us candidate
+plain text. Now we're gonna reapply the
+PRF F from the definition of SIV to this
+message. Now if a message is valid, we
+should be getting the same IV that the
+[adversary??] supplied as part of the cipher
+text. If we get a different IV, then we
+know that this message is not a valid
+message and we simply reject the cipher
+text. So this is really cute. It's a very
+simple kinda built in check to make sure
+that the cipher text is valid, right. We
+simply check that after decryption if
+we re-derive the IV we would actually get
+the correct IV. And if not we reject the
+message. And I claim that this simple check
+during decryption is enough to [actually??] provide
+ciphertext integrity. And therefore,
+deterministic authenticated encryption. So
+I'll state this in a simple theorem.
+Basically to say, that if F is a secure
+PRF, and in counter mode that's derived
+from FCTR is CPA secure, then the result
+is in fact a deterministic authenticated
+encryption system. Now the proof for this
+is not too difficult. In two sentences,
+let me just show you the rough intuition
+for why this is true. So, all we have to
+argue is just cipher text integrity. So we
+already argued before that the system has
+deterministic CPA security, all we have to
+argue is just cipher text integrity. So to
+argue that the system has cipher text
+integrity, let's think again how the
+cipher text integrity game works.
+Adversary asks for the encryption of a
+bunch of messages of his choice. And he
+gets the resulting cipher text. Then, his
+goal is to produce a new valid cipher
+text. Well, if that valid cipher text upon
+decryption, decrypts to some completely
+new message. Then when we plug this new
+message into the PRF F, we're just going to
+get some random IV and it's very unlikely
+to hit the IV that the adversary supplied
+in the cipher text that he output. So
+therefore that says that when the advisory
+outputs his forged cipher text, the
+message in that forged cipher text
+basically should be equal to one of the
+messages in his chosen message queries.
+Otherwise, again the IV that you get is
+simply not gonna be equal to the IV in the
+forged safe index with very high
+probability. But if the message is equal
+to one of the messages that the adversary
+queried us on, well then, the cipher text
+that we're gonna get is also gonna be
+equal to one of the cipher texts that we
+supplied to the adversary. But then his
+forgery is simply one of the cipher texts
+that we gave to him. And therefore, this
+is not a valid forgery. He has to give us
+a new cipher text to win the cipher text
+integrity game. But he gave us one of our
+old cipher texts. So, this is the rough
+intuition. I hope, I kinda went through it
+quickly. I hope it kinda makes sense. If
+it doesn't then it's not the end of the
+world. I'm gonna reference the paper that
+describes SIV at the end of the module.
+And if you wanna see this in more detail
+you can read and take a look inside of
+that paper. But, regardless, this is a
+very cute idea that I wanted to show you
+where kinda the fact that we derive the
+randomness for deterministic counter mode
+using a PRF. Also, gives us an integrity
+check when we actually do the decryption.
+Okay. So this SIV is a good mode for doing
+deterministic encryption when you need to,
+particularly if the messages are long. If
+the messages are very short, say they're
+less than sixteen bytes, in fact there's a
+better way to do it, and that's the method
+that I wanna show you now. So the second
+construction is actually trivial. All
+we're gonna do is we're gonna use a PRP
+directly. So here's what we do. So suppose
+(E, D) is a secure PRP. So E will encrypt, and
+D will decrypt. And I claim that if we use
+E directly, that already gives us
+deterministic CPA security. So let me show you very quickly why. So suppose F is
+a truly random invertible function from X
+to X. Okay. So remember a PRP is
+indistinguishable from a truly random
+invertible function, so let's pretend that
+we actually do have a truly random
+invertible function. Now in experiment
+zero what the attacker is gonna see while
+he submits a bunch of messages, you know
+the messages on the left. And what he's
+gonna see is basically the evaluation of f
+on the messages on the left that he
+supplied. Well, in the deterministic CPA
+game, all these messages are distinct, and
+so all he's gonna get back are just q
+distinct random values in X. That's all he
+sees. Yes, there's Q distinct random
+values in X. Now let's think about
+experiment one. In experiment one, he gets
+to see the encryptions of messages on the
+right, okay, the M11 to MQ1. Well, again,
+all these messages are all distinct so all
+he gets to see are just Q random distinct
+values in X. Well these two distributions,
+in experiment zero and experiment one,
+therefore are identical. Basically, in
+both cases what he gets to see are just Q
+distinct random values in X. And as a
+result, he can't distinguish experiment
+zero from experiment one. And since he
+can't do this for a truly random function,
+he also can't do this for the PRP. Ok,
+so that explains why directly encrypting
+with a PRP already gives us a CPA secure
+system very, very, very simple to use.
+That says that if all we wanna do is
+encrypt short messages, say, less than
+sixteen bytes, then all we need to do is
+to directly encrypt them using AES and the
+result will, in fact, be deterministic CPA
+secure. So, if your indices are less than
+sixteen bytes directly using AES is a fine
+thing to do. Notice however, that's not
+gonna provide any integrity. And we're
+gonna see how to add integrity in just a
+minute. But the question for you is, what
+do we do if we have longer than sixteen
+byte messages? Well, one option is to use
+SIV. But what if we actually wanted to use
+this construction too. It's actually an
+interesting question. Can we construct
+PRP's that have message spaces that are
+bigger than just sixteen bytes? If you
+remember in the past we constructed PRFs
+on that had large message spaces from
+PRFs that had small message spaces. Here,
+we're going to construct PRPs with large
+message spaces from PRFs that have small
+message spaces. So, here's how we do it.
+So suppose E D is a secure PRP that
+operates on N bit blocks. There's a
+standard mode called EME that actually
+will construct a PRP that operates on
+capital N bit blocks, where capital N is
+much, much bigger than little n. So this
+would allow us to do deterministic
+encryption on much larger messages than
+just sixteen bytes. In fact it could be as
+long as we want. So let's see how EME
+works. It's a bit daunting at first but
+it's not a difficult construction. So,
+let's see how it works. So, EME uses two
+keys, K and L, and in fact in the real EME
+L is derived from K. But for our purposes,
+let's just pretend that K and L are two
+distinct keys. The first thing we do, is
+we take our message X and we break it up
+into blocks. And then we XOR each block
+with a certain padding function, okay? So
+we use the secret key L to derive a pad
+using this, you know function P that I'm
+not gonna explain here. We derive a
+different pad for each one of the blocks
+and we XOR that pad. Into the block. The
+next thing we do is we apply the PRP E
+using the Key K, to each of these blocks,
+and we're gonna call these outputs PP0,
+PP1, and PP2. The next thing we do is we
+XOR all these ppp's together and we call
+the result MP. Actually this XOR
+doesn't need to be there. We call the
+result of the XOR MP. The next thing we
+do we XOR all these ppp's together and we
+call the result MP. We encrypt this MP
+using E and the key K. We call the outputs of
+this encryption MC. Okay. So then we use
+the XOR MP and MC and this gives us
+another PM, which we use to derive one
+more pad, and then we XOR this output
+of this pad with all the PPP's to get
+these CCC's, [laugh], and then we XOR
+all these C C C's together that gives us
+a value of C C C zero, which we then
+encrypt one more time with all these E's,
+we do one more padding with all these P's
+and that actually finally gives us the
+output of EME. Okay, so like I said,
+this may look a little daunting, but in
+fact there's a theorem that shows that if
+the underlying block cipher E is a secure
+PRP, then in fact. This construction, EME,
+is a secure PRP on this larger block, you
+know, zero, one to the capital N. The nice
+thing about this construction is you
+notice that it's very parallel and
+actually that's why it's a little
+complicated. Counted every block. It's
+encrypted in parallel, so if you have a
+multi-core processor, you can use all your
+cores to encrypt all the blocks at the
+same time and then there would be one kind
+of sequential step to compute this, check
+sum of, all the outputs and then one more
+parallel around to encrypt one more time
+and then finally you get the outputs.
+These function Ps, by the way, that
+generate the pads, are very, very simple
+functions. They take constant time so
+we're just going to ignore them in terms
+of performance. So the bottom line is
+performance here. You notice it requires
+two applications of E per input block. And
+it turns out this can actually be slower
+than SIV, if SIV is implemented properly
+with a very fast PRF to derive the
+randomness. Then in fact SIV can be twice
+as fast, as this particular mode of
+operation. For this reason I say that the
+PRP construction is very good for short
+messages, whereas SIV is good if you h, if
+you want to encrypt longer messages in a
+deterministic fashion. But now what if we
+wanted to add integrity to this PRP-based
+mechanism? So, can we achieve
+deterministic authenticated encryption
+using the PRP mechanism where we directly
+encrypt the message using a PRP? And it
+turns out the answer is yes and it's
+actually again, a very simple
+encryption scheme that you should know
+about. Basically what we're going to do is
+we're going to take our message and we're
+going to append a bunch of zeros to this
+message and then we're going to apply the
+PRP and that's it. And that's going to
+give us the cipher text. Now, very, very
+simple. Just append zeros and encrypt
+using a PRP. When we decrypt, we're going
+to look at these least significant bits of
+the resulting plain text and if they're
+not equal to zero, we're just going to
+reject the cipher text. And if they are
+equal to zero, we're going to output the
+message as valid. Okay, so that's it,
+that's the whole system, very, very
+simple. Simply append zeroes during
+encryption, and then check that the zeroes
+are there when you decrypt. And I claim
+that this very simple mechanism actually
+provides deterministic authenticated
+encryption, assuming, of course, that
+you've appended enough zeroes. And in
+particular, if you append N zeroes, you
+need one over two to the N to be
+negligible. And if so, then, in fact, this
+direct PRP based encryption, in fact,
+provides deterministic authenticated
+encryption. So let me see why. Well, we
+already argued that the system is CPA
+secure, so all we have to argue is that it
+provides cipher text integrity. And again,
+that's easy to see. Let's look at the
+cipher text game. So the adversary
+is gonna choose let's say a truly random
+permutation. So a truly random, invertible
+function, on the input space. In this case
+the input space is the message space and
+the N zero bits. Now what does the
+adversary get to do? Well he gets to
+submit q messages, and then he receives
+the encryption of those Q messages. Mainly
+he receives the PRP at his chosen points
+concatenated with N zeros. Okay, that's
+what it basically it means to query the
+CPA challenger. So in case of a random
+permutation, he simply gets to see, the
+value of this permutation at Q points of
+his choice, but only concatenated with N
+zeroes. And now, what's his goal in the
+cipher text integrity game? Well, his goal
+is to produce some new cipher text that's
+different from the cipher text that he was
+given, that's gonna decrypt properly.
+Well, what does it mean that it decrypts
+properly? It means that if, when we apply,
+Pi inverse To the cipher text C, it had
+better be the case that the N least
+significant bytes of C are all zeros. And
+the question is how likely is that to
+happen? Well, so let's think about this.
+So basically we have a truly random
+permutation and the adversary got to see
+the value of this permutation as Q points.
+How likely is he to produce a new point
+that, when inverted, happens to have N zeroes
+as the least significant bits? What we're
+doing here is basically we're evaluating
+the permutation Pi inverse at the point c.
+And since Pi inverse is a random
+permutation, how likely is it to have its
+n least significant bits be equal to zero?
+So it isn't hard to see that the answer
+is, is, at most, the probability's at
+most, one over two to the N. Because,
+again, basically, the permutation is gonna
+output a random element inside of, X times
+0 1 to the N. And that element is gonna end
+with N zeroes, but basically
+with the probability one over two to the
+N. And as a result, the adversary wins the
+game with negligible probability, Because,
+this value is negligible. So that's the
+end of this segment. I wanted you to see
+these two very cute deterministic
+authenticated encryption schemes. The
+first one we called SIV, where I said you
+would use randomized counter mode and you
+just arrived at randomness for randomized
+counter mode from a PRF applied to the
+message. And the very cute idea here is
+that during decryption you can simply
+recompute the IV from the, from the decrypted
+message and verify that that IV is what's
+given to you in the cipher text. And that
+simple check is actually enough to
+guarantee authenticated encryption or
+rather deterministic authenticated
+encryption. So this mode is, is the way
+you would encrypt an index in a database
+if the index was large. If the index
+happens to be short, maybe say, its eight
+bytes if it's an 8-byte user ID, then you
+can directly use a PRP and the way you
+would do is, is you would append zeros to
+those eight bytes. And then those zeros
+will be used as an integrity check when
+you decrypt and again if you append, are
+able to append enough zeros, then in fact
+this also provides deterministic
+authenticated encryption. As an aside, I
+showed you that there's a way to build the
+wide block PRP from a narrow PRP and that
+particular mode of operation is called
+EME. So we're gonna refer EME
+actually in the next segment.

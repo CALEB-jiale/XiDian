@@ -1,0 +1,839 @@
+1
+00:00:00,000 --> 00:00:04,078
+In the last module we saw that number
+theory can be useful for key exchange.
+
+2
+00:00:04,078 --> 00:00:08,471
+In this modlule we will review some basic facts
+of number theory that will help us build
+
+3
+00:00:08,471 --> 00:00:12,759
+many public key systems next week. As we
+go through the material in this module it
+
+4
+00:00:12,759 --> 00:00:17,047
+might help to pause the video from time to
+time to make sure all the examples are clear
+
+5
+00:00:17,047 --> 00:00:21,283
+So as I said we're gonna use number
+theory to build key exchange protocols.
+
+6
+00:00:21,283 --> 00:00:26,836
+We're gonna use number theory to build
+digital signatures, public encryption and many, many other things.
+
+7
+00:00:26,836 --> 00:00:29,676
+But before we can
+do all that, we have to review some basic
+
+8
+00:00:29,676 --> 00:00:33,855
+facts from number theory and in fact in
+this module we're gonna do a quick course
+
+9
+00:00:33,855 --> 00:00:38,034
+on the relevant concept. If you'd like to
+review some of the material discussed in
+
+10
+00:00:38,034 --> 00:00:41,958
+this module offline, I referenced at the
+end of the module a free textbook by
+
+11
+00:00:42,110 --> 00:00:45,932
+Victor Shoup and I pointed to some
+specific chapters in his book that will
+
+12
+00:00:45,932 --> 00:00:50,897
+explain the materials that we will cover
+here. So from here on I'm going to use the
+
+13
+00:00:50,897 --> 00:00:55,832
+following notation. I'm going to use
+capital N to always denote a positive
+
+14
+00:00:55,832 --> 00:01:01,368
+integer, and I'm going to use lower case p
+to always denote a positive prime number.
+
+15
+00:01:01,368 --> 00:01:06,503
+Now I'd like to introduce the following
+notation, there's this funny Z that's
+
+16
+00:01:06,503 --> 00:01:12,172
+written like two diagonal lines here with
+a subscript N I'm gonna use that to denote
+
+17
+00:01:12,172 --> 00:01:16,939
+the sets as zero, one, two, up to N minus
+one. This is actually a very common
+
+18
+00:01:16,939 --> 00:01:21,780
+notation that's used in Crypto, and so
+I'll stick to that here. So again, Z sub N
+
+19
+00:01:21,780 --> 00:01:26,865
+denotes the set of integers 0,1 up to N-1. And in fact, this is not just a
+
+20
+00:01:26,865 --> 00:01:31,890
+set of integers. We can do addition and
+multiplication in this set as long as we
+
+21
+00:01:31,890 --> 00:01:36,991
+always multiply module of the number N.
+For those of you who know a little bit of
+
+22
+00:01:36,991 --> 00:01:40,853
+algebra, I'll just say that Z sub N
+denotes a ring where addition and
+
+23
+00:01:40,853 --> 00:01:45,388
+multiplication are done modulo N. This is
+very common notation in crypto, although
+
+24
+00:01:45,388 --> 00:01:49,922
+in modern mathematics Z sub N sometimes
+denotes something else. But as I said I'm
+
+25
+00:01:49,922 --> 00:01:54,568
+gonna keep on using Z sub N to denote the
+set of integers 0 to N-1 with
+
+26
+00:01:54,568 --> 00:01:59,230
+addition and multiplication modulo N. So
+I want to make sure everybody's
+
+27
+00:01:59,230 --> 00:02:04,551
+comfortable with modular arithmetic. And
+so let's just look at the number, say, N=12
+
+28
+00:02:04,551 --> 00:02:09,612
+And let's just see some basic facts about modular arithmetic. So
+
+29
+00:02:09,612 --> 00:02:14,348
+I'm gonna say that nine plus eight is
+seventeen; seventeen is five modulo
+
+30
+00:02:14,348 --> 00:02:19,962
+twelve, so I'm gonna write that nine plus
+eight is equal to five in Z 12. Now
+
+31
+00:02:19,962 --> 00:02:26,866
+can someone tell me how much is five times
+seven in Z12? In other words, how much is modular 12?
+
+32
+00:02:29,513 --> 00:02:33,660
+Well, five times seven is 35. And if you recall, 36 is divisible by 12
+
+33
+00:02:33,660 --> 00:02:38,805
+So five times seven is really -1 module of 12. 35 is minus
+
+34
+00:02:38,805 --> 00:02:44,491
+one module of twelve. But minus one module
+of 12 is basically the same as 11,
+
+35
+00:02:44,491 --> 00:02:49,975
+cuz I just add 12  to -1 and I
+get 11. And the next question is, how
+
+36
+00:02:49,975 --> 00:02:56,189
+much is 5 - 7 seven in the Z12?
+Well, 5-7 is -2.
+
+37
+00:02:56,189 --> 00:03:01,828
+-2 modulo 12, well, I just add 12
+to -2 and I get 10. As a result,
+
+38
+00:03:01,828 --> 00:03:07,815
+we say that 5 - 7 is equal to
+10. So again, this is just to make sure
+
+39
+00:03:07,815 --> 00:03:13,848
+everybody is comfortable with this notation of working
+in Z12. In other words, working in modulo 12.
+
+40
+00:03:13,848 --> 00:03:18,856
+Now, I'd just like to make a
+general statement that, in fact,
+
+41
+00:03:19,028 --> 00:03:23,034
+arithmetic in ZN, in other words,
+arithmetic modulo N works just as you
+
+42
+00:03:23,034 --> 00:03:27,268
+would expect. So, for example, all the
+laws that you know about addition and
+
+43
+00:03:27,268 --> 00:03:31,847
+multiplication work equally well in ZN.
+For example, the distributive law, X times
+
+44
+00:03:31,847 --> 00:03:36,196
+Y plus Z, is still gonna be equal to X
+times Y plus X times Z. So many of the
+
+45
+00:03:36,196 --> 00:03:41,003
+things that you know about arithmetic when
+working over the integers or in the reals,
+
+46
+00:03:41,003 --> 00:03:46,247
+will translate to working in, ZN, namely
+working modulo N.
+
+47
+00:03:46,247 --> 00:03:51,965
+So the next concept we need is what's called a greatest common
+divisor, or a GCD. And so suppose they
+
+48
+00:03:51,965 --> 00:03:57,319
+give you two integers X and Y. We say that
+the GCD of X and Y is basically the
+
+49
+00:03:57,319 --> 00:04:02,880
+greatest common divisor it's the largest
+number, the largest integer that divides
+
+50
+00:04:02,880 --> 00:04:09,138
+both X and Y. So for example, what is the
+GCD of 12 and 18?
+
+51
+00:04:09,630 --> 00:04:15,258
+Well the GCD is 6, because 6 divides both 12
+and 18,
+
+52
+00:04:15,258 --> 00:04:18,965
+and it's the largest number that divides both 12 and 18.
+
+53
+00:04:18,965 --> 00:04:27,245
+Now
+there is an important fact about GCD's in particular, if I give you two numbers, two
+integers X and Y, there will always exist
+
+54
+00:04:27,245 --> 00:04:32,711
+two other integers, I will call them A and
+B, such that if I look at a times X + B
+
+55
+00:04:32,711 --> 00:04:38,177
+times Y what I get is the GCD of X and Y.
+In other words the GCD of X and Y is a
+
+56
+00:04:38,177 --> 00:04:43,711
+linear combination of X and Y using the
+integers A and B. So far let us look at a
+
+57
+00:04:43,711 --> 00:04:49,245
+simple example, here, let's look at the
+GCD from before, so the integers for the
+
+58
+00:04:49,245 --> 00:04:55,831
+GCD would be 2 times 12 Minus 1
+times 18. That's 24 minus 18,
+
+59
+00:04:55,831 --> 00:05:02,533
+which is equal to 6. So the integers A
+and B in this case would be 2 and -1
+
+60
+00:05:02,533 --> 00:05:08,625
+But this is just an example, and in
+fact, these integers, A and B will exist
+
+61
+00:05:08,625 --> 00:05:13,463
+for any integers, X and Y. Now not only do
+A and B exist, in fact there's a very
+
+62
+00:05:13,463 --> 00:05:17,838
+simple and efficient algorithm to find
+these integers, to find A and B. The
+
+63
+00:05:17,838 --> 00:05:22,627
+algorithm is what's called the extended
+Euclidean algorithm. This is actually one
+
+64
+00:05:22,627 --> 00:05:27,416
+of the prettiest algorithms from ancient
+Greek times, due to Euclid of course. I'm
+
+65
+00:05:27,416 --> 00:05:31,672
+not gonna show you how this algorithm
+works here, I. It's a fairly simple
+
+66
+00:05:31,672 --> 00:05:36,343
+algorithm. I'll just tell that in fact
+given X and Y, this algorithm will find A
+
+67
+00:05:36,343 --> 00:05:40,942
+and B in time roughly quadratic in the
+logarithms of X and Y. We'll come back to
+
+68
+00:05:40,942 --> 00:05:44,966
+that and discuss the, the performance of
+Euclid's algorithm I have a bit more
+
+69
+00:05:44,966 --> 00:05:49,752
+detail in just a minute. But, for now all
+we need to know is that A and B can
+
+70
+00:05:49,752 --> 00:05:55,719
+actually be found efficiently. Now, if the
+GCD of X and Y happens to be 1. In other
+
+71
+00:05:55,719 --> 00:06:00,956
+words, 1 is the largest integer that
+divides both X and Y, then we say that X
+
+72
+00:06:00,956 --> 00:06:05,926
+and Y are relatively prime. For example,
+the GCD of three and five, it's not
+
+73
+00:06:05,926 --> 00:06:11,567
+difficult to see that it hap, that happens
+to be 1, Because both 3 and 5 are
+
+74
+00:06:11,567 --> 00:06:15,688
+prime. The next topic we need to talk
+about is modulated inversion. So other
+
+75
+00:06:15,688 --> 00:06:20,214
+than rationals we know what the inverse of
+a number is. In other words if I give you
+
+76
+00:06:20,214 --> 00:06:24,130
+the number 2 the inverse of 2 is
+simply the fraction one half.
+
+77
+00:06:24,130 --> 00:06:30,111
+the qestion is what about inverses when we, we
+work module N. Well, so the inverse of
+
+78
+00:06:30,111 --> 00:06:37,475
+an element X in Z N is simply another
+element Y in Z N such that X times Y is
+
+79
+00:06:37,475 --> 00:06:43,650
+equal to 1 in Z N. In other words X
+times Y is equal to 1 modulo N. And this
+
+80
+00:06:43,650 --> 00:06:49,066
+number Y is denoted by X inverse. And it's
+not difficult to see that if, if Y exists,
+
+81
+00:06:49,066 --> 00:06:54,351
+then in fact it's unique. And as I said,
+we'll use X inverse to denote the inverse
+
+82
+00:06:54,351 --> 00:06:59,440
+of X. So let's look at a quick example.
+Suppose N is some odd integer, and I ask
+
+83
+00:06:59,440 --> 00:07:04,636
+you what is the inverse of 2 in ZN?
+So it's not too difficult to see that the
+
+84
+00:07:04,636 --> 00:07:09,810
+inverse of two in ZN in fact is N plus one
+over 2 and you can see that this is an
+
+85
+00:07:09,810 --> 00:07:14,429
+integer because N is odd, therefore, N+1 is even and, therefore, (N+1)/2
+
+86
+00:07:14,429 --> 00:07:19,542
+is in fact an integer and the
+range 1..N as required. Now why is (N+1)/2
+
+87
+00:07:19,542 --> 00:07:24,407
+the inverse of two?
+Well, let's just multiply the 2 so we do
+
+88
+00:07:24,407 --> 00:07:29,273
+2 times (N+1) over 2 and what do
+we get? Well, that's simply equal to N+1
+
+89
+00:07:29,273 --> 00:07:34,508
+and N+1 is simply equal to
+1 in ZN. So since their product is equal
+
+90
+00:07:34,508 --> 00:07:38,889
+to 1. We know that (N+1)/2
+is the inverse of 2 in ZN.
+
+91
+00:07:38,889 --> 00:07:44,174
+Now we understand what a modular inverse is, the
+question is which elements actually have
+
+92
+00:07:44,174 --> 00:07:48,853
+an inverse in ZN? And so there's a very
+simple lemma that says that if for an
+
+93
+00:07:48,853 --> 00:07:53,911
+element X in ZN, that element has
+an inverse if and only if it is relatively
+
+94
+00:07:53,911 --> 00:07:58,500
+prime to the modulus N, to the number N.
+So I'll say that again. X and ZN is
+
+95
+00:07:58,500 --> 00:08:03,607
+invertible if and only if X is relatively
+prime to N. And let's quickly prove that.
+
+96
+00:08:03,607 --> 00:08:08,403
+It's actually fairly simple to see. So
+suppose a GCD of X and N happens to be
+
+97
+00:08:08,403 --> 00:08:13,262
+equal to one. So X is relatively prime to
+N. Well, by this property of GCD as we
+
+98
+00:08:13,262 --> 00:08:18,120
+know that there exists integers A and B.
+Such that A times X plus B times N is
+
+99
+00:08:18,120 --> 00:08:23,469
+equal to the GCD of X and N, which happens
+to be one. So A times X plus B times N is
+
+100
+00:08:23,469 --> 00:08:28,778
+equal to 1. Now we can actually take
+this equation here and, and us it reduce
+
+101
+00:08:28,778 --> 00:08:34,360
+it's modulo N. So what this means is that
+a times X is equal to one in Z, N. Once we
+
+102
+00:08:34,360 --> 00:08:39,669
+reduce this equation modulo N this term
+simply falls off because B times N is
+
+103
+00:08:39,669 --> 00:08:46,059
+divisible by N and therefore is 0
+modulo N. But what we just showed is that
+
+104
+00:08:46,059 --> 00:08:52,763
+in fact X inverse is simply A in ZN. So
+because X is relatively prime to N, we
+
+105
+00:08:52,763 --> 00:08:58,700
+were able to show that X is invertible by
+actually building the inverse of X modulo N
+
+106
+00:08:58,700 --> 00:09:03,349
+Now what about the other direction?
+What happens if the GCD is greater than 1?
+
+107
+00:09:03,349 --> 00:09:08,339
+Then we want to show that there is no
+inverse. But that's actually very easy to
+
+108
+00:09:08,339 --> 00:09:12,908
+see because in this case, if you claim
+that A happens to be the inverse of X
+
+109
+00:09:12,908 --> 00:09:17,658
+modulo N, well, let's look at a<i>x; a<i>X we know should be equal to 1 modulo N</i></i>
+
+110
+00:09:17,658 --> 00:09:22,467
+But if the GCD(X,N) is
+bigger than 1, then the GCD(a<i>X,N)</i>
+
+111
+00:09:22,467 --> 00:09:27,157
+is bigger than one. But, if the GCD
+of A times X and N is bigger than 1,
+
+112
+00:09:27,157 --> 00:09:32,366
+then it's not possible that A<i>X is
+equal to 1. So A<i>X must also be</i></i>
+
+113
+00:09:32,567 --> 00:09:38,436
+bigger than 1, and therefore, A cannot
+be the inverse of X module N.
+
+114
+00:09:38,436 --> 00:09:42,602
+So this proves that, in fact, in, when the GCD is
+greater than 1, X cannot have an
+
+115
+00:09:42,602 --> 00:09:47,282
+inverse, because there is no A, such that
+A times X is equal to one modulo N
+
+116
+00:09:47,282 --> 00:09:51,791
+And this might be a bit confusing, so you
+might be best just to, do an example. So
+
+117
+00:09:51,791 --> 00:09:56,451
+let's look at, let's suppose that the GCD
+of X and N happens to be equal to 2.
+
+118
+00:09:56,451 --> 00:10:01,843
+I claim that X is therefore, is not
+invertible modular N. Well, why is that
+
+119
+00:10:01,843 --> 00:10:07,615
+true? Well, for all A, we know that A
+times X is gonna be even, is even. And the
+
+120
+00:10:07,615 --> 00:10:13,471
+reason we know that is because, well, 2
+divides X and 2 divides N. Well, since
+
+121
+00:10:13,471 --> 00:10:18,501
+two divide X, 2 is also gonna divide A
+times X. And therefore, A times X must be
+
+122
+00:10:18,501 --> 00:10:23,468
+even. But what that means is that there's
+no way that A times X is equal to 1 modulo N
+
+123
+00:10:23,468 --> 00:10:28,649
+In particular, there's no way
+that A times X is equal to B times N + 1
+
+124
+00:10:28,649 --> 00:10:33,749
+This simply can't happen, this
+equality must not hold. Because this side
+
+125
+00:10:33,749 --> 00:10:39,257
+happens to be even, as we said. B times N
+for exactly the same reason is also even:
+
+126
+00:10:39,257 --> 00:10:44,832
+N is divisible by two; therefore B times N
+is also divisible by two. So therefore B
+
+127
+00:10:44,832 --> 00:10:50,340
+times N+1 is odd. And since even
+can't equal to odd, it's not possible that
+
+128
+00:10:50,340 --> 00:10:56,297
+A times X is equal to some multiple of N+1. And in particular this means
+
+129
+00:10:56,297 --> 00:11:01,331
+that A cannot be the inverse of X because
+A times X cannot be 1 mod N so X is not
+
+130
+00:11:01,331 --> 00:11:05,308
+invertible modular N. So now we have a
+complete understanding of what are the
+
+131
+00:11:05,308 --> 00:11:09,192
+invertible elements. Basically, we know
+that an element is invertible if and only
+
+132
+00:11:09,192 --> 00:11:13,270
+if it's relatively prime to N. And what I
+like about this proof is I would say this
+
+133
+00:11:13,270 --> 00:11:17,623
+is what's called a computer-science proof
+In the sense that not only does it prove
+
+134
+00:11:17,623 --> 00:11:22,250
+to you that the inverse exists; it also
+shows you how to efficiently calculate the
+
+135
+00:11:22,250 --> 00:11:26,312
+inverse. And the way we calculate the
+inverse, is basically by using this
+
+136
+00:11:26,312 --> 00:11:30,826
+extending decreasing algorithm. Define the
+numbers A and B. And once we found the
+
+137
+00:11:30,826 --> 00:11:35,453
+numbers A and B, we done because A is the
+inverse of X. And the numbers A and B can
+
+138
+00:11:35,453 --> 00:11:41,269
+be found very efficiently. So along the
+way I've also shown you an algorithm for
+
+139
+00:11:41,269 --> 00:11:43,768
+inverting elements, modulo N.
+
+140
+00:11:43,768 --> 00:11:53,243
+Okay. So
+bear with me, and let's introduce this little more notation. So we're gonna denote by ZN as the set of invertible elements in
+
+141
+00:11:53,243 --> 00:11:58,439
+Z N. In other words, ZN is the set
+of all elements in ZN such that GCD(X,N)=1
+
+142
+00:11:58,439 --> 00:12:02,930
+Okay. But I want you, again, to think of ZN as
+
+143
+00:12:02,930 --> 00:12:07,736
+basically those elements in ZN that have
+an inverse. So let's look at a few
+
+144
+00:12:07,736 --> 00:12:12,859
+examples. So let's start with a prime p.
+We know that of the integers from zero to
+
+145
+00:12:12,859 --> 00:12:17,350
+p-1, all of them are gonna be
+relatively primed to p except one
+
+146
+00:12:17,350 --> 00:12:22,409
+integer--namely, the integer 0. Zero is
+not relatively primed to P, because the
+
+147
+00:12:22,409 --> 00:12:27,719
+GCD(p,0)=0, not 1. So
+therefore, if p is a prime, the set ZP
+
+148
+00:12:27,719 --> 00:12:34,196
+is simply ZP minus 0, Which means
+that everything in Z<u>P is invertible</u>
+
+149
+00:12:34,196 --> 00:12:41,093
+except for 0. So if you like the size
+of ZP<i>, it's simply P-1. Now</i>
+
+150
+00:12:41,093 --> 00:12:46,230
+let's look at our favorite integer again.
+So why don't you tell me what is Z12
+
+151
+00:12:46,230 --> 00:12:52,036
+what is the set of invertible elements modulo 12?
+
+152
+00:12:54,036 --> 00:12:57,226
+And the answer, of course, is all the numbers
+that are relatively primed to 12--namely,
+
+153
+00:12:57,226 --> 00:13:01,839
+1, 5, 7, and 11. So, for
+example, 3, 4, 6--all of those are
+
+154
+00:13:01,839 --> 00:13:06,802
+not invertible because they all have a, a
+non-trivial GCD with twelve, And as we
+
+155
+00:13:06,802 --> 00:13:11,085
+said before, if I give you an element X
+and ZN<i>, you can find its inverse</i>
+
+156
+00:13:11,085 --> 00:13:15,476
+using the extended Euclidean algorithm.
+You can find its inverse very efficiently,
+
+157
+00:13:15,476 --> 00:13:19,760
+in fact, using this algorithm. So what we
+just learned is basically how to solve
+
+158
+00:13:19,760 --> 00:13:24,205
+modular linear equations. In other words,
+if I give you a linear equation and I ask
+
+159
+00:13:24,205 --> 00:13:28,543
+you to solve it mod N, it's actually very
+easy to do. All you do is you move B to
+
+160
+00:13:28,543 --> 00:13:32,826
+the other side so you have a minus B, and
+then you multiply by A inverse. So the
+
+161
+00:13:32,826 --> 00:13:37,217
+answer is minus B times A inverse. And you
+can find A inverse using the Euclidean
+
+162
+00:13:37,217 --> 00:13:41,585
+algorithm. And once you have a inverse,
+you'd simply multiply it by minus B,
+
+163
+00:13:41,585 --> 00:13:46,188
+modulo N, and that gives you the solution
+to this linear equation. Now the
+
+164
+00:13:46,188 --> 00:13:51,149
+Euclidian algorithm actually takes time
+that's quadratic in logarithm of N. So it
+
+165
+00:13:51,149 --> 00:13:55,690
+takes time proportional to log squared N.
+And as a result we say that this is a
+
+166
+00:13:55,690 --> 00:13:59,980
+quadratic algorithm for solving linear
+equations, modulo N, and if fact this is
+
+167
+00:13:59,980 --> 00:14:04,876
+the best know algorithm. And so if you
+think back to your high-school algebra
+
+168
+00:14:04,876 --> 00:14:08,692
+days, after you learned how to solve
+linear equations, the next question was,
+
+169
+00:14:08,692 --> 00:14:12,305
+well, what about quadratic equations. And
+that problem is actually quite
+
+170
+00:14:12,305 --> 00:14:15,460
+interesting, and we're gonna see that in
+the next few segments.

@@ -1,0 +1,173 @@
+So now that we understand what collision
+resistant hash functions are and we know
+how to construct them, we're ready to
+describe very popular MAC called HMAC. So
+let me remind you what the Merkle-Damgard construction is. Basically we have a
+small compression function h from which we
+build a large hash function, which is
+collision resistant assuming the
+compression function is collision resistant.
+The question we're gonna ask
+this segment is can we use the large hash
+function to construct a MAC directly
+without having to rely on a PRF. So here's
+the first thing that comes to mind.
+Suppose I give you a Merkle-Damgard hash
+function so you notice a mapped, it hashes
+large messages into small digests and we
+want to convert that directly into a Mac.
+The first thing that comes to mind is well
+why don't we just hash the concatenation
+of the MAC key as long with the message
+that we're trying to MAC? It turns out
+that this is completely insecure so let me
+ask you, why is this is insecure?
+The answer is the standard extension of that, and if you think back to the
+Merkle-Damgard construction, you realize
+that if I tell you the tag of a particular
+message, in other words I tell you the
+value at this point. It's very easy for
+the attacker to just add another block and
+then compute one more application of the
+compression function H. And now they'll be
+able to get the tag for the original
+message concatenated the padding block,
+concatenated the word W that they added
+themselves and as a result this is an
+existential forgery. Yes, so basically
+this is exactly what we get here. Where
+after concatenating the padding block, the
+attacker can actually concatenate whatever
+he wants and he would get the tag on this
+combined message. So this is totally
+insecure and I cannot tell you how many
+products have actually made this mistake
+where they assumed that this is a secure
+Mac. This is completely insecure and
+should never ever, ever, ever be used.
+Instead there's a standardized method to
+convert a collision resistant hash
+function to a MAC and that method is
+called HMAC. So in particular we could use
+the SHA-256 hash function to build
+this MAC. The output is going to be 256
+bits and in fact HMAC is believed to be a
+pseudo-random function, so in fact out of
+SHA-256 we get a pseudo-random
+function that outputs 256 bit outputs. So
+let me show the construction. Here's the
+construction in symbols and it works as
+follows. First we take our key k and we
+concatenate what's we call an internal pad
+to it, an ipad to it. This makes it into
+one block of the Merkle-Damguard
+construction, so for example this would be
+512 bits in the case of SHA256. We prepend
+this to the message M and then we hash.
+Now this by itself we just said is
+completely insecure, however what HMAC
+does in addition, it takes the output,
+which is 256 bits, it prepends to that the
+key again XOR with, what's called the
+outer pad, the opad. This also becomes
+512 bits. It's one block. And then it
+hashes the combination of these two to
+finally obtain the resulting tag on the
+message M. So it's more rather looking
+into some symbols. It's more instructive
+to look at HMAC in pictures. And so you
+can see that here are the two keys k XOR
+inner-pad, which is then fed into the
+Merkle-Damgard chain. And then the
+resulting output of this chain is fed into
+another Merkle-Damgard chain and finally
+the final output is produced. Okay, so
+this is how HMAC works in pictures and
+now I want to argue that we've already
+seen something very similar to this. In
+particular, if you can think of the
+compression function H as a PRF where the
+key is the first, the top inputs, then
+what we're actually doing here is we're
+evaluating this PRF H at a fixed IV and
+the result here is a random value which
+we're gonna call K1. And then we apply the
+Merkle-Damgard chain and we can do the
+same thing on the outer pad. If you think
+of little h as a PRF where the key is the
+upper inputs. Again, we're applying this
+PRF using a different key to a fixed value
+IV and as a result, we're gonna get
+another random value K2 So now when we
+compute HMAC using these keys, K1 and K2,
+this would actually look very familiar
+this is basically NMAC. It's identical to
+NMac that we discussed in a previous
+segment. And notice to argue that this is
+an NMac construction we have to assume
+that the compression function, little h,
+is a PRF where the key is actually the
+lower inputs to the function. Now let me
+say that these pads, the ipad and the
+opad , these are fixed constants that are
+specified in the HMAC standard. So these
+are literally just 512 bit constants that
+never change. And so when we go back to
+look at the complete HMAC construction,
+you realize that the main difference
+between this and NMAC is that these keys
+here since they are dependent, you notice
+they're both just the same key XORed
+with different constants. Essentially, the
+keys K1 and K2 are also somewhat dependent
+because they're computed by applying a PRF
+to the same fixed value, namely IV, but
+with dependent keys. And so to argue that
+K1 and K2 are pseudo random and
+independent of one another, one has to
+argue that the compression function not
+only is a PRF where when the inputs, the
+top input, is the key inputs, but it's
+also a PRF when dependent keys are used.
+But under those assumptions, basically the
+exact same analysis NMAC would apply to
+HMAC and we would get security argument
+that HMAC is a secure MAC. So as I said,
+HMAC can be proven secure under these PRF
+assumptions about the compression function
+H. The security bounds are just as they
+are for NMAC, in other words you should
+not have to change the key as long as the
+number of messages you're MAC-ing Is
+smaller than the size of the output tag to
+the one-half, but for HMAC SHA256 the
+output space is 2 to the 256. The square
+root of that would put us at 2 to the
+128. Which means that basically you can
+use HMAC SHA256 for as many outputs as you
+want, and you'll always maintain security.
+And as a last point about HMAC I'll tell
+you that TLS Standard actually requires
+that one support HMAC SHA-196 which means that
+HMAC built form the SHA1 function and
+truncated to 96 bits. SHA-1 remember
+outputs 160 bits. And we truncated to the
+most significant 96 bits. Now you might be
+wondering, remember we said before that
+SHA-1 is no longer considered a secure
+hash function, so how come we're using
+SHA-1 in HMac? Well, it turns out it's
+actually fine. Because HMAC the analysis
+of HMAC doesn't need SHA-1 to be
+collision resistant. All it needs is that
+the compression function of SHA-1
+one be a PRF when either input is allowed
+to be the key. And as far as we know
+that's still correct for the underlying
+compression function for SHA-1.
+Even though it might not be collision
+resistant. As far as we know it's still
+fine to use it inside of HMAC. So this is
+the end of our discussion of HMAC and in
+our next segment we're going to look at
+timing attacks on HMAC.

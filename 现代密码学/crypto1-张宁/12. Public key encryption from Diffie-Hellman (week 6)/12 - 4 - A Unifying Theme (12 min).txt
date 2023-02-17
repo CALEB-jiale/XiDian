@@ -1,0 +1,306 @@
+This week, we saw two families of public
+encryption systems. One family was built
+from trapdoor functions, and particularly
+RSA, and the other family was built from
+the Diffie-Hellman protocol. In this last
+segment, I wanna show you that both
+families in fact follow from a more
+general principle. The unifying theme is
+what's called a one-way function. So what
+is a one-way function? Well, we've already
+seen this concept briefly before. But
+basically, a function from, one set to
+another, say, from X to Y is said to be
+one way, if, in fact, there's an efficient
+algorithm that allows us to evaluate the
+function F. So anyone can evaluate the
+function F at any point of their choice.
+However, inverting the function F should
+be difficult. That's what makes the
+function one way. So what do I mean by
+that? Well, you can think of the function
+F as a function again mapping the set X to
+the set Y. But it so happens in many
+points in X could actually be mapped into
+a single point in Y. Now when they say
+that the function is difficult to invert,
+what I mean is that when I give you some
+point inside of Y and I ask you find me
+pre-image of this point, you won't be able
+to point to any of these as a pre-image.
+In other words, no efficient algorithm can
+find any point that is the inverse of the
+given point Y. Now the way we say that
+more precisely is that we say that for all
+efficient algorithm A, if I chose a random
+X in the set, capital X, and now I'm gonna
+give f(x) to algorithm A. And then, what
+I'm gonna ask algorithm A to do, is
+basically produce a pre-image of the point
+f(x). Well, what does it mean that A
+produced a pre-image of the point f(x)? It
+means that if I apply the function f to
+the output of A, what I should get back
+is, well, f(x). Let's think through this
+one more time. So I chose a random point x
+in Capital X. You know I give algorithm A
+f(x). So I'm gonna give algorithm A this
+point here. And now A is gonna produce
+some points. So let's pretend that A
+produces this point over here. And now I
+wanna say that if I apply the function F
+to this point here, that A produced, the
+probability that I get the same point that
+I started with is negligible. In other
+words the probability that algorithm A
+was able to produce one of these three points is, in
+fact, negligible. All he can do is produce
+some other point that maps into something
+other than f(x), okay? So, again, all
+this is trying to do is just capture the
+fact that given f(x), it's hard to find
+some pre-image of f(x). So here's some
+easy examples of functions that are not
+one-way. For example, the identity
+function f(x) is equal to x is trivially
+not one way because given f(x), I can
+easily come up with an inverse of f(x),
+namely x. Similarly the function that will
+maps everything to zero is also not one
+way. So in our picture, let the function
+maps everything to zero simply looks as
+follows. It takes all its points and maps
+them all to a single point. Well this
+function is not one way because if I give
+you this point in the image, it's trivial
+to find the pre-image. Namely, just pick
+any point in capital X, and there will be
+a pre-image of zero. And so, f(x) equal
+to zero is also not a one-way function.
+And by the way, I didn't want to do it
+here. But if I define one-way functions
+more formally, then it turns out that
+proving that one-way functions exist,
+we'll have also proven that P is not equal
+to NP. So, since we can't today, prove
+that P is not equal to NP, basically we
+can't prove that one-way functions exist.
+And we just have to assume that they do.
+So let's look at our first example of a
+1-way function. Or at least a presumed
+1-way function. And so we're gonna build
+it from a pseudo random generator. And
+suppose I have a function F from x to y
+there is a secure pseudo random generator.
+So the output of f s much larger than
+the input. Remember, a pseudo-random
+generator takes a small seed and expands
+it into a much larger output. And for
+example you can, you know, the pseudo
+random generator maybe is built using
+deterministic counter mode out of AES.
+Well, it's fairly easy to see that if, in
+fact, F is a secure pseudo random
+generator, then F is in fact a one-way
+function. So our first example of a
+one-way function is directly built from a
+pseudo random generator. This is actually
+kind of a trivial proof, so let's prove
+the contra positive. So suppose I have an
+efficient algorithm that inverts F, okay?
+So I'm proving the contra positive.
+Suppose F is not one way. Then A is an
+efficient algorithm than an inverse F. And
+now I need to build an algorithm B that
+breaks the pseudorandom generator. Ok, so I'm proving again by contra-positive. Okay so how do I break the
+pseudo-random generator? Well, all we do
+is the following. So algorithm B is given
+some y in the set Y. And what it's gonna
+do is the following, it's gonna try and
+run algorithm a on the input y. And now,
+well, if y is the output of the
+pseudorandom generator, then algorithm A
+will output the seed, and namely
+[inaudible] an element in X with, you
+know, non-negligible probability. So what
+we'll do is we'll apply the pseudorandom
+generator again to the output of algorithm
+A. As I said, if y was the output of a
+generator, then [A of A ???] will have output
+the seed cuz it inverted the pseudorandom
+generator. So if we apply the pseudorandom
+generator again to the output of A, what
+we should get back is basically the y that
+we started with. Okay, so if this
+condition holds we're gonna say we're
+gonna output zero. And if this condition
+doesn't hold, we're gonna output one
+otherwise. That's it, that's our
+distinguisher against a pseudo-random
+generator. So if our distinguisher is
+given a y that is the output of the pseudo
+random generator, then with non-negligible
+probability, our distinguisher B will
+output zero. However, if our distinguisher
+B is given a truly random string. Well, a
+truly random string doesn't have any seed
+that causes the generator to output that
+string. And therefore our distinguishable
+output one with again, with also very high
+probability. And again I hope that's
+clear. Basically, if we look at the set of
+all possible outputs, namely the set Y,
+very few of those outputs happened to
+be the output of the pseudorandom
+generator. So if we are just given an
+output y over hearsay, that's not the
+output of the pseudorandom generator, then
+we rerun algorithm A on it. It can't
+possibly produce a seed that will output
+this point starr because there is no
+such seed. And as a result, since most
+points actually are not in the image of
+the pseudorandom generator, most points
+will not have a seed that, maps the
+generator to them and there's also where
+we were given a random point in Y, a truly
+uniform point in Y, our distinguishable B
+will output 1 with very high
+probability. However, if we are given a
+pseudo random output of a generator, then
+algorithm A will output the corresponding
+seed. When we apply the generator to that
+seed, we'll get the initial output y and
+therefore we'll output zero with
+non-negligible probability. Okay, so if A
+was able to invert F, then B is able to
+break the generator. And since the
+generator is secure, algorithm A can't
+invert F. And in particular, no efficient
+algorithm can invert F. And therefore, F
+is a one-way function. Excellent, so this
+is a long discussion of kind of a minor
+point. But all I wanted to show you is
+that in fact, a pseudo-random generator
+directly gives us a one-way function.
+Unfortunately, this one-way function has
+no special properties. And what that means
+is it's actually difficult to use it for
+key exchange or for public key encryption.
+In some sense, the best key exchange we
+can do with this, as far as we know, is
+Merkle puzzles. So now let's look at
+our second example. The second example is
+what I'm gonna call the discrete log one
+way function. So let's fix a group, a
+cyclic group of order N the group G and
+let g be some generator of the group
+capital G so again I remind you that all
+that means is, if I look at all powers of
+g, then I basically span the entire group
+capital G. And now let's define the
+following function. The function goes from
+ZN to G and it's defined basically as the
+exponentiation to the power of X. Okay, so
+this maps any element between zero and n-1
+to an element of the group capital G
+simply by raising g, little g to the
+appropriate power. And it's kind of
+obvious that if the discrete log problem
+in the group capital G is hard, then in
+fact f is one way. In fact, the one
+wayness of f is the discrete log
+assumption. So if the discrete log is
+hard, f is one way. Now the interesting
+thing about this one-way functions is it's
+got some interesting properties. In
+particular, if I give you f(x) and f(y)
+I claim that it's very easy to compute
+f(x + y). Even though we have no idea
+what x or y are. All we're given is just f(x) and f(y), nevertheless, we can
+compute f(x + y). Let me ask you, how
+would you do that? Well, just by rules of
+exponentiation, basically, f(x + y)
+is simply f(x) times f(y). And again,
+this is all done inside the group G. If
+you're not convinced, simply recall that f(x + y)
+is g to the (x + y). Which is
+simply g to the x times g to the y, which
+is exactly what we have here. And this
+simple property, this simple fact that the
+function has this additive property, if
+you think about it, is exactly what
+enables key exchange and public key
+encryption. So, this additional property
+of the one-way function is what enabled
+all of public key cryptography. So let's
+look at our next example the RSA one way
+function so here we're going to choose two
+primes p and q we're going to set N to be p
+times q then were going to choose e that's
+relatively prime to phi(N). And then, we
+define the functions, and simply as a
+function from ZN star to ZN star,
+simply as f(x) equals x to the e. Okay,
+so raising x to the power of e. And again
+we say that this function is one way,
+simply under the RSA assumption. Again,
+the RSA assumption is the assumption that
+this function is one way. And the
+interesting thing about this function is
+that it has properties similar to the one
+that we saw on the previous slide, namely
+the given f(x) and f(y), now we can
+compute f(x  y) as opposed to f(x + y)
+So we say that this function has
+a multiplicative property as opposed to
+the additive property on the previous
+slide. But more importantly this is kind of
+not the most interesting thing about this
+function. The really exciting thing about
+this function is it in fact has a
+trapdoor. In other words there's a secret
+key that all of a sudden allows us to
+invert this function. Even though without
+the secret key the function is one way. As
+far as we know. And this property, I'll
+say, the fact that it has a trap door,
+again, enabled all of public key
+cryptography. I'll say that this trap door
+also makes the RSA function especially
+well suited for digital signatures. In
+week seven, we're gonna see that both the
+RSA function and the discrete log
+functions let us construct digital
+signatures. But the RSA function, because
+it has a trap door, makes it very, very
+easy to construct digital signatures from
+it. And so, in fact, most digital
+signatures out there in the world, in
+fact, rely on the RSA function just
+because it's so simple to build digital
+signatures from it. So again, we see that
+this one-way function with the special
+properties. It has a multiplicative
+property and a trap door. Essentially
+again, enables all of public key crypto. So
+to summarize, the reason we are able to
+build public key cryptography namely, the
+reason we're able to do key exchange and
+public key encryption and so on, is
+because we're able to construct one-way
+functions that have very, very special
+properties. In particular, they have these
+properties that are sometimes called
+homomorphic properties, namely they're
+given f(x) and f(y). We can construct
+a f(x + y) or, f(x  y), and
+some functions, like RSA, even have trap
+doors, which let us build digital
+signatures very, very easily. But the main
+thing I wanted to show you is that the
+magic of public key crypto is basically made
+possible because of these one-way
+functions with their special properties. So
+that's the end of this module and then
+in week seven, we'll start with digital signatures.

@@ -1,0 +1,225 @@
+So our goal for this segment is to build
+secure compression functions. So
+compression functions are collision
+resistant. So just to remind you where we
+are we looked at this Merkle Damguard
+construction which takes a little
+compression function and builds from it a
+hash function for much, much larger
+inputs. We proved this cute theorem that
+in fact if a little compression function h
+is collision resistant then plugging in
+into the Merkle Damguard construction
+gives us a collision resistant hash
+function for larger inputs. So now in this
+segment our goal is basically to build a
+compression function that is collision
+resistant. So we're going to see a couple
+of constructions. And so the first
+question that comes to mind is well, can
+we build compression functions from
+primitives that we already have? In
+particular, we spent a lot of work to
+build block cyphers and the question is
+can we build compression functions from
+block cyphers. And the answer is yes. And
+let me show you how to do it. So assume we
+have a certain block cypher here that
+operates on N bits blocks, so the input is
+an N bits, output is N bits. And then
+there's this classic construction called a
+Davies-Meyer construction which I wrote
+down in symbols here. Basically says that
+what you would do is, given the message
+block and the chaining variable, all we do
+is we encrypt the chaining variable using
+the message block as the key. And then we
+kind of do one more xor on the output. So
+this might seem a little bizarre, because
+remember the message block is something
+that's completely under the control of the
+adversary. He's trying to find the
+collision so he can choose the message
+blocks however he wants. And yet we're
+using this message block as a key into a
+block cypher. But nevertheless, we can
+argue that this construction, at least
+when E is what's called an ideal cypher,
+we can argue that this construction is in
+fact as collision resistant as possible.
+So let me state the theorem. The theorem
+states that, as I said, if E is an ideal
+block cypher, meaning that it's a random
+collection of K random permutations from
+01 to the N to 01 to the N. Then under
+that assumption that E's an ideal block
+cypher, in fact, finding the collision for
+this compression function H takes time,
+two to the N over two. In particular, we
+can show that anyone who is finding
+collisions has to evaluate the encryption
+and decryption functions at least 2 to
+the N over 2 times. And if you think
+about what that means, since the output of
+this compression function is only N bytes
+long, we know that there's always a
+generic birthday attack that finds
+collisions in time 2 to the N over 2.
+So basically this theorem says that this
+collision resistant function is as
+collision resistant as possible. We can
+find the collision in time 2 to the N
+over 2 using the birthday attack but
+there is no algorithm that will do better
+than 2 to the n over 2. So this
+is actually a very common compression
+function used in collision resistance
+hashing in fact of a SHA
+functions all used Davies-Mayer. It turns
+out that there is something special about
+the Davies-Mayer construction that
+makes collision resistant. If you just try
+to guess the construction very likely you
+will end up with something that is not
+collision resistant. And so let me ask you
+the following puzzle. Suppose we actually
+define the compression function as
+follows, namely all we do is we encrypt
+the chaining variable H using the current
+message block as the key. So the
+difference is that we dropped this 'xor' H
+in Davies-Mayer, we simply ignored it. So
+it's not there. And the puzzle for you
+is show me that this compression function
+then is actually not collision resistant.
+So, let's see, so we're trying to build a
+collision, namely a distinct pair of HM
+and H' M' that happen to collide
+under this later function H. And my
+question to you is how would you do it? So
+I'm already going to tell you that you're
+going to choose H, M, and M'
+arbitrarily. The only requirement is that
+M and M' are distinct. And then my
+question is, how would you construct an H'
+that would cause a collision to pop
+out? So the answer is the first choice and
+an easy way to see it is if we apply the
+encryption function using M' to both
+sides. Then we get that this is basically
+E of M' applied to H', right.
+this is what we get by applying encryption
+using M' to the left hand side. And
+if we imply encryption using M' to
+the right hand side, the decryption
+operator cancels out and we simply are
+left with the encryption of M, H, which is
+exactly the collision that we wanted to
+find. So there. You can see that it's
+basically by using the decryption function
+D, it's very easy to build collisions for
+this compression function. Now I should
+tell you that in fact Davies-Meyer is not
+unique. There are other ways to build
+collision resistant compression functions
+from block ciphers. For example, here's a
+method called Miyaguchi Preneel. Miyaguchi
+Preneel actually is used in WHIRLPOOL hash
+function that we saw earlier. Here is
+another method that happens to result in a
+collision resistant compression function.
+And there are twelve variants like this
+playing with XORs and placing the
+variables in different slots that will
+actually give a collision resistant
+mechanism. But there are also many, many
+variants of this like we saw in the
+previous puzzle that are not collision
+resistant. So here's. Another example,
+that's not collision resistant. And I'm
+gonna leave it as a homework problem to
+figure out a collision for this
+construction. So now, basically, we have
+all the ingredients to describe the
+[inaudible] 256 hash function. I'll tell
+you that it's a Merkel-Damgard
+construction, exactly as the one that we
+saw before. It uses a Davies-Mayer
+compression function. And so the only
+question is, what's the underlying block
+cipher for Davies-Mayer? And that block
+cipher is called SHACAL-2. And I'll
+just tell you it's parameters. It uses a
+512 bit key. And remember the key is taken
+from the message block. So, this is really
+what the message block is. And it so
+happens to be 512 bits. Which means the
+SHA-256 will process its input
+message 512 bits at a time. And in the
+block size, for this block cipher is
+256 bits. And these are the chaining variable.
+So this would be H i-1.
+And this would be successive chaining variable.
+So now you have a complete
+understanding of how SHA-256 works.
+Module of this cipher SHACAL-2 I'm not going to describe here.
+So as I said, one class of compression functions is built from block cyphers. It
+turns out there's another class of
+compression functions that's built using
+hard problems from number theory, and I
+want to very briefly show you one example.
+And we call these compression functions
+provable because if you can find the
+collision on this compression function
+then you're going to be able to solve a
+very hard number theoretic problem which
+is believed to be intractable. And as a
+result, if the number theory problem is
+intractable, the resulting compression
+function is provably a collision
+resistant. So here's how this compression
+function works. Basically we're going to
+choose a large prime piece, so this is a
+gigantic prime, something like 700 digits,
+2,000 bits. And then we're going to
+choose two random values, U and V, between
+one and P. And now let's define the
+compression function as follows. It takes
+two numbers between 0, and p-1,
+and it's gonna output one number between
+0, and  p-1. So it's compression
+ratio is 2 to 1. And takes two
+numbers. And outputs one number. In the
+range 0 to p-1.
+And it does it basically by computing double exponentiation. It
+computes u to the H times v to the n.
+And the theorem, which, right now, I'm just
+gonna state as a fact. This fact actually
+turns out to be fairly straightforward to
+prove, and we're gonna do it later on when
+we get to the number theoretic part of the
+course. The fact is, that if you can find
+a collision for this compression function,
+then you can solve a standard heart
+problem in number theory called a discreet
+log problem. Everyone believes discrete
+log is hard, and as a result, this
+compression function is provably collision
+resistant. So you might ask me why do
+people not use this compression function
+in practice. Why would we not use this for
+SHA-256? And the answer is that this
+gives very slow performance in comparison
+to what you get from a block cipher. So
+this is not really used for any
+compression functions. However, if for
+some reason you really only want to, say,
+MAC or sign. Just one long message, and
+you have a whole day to do it, then
+certainly you can use this type of
+compression function. And even though it's
+slow, you'll get something that's provably
+collision resistant. Okay, so that's the
+end of this segment. And now we're finally
+ready to talk about HMAC, which we're
+gonna do in the next segments.

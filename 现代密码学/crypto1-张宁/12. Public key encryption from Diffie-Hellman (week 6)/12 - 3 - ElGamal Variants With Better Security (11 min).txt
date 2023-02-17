@@ -1,0 +1,288 @@
+In the last segment, we saw that the
+ElGamal public key encryption system is
+chosen cipher text secure under a somewhat
+strange assumption. In this segment, we're
+gonna look at variants of ElGamal that
+have a much better chosen cipher text
+security analysis. Now, I should say that
+over the past decade, there's been a ton
+of research on constructing, public key
+encryptions that are chosen cipher text
+secure. I actually debated for some time
+on how to best present this here. And
+finally, I decided to kind of show you a
+survey of the main results from the last
+decades, specifically as they apply to the
+ElGamal system. And then, at the end of
+the module, I suggest a number of papers
+that you can look at for further reading.
+So let me start by reminding you how the
+ElGamal encryption system works. I'm sure
+by now you all remember how ElGamal works,
+but just to be safe, let me remind you
+that key generation in ElGamal picks a
+random generator, a random exponent from ZN
+and then the public key is simply the
+generator and this element g to the a,
+whereas the secret key is simply the
+discrete log of h base g. This value A.
+Now the way we encrypt is we pick a random
+exponent B from ZN. We compute the hash of
+G to the B and H to the B. And I'm gonna
+remind you that H to the B is the Diffie
+Hellman secret, G to the AB. And then we
+actually encrypt a message using a
+symmetric encryption system with the key K
+that's derived from the hash function. And
+finally, the output cipher text is G to
+the B, and the symmetric cipher text. The
+way we decrypt is you know, as we've seen
+before basically, by hashing U and the
+Diffie Hellman secrets, decrypting the
+symmetric system, and outputting the
+message M. Now in the last segment we said
+that ElGamal is chosen ciphertext secure under
+this funny Interactive Diffie-Hellman
+assumption. I am not gonna remind you what
+the assumption is here but I'll also say
+that this theorem kind of raises two very
+natural questions. The first question is
+can we prove CCA security of
+ElGamal just based on the standard
+Computational Diffie-Hellman assumption,
+namely the G to the A, G to the B, you
+can't compute G to the AB. Can we prove
+chosen-ciphertext security just based on
+that? And the truth's that there are two
+ways to do it. The first option is to use
+a group where the computational Diffie
+Hellman assumption is hard. But is
+provably equivalent to the Interactive
+Diffie Hellman assumption. And it turns
+out it's actually not that hard to
+construct such groups. These groups are
+called bilinear groups. And in such
+groups, we know that the ElGamal system is
+chosen cipher text secure, strictly based
+under the Computational Diffie Hellman
+assumption, at least in the random oracle
+model. I'll tell you that these bi-linear
+groups are actually constructed from very
+special elliptic curves. So there's a bit
+more algebraic structure that enables us
+to prove this equivalence of IDH and CDH.
+But in general, who knows, maybe you don't
+want to use elliptic curve groups, maybe
+you want to use ZP star for some reason.
+So it's a pretty natural question to ask.
+Can we change the ElGamal system such that
+chosen ciphertext security of ElGamal now can be proven, directly based on CDH, for any group
+where CDH is hard? [Now with that ??] assuming
+any additional structure about the group,
+And it turns out the answer is yes. And
+there's kind of an elegant construction
+called twin ElGamal, so let me show you
+how twin ElGamal works. It's a very simple
+variation of ElGamal that does the
+following. Again, in key generation, we
+choose a random generator. But this time,
+we're gonna choose two exponents, A1 and
+A2 as the secret key. So the secret key is
+gonna consist of these two exponents, A1
+and A2. You know the public key of course
+is gonna consist of our generator. And
+then we're gonna release G to the A1 and G
+to the A2. So remember that in regular
+ElGamal what the public key is simply g
+to the A and that's it. Here we have two
+exponents A1 and A2 and therefore we, we
+release both G to the A1 and G to the A2.
+Now the way we encrypt, you'll notice the
+public key here is one element longer than
+regular ElGamal. The way we encrypt using
+this public key is actually very similar
+to regular ElGamal. We choose a random B,
+and now what we'll hash is actually not
+just G to the B and H1 to the B, but,
+in fact, G to the B, H1 to the B, and H2
+to the B. Okay so we basically hashing
+three elements instead of two elements and
+then we basically encrypt the message
+using the derived symmetric encryption key
+and as usual we output g to the b and c as our
+final ciphertext. How do we decrypt?
+Well, so now the secret key consists of
+these two exponents, A1 and A2. And the
+cipher text consists of U, and the
+symmetric cipher text C. So let me ask you
+a puzzle, and see if you can figure out
+how to derive the symmetric encryption key
+K, just given the secret key and the value
+U. So it's kind of a cute puzzle and I
+hope everybody worked out, the solution
+which is basically what we can do is we
+can take U to the power of A1, and that is
+basically G to the B A1 And U to the A2
+which is G to the B A2. And that basically
+gives us exactly the same values, as H1 to
+the B and H2 to the B. So this way the
+decryptor arrives at the same symmetric
+key that the encryptor did. Then he decrypts
+the ciphertext using the symmetric system
+and finally outputs the message M. So you
+notice this is a very simple modification
+to regular ElGamal. All we do is we stick
+one more element to the public key. When
+we do the hashing, we hash one more
+element, as opposed to just two elements.
+We hash three elements. And similarly, we
+do doing decryption, and nothing else
+changes. The cipher text is the same
+length as before, and that's it, Now the
+amazing thing is that this simple
+modification allows us to now prove chosen
+cipher text security directly based on
+standard Computational Diffie-Hellman
+assumption, okay? Still we're going to
+need to assume that we have a symmetric
+encryption system that provides us
+authenticated encryption and that the hash
+function that we're using is an ideal hash
+function in what we call a random oracle
+But nevertheless given that, we can
+prove chosen cipher text security strictly
+based on a Computational Diffie-Hellman
+assumption. So now what's the cost of this?
+Of course, if you think about this, during
+encryption and decryption, encryption has
+to do one more exponentiation, and the
+decryption has to do one more
+exponentiation. So the encryptor now does
+three exponentiations instead of two, and
+the decryptor does two exponentiations
+instead of one. So the question is now,
+now it's a philosophical question. Is this
+extra effort worth it? So you do more work
+during encryption and decryption. And your
+public key is a little bit bigger, but
+that doesn't really matter. The work
+during encryption and decryption is more
+significant. And as a result you get
+chosen ciphertext security based on kind
+of a more natural assumption, namely
+Computational Diffie-Hellman as opposed to
+these odd-looking Interactive
+Diffie-Hellman assumption. But is it worth
+it? Kind of the question is are there
+groups where CDH holds but IDH does not
+hold? If there were such groups, then it
+would definitely be worth it, because
+those groups, the twin ElGamal would be
+secure, but the regular ElGamal would not
+be CCA secure. But unfortunately we don't
+know if there is any such group and in
+fact as far as we know, it's certainly
+possible that any group where CDH holds,
+IDH also holds. So the answer is, really,
+we don't know whether the extra cost is
+worth it or not but then nevertheless it's
+a cute result that shows that if you want
+to achieve chosen ciphertext
+security directly from CDH, you could do
+it without too many changes to the ElGamal
+system. The next question is whether we
+can get rid of this assumption that the
+hash function is an ideal hash function
+mainly that it's a random oracle. And this
+is actually a huge topic. There's a lot of
+work in this area on how to build
+efficient public key encryption systems
+that are chosen ciphertext secure without
+random oracles. This is a very active area
+of research as I said in the past decade
+and even longer. And I'll mention that as
+it applies to ElGamal, they are basically,
+again two families of constructions. The
+first construction's a construction that
+uses these special groups called these
+bilinear groups that I just mentioned
+before. It turns out the extra structure
+of these bilinear groups allows us to
+build very efficient chosen ciphertext
+secure systems without referring to random
+oracles and as I said at the end of the
+module, I point to a number of papers that
+explain how to do that. This is quite an
+interesting construction. But it will take
+me several hours to kind of explain how it
+works. The other alternative is actually
+to use groups where a stronger assumption
+called the Decision Diffie-Hellman assumption
+holds. Again, I am not gonna define this
+assumption here. I'll just tell you that
+this assumption actually holds in
+subgroups of ZP star, in particular if we
+look at the prime order of a subgroup of
+ZP star. The Decision Diffie-Hellman
+assumption seems to hold in those groups
+and then in those groups we can actually
+build a variant of ElGamal, called the
+Cramer Shoup system that is chosen
+ciphertext secure and the Decision
+Diffie-Hellman assumption without random
+oracles. Again, this is a beautiful,
+beautiful result but again it would take a
+couple of hours to explain and so I'm not
+gonna do that here. This is probably one
+of these things that I gonna leave to
+either the advanced topics or to do an
+advanced course so that we'll do it at a
+later time. But again I points to a paper
+at the end of the module just in case you
+want to read more about this. So here is a
+list of papers that provides more reading
+material. So if you wanna read about
+Diffie Hellman assumptions, I guess I
+wrote a paper about this a long time ago,
+that talks about various assumptions
+related to, to Diffie Hellman. And in
+particular, studies the Decision Diffie
+Hellman assumption. And if you wanna learn
+about how to build chosen ciphertext
+secure system from Decision Diffie-Hellman
+and assumptions like it. There's a very
+cute paper by Kramer and Shoup back
+from 2002 that shows how to do it. This is
+again a very highly recommended paper. If
+you want to learn how to build chosen
+ciphertext security from these
+bilinear groups, then the paper to read is
+the one, cited here, which actually uses a
+general mechanism called Identity Based
+Encryption which very surprisingly it
+turns out to actually gives us chosen
+ciphertext security almost for free.
+So, once we build identity-based
+encryption chosen ciphertext security falls
+immediately. And that's covered in this
+paper that I, that I describe her. The
+Twin Diffie-Hellman construction and its
+proof is described in this paper that I
+reference here And finally, if you kind of
+want to see a very recent paper. That
+gives a very general framework for
+building, chosen ciphertext secure systems, using
+what's called extractable hash proofs that
+is again a nice paper by Hoeteck Wee, that
+was just recently published. I definitely
+recommend reading it all, all have
+very, very elegant ideas in them. I wish I
+could cover all of them in the basic
+course but I'm gonna have to leave some of
+these to the more advanced course or
+perhaps the more advanced topics at the
+end of this course. Okay, so I'll stop
+here and in the next segment I'm gonna tie
+ElGamal and RSA encryption
+together so that you see how the two kind
+of follow from a more general principle.

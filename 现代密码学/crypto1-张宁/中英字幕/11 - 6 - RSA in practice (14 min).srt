@@ -1,0 +1,1523 @@
+1
+00:00:00,192 --> 00:00:04,510
+To conclude this module I want to say a few words about how RSA is used in practice.
+
+2
+00:00:00,192 --> 00:00:04,510
+为了完结本章，我想说几句关于应用RSA的
+
+3
+00:00:06,033 --> 00:00:08,690
+So first of all, if you want to speed up RSA encryption,
+
+4
+00:00:06,033 --> 00:00:08,690
+首先如果大家想加速RSA加密
+
+5
+00:00:08,690 --> 00:00:13,236
+it's perfectly fine to use a small encryption exponent e.
+
+6
+00:00:08,690 --> 00:00:13,236
+那么使用较小的公钥e是没有问题的
+
+7
+00:00:13,236 --> 00:00:17,178
+So rather than using a random e one can use a small value of e
+
+8
+00:00:13,236 --> 00:00:17,178
+可以不使用随机的e，而是选择一个小e
+
+9
+00:00:17,178 --> 00:00:20,944
+and in fact the minimum value that's possible is e=3.
+
+10
+00:00:17,178 --> 00:00:20,944
+事实上最小的可能值是e=3
+
+11
+00:00:20,944 --> 00:00:24,446
+So it's not difficult to see that the smallest possible value for e
+
+12
+00:00:20,944 --> 00:00:24,446
+不难看出e的最小可能值
+
+13
+00:00:24,446 --> 00:00:27,608
+is in fact e=3. And let's see why.
+
+14
+00:00:24,446 --> 00:00:27,608
+事实上e=3.我们来看为什么
+
+15
+00:00:27,608 --> 00:00:33,327
+Well e=1 is a bad idea because that's not particularly hard to invert with e=1.
+
+16
+00:00:27,608 --> 00:00:33,327
+e=3是一个不好的想法，因为e=1的逆不难去求
+
+17
+00:00:33,327 --> 00:00:38,217
+e=2 is not a valid RSA exponent because remember in the definition of RSA,
+
+18
+00:00:33,327 --> 00:00:38,217
+e=2不是一个有效的RSA指数，因为记得在RSA的定义中
+
+19
+00:00:38,217 --> 00:00:45,602
+e had to be relatively prime to phi(N). phi(N), if you remember, is (p-1) times (q-1),
+
+20
+00:00:38,217 --> 00:00:45,602
+e必须与Φ（N）互质。如果大家还记得，Φ（N）=（p-1）(q-1)
+
+21
+00:00:45,602 --> 00:00:48,484
+which is an even number. If p and q are odd primes,
+
+22
+00:00:45,602 --> 00:00:48,484
+是一个偶数。如果p和q都是奇数
+
+23
+00:00:48,484 --> 00:00:53,292
+(p-1) times (q-1) is an even number, but if e is even, if e is equal to two,
+
+24
+00:00:48,484 --> 00:00:53,292
+那么（p-1）(q-1)是一个偶数，但如果e是偶数，如果e=2
+
+25
+00:00:53,292 --> 00:00:58,832
+it's not going to be relatively prime to phi(N). So e=2 is not valid either.
+
+26
+00:00:53,292 --> 00:00:58,832
+e就不与Φ（N）互质，那么e=2也不是有效的
+
+27
+00:00:58,832 --> 00:01:02,007
+And then e=3 is the first minimum value that can be used,
+
+28
+00:00:58,832 --> 00:01:02,007
+那么e=3是第一个最小的可以使用的值
+
+29
+00:01:02,007 --> 00:01:06,904
+and then we just have to make sure that in fact, p is
+equal to two mod three,
+
+30
+00:01:02,007 --> 00:01:06,904
+然后我们必须确保事实上，p=2 mod 3
+
+31
+00:01:06,904 --> 00:01:13,016
+and q is equal to 2 mod 3 so that (p-1) times (q-1) is not divisible by 3.
+
+32
+00:01:06,904 --> 00:01:13,016
+q=2mod 3，这样（p-1）(q-1)就不会被3整除
+
+33
+00:01:13,847 --> 00:01:16,545
+So in fact this is a fine public exponent to use,
+
+34
+00:01:13,847 --> 00:01:16,545
+那么事实上这是一个可使用的很好的公钥指数
+
+35
+00:01:16,545 --> 00:01:21,931
+however the recommended value is 2 to the 16  plus 1. So 65537.
+
+36
+00:01:16,545 --> 00:01:21,931
+不过推荐的值是2^16+1，即65537
+
+37
+00:01:21,931 --> 00:01:24,848
+It's a good idea to use this recommended value of e.
+
+38
+00:01:21,931 --> 00:01:24,848
+使用这个推荐的e值是个好点子
+
+39
+00:01:24,848 --> 00:01:29,601
+To compute x^3 mod N, you would basically need three multiplications.
+
+40
+00:01:24,848 --> 00:01:29,601
+计算x^3 mod N，你需要三步乘法
+
+41
+00:01:29,601 --> 00:01:36,987
+To compute x^65537 mod N using repeated squaring, you would need 17 multiplications.
+
+42
+00:01:29,601 --> 00:01:36,987
+而计算x^65537 mod N，使用重复平方算法，需要17步乘法
+
+43
+00:01:36,987 --> 00:01:41,111
+Basically what you would do is you would repeatedly square 16 times
+
+44
+00:01:36,987 --> 00:01:41,111
+你重复平方16次
+
+45
+00:01:41,111 --> 00:01:44,100
+and then you would multiply by x one more time.
+
+46
+00:01:41,111 --> 00:01:44,100
+然后再乘一次x
+
+47
+00:01:44,100 --> 00:01:47,732
+Ok? So just with 17 multiplications you can do this exponentiation,
+
+48
+00:01:44,100 --> 00:01:47,732
+那么只要17次乘法，你就可以计算出这个指数
+
+49
+00:01:47,732 --> 00:01:50,867
+so this is still much, much faster than using a random e,
+
+50
+00:01:47,732 --> 00:01:50,867
+那么这比使用一个随机e要好得多了
+
+51
+00:01:50,867 --> 00:01:53,735
+which would require something like 2000 multiplications.
+
+52
+00:01:50,867 --> 00:01:53,735
+随机e需要约2000次乘法
+
+53
+00:01:53,735 --> 00:01:57,125
+So this leads us into what's called the asymmetry of RSA,
+
+54
+00:01:53,735 --> 00:01:57,125
+那么这就让我们得到了RSA的非对称性
+
+55
+00:01:57,125 --> 00:02:01,773
+where in fact encryption is quite fast: encryption only requires 17 multiplications.
+
+56
+00:01:57,125 --> 00:02:01,773
+事实上加密是很快的：加密只需要17次乘法
+
+57
+00:02:01,773 --> 00:02:04,107
+However decryption is much, much, much slower;
+
+58
+00:02:01,773 --> 00:02:04,107
+但是解密要慢的多
+
+59
+00:02:04,107 --> 00:02:07,452
+it requires something on the order of 2,000 multiplications.
+
+60
+00:02:04,107 --> 00:02:07,452
+它需要约2000次乘法
+
+61
+00:02:08,898 --> 00:02:14,007
+I should point out that there is a standard trick for slightly speeding up RSA decryption.
+
+62
+00:02:08,898 --> 00:02:14,007
+我应该指出，有一个标准的加速RSA解密的技巧
+
+63
+00:02:14,007 --> 00:02:18,676
+This is called RSA-CRT; this stands for RSA with Chinese remaindering.
+
+64
+00:02:14,007 --> 00:02:18,676
+叫做RSA-CRT；叫做带中国剩余的RSA
+
+65
+00:02:18,676 --> 00:02:22,775
+It's a method for speeding up RSA decryption by about a factor of four,
+
+66
+00:02:18,676 --> 00:02:22,775
+这个方法可以让RSA解密加速4倍
+
+67
+00:02:22,775 --> 00:02:26,514
+but nevertheless it's still gonna be much, much, much slower than encryption.
+
+68
+00:02:22,775 --> 00:02:26,514
+但不管如何这依然比加密慢很多
+
+69
+00:02:26,514 --> 00:02:31,484
+The ratio of encryption to decryption on RSA is roughly a factor of ten to thirty,
+
+70
+00:02:26,514 --> 00:02:31,484
+RSA的加密与解密的速度比，差不多从10到30
+
+71
+00:02:31,484 --> 00:02:36,793
+so encryption could be up to like thirty times faster than decryption, depending on the size of your modulus.
+
+72
+00:02:31,484 --> 00:02:36,793
+那么加密速度可以是解密的30倍，但取决于模的大小
+
+73
+00:02:37,531 --> 00:02:42,173
+Interestingly, this is a special property of RSA where encryption is so much faster than decryption.
+
+74
+00:02:37,531 --> 00:02:42,173
+有趣的是，这是一个RSA的特殊性质，加密比解密快很多
+
+75
+00:02:42,173 --> 00:02:47,108
+And other public key systems--for example, in the
+next module we're gonna look at ElGamal encryption--
+
+76
+00:02:42,173 --> 00:02:47,108
+另一公钥系统，比如说，我们下一章要看到的EIGamal加密
+
+77
+00:02:47,108 --> 00:02:52,056
+don't have this property where both encryption and decryption take roughly the same amount of time.
+
+78
+00:02:47,108 --> 00:02:52,056
+就没有这个性质，它的加密和解密用时差不多一样
+
+79
+00:02:54,518 --> 00:02:57,730
+We've already discussed key lengths for RSA before.
+
+80
+00:02:54,518 --> 00:02:57,730
+我们之前已经讨论了RSA的秘钥长度
+
+81
+00:02:57,730 --> 00:03:02,583
+So I just wanted to flash these numbers to remind you that if you're using a 128-bit AES key,
+
+82
+00:02:57,730 --> 00:03:02,583
+那么我只想展示一下这些数，以提醒大家，如果你使用128位AES秘钥
+
+83
+00:03:02,583 --> 00:03:05,334
+really, you should be using a 3,000-bit modulus.
+
+84
+00:03:02,583 --> 00:03:05,334
+你应该使用一个3000位的模
+
+85
+00:03:05,334 --> 00:03:08,799
+Although everybody just uses a 2,048 bit modulus.
+
+86
+00:03:05,334 --> 00:03:08,799
+尽管大家都用2048位模
+
+87
+00:03:08,799 --> 00:03:15,433
+And if you're really using a long AES key, like a 256 bit AES key, the RSA modulus gets to be quite big.
+
+88
+00:03:08,799 --> 00:03:15,433
+如果你真的使用一个长AES秘钥，比如256位，那么RSA模将会很大
+
+89
+00:03:17,802 --> 00:03:20,882
+Now, I wanted to mention a number of implementation attacks on RSA.
+
+90
+00:03:17,802 --> 00:03:20,882
+现在我想提醒一下众多的针对RSA实现的攻击
+
+91
+00:03:20,882 --> 00:03:23,648
+These are attacks that have been demonstrated against particular,
+
+92
+00:03:20,882 --> 00:03:23,648
+这些攻击已将针对特定的
+
+93
+00:03:23,648 --> 00:03:28,715
+mathematically correct implementations of RSA. However, these implementations were vulnerable
+
+94
+00:03:23,648 --> 00:03:28,715
+RSA的数学上正确的实现成功展示了。但是这些实现
+
+95
+00:03:28,715 --> 00:03:34,068
+to certain side channel attacks that make the implementation completely insecure.
+
+96
+00:03:28,715 --> 00:03:34,068
+对特定的旁道攻击是脆弱的，这使得这个实现是完全不安全的
+
+97
+00:03:34,068 --> 00:03:37,799
+So the first example of this is due to Paul Kocher back in '97.
+
+98
+00:03:34,068 --> 00:03:37,799
+打一个例子是Paul Kocher 于1997年提出的
+
+99
+00:03:37,799 --> 00:03:42,479
+He showed a timing attack where all you do is you measure the time for an RSA decryption.
+
+100
+00:03:37,799 --> 00:03:42,479
+他展示了一个计时攻击，你只需要测量RSA解密的时间
+
+101
+00:03:42,479 --> 00:03:47,799
+And simply by measuring the time, you can actually expose the secret exponent d.
+
+102
+00:03:42,479 --> 00:03:47,799
+通过简单的测量时间，你可以揭露密钥指数d
+
+103
+00:03:47,799 --> 00:03:52,168
+And so, this says that if you are going to implement an RSA decryption,
+
+104
+00:03:47,799 --> 00:03:52,168
+那么，这是说你实现了RSA解密
+
+105
+00:03:52,168 --> 00:03:55,736
+you had better make sure that the decryption time is independent of the arguments.
+
+106
+00:03:52,168 --> 00:03:55,736
+你最好确保解密时间和这些参数无关
+
+107
+00:03:57,659 --> 00:04:01,593
+Another attack also by Paul Kocher two years later showed that
+
+108
+00:03:57,659 --> 00:04:01,593
+Pual Kocher两年后又提出了另一个攻击展示了
+
+109
+00:04:01,593 --> 00:04:04,166
+if you have a smart card that's implementing RSA decryption
+
+110
+00:04:01,593 --> 00:04:04,166
+如果你有一个智能卡，上面实现了RSA解密
+
+111
+00:04:04,166 --> 00:04:08,304
+you can actually measure the power consumption of the card while it's doing RSA decryption
+
+112
+00:04:04,166 --> 00:04:08,304
+你能测量这张卡在做RSA解密时的功耗
+
+113
+00:04:08,304 --> 00:04:13,302
+and then simply by looking at the peaks and troughs you can literally read off the bits of d
+
+114
+00:04:08,304 --> 00:04:13,302
+通过观察功耗峰谷，你可以读出d的各位
+
+115
+00:04:13,302 --> 00:04:18,486
+one bit at a time as the smart card is running through the repeated squaring algorithm.
+
+116
+00:04:13,302 --> 00:04:18,486
+一次读一位，当智能卡在运行重复平方算法时
+
+117
+00:04:18,486 --> 00:04:23,040
+So using a power analysis attack it's actually fairly easy to get the secret bits
+
+118
+00:04:18,486 --> 00:04:23,040
+那么使用一个功耗分析的攻击，是容易获取密钥各位的
+
+119
+00:04:23,040 --> 00:04:28,038
+of the secret key unless the smart card defends against power analysis attacks.
+
+120
+00:04:23,040 --> 00:04:28,038
+除非智能卡能提抗这些功耗攻击
+
+121
+00:04:28,038 --> 00:04:32,922
+And finally another attack called a fault attack shows that the RSA is very vulnerable to
+
+122
+00:04:28,038 --> 00:04:32,922
+最后，另一种叫做错误攻击的展示了RSA对解密错误是脆弱的
+
+123
+00:04:32,922 --> 00:04:38,042
+decryption errors and in particular, if for some reason an error occurs during an RSA decryption,
+
+124
+00:04:32,922 --> 00:04:38,042
+特别的，如果出于一些原因，RSA解密时发生了错误
+
+125
+00:04:38,042 --> 00:04:42,345
+one error is actually completely enough to reveal the secret key.
+
+126
+00:04:38,042 --> 00:04:42,345
+一个错误将完全泄露密钥
+
+127
+00:04:42,345 --> 00:04:47,098
+So this attack is actually fairly significant. It's just, one error completely reveals your secret key.
+
+128
+00:04:42,345 --> 00:04:47,098
+所以如果这个攻击真的是很重要的，也就是说，一个错误将完全泄露你的密钥
+
+129
+00:04:47,098 --> 00:04:51,811
+And as a result, many cryptolibraries will actually check the result of the RSA decryption
+
+130
+00:04:47,098 --> 00:04:51,811
+因此，许多密码学库都会检查RSA解密的结果
+
+131
+00:04:51,811 --> 00:04:55,451
+before returning it to the caller. And the way you would check it is,
+
+132
+00:04:51,811 --> 00:04:55,451
+在返回结果调用者之前。检查的方法是
+
+133
+00:04:55,451 --> 00:04:59,802
+you would take the output of this exponentiation, and simply raise it to the power of e,
+
+134
+00:04:55,451 --> 00:04:59,802
+取出这个指数的输出，计算它的e次方
+
+135
+00:04:59,802 --> 00:05:03,750
+and check that you actually get back c modulo N.
+
+136
+00:04:59,802 --> 00:05:03,750
+检查是否又回到c mol N
+
+137
+00:05:04,488 --> 00:05:07,466
+And if so, you know that your decryption was done correctly.
+
+138
+00:05:04,488 --> 00:05:07,466
+如果是这样，说明这个解密是正确的
+
+139
+00:05:07,466 --> 00:05:11,706
+Now the reason you can do this is because again, e is much smaller than d,
+
+140
+00:05:07,466 --> 00:05:11,706
+现在可以这么做的原因是，e比d小很多
+
+141
+00:05:11,706 --> 00:05:16,267
+therefore checking takes much less time than actually raising something to the power of d.
+
+142
+00:05:11,706 --> 00:05:16,267
+因此检测此比计算d次方要花的时间少得多
+
+143
+00:05:16,267 --> 00:05:21,156
+Nevertheless, you know, even though checking is ten times faster than the actual decryption,
+
+144
+00:05:16,267 --> 00:05:21,156
+不过，即使检查比实际解密快十倍
+
+145
+00:05:21,156 --> 00:05:25,724
+this still introduces a 10% slowdown. And so sometimes this is actually turned off.
+
+146
+00:05:21,156 --> 00:05:25,724
+这依然引入了一个10%的开销，所以有时这一功能实际上被关闭了
+
+147
+00:05:25,724 --> 00:05:30,505
+But nevertheless, it's actually a good idea to check that your RSA output is correctly computed.
+
+148
+00:05:25,724 --> 00:05:30,505
+不过，检查RSA输出的计算是否正确，的确是个好方法
+
+149
+00:05:30,505 --> 00:05:35,990
+And so all these attacks kind of again make the point that if you just implement RSA naively
+
+150
+00:05:30,505 --> 00:05:35,990
+那么所以这些攻击再次说明了，如果你自己实现了一个RSA
+
+151
+00:05:35,990 --> 00:05:38,642
+it would be mathematically correct, it would work,
+
+152
+00:05:35,990 --> 00:05:38,642
+它在数学上是正确的，它能工作
+
+153
+00:05:38,642 --> 00:05:41,948
+however there would be all these potential attacks on the implementation
+
+154
+00:05:38,642 --> 00:05:41,948
+但是针对实现，依然会有这些潜在的攻击
+
+155
+00:05:41,948 --> 00:05:44,830
+and as a result you should never implement RSA yourself.
+
+156
+00:05:41,948 --> 00:05:44,830
+因此，你不应该自己去实现RSA
+
+157
+00:05:44,830 --> 00:05:49,910
+Always, always use standard libraries and just use the implementation available there.
+
+158
+00:05:44,830 --> 00:05:49,910
+始终使用标准密码库，始终使用已有的实现
+
+159
+00:05:51,125 --> 00:05:54,564
+So to be concrete, I wanted to show you an example of one of these attacks.
+
+160
+00:05:51,125 --> 00:05:54,564
+具体地说，我想给大家展示一个这些攻击的例子
+
+161
+00:05:54,564 --> 00:05:58,080
+And in particular I'll show you the fault attacks on RSA.
+
+162
+00:05:54,564 --> 00:05:58,080
+特别的，我会给大家展示RSA上的错误攻击
+
+163
+00:05:58,080 --> 00:06:01,779
+And again, this will be a fault attack on what's called RSA with Chinese remaindering.
+
+164
+00:05:58,080 --> 00:06:01,779
+这也是个错误攻击，是针对带中国剩余的RSA
+
+165
+00:06:01,779 --> 00:06:07,182
+So in fact, as I said at the beginning of the segment, RSA decryption is often implemented as follows:
+
+166
+00:06:01,779 --> 00:06:07,182
+事实上，如我在本节开头所说，RSA解密经常是如下实现的
+
+167
+00:06:07,182 --> 00:06:14,416
+What you do is, you decrypt the cipher text c modulo p, then you decrypt the cipher text c modulo q.
+
+168
+00:06:07,182 --> 00:06:14,416
+解密密文c mol p，然后解密密文 c mol q
+
+169
+00:06:14,416 --> 00:06:18,184
+And then you combine the two to actually get the decryption modulo N.
+
+170
+00:06:14,416 --> 00:06:18,184
+然后结合两者得到模N的解密
+
+171
+00:06:18,184 --> 00:06:21,306
+And this combination is done using what's called a Chinese remainder theorem.
+
+172
+00:06:18,184 --> 00:06:21,306
+这个组合是通过中国剩余定理做到的
+
+173
+00:06:21,306 --> 00:06:25,035
+Which I'm not going to explain here but it's not too difficult to see how that works.
+
+174
+00:06:21,306 --> 00:06:25,035
+我这里不解释细节，不难看出这是如何工作的
+
+175
+00:06:25,035 --> 00:06:28,895
+Basically, once you have the result of the decryption mod p and the decryption mod q
+
+176
+00:06:25,035 --> 00:06:28,895
+一旦你有了模p和模q的解密的结果
+
+177
+00:06:28,895 --> 00:06:31,210
+you can combine it to get the decryption mod N.
+
+178
+00:06:28,895 --> 00:06:31,210
+把它组合起来获得模N下的解密
+
+179
+00:06:31,210 --> 00:06:34,022
+And it turns out this gives about a factor of four speed up
+
+180
+00:06:31,210 --> 00:06:34,022
+实际上这给出了一个4倍的加速
+
+181
+00:06:34,022 --> 00:06:38,612
+over the naive implementation of directly doing the exponential modulo N.
+
+182
+00:06:34,022 --> 00:06:38,612
+比起直接使用模N指数的实现来说
+
+183
+00:06:39,535 --> 00:06:41,962
+Okay. So, let's see why this is vulnerable to faults.
+
+184
+00:06:39,535 --> 00:06:41,962
+好了，那么我们看为什么这对错误是脆弱的
+
+185
+00:06:41,962 --> 00:06:48,783
+Suppose it so happens that when your decryption library is computing the decryption modulo q,
+
+186
+00:06:41,962 --> 00:06:48,783
+假设当你的解密算法库在计算模q解密时
+
+187
+00:06:48,783 --> 00:06:51,631
+for some reason the processor makes an error.
+
+188
+00:06:48,783 --> 00:06:51,631
+出于某些原因，处理器犯了一个错误
+
+189
+00:06:51,631 --> 00:06:57,403
+And, actually, what it gets is not the correct xq. It gets an incorrect xq,
+
+190
+00:06:51,631 --> 00:06:57,403
+实际上这不是一个正确的xq，得到的是错误的xq
+
+191
+00:06:57,403 --> 00:07:01,817
+so let's call this xq hat. However when it computed the decryption modulo p,
+
+192
+00:06:57,403 --> 00:07:01,817
+那么我们叫这个为xq^，不过当它计算模q的解密时
+
+193
+00:07:01,817 --> 00:07:05,549
+you know, no error occurred. So these errors are fairly infrequent.
+
+194
+00:07:01,817 --> 00:07:05,549
+没有错误发生，那么这些错误很少
+
+195
+00:07:05,549 --> 00:07:09,952
+And so let's just assume that an error occurred modulo one prime
+
+196
+00:07:05,549 --> 00:07:09,952
+我们只假设，计算一个质数模时，发生了一个错误
+
+197
+00:07:09,952 --> 00:07:13,706
+but it did not occur modulo the other prime.
+
+198
+00:07:09,952 --> 00:07:13,706
+但没有发生其他首相模。
+
+199
+00:07:13,706 --> 00:07:18,407
+Well, if that's the case our computation is correct modulo p and incorrect modulo q.
+
+200
+00:07:13,706 --> 00:07:18,407
+如果是这种情况：我们的计算是正确的模p和不正确的模q。
+
+201
+00:07:18,407 --> 00:07:22,608
+That says when we combine the two results we're actually going to get an output,
+
+202
+00:07:18,407 --> 00:07:22,608
+这就是说当我们把两个结果合并到一起将得到一个输出，
+
+203
+00:07:22,608 --> 00:07:27,044
+I'll call it x prime, such that the output is correct modulo p.
+
+204
+00:07:22,608 --> 00:07:27,044
+我会叫它基x，这样输出就是正确的模p。
+
+205
+00:07:27,044 --> 00:07:31,507
+So, x prime is really equal c to the d mod p but is incorrect modulo q.
+
+206
+00:07:27,044 --> 00:07:31,507
+所以x是相当于c对d模p而不是模q。
+
+207
+00:07:31,507 --> 00:07:37,040
+If we raised both these equations to the power of e, what we obtain is the following two relations.
+
+208
+00:07:31,507 --> 00:07:37,040
+如果我们把这两个方程加到e上,我们获得的是以下两个关系。
+
+209
+00:07:37,040 --> 00:07:39,462
+Well, let's see. This guy we raise it to power of e.
+
+210
+00:07:37,040 --> 00:07:39,462
+好，让我们来看看。我们把它加到e上。
+
+211
+00:07:39,462 --> 00:07:43,237
+What happens is the left hand side becomes x prime to the e.
+
+212
+00:07:39,462 --> 00:07:43,237
+发生的是左手边将是x对e.
+
+213
+00:07:43,237 --> 00:07:45,801
+The right hand side, here, it's c to the d.
+
+214
+00:07:43,237 --> 00:07:45,801
+右手边，它是c对d。
+
+215
+00:07:45,801 --> 00:07:50,194
+If I raise c to the d to the power of e--e and d, remember are inverses of one another--
+
+216
+00:07:45,801 --> 00:07:50,194
+如果我把c加到d到e-e,d,记得是相互的逆——
+
+217
+00:07:50,194 --> 00:07:56,177
+And as a result, if I raise c to the d to the power of e, both exponents cancel out and I simply get c back.
+
+218
+00:07:50,194 --> 00:07:56,177
+因此，如果我把c加到d到e，都是指数抵消，我会简单地得到C。
+
+219
+00:07:56,177 --> 00:08:00,912
+So I know that x prime to the e is equal to c. But modulo q, there was a mistake.
+
+220
+00:07:56,177 --> 00:08:00,912
+所以我知道x模e相当于模c.但模q，这里会出错。
+
+221
+00:08:00,912 --> 00:08:04,400
+So x prime to the e is not equal to c modulo q.
+
+222
+00:08:00,912 --> 00:08:04,400
+所以x模e不等于c模q.
+
+223
+00:08:04,400 --> 00:08:08,711
+So therefore, if I look at this difference, x prime to the e minus c.
+
+224
+00:08:04,400 --> 00:08:08,711
+因此，如果我看到了这个不同，
+
+225
+00:08:08,711 --> 00:08:13,392
+We know that it's zero modulo p, and it's not zero modulo q.
+
+226
+00:08:08,711 --> 00:08:13,392
+我们知道它是0模p，不是0模q
+
+227
+00:08:13,392 --> 00:08:17,108
+So now if we compute the GCD of this value with N, what do we get?
+
+228
+00:08:13,392 --> 00:08:17,108
+所以现在如果我们计算出这个值和N的GCD，我们会得到什么呢？
+
+229
+00:08:19,370 --> 00:08:24,975
+Well, as I said, this is zero mod p, but it's not equal to zero mod q.
+
+230
+00:08:19,370 --> 00:08:24,975
+正如我说的，这是0模p，但不等于0模q。
+
+231
+00:08:24,975 --> 00:08:30,839
+Which means that this quantity here is divisible by p, but is not divisible by q.
+
+232
+00:08:24,975 --> 00:08:30,839
+也就是说这个值可被p整除，但不能被q整除。
+
+233
+00:08:30,839 --> 00:08:35,333
+So therefore when I compute the GCD, what I'll get is simply p.
+
+234
+00:08:30,839 --> 00:08:35,333
+因此当我计算GCD时，我将会得到的是p。
+
+235
+00:08:35,333 --> 00:08:41,102
+And again, this is because p divides this quantity here when q does not divide this quantity.
+
+236
+00:08:35,333 --> 00:08:41,102
+这是因为P可以将这个值划分开，而q不能。
+
+237
+00:08:42,471 --> 00:08:45,262
+So now basically what I have just obtained is the factorization of N.
+
+238
+00:08:42,471 --> 00:08:45,262
+所以我获得的是N的因子分解。
+
+239
+00:08:45,262 --> 00:08:48,946
+Once I have the factorization of N I can compute phi(N)
+
+240
+00:08:45,262 --> 00:08:48,946
+一旦我有了我能算得的N的因子分解phi（N）
+
+241
+00:08:48,946 --> 00:08:55,623
+and then given phi(N) I can actually compute myself the decryption exponent from the public key.
+
+242
+00:08:48,946 --> 00:08:55,623
+然后鉴于φ(N)我可以自己计算出公钥的解密指数。
+
+243
+00:08:55,623 --> 00:08:58,276
+So now I have just recovered the secret key from the public key
+
+244
+00:08:55,623 --> 00:08:58,276
+所以现在我只要从公钥中恢复出私钥
+
+245
+00:08:58,276 --> 00:09:02,634
+from a single mistake that happened during decryption. So this is why typically
+
+246
+00:08:58,276 --> 00:09:02,634
+从一个在解密中发生的简单错误中。
+
+247
+00:09:02,634 --> 00:09:05,637
+when you do RSA decryption it's a good idea to check the results
+
+248
+00:09:02,634 --> 00:09:05,637
+这就是为什么当你做RSA解密时它是一个很好的想法来检查结果
+
+249
+00:09:05,637 --> 00:09:09,728
+especially when you use Chinese remaindering to speed up RSA decryption.
+
+250
+00:09:05,637 --> 00:09:09,728
+当你用中国剩余定理来加速RSA解密。
+
+251
+00:09:10,866 --> 00:09:14,040
+The last attack I want to talk about is a very recent observation
+
+252
+00:09:10,866 --> 00:09:14,040
+我想讨论的最后一个攻击是一个很近期的观察，
+
+253
+00:09:14,040 --> 00:09:17,169
+that was observed by Heninger et al and Lenstra et al
+
+254
+00:09:14,040 --> 00:09:17,169
+被Heninger et al 和 Lenstra et al观察到的
+
+255
+00:09:17,169 --> 00:09:22,571
+that shows that RSA key generation can be problematic when it's done with bad entropy.
+
+256
+00:09:17,169 --> 00:09:22,571
+来展示RSA密钥生成模式会出问题当它被一个错的信息熵做的时候。
+
+257
+00:09:22,571 --> 00:09:27,968
+So here's how things go wrong. So the way open SSL generates RSA keys is as follows.
+
+258
+00:09:22,571 --> 00:09:27,968
+这里就是事情怎么出错的。Open SSL生成RSA密钥如下。
+
+259
+00:09:27,968 --> 00:09:32,440
+Well, it starts by basically seeding the pseudo random number generator.
+
+260
+00:09:27,968 --> 00:09:32,440
+它是由伪随机数生成器的种子开始的。
+
+261
+00:09:32,440 --> 00:09:38,090
+And then it uses random bits from a pseudo random number generator to generate the first prime p.
+
+262
+00:09:32,440 --> 00:09:38,090
+然后它使用随机比特从伪随机数生成器生成第一个数p。
+
+263
+00:09:38,090 --> 00:09:41,642
+Then it will go ahead and seed the random number generator some more,
+
+264
+00:09:38,090 --> 00:09:41,642
+那么它将继续，生成更多的种子随机数生成器,
+
+265
+00:09:41,642 --> 00:09:45,784
+and will generate bits from the pseudo random number generator to generate q.
+
+266
+00:09:41,642 --> 00:09:45,784
+并且将产生一些由伪随机数生成器生成的字符来生成q。
+
+267
+00:09:45,784 --> 00:09:48,745
+And finally, it will output the product of p and q.
+
+268
+00:09:45,784 --> 00:09:48,745
+最终，它会输出p和q的生成值。
+
+269
+00:09:48,745 --> 00:09:53,680
+Okay so the two steps, where we see the seed the pseudo random number generator.
+
+270
+00:09:48,745 --> 00:09:53,680
+所以这两步，我们看到种子伪随机数生成器。
+
+271
+00:09:53,680 --> 00:09:57,652
+Now suppose that this is implemented on a router or a firewall of some sort,
+
+272
+00:09:53,680 --> 00:09:57,652
+现在假设这是被应用在某种形式的路由器或防火墙,
+
+273
+00:09:57,652 --> 00:10:02,299
+and suppose that the key generation happens right after the firewall starts up.
+
+274
+00:09:57,652 --> 00:10:02,299
+假设密钥生成模式发生在防火墙开启之后。
+
+275
+00:10:02,299 --> 00:10:06,250
+So the firewall boots up. At the time of the boot, there's not a lot of entropy
+
+276
+00:10:02,299 --> 00:10:06,250
+防火墙启动。在启动的时候，在伪随机数生成器中不会有很多熵。
+
+277
+00:10:06,250 --> 00:10:09,901
+in the pseudo random number generator, and as a result
+
+278
+00:10:06,250 --> 00:10:09,901
+在伪随机数生成器中不会有很多熵。
+
+279
+00:10:09,901 --> 00:10:14,613
+the firewall is likely to generate a prime p that comes from a very low entropy pool.
+
+280
+00:10:09,901 --> 00:10:14,613
+因此防火墙很可能生成一个数p，来自一个低熵池。
+
+281
+00:10:14,613 --> 00:10:19,004
+Which means that this p is gonna be one of a small number of possibilities.
+
+282
+00:10:14,613 --> 00:10:19,004
+也就是说这个p将是可能出现的一小组数中的一个。
+
+283
+00:10:19,004 --> 00:10:23,774
+However, after we've generated p, generating the prime actually takes a little bit of time,
+
+284
+00:10:19,004 --> 00:10:23,774
+然而，在我们生成p之后，生成基数会花一点点时间，一些微秒。
+
+285
+00:10:23,774 --> 00:10:28,142
+a few microseconds. And so, by then the firewall will have generated more entropy
+
+286
+00:10:23,774 --> 00:10:28,142
+到时候防火墙会生成更多的熵
+
+287
+00:10:28,142 --> 00:10:31,670
+and so after we add more entropy to the entropy pool,
+
+288
+00:10:28,142 --> 00:10:31,670
+所以当我们把更多的熵加到熵池之后，
+
+289
+00:10:31,670 --> 00:10:38,672
+the prime q say is generated from a much larger entropy pool and is therefore unique to this firewall.
+
+290
+00:10:31,670 --> 00:10:38,672
+基数q会从一个更大的熵池中生成，而且对于这个防火墙是唯一的。
+
+291
+00:10:38,672 --> 00:10:44,811
+Now the problem is that many different firewalls if they generate an RSA key
+
+292
+00:10:38,672 --> 00:10:44,811
+现在的问题许多不同的防火墙都用这种方式生成RSA密钥
+
+293
+00:10:44,811 --> 00:10:51,247
+in this way many of them will actually end up using the same prime p but a different prime q.
+
+294
+00:10:44,811 --> 00:10:51,247
+导致它们使用了相同的素数p和不同的素数q
+
+295
+00:10:51,247 --> 00:10:57,812
+So what this says is that if we look at two RSA moduli from two different firewalls, N1 and N2.
+
+296
+00:10:51,247 --> 00:10:57,812
+如果我们来看两个不同防火墙的RSA模，N1和N2
+
+297
+00:10:57,812 --> 00:11:04,116
+If we compute the GCD of N1 and N2, well both of them had different q's but the same p.
+
+298
+00:10:57,812 --> 00:11:04,116
+如果我们计算N1和N2的GCD，当两个都有不同的q和相同的p时
+
+299
+00:11:04,116 --> 00:11:08,648
+So if we compute the GCD, actually we will end up with a factorization of N,
+
+300
+00:11:04,116 --> 00:11:08,648
+如果我们计算GCD，我们就得到了N1和N2的因式分解
+
+301
+00:11:08,648 --> 00:11:14,482
+of both N1 and N2 and then we can actually figure out the private key both for N1 and for N2.
+
+302
+00:11:08,648 --> 00:11:14,482
+然后我们就能找到N1和N2的私钥
+
+303
+00:11:14,482 --> 00:11:16,706
+So this has actually been observed in practice.
+
+304
+00:11:14,482 --> 00:11:16,706
+这已经在实践中被观察到了
+
+305
+00:11:16,706 --> 00:11:19,792
+Both of these groups, what they did is they scanned the web
+
+306
+00:11:16,706 --> 00:11:19,792
+这两个团队通过扫描网络
+
+307
+00:11:19,792 --> 00:11:24,821
+and recovered all of the public keys out there that are used on various web servers.
+
+308
+00:11:19,792 --> 00:11:24,821
+恢复了各种网络服务器使用的所有公钥
+
+309
+00:11:24,821 --> 00:11:29,069
+They then ran a massive GCD, using some arithmetic tricks
+
+310
+00:11:24,821 --> 00:11:29,069
+然后他们计算大量的GCD，并使用了一些算法技巧
+
+311
+00:11:29,069 --> 00:11:34,551
+they were able to compute this massive GCD of all pairs of public keys N1 and N2.
+
+312
+00:11:29,069 --> 00:11:34,551
+使得他们能计算大量的公钥N1和N2对的GCD
+
+313
+00:11:34,551 --> 00:11:39,826
+And lo and behold, they actually realized that a fair number of these keys have a common factor.
+
+314
+00:11:34,551 --> 00:11:39,826
+他们意识到有相当数量的密钥有相同的因子
+
+315
+00:11:39,826 --> 00:11:42,472
+So they were actually able to factor these moduli.
+
+316
+00:11:39,826 --> 00:11:42,472
+所以他们能够分解这些模
+
+317
+00:11:42,472 --> 00:11:48,578
+So in the experiment, they were actually able to factor about .4% of all public SSL keys.
+
+318
+00:11:42,472 --> 00:11:48,578
+在这个试验中，他们实际可以分解0.4%的ssl公钥
+
+319
+00:11:48,578 --> 00:11:54,247
+This is an amazing fact, that, in fact, so many web server public keys out there
+
+320
+00:11:48,578 --> 00:11:54,247
+这是一个惊人的事实
+
+321
+00:11:54,247 --> 00:11:59,367
+are vulnerable just because they happened to generate the RSA key using low entropy.
+
+322
+00:11:54,247 --> 00:11:59,367
+如此多网络服务器由于碰巧使用低熵生成密钥而存在漏洞
+
+323
+00:11:59,367 --> 00:12:02,434
+So they have a common factor with somebody
+else's factor
+
+324
+00:11:59,367 --> 00:12:02,434
+因此它们与其它服务器有相同的因子
+
+325
+00:12:02,434 --> 00:12:05,987
+and GCDing the two together gives you the factorization.
+
+326
+00:12:02,434 --> 00:12:05,987
+求这两个的GCD就得到了因式分解
+
+327
+00:12:05,987 --> 00:12:09,200
+So, the lesson from all this is when you generate keys,
+
+328
+00:12:05,987 --> 00:12:09,200
+这给我们的教训是，当你生成密钥时
+
+329
+00:12:09,200 --> 00:12:13,535
+no matter whether they are RSA keys or ElGamal keys or symmetric keys,
+
+330
+00:12:09,200 --> 00:12:13,535
+无论是RSA密钥，或ElGamal密钥，还是对称密钥
+
+331
+00:12:13,535 --> 00:12:17,985
+it's crucial that the number--, that your generator is properly seeded.
+
+332
+00:12:13,535 --> 00:12:17,985
+很重要的一点是生成器要适当给予种子
+
+333
+00:12:17,985 --> 00:12:23,019
+So don't generate keys immediately after start up. You have to kind of make sure
+
+334
+00:12:17,985 --> 00:12:23,019
+所以不要启动后马上生成密钥
+
+335
+00:12:23,019 --> 00:12:27,155
+the seeding of the generator has had enough time to actually generate enough entropy.
+
+336
+00:12:23,019 --> 00:12:27,155
+你需要保证给予生成器种子有足够时间生成足够熵
+
+337
+00:12:27,155 --> 00:12:30,838
+And only then you can start generating keys. So this is a really nice example
+
+338
+00:12:27,155 --> 00:12:30,838
+然后才开始生成密钥
+
+339
+00:12:30,838 --> 00:12:35,707
+of how a, a bad random number generator can mess up your RSA public keys.
+
+340
+00:12:30,838 --> 00:12:35,707
+所以这是一个很好的例子，说明随机数产生器如何搞乱你的RSA公钥的
+
+341
+00:12:36,692 --> 00:12:40,316
+Okay so this is the end of our discussion of public encryption from RSA.
+
+342
+00:12:36,692 --> 00:12:40,316
+好的，RSA公钥加密的讨论就结束了
+
+343
+00:12:40,316 --> 00:12:44,535
+I wanted to mention a few further readings if you want to read more about this.
+
+344
+00:12:40,316 --> 00:12:44,535
+如果你想知道更多，我想提及几个拓展读物
+
+345
+00:12:44,535 --> 00:12:48,033
+So there's a nice paper by Victor Shoup that talks about why
+
+346
+00:12:44,535 --> 00:12:48,033
+有一篇Victor Shoup的很好的论文讨论了
+
+347
+00:12:48,033 --> 00:12:51,318
+chosen cipher text security is so important in the public key settings.
+
+348
+00:12:48,033 --> 00:12:51,318
+为什么选择密文安全在公钥设置中如此重要
+
+349
+00:12:51,318 --> 00:12:56,737
+So if the Bleichenbacher attack wasn't convincing enough, there are many other attacks like this
+
+350
+00:12:51,318 --> 00:12:56,737
+如果Bleichenbacher攻击说服力不足
+
+351
+00:12:56,737 --> 00:13:00,172
+that are possible if you don't use a chosen cipher-text secure system.
+
+352
+00:12:56,737 --> 00:13:00,172
+如果不使用选择密文安全系统，这里还有一些其他类似可能攻击
+
+353
+00:13:00,172 --> 00:13:03,105
+So if you want to learn more about chosen cipher-text security,
+
+354
+00:13:00,172 --> 00:13:03,105
+那么如果你想知道更多关于选择密文安全的知识
+
+355
+00:13:03,105 --> 00:13:05,689
+please look at Victor Shoup's paper.
+
+356
+00:13:03,105 --> 00:13:05,689
+请看Victor Shoup的论文
+
+357
+00:13:05,689 --> 00:13:11,439
+There's a survey that I guess I wrote a couple years ago, that looks at many different attacks
+
+358
+00:13:05,689 --> 00:13:11,439
+这是我在几年前写的一个调查，研究了RSA系统的许多不同攻击
+
+359
+00:13:11,439 --> 00:13:14,772
+on the RSA system. I guess I wrote this when RSA was twenty,
+
+360
+00:13:11,439 --> 00:13:14,772
+我写的时候RSA有20年历史
+
+361
+00:13:14,772 --> 00:13:19,257
+I actually need to update this to 30 years of attack on the RSA cryptosystem.
+
+362
+00:13:14,772 --> 00:13:19,257
+我需要更新到30年内的RSA系统攻击
+
+363
+00:13:19,257 --> 00:13:23,124
+There've been some developments in the last decade, but for now this is actually a decent survey
+
+364
+00:13:19,257 --> 00:13:23,124
+近十年来有了一些发展，但这仍然是个很好的调查
+
+365
+00:13:23,124 --> 00:13:26,760
+to look at and read about more attacks on RSA.
+
+366
+00:13:23,124 --> 00:13:26,760
+可以了解更多的RSA攻击
+
+367
+00:13:26,760 --> 00:13:31,800
+The OAEP results that I mentioned are referenced here, OAEP reconsidered.
+
+368
+00:13:26,760 --> 00:13:31,800
+我在这里提到了OAEP，OAEP的再思考
+
+369
+00:13:31,800 --> 00:13:36,306
+And finally, if you're interested in key length analysis of RSA and other public key systems,
+
+370
+00:13:31,800 --> 00:13:36,306
+最后如果你对RSA和其他公钥系统的密钥长度分析感兴趣
+
+371
+00:13:36,306 --> 00:13:40,555
+there's a nice paper by Arjen Lenstra that discusses how you should choose
+
+372
+00:13:36,306 --> 00:13:40,555
+这份很好的Arjen Lenstra的论文讨论了如何为公钥系统选择密钥长度
+
+373
+00:13:40,555 --> 00:13:44,377
+key lengths for your public key systems, and even for your symmetric key systems.
+
+374
+00:13:40,555 --> 00:13:44,377
+甚至为对称密码选择密钥长度
+
+375
+00:13:44,377 --> 00:13:47,739
+Okay, so those are the four references. I hope you have time to look through them.
+
+376
+00:13:44,377 --> 00:13:47,739
+好的，这就是4个参考资料。希望你有时间看看这些
+
+377
+00:13:47,739 --> 00:13:50,596
+And I will stop here. And, in the next module we're going to look at
+
+378
+00:13:47,739 --> 00:13:50,596
+到这就结束了。下一节我们将会来看
+
+379
+00:13:50,596 --> 00:13:54,596
+another family of public key encryption systems, this time based on discrete log.
+
+380
+00:13:50,596 --> 00:13:54,596
+另一种基于离散对数公钥加密系统
+

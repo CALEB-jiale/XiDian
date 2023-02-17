@@ -1,0 +1,592 @@
+In this segment we will look at how to use
+block ciphers to encrypt multiple messages
+using the same key. This comes up in
+practice for example in file systems where
+the same key's used to encrypt multiple
+files. It comes up in networking protocols
+where the same key is used to encrypt
+multiple packets. So let's see how to do
+it. The first thing we need to do is to
+define what is mean for a cipher to be
+secure when the same key is used to
+encrypt multiple messages. When we use the
+key more than once the result of that is
+that the adversary gets to see many cyber
+text encrypted using the same key. As a
+result, when we define security, we're
+gonna allow the adversary to mount what's
+called a chosen plain text attack. In
+other words, the adversary can obtain the
+encryption of arbitrary messages of his
+choice. So, for example, if the
+adversary's interacting with Alice. The
+adversary can ask Alice to encrypt
+arbitrary messages of the adversary's
+choosing. And Alice will go ahead and
+encrypt those messages and give the
+adversary the resulting cipher texts. You
+might wonder why would Alice ever do this.
+How could this possibly happen in real
+life? But it turns out this is actually
+very common in real life. And in fact,
+this modeling is quite a conservative
+modeling of real life. For example, the
+adversary might send Alice an email. When
+Alice receives the email, the writes it to
+her encrypted disk, thereby encrypting the
+adversary's email using her secret key. If
+later the adversary steals this disc, then
+he obtains the encryption of an email that
+he sent Alice under Alice's secret key. So
+that's an example of a chosen plain text
+attack, where the adversary provided Alice
+with a message and she encrypted that
+message using her own key. And then later
+the attacker was able to obtain the
+resulting cipher text. So that's the
+adversary's power. And then the
+adversary's goal is basically to break
+semantic security. So let's define this
+more precisely. As usual, we're gonna
+define semantic security under a chosen
+plain text attack using two experiments,
+experiment zero and experiment one, that
+are modeled as a game between a challenger
+and an adversary. When the game begins,
+the challenger is gonna choose a random
+key K. And now the adversary basically
+gets to query the challenger. So the
+adversary now begins by submitting a
+semantic security query, namely, he
+submits two messages, M zero and M one. I
+added another index, but let me ignore
+that extra index for a while. So the
+adversary submits two messages, M zero and
+M one, that happen to be of the same
+length. And then the adversary receives
+the encryption of one of those messages,
+either of M zero or of M one. In
+experiment zero, he receives the
+encryption of M zero. In experiment one,
+he receives the encryption of M one. So,
+so far this would look familiar this looks
+exactly like a standard semantic security
+[inaudible]. However, plain text attack
+the adversary can now repeat this query
+again. So now you can issue a query with
+two other plain texts, again of the same
+length, and again you would receive the
+encryption of one of them. In experiment
+zero you would receive the encryption of M
+zero. In experiment one you would receive
+the encryption of M one. And the attacker
+can continue issuing queries like this. In
+fact we'll say that he can issue up to Q
+queries of this type. And then, remember,
+every time he issues a pair of messages.
+That happen to be of the same length and
+every time he either gets the encryption
+of the left side or the right side again
+in experiment zero he will always get the
+encryption of the left message in
+experiment one he will always get the
+encryption of the left message. And, then
+adversary's goal is, basically, to figure
+out whether he's in experimental zero or
+in experiment one. In other words, whether
+he was constantly receiving the encryption
+of the left message or the encryption of
+the right message. So, in some sense, this
+is a standard semantic security game just
+iterated over many queries that the
+attacker can issue to adaptively one after
+the other. Now the chosen plain text
+attack is captured by the fact that if the
+attacker wants the encryption of a
+particular message m. What he could do is,
+for example, use query J for sum J, where
+in this query J he'll set both the zero
+message and the one message to be the
+exactly same message M. In other words,
+both the left message and the right
+message are the same, and both are set to
+the message M. In this case, what he will
+receive, since both messages are the same,
+he knows that he's gonna receive the
+encryption of this message M that he was
+interested in. So this is exactly what we
+meant by a chosen [inaudible] attack.
+Where the advisory can submit a message m
+and receive the encryption of that
+particular message m of his choice. So
+some of his queries might be of this chose
+plain text flavor where the message on the
+left is equal to the message on the right,
+but some of the queries might be standard
+semantic security queries where the two
+messages are distinct and that actually
+gives him information on whether he's in
+experiment zero or in experiment one. Now
+by now you should be used to this
+definition where we say that the system is
+semantically secure under a chosen plain
+text attack. If, for all efficient
+adversaries, they cannot distinguish
+experiment zero from experiment one. In
+other words, the probability that, at the
+end, the output, B Prime, which we're
+gonna denote by the output of experiment
+B. This output will be the same whether
+[inaudible] experiment zero or experiment
+one. So the attacker couldn't distinguish
+between always receiving encryptions of
+the left messages, versus always receiving
+encryptions of the right messages. So in
+your mind, I'd like you to be thinking of
+an adversary that is able to mount a
+chosen plaintext attack, namely, be given
+the encryption of arbitrary messages of
+his choice, and his goal is to break
+semantic security for some other challenge
+cipher texts. And as I said in this
+[inaudible] model of the real world the
+attacker is able to fool Alice into
+encrypting for him messages of his choice
+and then the attacker's goal is to somehow
+break some challenge cypher text. So I
+claim that all the ciphers that we've seen
+up until now, namely deterministic counter
+mode or the one time pad, are insecure
+under a chosen plain text attack. More
+generally, suppose we have an encryption
+scheme that always outputs the same cipher
+text for a particular message M. In other
+words, if I ask the encryption scheme to
+encrypt the message M once. And then I ask
+the encryption scheme to encrypt the
+message m again. If in both cases the
+encryption scheme outputs the same cypher
+text, then that system cannot possibly be
+secure under a chosen plain text attack.
+And both deterministic counter mode and
+the one time pad were of that flavor. They
+always output the same cipher text, given
+the same message. And so let's see why
+that cannot be chosen plain text secure.
+And the attack is fairly simple, what the
+attacker is gonna do, is he's gonna output
+the same message twice. This just says.
+That he really wants the encryption of M0.
+So here the attacker is given C0 which is
+the encryption of M0. So this was his
+chosen plain text query where he actually
+received the encryption of the message M0
+of his choice. And now he's going to break
+semantic security. So what he does is he
+outputs two messages, M0 and M1 of the
+same length, and he's going to be given
+the encryption of MB. But low and behold,
+we said that the encryption system. Always
+outputs the same cipher text when its
+encrypting the message, M0. Therefore, if
+B is=to zero, we know that C, this
+challenged cipher text, is simply=to CO,
+because it's the encryption of M0.
+However, if B is=to one. Then we know that
+this challenge cypher text is the
+encryption of M1 which is something other
+than C zero so all the attacker does is he
+just checks his C is = to C0 the output's
+zero in other words he outputs one. So, in
+this case, the attacker is able to
+perfectly guess this bit B, so he knows
+exactly [inaudible] given the encryption
+of M0, or the encryption of M1. And as a
+result, his advantage in winning this game
+is one. Meaning that the system cannot
+possibly be CPA secure. One is not a
+negligible number. So this shows that the
+deterministic encryption schemes cannot
+possibly be CPA-secure, but you might
+wonder well, what does this mean in
+practice? Well in practice this means
+again that every message is always
+encrypted to the same cipher text. What
+this means is if you're encrypting files
+on disk, and you happen to be encrypting
+two files that happen to be the same, they
+will result in the same cipher text and
+then the attacker by looking at the
+encrypted disk, will learn that these two
+files actually contain the same content.
+The attacker might not learn what the
+content is, but he will learn that these
+two encrypted files are an encryption of
+the same content and he shouldn't be able
+to learn that. Similarly, if you send two
+encrypted packets on the network that
+happen to be the same, the attacker will
+not learn the content of those packets,
+but he will learn that those two packets
+actually contain the same information.
+Think for example of an encrypted voice
+conversation. Every time there's quiet on
+the line, the system will be sending
+encryptions of zero. But since encryption
+of zero are always mapped to the same
+cypher text. An attacker looking at the
+network will be able to identify exactly
+the points in the conversation where
+there's quiet because he will always see
+those exact same cypher text every time.
+So these are examples where deterministic
+encryption cannot possibly be secure. And
+as I say formerly we say that the
+terministic encryption can not be
+semantically secure under a chosen plain
+text attack. So what do we do, well the
+lesson here is if the secret keys gonna be
+used to encrypt multiple messages, it had
+better be the case that given the same
+plain text to encrypt twice. The
+encryption algorithm must produce
+different cipher texts. And so there are
+two ways to do that. The first method is
+what's called randomized encryption. Here,
+the encryption algorithm itself is going
+to choose some random string during the
+encryption process and it is going to
+encrypt the message M using that random
+string. So what this means is that a
+particular message, M0 for example, isn't
+just going to be mapped to one cipher text
+but it's going to be mapped to a whole
+ball of cipher texts. Whereon every
+encryption, basically, we output one point
+in this ball. So every time we encrypt, the
+encryption algorithm chooses a random
+string, and that random string leads to
+one point in this ball. Of course, the
+decryption algorithm, when it takes any
+point in this ball, will always map the
+result to M zero. Similarly cipher text M
+one will be mapped to a ball, and every
+time we encrypt M one, we basically output
+one point in this ball. And these balls
+have to be disjoint, so that the
+encryption algorithm, when it obtains a
+point in the ball corresponding to M one,
+will always output the message M one. In
+this way, since the encryption algorithm
+uses randomness, if we encrypt the same
+message twice, with high probability we'll
+get different cipher texts. Unfortunately
+this means that the cipher text
+necessarily has to be longer than the
+plain text because somehow the randomness
+that was used to generate the cipher text
+is now encoded somehow in the cipher text.
+So the cipher text takes more space. And
+roughly speaking, the cipher text size is
+going to be larger than the plain text. By
+basically the number of random bits that
+were used during encryption. So if the
+plain texts are very big, if the plain
+texts are gigabytes long, the number of
+random bits is going to be on the order of
+128. So maybe this extra space doesn't
+really matter. But if the plain texts are
+very short, maybe they themselves are 128
+bits, then adding an extra 128 bits to
+every cipher text is going to double the
+total cipher text size. And that could be
+quite expensive. So as I say randomized
+encryption is a fine solution but in some
+cases it actually introduces quite a bit
+of costs. So let's look at a simple example.
+So imagine we have a pseudorandom
+function that takes inputs in a certain
+space r which is gonna be called a nonce
+space. And outputs, outputs in the message
+space. And, now, let's define the
+following randomize encryption scheme
+where we want to encrypt the message m
+with the encryption of whatever it's gonna
+do is first it's gonna generate a random r
+in this nonce space R. And then it's going
+to open a cypher text that consist of two
+components, the first component is going
+to be this value R and the second
+component is going to be an evaluation of
+the pseudo-random function at the point R
+XOR with the message M. And my question to
+you is, is this encryption system
+semantically secure under a chosen plain
+text attack. So the correct answer is yes.
+But only if the nonce space R is large
+enough so that little R never repeats with
+very, very high probability. And let's
+quickly argue why that's true. So first of
+all, because F is a secure pseudo-random
+function, we might as well replace it with
+a truly random function. In other words,
+this is indistinguishable from the case
+where we encrypt the message M, using the
+truly random function little F, evaluated
+to point R, and then XOR with M.
+But since this little r never repeats every
+cypher text uses a different little r what
+this means is that the values of F(r)
+are random uniform independent strings
+every time. So every time we encrypt a
+message, we encrypt it essentially using a
+new uniform random one time pad. And since
+XORing a uniform string with any string
+simply generates a new uniform string, the
+resulting cipher text is distributed as
+simply two random uniform strings. I'll
+call them r and r prime. And so both in
+experiment zero and in experiment one, all
+the attacker gets to see are truly uniform
+random strings r, r', and since in both
+experiments the attacker is seeing the same
+distribution, he cannot distinguish the
+two distributions. And so since security
+holds completely when we're using a truly
+random function it's also gonna hold when
+we're using a pseudorandom function. Okay,
+so this is a nice example of how we use
+the fact that the pseudo random function
+behaves like a random function to argue
+security of this particular encryption
+scheme. Okay, so now we have a nice
+example of randomized encryption. The
+other approach to building chosen plain
+text secure encryption schemes is what's
+called a nonce based encryption. Now, in
+a non-spaced encryption system, the
+encryption algorithm actually takes three
+inputs rather than two. As usual it takes
+the key and the message. But it also takes
+an additional input called a nonce. And
+similarly, the decryption algorithm also
+takes the nonce as input, and then produces
+the resulting decrypted plain text. And
+what is this nonce value n. This nonce is
+a public value. It does not need to be
+hidden from the adversary but the only
+requirement is that the pair (k,n)
+is only used to encrypt a single
+message. In other words, this pair (k,n)
+must change from message to message. And
+there are two ways to change it. One way
+to change it is by choosing a new random
+key for every message. And the other way
+is to keep using the same key all the time
+but then we must choose a new nonce for
+every message. And, and as I said, I wanna
+emphasize again, this nonce need not
+be secret, and it need not be random. The
+only requirement is the nonce is unique.
+And in fact, we're gonna use this
+term throughout the course. A nonce
+for us, means a unique value that doesn't
+repeat. It does not have to be random. So
+let's look at some examples of choosing an
+nonce, well the simplest option is
+simply to make the nonce of the
+accounter so for example the networking
+protocol you can imagine the nonce
+being a packet counter that's incremented
+every time a packet is sent by a sender or
+received by the receiver this means that
+the encrypter has to keep state from
+message to message mainly that he has to
+keep this counter around and increment it
+after every message is transmitted.
+Interestingly, if the decrypter actually
+has the same state then there is no need
+to include the nuance in the cipher text
+since the nuance is implicit. Let's look
+at an example. The https protocol is run
+over a reliable transport mechanism which
+means that packets sent by the sender are
+assumed to be received in order at a
+recipient. So if the sender sends packet #5 and then packet #6, the recipient
+will receive packet #5 and then
+packet #6 in that order. This
+means that if the sender maintains a
+packet counter, the recipient can also
+maintain a packet counter and two counters
+basically increment in sync. In this case
+there is no reason to include the
+nonce in the packets because the
+nonce is implicit between the two
+sides. However, in other protocols, for
+example, in IPsec, IPsec has a protocol
+designed to encrypt the IP layer. The IP
+layer does not guarantee in order
+delivery. And so the sender might send
+packet #5 and then packet #6, but
+those will be received in reverse order at
+the recipient. In this case it's still
+fine to use a packet counter as a nonce
+but now the nonce has to be included in
+the packet so that the recipient knows
+which nonce to use to decrypt the
+received packet. So as I say, nonce based
+encryption is a very efficient way to
+achieve CPA security. In particular if the
+nonce is implicit, it doesn't even
+increase the cipher text length. Of course
+another method to generate a unique nonce
+is simply to pick the nonce at random
+assuming the nonce space is sufficiently
+large so that with high probability the
+nonce will never repeat for the life of
+the key. Now in this case, nonce
+based encryption simply reduces to
+randomized encryption. However, the
+benefit here is that the sender does not
+need to maintain any state from message to
+message. So this is very useful for
+example if encryption happens to take
+place on multiple devices. For example, I
+might have both a laptop and a smart
+phone. They might both use the same key.
+But in this case if I require state full
+encryption, then my laptop and the
+smartphone would have to coordinate to
+make sure that they never reuse the same
+nonces. Whereas if both of them simply take
+nonces at random, they don't need to
+coordinate because it was very high
+probability they'll simply never choose
+the same nonce. Again assuming the nonce
+space is big enough. So there are some
+cases where stateless encryption is quite
+important, in particular where the same
+key is used by multiple machines. So I
+wanted to find, more precisely, what
+security means for nonce based
+encryption. And in particular, I want to
+emphasize that the system must remain
+secure when the nonce are chosen by
+the adversary. The reason it's important
+to allow the adversary to choose the
+nonces is because the adversary can
+choose which cipher text it wants to
+attack. So imagine the nonce  happens to
+be a counter and it so happens that when
+the couter hits the value fifteen, maybe
+at that point it's easy for the adversary
+to break semantic security. So the
+adversary will wait until the fifteenth
+packet is sent and only then he will ask
+to break semantic security. So when we
+talk about nonce based encryption, we
+generally allow the adversary to choose
+the nonce and the system should remain
+secure even under those settings. So let's
+define the CPA game in this case and it's
+actually very similar to the game before.
+Basically the attacker gets to submit
+pairs of messages MI, MI0, and MI1.
+Obviously they both have to be of the same
+length. And he gets to supply the nonce.
+And in response, the adversary is given
+the encryption of either MI0, or MI1. But
+using the nonce that the adversary
+chose. And of course, as usual, the
+adversary's goal is to tell whether he was
+given the encryption of the left plain
+text or the right plain text. And as
+before the adversary gets to iterate these
+queries and he can issue as, as many
+queries as he wants, we usually let q
+denote the number of queries that the
+adversary issues. Now the only restriction
+of course, which is crucial, is that
+although the adversary gets to choose the
+nonces, he's restricted to choosing
+distinct nonces. The reason we force him
+to choose distinct nonces is because
+that's the requirement in practice. Even
+if the adversary fools Alice into
+encrypting multiple messages for him,
+Alice will never use the same nonce
+again. As a result, the adversary will
+never see messages encrypted using the
+same nonce and therefore, even in the
+game, we require that all nonce be
+distinct. And then as usual we say that
+the system is a nonce based encryption
+system that's, semantically secure under a
+chosen plain text attack if the adversary
+cannot distinguish experiment zero where
+he's given encryptions of the left
+messages from experiment one where he's
+given encryptions of the right messages.
+So let's look at an example of a nonce
+based encryption system. As before, we
+have a secure PRF that takes inputs in the
+nonce space R and outputs strings in the
+message space M. Now when a new key is
+chosen, we're going to reset our counter R
+to be zero. And now we encrypt the
+particular message M, what we will do is
+we will increment our counter R, and then
+encrypt the message M using the
+pseudorandom function applied to this
+value R. And as before, the cipher text is
+going to contain two components, our
+current value of the counter and then the
+one time pad encryption of the message M.
+And so my question to you is whether this
+is a secure, non-spaced encryption system.
+So the answer as before is yes, but only
+if the nuance space is large enough. So as
+we increment the counter R, it will never
+cycle back to zero so that the nuances
+will always, always be unique. We argue
+security the same way as before. Because
+the PRF is secure, we know that this
+encryption system is indistinguishable
+from using a truly random function. In
+other words, if we apply a truly random
+function to the counter and XOR the
+results with, the plain text M. But now
+since the nuance R never repeats, every
+time we compute this F of R, we get a
+truly random uniform and independent
+string so that we're actually encrypting
+every message using the one time pad. And
+as a result, all the adversary gets to see
+in both experiments are basically just a
+pair of random strings. So both the
+experiment zero and experiment one the
+adversary get's to see exactly the same
+distribution, namely, the responses to all
+this chosen plain text queries are just
+pairs of strings that are just uniformly
+distributed and this is basically the same
+in experiment zero and experiment one and,
+therefore, the attacker cannot distinguish
+the two experiments. And since he cannot
+win the semantic security game with a
+truly random function he, also, cannot win
+the semantics security game with the
+secure PRF, and, therefore, the scheme is
+secure. So now we understand what it means
+for a symmetric system to be secure when
+the keys used to encrypt multiple messages
+the requirement is that it be secure under
+a chosen plan of attack. And we said that
+basically, the only way to be secure under
+a chosen plain text attack is either to
+use randomized encryption, or to use, use
+nonce spaced encryption where the
+nonce never repeats. And then in the
+next two segments, we're gonna build two
+classic encryption systems that are secure
+when the key is used multiple times.

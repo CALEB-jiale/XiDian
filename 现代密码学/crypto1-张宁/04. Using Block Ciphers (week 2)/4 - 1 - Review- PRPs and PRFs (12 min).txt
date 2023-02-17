@@ -1,0 +1,292 @@
+Now that we know that block cyphers are we
+know how to construct them, let's see how
+to use them for secure encryption? But
+before that, I wanna briefly remind you of
+an important abstraction called a
+pseudo-random function, and a
+pseudo-random permutation. So as we said
+in the last module, a block cipher's map,
+N bits of inputs to N bits of outputs. And
+we saw two examples of block ciphers,
+triple DES and AES. Now, an important
+abstraction of the concept of a block
+cipher, is captured by this idea of a PRP
+and a PRF. And remember that a
+pseudo-random function, a PRF, basically
+is a function that takes two inputs. It
+takes a key and an element in some set X.
+And in outputs an element in some set Y
+and for now the only requirement is that
+there's an efficient algorithm to evaluate
+this function. We're going to talk about
+security for PRFs in just a minute. And
+then similarly, there's a related concept
+called a pseudo-random permutation, which
+is similar to a PRF. In fact, there's also
+an efficient algorithm to evaluate, the
+pseudo-random permutation. However,
+there's an additional requirement, that
+there's also an algorithm D that will
+invert this function E. So a PRP, is
+basically a PRF, but where the function is
+required to be one to one for all keys.
+And there is an efficient inversion
+algorithm. So now lets talk about how to
+define secure PRF's. So we already said
+that essentially the goal of a PRF is to
+look like a random function from the set X
+to Y. So to capture that more precisely we
+define this notation, funs XY to be the
+set of all functions from the set X, to
+the set Y. Similarly, we defined the set S
+sub F to be the set of all functions from
+the set X to Y that are defined by the
+PRF. In other words. Once you fix the key
+K, you obtain a function from the set X to
+the set Y. And the set of all such
+functions, given a particular PRF, would
+be the set S sub F. So as we said last
+time, funs XY is generally a gigantic set
+of all functions from S to Y. I think I
+mentioned that, in fact, for AES, where X
+and Y are two to the 128, the size of the
+set is two to the 128 times two to the
+128. It's a double exponential, which is
+an absolutely enormous number. On the
+other hand, the number of functions
+defined by the AES block cipher is just
+two to the hundred and twenty-eight.
+Namely, one function from each key. And
+what we would like to say is that a random
+choice from this huge set is
+indistinguishable from a random choice
+from the small set. And what do we mean by
+indistinguishable, we mean that an
+adversary who can interact with a random
+function in here, can't distinguish that
+interaction from an interaction with a
+random function in here. Now let's find
+out more precisely. So we're gonna, as
+usual, define two experiments. Experiment
+zero and experiment one. And our goal is
+to say that the adversary can't
+distinguish these two experiments. So in
+experiment zero, the challenger,
+basically, is gonna choose a random,
+pseudo-random function. Okay? So he's
+gonna fix the key K at random, and that's
+gonna define this function, little f over
+here, to be one of the functions
+implemented by the PRF. And experiment
+one, on the other hand, the challenger is
+gonna choose a truly random function from
+the set X to the set Y. And again, we're
+gonna call this truly random function
+little f, either way, either experiment
+zero or experiment one, the challenger
+ends up with this little function f that's
+either chosen from the PRF, or chosen as a
+truly random function from X to Y. Now the
+adversary basically gets to query this
+function, little f. So he gets to submit a
+query X1 and he obtains the value of f at
+the point X1, then he gets to submit at
+X2, and he obtains the value of f at the
+point X2. So on and so fourth, he makes Q
+queries. And so he learns the value of the
+function little f at those Q points. Now
+his goal is to say whether the function
+little f is chosen truly at random from
+funs XY, or chosen just from the set of
+functions implemented by the PRF. So he
+outputs a certain bit b prime and we'll
+refer to that output as the output of
+experiments, either as experiment zero or
+experiment one. As usual we say that the
+PRF is secure. If, in fact, the adversary
+can't distinguish these two experiments.
+In other words, the probability that he
+outputs one, experiments zero is the same,
+pretty much the same as the probability
+that he outputs one in experiment one. In
+other words, the difference of these two
+probabilities is negligible. So this
+captures nicely, the fact that the
+adversary couldn't distinguish a
+pseudo-random function from a truly random
+function from the set X to Y. Now, the
+definition for a secure pseudo-random
+permutation, a secure PRP, which is
+basically a secure block cipher, is pretty
+much the same. In experiment zero, the
+adversary's gonna change a random instance
+of the PRP. So he's gonna choose a random
+K, and define little f to be the function
+that corresponds to little k within the
+pseudo-random permutation. In experiment
+one: the adversary is gonna choose not a
+truly random function from X to Y, but a
+truly random one to one function from X to
+X. Okay? So the goal of our PRP is to look
+like a random permutation from X to X.
+Namely, a random one to one function from
+the set X to itself. So the little
+functional little f here is again gonna be
+a random function. From the set X to
+itself. And again, the challenger ends up
+with this function, little f. As before,
+the adversary gets to submit queries and
+it gets to see the results of those
+queries. And then he shouldn't be able to
+distinguish, again, experiment zero from
+experiment one. So again, given the value
+of the function f at cue points chosen by
+the adversary, he can't tell whether the
+function f came from a PRP, or
+whether it's a truly random permutation
+from X to X. So let's look at a simple
+example. Suppose the set X contains only
+two points, zero and one. In this case,
+Perms[X] is really easy to define.
+Essentially, there are two points, and
+we're looking at, you know, 01. And we're
+asking, what is the set of all invertible
+functions on the set 01. Well, there are
+only two such functions. One function is
+the identity function. And the other
+function is basically the function that
+does crossovers, namely this function
+here. These are the only two invertible
+functions in the set 01. So really, Perms[X]
+only contains two functions, in this
+case. Now, let's look at the following
+PRP. The key space is gonna be 01, and of
+course, X is gonna be 01. And let's define
+the PRP as basically X XOR K. Okay so
+that's our PRP and my question to you is,
+is this a secure PRP. In other words, is
+this PRP indistinguishable from a random
+function on Perms[X]? I hope everybody
+said, yes, because essentially, the sets
+of functions implemented in this PRP, is
+identical to the set of functions in Perms[X].
+So a random choice of key here is
+identical to a random choice of function
+over here. And as a result, the two
+distributions, either pseudo-random or
+random, are identical. So clearly, an
+adversary can't distinguish the two
+distributions. Now, we already said that
+we have a couple of examples of secure
+PRPs triple DES and AES. And I just wanted
+to mention that, if you want to make
+things very concrete, here's a concrete
+security assumptions about AES. Just to
+give an example, say that all algorithms
+had run in time 2^80 have advantage
+against AES of utmost 2^-40. This
+is, a reasonable assumption about AES, and
+I just wanted to state it for
+concreteness. So let's look at another
+example. Consider again the PRP from the
+previous question. Namely XX or K.
+Remember the set X was just one bit,
+namely the value zero and one. And this
+time, we're asking, is this PRP a secure
+PRF? In other words, is this PRP
+indistinguishable from a random function
+from X to X? Now, the set of random
+functions from X to X, Funs[XX] in
+this case, contains only four elements.
+There are the two invertible functions,
+which we already saw in... I believe the
+identity function, and the negation
+function, the function that
+sends zero to one, and one to zero. But
+there are two other functions. Namely, the
+function that sends everything to zero.
+And the function that sends everything to
+one. Okay, these are four functions inside
+Funs[XX], and the question is: Is this
+PRP that we just looked at, is it also
+indistinguishable from a random choice
+from Funs[XX]? So I hope everybody said no
+and the reason it's not a secure prf is
+because there's a simple attack, namely
+the attacker supposed to distinguish
+whether he's interacting with this PRP or
+is he interacting with a random function
+from Funs[XX]. And the distinguisher
+is very simple. Basically we're gonna
+query the function at both x equals zero
+and x equals one, and then if we get a
+collision, in other words, if f of zero is
+equal to f of one, then for sure we're not
+interacting with a PRP. In which case we
+can just output one. In other words we're
+interacting with a random function. In
+other words we say zero. So let's look at
+the advantage of this distinguisher. Well
+when it's interacting with a PRP, it'll
+never output a one, because f of zero can
+never be equal to f of one. In other
+words, the probability of outputting one
+is zero. However, when we interact with a
+truly random function in Funs[XX],
+the probability that f of zero is equal to
+f of one is exactly one-half.  Cause half the
+functions satisfy F of zero's equal to F
+of one, and half the functions don't. So
+then, we'll output one with probability
+one-half. So the advantage of this
+distinguisher is one-half, which is non-negligible.
+And as a result, this PRP here
+is not a secure PRF. Now it turns out this
+only true because if set X is very small.
+And in fact there is an important lemma,
+called the PRF Switching Lemma, that
+says that a secure PRP, is in fact a
+secure PRF, whenever the set X is
+sufficiently large. And by sufficiently
+large, I mean say the output space of AES
+which is two to the 128th. So by this
+lemma which will state more precisely in a
+second, AES if it's a secure PRP, it is
+also a secure PRF. So this lemma basically
+says the following, if you give me a PRP
+over the set X Then for any adversary that
+queries the PRP, at at most Q points, so it
+makes at most Q queries into the
+challenge function. Then, the difference
+between its advantage in attacking the PRP
+when compared to a random function, is
+very close to its advantage in
+distinguishing the PRP from a random
+permutation. In fact the difference, is
+bounded by this quantity here, and since
+we said that X is very large, this
+quantity Q squared over 2X is negligible.
+Okay. That's gonna be our goal. So
+essentially, again, when X is large, say
+two to the 128, Q say is going to be two
+to the 32. That's a billion queries that
+the adversary makes. Then, still the ratio
+is going to be negligible. In which case,
+we say that the adversary's advantage is
+distinguishing the PRP from a random
+function. It's pretty much the same as its
+advantage of distinguishing a PRP from a
+random permutation. So, again, it's
+basically, if E is already a secure PRP,
+then it's already a secure PRF. So for
+AES, AES, we believe, is a secure PRP.
+And therefore, AES, we can also use it as a
+secure PRF. And so, as a final note, I
+just want to mention that, really, from
+now on, you can kinda forget about the
+inner workings of AES and triple DES.
+We're simply gonna assume that both are
+secure PRPs, and then we're gonna see how
+to use them. But whenever I say PRP, or
+PRF, you should be thinking in your mind,
+basically, AES or triple DES.

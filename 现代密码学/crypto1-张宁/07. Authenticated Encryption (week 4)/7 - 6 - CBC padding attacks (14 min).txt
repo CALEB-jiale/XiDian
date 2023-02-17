@@ -1,0 +1,363 @@
+In this segment and the next, I wanna show
+you two very cute attacks on deployed
+authenticated encryption systems. But
+first let's do a quick recap. So recall
+that authenticated encryption means that
+the system provides CPA security plus
+cipher text integrity. And authenticated
+encryption means that we can preserve
+confidentiality in the presence of an
+active adversary, and moreover, the
+adversary can't modify the cipher text in
+any way without being detected. We also
+showed that authenticated encryption
+prevents these very powerful chosen cipher
+text attacks. Unfortunately, authenticated
+encryption has a pretty significant
+limitation in that it simply can't help a
+bad implementation. If you implement
+authenticated encryption incorrectly, then
+your implementation will be vulnerable to
+active attacks. And then we looked at
+standards constructions. I mentioned these
+three standards that provide authenticated
+encryption. And I want to point out, when
+you need to use authenticated encryption
+in practice, you should just be using one
+of these three standards. You shouldn't
+try to implement authenticated encryption
+by yourself, and I hope that the attack
+that I'll show you in this segment
+convinces you that this is not something
+you should do yourself. Just use one of
+GCM, CCM or EAX. However, it's good for
+you to know that in general, when you want
+to provide authenticated encryption, the
+correct way to do things is encrypt, then
+MAC, because then no matter which
+encryption and MAC algorithms you combine.
+The result will be authenticated
+encryption, again assuming the encryption
+and Mac algorithm are implemented
+correctly. Okay, so let's look at a very
+acute attack on the TLS record protocol.
+In particular, when CBC encryption is
+used. Let me just briefly remind you that
+the way TLS decryption works, is, first of
+all, an incoming cipher text is CBC
+decrypted. Then the next thing that
+happens is the implementation will check
+if the pad has the correct format. For
+example, if the pad is of length five, the
+format should be 55555. And if it's not of
+the correct format. Then the cipher text
+is rejected. So this basically checks that
+the ending of the decrypted record
+contains the correct pad. And then if the
+pad has the correct format, then the next
+thing that happens is that the MAC is
+checked, the tag is checked. And if the
+tag turns out to be incorrect, again, the
+record is rejected. If the tag is valid,
+then the remaining data is considered to
+be authentic and is given to the
+application. So what I wanted to point out
+is there are two types of errors in TLS
+decryption. One is a padding error and one
+is a MAC error. And it turns out it's very
+important that the adversary not be told
+which of these errors occurred. And let me
+briefly explain why. So, suppose an
+attacker can actually differentiate the
+two types of errors. In other words, he
+can tell if a pad error occurred, or a Mac
+error occurred. The result is what we call
+the padding oracle. ?Cause now, imagine
+the adversary has a certain cipher text
+that it intercepted. And it wants to try
+and decrypt that cipher text. What it
+could do, is it could take that cipher
+text as is, and submit it to the server.
+The server is gonna decrypt the cipher
+text and then look to see if the pad has
+the correct format. If the pad doesn't
+have the correct format, we'll get one
+type of error. If the pad has the correct
+format, it's very likely since this is
+just some random cipher text that the
+adversary concocted himself, it's very
+likely the mac will be incorrect, and then
+the adversary will observe a mac error. So
+if the pad is invalid, we'll see a pad
+error, whereas if the pad is valid we'll
+see a mac error. As a result, the
+adversary, after submitting the cipher
+text to the server, the adversary can tell
+whether the last bytes in the decrypted
+cipher text have a valid pad or not. In
+other words, whether the last bites in the
+decrypted cipher text are end with one. Or
+2-2, or 3-3-3, or 4-4-4-4, and so on. So
+the adversary learns something about the
+decrypted cipher text, just by submitting
+the cipher text to the server. So this is
+a beautiful example of what's called a
+chosen cipher text attack. Where again,
+the address that you submit the cipher
+text and then he gets to learn something
+about the resulting plain text. And now
+the question is whether he can use that
+information to completely decrypt a given
+cipher text. And I want to show you that a
+padding oracle can actually be used to
+completely decrypt a given cipher text.
+But before I say that, I want to remind
+you that older versions of TLS. Actually
+leaked the type of error simply in the
+alert message that was sent back to the
+peer. Different types of alerts were sent
+depending on which type of error occurred.
+As soon as this attack came out, SSL
+implementations simply always reported the
+same type of error, so just looking at the
+alert type wouldn't tell the adversary
+which error occurred. Nevertheless, there
+was still a padding oracle. So let me
+explain why. So this was observed by Canvel
+et. al. Canvel et. al. realized that
+the way TLS decryption is implemented is
+first of all, the record is decrypted,
+then the pad is checked, and if the pad is
+invalid, decryption is aborted and an
+error is generated. If the pad is valid.
+Then the Mac is checked. And then if the
+Mac is invalid, decryption is aborted, and
+an error is generated. As a result, this
+causes a timing attack. You realize that
+if pad is invalid, then the alert message
+is sent very quickly. And you notice here,
+that, in fact, you see that, within 21
+milliseconds, the cipher text is rejected.
+However, if the pad is valid. Then now the
+math needs to be checked, and when it's
+discovered to be invalid, the alert is
+only generated at that point. In other
+words, then in that case it takes a little
+bit longer until the alert is generated,
+and you see that on average this takes
+about 23 milliseconds. So even though the
+same alert is sent back to the peer. The
+adversary can simply observe the time
+until the alert message is generated. If
+the time is short, it knows the pad was
+invalid. If the time is long, it knows the
+pad was valid, but the Mac was invalid.
+And as a result the adversary still has a
+padding oracle that can tell it whether
+the pad was valid or invalid. So now let's
+see how to use a padding oracle. So I
+claim that if the attacker has a certain
+cipher text C, he can completely decrypt
+the cipher text just using the padding
+oracle. So let's see how to do it. And
+just as an example, suppose he wants to
+obtain M1, in other words, a decryption of
+the second block of the cipher text. So
+let's see what he would use. So here we
+have the cipher text that the attacker
+intercepted. And this just happens to be
+the decryption of that cipher text. And
+the reason I wrote this down is I wanted
+you to remember how CBC decryption works.
+So you should keep in mind that one cipher
+text block is directly [inaudible] into
+the decryption of the next cipher text
+block. Okay, so the adversary here wants
+to basically learn just this part of the
+plain text. So, here's what he's gonna do.
+So first of all he's going to throw away
+C2 so that, that last block really is just
+C1, which is the one he's interested in
+decrypting. Now let's suppose that he has
+a certain guess, G, for the last byte of
+M1, in other words, he just has a guess
+for this very, very, very last byte. G is
+a value between zero and 255. What the
+attacker will do is the following, he will
+XOR the value G XOR 01 into the last byte
+of the block C0, the previous block. Yes
+so all he did is he took the last byte of
+the previous block and [foreign] that with
+his guest [foreign] 01. Now lets think for
+just a second and see what happens when
+this two block cipher text is decrypted.
+Well C0 is gonna get decrypted to whatever
+its decrypted to that's just gonna be some
+garbage that we don't care about but, now
+when C1 is decrypted the last byte is
+gonna be [foreign] with this modified C0,
+and the result the last byte of the plain
+text. Is gonna be also XORed with this
+extra value that we stuck into C zero. So
+what goes in here is the actual original
+last byte in the plain text M1. But now it
+gets XORed with G XOR zero X zero one. So
+now you see where I'm going with this. If
+the guess G for the last byte of M1 is
+correct, then these two guys will cancel
+one another. Last byte XOR G is just zero.
+And what we'll get is the last byte of the
+plaintext is just 0x01. I should mention,
+by the way, 0x01 just means hex notation
+for 01. So literally this is just a one
+byte representation of the number one.
+Good. So, again, what this means, is if
+our guess for the last byte of M1 is
+correct, then we get a pad that's well
+formed. It's just a number one. The number
+one is a well formed pad, and therefore,
+the pad is valid. And the padding oracle
+will say the pad is valid. If the guess is
+incorrect then we'll get a value here
+that's not equal to one and then it's very
+likely that we have an invalid pad. And as
+a result the padding worker will say the
+pad is invalid. So again you see that if
+our guess for the last byte of M1 is
+correct, we learn that G was in fact a
+correct guess. Whereas if our guess is
+incorrect, then we learn that G is an
+incorrect guess. So what the attacker is
+gonna do is he's gonna create his modified
+cipher text. You notice he only modifies
+the second block of the cipher text. We're
+gonna send this to the padding oracle and
+then based on the results of the padding
+oracle, we learn whether the last byte is
+equal to G or not. Well, now we can simply
+repeat this again and again for G from
+zero to 255. This basically requires 256
+chosen cipher text queries. Actually, I
+guess on average we'll only have to do 128
+chosen ciphers and squares until we find
+the right G. Then, we learn the last byte
+of M1. Well, so now we know the last byte
+of M1. I claim that we can now use the
+exact same process to learn the second to
+last byte of M1. Let me ask you, what pad
+are we gonna use to learn the second to
+last byte of M1? Well, it shouldn't be
+surprising that, instead of just using the
+pad containing the byte one, we're gonna
+use a two byte pad containing the bytes
+2-2. That's a well formed pad. And now we
+can always make sure because we know the
+last byte of m1, when we do our XORing trick
+we can always make sure that the last byte
+of the plain text is in fact 02 and now we
+can guess the second to last byte of m2 by
+simply trying lots of values in g until we
+find one that makes the pad, in fact, be
+0202. And by issuing 256 additional
+queries to the padding oracle we will get
+to learn the second to last byte of m1.
+And now we can iterate this again and
+again, and basically since the length of
+the block is sixteen bytes after sixteen
+times 256 queries. We get to learn all of
+them one. So this is a pretty significant
+attack that is able to decrypt blocks of
+the TLS record. So those of you who know
+the inner workings of TLS should complain
+that this attack isn't gonna work. The
+problem is that when TLS receives a record
+with a bad pad or a bad Mac, it shuts down
+the connection, and renegotiates a new
+key. As a result, the attacker is now
+stuck with a cipher text encrypted using
+an old key. And that key is no longer used
+anywhere, so it cannot submit any more
+queries. So with TLS, basically, it can
+only submit one query, and that's it. Even
+a single query still leaks information
+about the plain text to the attacker. But
+it doesn't expose the entire plain text
+block m1. However this attack is so acute
+that whenever there's a mistake like this
+in a protocol there will be some settings
+in which it comes up and in this case the
+setting is in the case of an imap server.
+So imap is a popular protocol for reading
+email from an imap email server, and it's
+very common to protect the imap protocol
+by running it on top of a tls protocol.
+Now, it turns out an imap. Every five
+minutes, the IMap client will connect to
+the IMap server, and check whether there's
+new email. And the way it does it is by
+first logging in to the IMap server, by
+sending this login username password
+message. And then it goes ahead and check
+if there's new email available. Well, what
+this means is that every five minutes, the
+attacker gets an encryption of exactly the
+same message in particular, I guess, an
+encryption of the password. And so every
+five minutes, it can mount one guess on
+the block that contains the password. And
+so, if your password is eight characters
+long, the attacker simply needs to recover
+those eight characters. And he's gonna
+recover them one byte at, at a time, by
+doing one guess per five minutes. And so
+Canvel et. al. showed that, within a few
+hours, you can basically recover the
+user's password. Just by mounting one
+guest every five minutes. So this is a
+pretty significant attack against an
+implementation of TLS and the defense
+against this was to always check the Mac,
+whether the pad is valid or invalid. And
+as a result it takes the same amount of
+time to respond whether the pad is valid
+or invalid. So this removes the timing
+attack and makes this attack much harder
+to mount. So there are two lessons here.
+First of all, you notice that if TLS had
+used encrypt then MAC, rather than MAC
+then encrypt, then this whole issue would
+be completely moot, because if I encrypt
+then MAC then MAC is checked first, and
+only then does decryption and pad-checking
+take place. In encrypt then MAC, the
+cipher-text is discarded because the MAC
+is invalid and we never even get to a pad
+check. As a result, any tampering or gain
+is with a cipher-text will be discarded
+immediately because the MAC is simply
+gonna fail. And second lesson to remember
+is that remember I told you that MAC10CBC
+actually does provide authenticated
+encryption but only if you don't reveal
+why the cryption failed. In this case the
+padding wall [inaudible] completely
+destroyed the authenticating encryption
+property and basically I showed you an
+attack this shows that now this mode does
+not provide authenticated encryption. So
+let me ask you the following question.
+Supposing TLS instead of using MAC then
+CBC, TLS did MAC then counter mode
+encryption. Would the padding oracle
+attack still be possible or not? The
+answer is it wouldn?t be possible, simply
+because counter-mode doesn't use any
+padding at all. So this padding oracle
+attack only effects CBC encryption modes
+in TLS. Tls also supports counter-mode
+encryption, and counter-mode encryption
+modes are simply not affected by these
+padding attacks. So that's the end of this
+segment. In the next segment I want to
+show you another very, very clever attack on
+authenticated encryption systems.

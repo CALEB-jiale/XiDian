@@ -1,0 +1,1117 @@
+1
+00:00:00,000 --> 00:00:04,090
+In the previous segment we saw how to
+build public key encryption from trapdoor
+
+2
+00:00:04,090 --> 00:00:08,390
+functions, in this segment we're going to
+build a classic trapdoor function called
+
+3
+00:00:08,390 --> 00:00:13,295
+RSA. But first let's quickly review what a
+trapdoor function is. So recall that a
+
+4
+00:00:13,295 --> 00:00:17,283
+trapdoor function is made up of three
+algorithms. There is a key generation
+
+5
+00:00:17,283 --> 00:00:21,056
+algorithm, the function itself, and the
+inverse of the function. The key
+
+6
+00:00:21,056 --> 00:00:25,313
+generation algorithm outputs a public key
+and a secret key. And in this case, in
+
+7
+00:00:25,313 --> 00:00:29,786
+this lecture the public key is going to
+define a function that maps the set X onto
+
+8
+00:00:29,786 --> 00:00:33,882
+itself. Which is why I call these things
+trapdoor permutations, as opposed to
+
+9
+00:00:33,882 --> 00:00:37,978
+trapdoor functions, simply because the
+function maps X onto itself, whereas a
+
+10
+00:00:37,978 --> 00:00:43,356
+trapdoor function might map the set X to
+some arbitrary set Y. Now given the public
+
+11
+00:00:43,356 --> 00:00:47,819
+key, the function, as we say, basically
+defines this function from the set X to
+
+12
+00:00:47,819 --> 00:00:52,914
+the set X. And then given the secret key,
+we can invert this function. So this
+
+13
+00:00:52,914 --> 00:00:57,401
+function F evaluates the function in the
+forward direction, and this function F
+
+14
+00:00:57,401 --> 00:01:02,059
+inverse, which means the secret key SK,
+computes F in the reverse direction. Now
+
+15
+00:01:02,059 --> 00:01:06,489
+we say that the trapdoor permutation is
+secure if the function defined by the
+
+16
+00:01:06,489 --> 00:01:11,033
+public key is in fact a one-way function,
+which means that it's easy to evaluate,
+
+17
+00:01:11,033 --> 00:01:15,404
+but without the trapdoor, the secret
+trapdoor, it's difficult to invert. Before
+
+18
+00:01:15,404 --> 00:01:20,076
+we look at our first example of a trapdoor
+permutation, I want to do a quick review
+
+19
+00:01:20,076 --> 00:01:24,467
+of some necessary arithmetic facts that
+we're gonna need. And in particular,
+
+20
+00:01:24,467 --> 00:01:28,632
+let's look at some arithmetic facts
+modulo composites. So here we have our
+
+21
+00:01:28,632 --> 00:01:33,192
+modulus N, which happens to be a product
+of two primes, and you should be thinking
+
+22
+00:01:33,192 --> 00:01:37,864
+of P and Q as roughly equal size numbers,
+since particular P and Q are both roughly
+
+23
+00:01:37,864 --> 00:01:42,407
+on the size of square root of N. So both
+are roughly the same size. Recall that we
+
+24
+00:01:42,407 --> 00:01:46,834
+denoted by ZN the set of integers from
+zero to N minus one, and we said that we
+
+25
+00:01:46,834 --> 00:01:51,318
+can do addition and multiplication module N. We denoted by ZN star the set of
+
+26
+00:01:51,318 --> 00:01:55,801
+invertible elements in ZN. So these are
+all the elements, which have a modular
+
+27
+00:01:55,801 --> 00:02:00,925
+inverse. And we said that actually X is
+invertible if and only if it's relatively
+
+28
+00:02:00,925 --> 00:02:05,928
+prime to N. Moreover, I also told you that
+the number of invertible elements in ZN
+
+29
+00:02:05,928 --> 00:02:11,147
+star is denoted by this function phi(N). So phi(N)
+is the number of invertible elements in ZN
+
+30
+00:02:11,147 --> 00:02:15,814
+star, And I told you that when N is a
+product of two distinct primes, then in
+
+31
+00:02:15,814 --> 00:02:20,788
+fact phi(N) is equal to (P - 1) times (Q - 1) and if you extend that out, you
+
+32
+00:02:20,788 --> 00:02:26,007
+see that this is really equal to (N - P - Q + 1). Now remember that I said
+
+33
+00:02:26,007 --> 00:02:30,858
+that P and Q are on the order of square
+root of N which means that P + Q is
+
+34
+00:02:30,858 --> 00:02:35,675
+also on the order of square root of N.
+Which means that really phi(N) is on the
+
+35
+00:02:35,675 --> 00:02:41,050
+order of N minus two square root of N. So,
+in other words, it's very, very close to
+
+36
+00:02:41,050 --> 00:02:45,158
+N. Basically, subtracting the square root
+of N from a number, this is from, N is
+
+37
+00:02:45,158 --> 00:02:49,425
+going to be a huge number in our case,
+like 600 digits. And so subtracting from a
+
+38
+00:02:49,425 --> 00:02:53,533
+600 digit number, the square root of that
+600 digit number, namely a 300 digit
+
+39
+00:02:53,533 --> 00:02:57,534
+number, hardly affects the size of the
+number. Which means that phi(N) is really,
+
+40
+00:02:57,534 --> 00:03:01,908
+really, really close to N, and I want you
+to remember that, because we will actually
+
+41
+00:03:01,908 --> 00:03:06,122
+be using this now and again. And so the
+fact that phi(N) is really close to N, means
+
+42
+00:03:06,122 --> 00:03:11,094
+that if we choose a random element modulo
+N It's very, very, very likely to be in ZN
+
+43
+00:03:11,094 --> 00:03:15,633
+star. So it's very unlikely that by
+choosing a random element in ZN, we will
+
+44
+00:03:15,633 --> 00:03:20,085
+end up choosing an element that is not
+invertable. Okay. So just remember that,
+
+45
+00:03:20,085 --> 00:03:25,479
+that in fact almost all elements in ZN are
+actually invertible. And the last thing
+
+46
+00:03:25,479 --> 00:03:30,939
+that we'll need is Euler's theorem, which
+we covered last week, which basically says
+
+47
+00:03:30,939 --> 00:03:36,332
+that for any element X in ZN star, if I
+raise X to the power of phi(N), I get one, in
+
+48
+00:03:36,332 --> 00:03:42,527
+ZN. So in other words, I get 1 modulo N. I'll say it one more time because this
+
+49
+00:03:42,527 --> 00:03:47,466
+is gonna be critical to what's coming.
+Again X to the phi(N) is equal to 1 modulo
+
+50
+00:03:47,466 --> 00:03:51,997
+N. So now that we have the necessary
+background we can actually describe the
+
+51
+00:03:51,997 --> 00:03:55,927
+RSA trapdoor permutation. This is a classic,
+classic, classic construction in
+
+52
+00:03:55,927 --> 00:04:00,811
+cryptography that was first published in
+Scientific American back in 1977, this is
+
+53
+00:04:00,811 --> 00:04:05,576
+a very well known article in cryptography.
+And ever since then, this was 35 years
+
+54
+00:04:05,576 --> 00:04:10,340
+ago, the RSA trapdoor permutation has been used
+extensively in cryptographic applications.
+
+55
+00:04:10,340 --> 00:04:15,110
+For example, SSL and TLS use RSA both for
+certificates and for key exchange. There
+
+56
+00:04:15,110 --> 00:04:19,452
+are many secure email systems and secure
+file systems that use RSA to encrypt
+
+57
+00:04:19,452 --> 00:04:23,515
+emails and encrypt files in the file
+system. And there are many, many, many
+
+58
+00:04:23,515 --> 00:04:27,690
+other applications of this system. So this
+is a very, very classic, crypto
+
+59
+00:04:27,690 --> 00:04:32,541
+construction, and I'll show you how it
+works. I should say that RSA is named for
+
+60
+00:04:32,541 --> 00:04:37,150
+its inventors, Ron Rivest, Adi Shamir and
+Len Adleman, who were all at MIT at the
+
+61
+00:04:37,150 --> 00:04:41,758
+time they made this important discovery.
+So now we're ready to describe the RSA
+
+62
+00:04:41,758 --> 00:04:46,425
+trapdoor permutation. To do that, I have
+to describe the key generation algorithm,
+
+63
+00:04:46,425 --> 00:04:50,159
+the function ƒ and the function ƒ−1.
+So let's see. So the way the key
+
+64
+00:04:50,159 --> 00:04:54,826
+generation algorithm works is as follows:
+What we do is we generate two primes, P
+
+65
+00:04:54,826 --> 00:04:59,143
+and Q, each would be, say on the order of
+1000 bits, so, you know, roughly 300
+
+66
+00:04:59,143 --> 00:05:03,751
+digits, and then the RSA modulus is simply
+going to be the product of those two
+
+67
+00:05:03,751 --> 00:05:08,801
+primes. The next thing we do is we pick
+two exponents, e and d, such that e times
+
+68
+00:05:08,801 --> 00:05:13,894
+d is 1 modulo phi(N). What this means is
+that e and d first of all are relatively
+
+69
+00:05:13,894 --> 00:05:19,051
+prime to phi(N) and second of all they're
+actually modular inverses of one another,
+
+70
+00:05:19,051 --> 00:05:24,014
+modulo phi(N). And then we output the public
+key as the pair N,e and the
+
+71
+00:05:24,014 --> 00:05:29,172
+secret key is the secret key N,d. I should mention that the exponent e,
+
+72
+00:05:29,172 --> 00:05:34,586
+that the number e is sometimes called the
+encryption exponent and the exponent d is
+
+73
+00:05:34,586 --> 00:05:39,135
+sometimes called the decryption exponent.
+And you'll see why I keep referring to
+
+74
+00:05:39,135 --> 00:05:43,189
+these as exponents in just a second. Now
+the way the RSA function itself is
+
+75
+00:05:43,189 --> 00:05:46,902
+defined is really simple. For simplicity
+I'm gonna define it as the function
+
+76
+00:05:46,902 --> 00:05:51,801
+from ZN star to ZN star. And the way
+the function is defined is simply given an
+
+77
+00:05:51,801 --> 00:05:57,001
+input X, all we do is we simply take X and
+raise it to the power of e in ZN. So we
+
+78
+00:05:57,001 --> 00:06:02,137
+just compute X to the e, modulo N. That's
+it. And then to decrypt, what we do is we
+
+79
+00:06:02,137 --> 00:06:07,451
+simply, given an input Y, we simply raise
+Y to the power of d, modulo N. And that's
+
+80
+00:06:07,451 --> 00:06:12,483
+it. So now you can see why as I refer to e
+and d as exponents. They're the things
+
+81
+00:06:12,483 --> 00:06:17,767
+that X and Y are being raised to. So let's
+quickly verify that F inverse really does
+
+82
+00:06:17,767 --> 00:06:22,673
+invert the function F. So let's see what
+happens when we compute Y to the d. So
+
+83
+00:06:22,673 --> 00:06:27,515
+suppose Y itself happens to be the RSA
+function of some value X. In which case,
+
+84
+00:06:27,515 --> 00:06:33,045
+what Y to the d is, is really RSA of X to
+the power of d. While X by itself is
+
+85
+00:06:33,045 --> 00:06:39,006
+simply gonna be X to the e modulo N, And
+therefore, Y to the d is simply X to the e
+
+86
+00:06:39,006 --> 00:06:44,896
+times d modulo N. Again, just using rules
+of exponentiation, the exponents multiply,
+
+87
+00:06:44,896 --> 00:06:50,857
+so we get X to the e times d. But what do
+we know about e times d? e times d we said
+
+88
+00:06:50,857 --> 00:06:57,390
+is one modulo phi(N). And what that means is
+there exists some integer such that e
+
+89
+00:06:57,390 --> 00:07:04,177
+times d is equal to K times phi(N) plus one.
+This is what it means that e times d is
+
+90
+00:07:04,177 --> 00:07:09,820
+one modulo phi(N). So, we can simply replace e
+times d by K times phi(N)+1. So, that's
+
+91
+00:07:09,820 --> 00:07:14,453
+what I wrote here. So, we have X to the
+power of K times phi(N)+1. But now again
+
+92
+00:07:14,453 --> 00:07:19,868
+just using rules of exponentiation, we can
+re-write this as X to the power of phi(N) to
+
+93
+00:07:19,868 --> 00:07:24,827
+the power of K times X. This is really the
+same thing as K times phi(N)+1 as the
+
+94
+00:07:24,827 --> 00:07:29,917
+exponent. I just kind of separated the
+exponent into it's different components.
+
+95
+00:07:29,917 --> 00:07:35,137
+Now, X to the phi(N) by Euler's theorem, we know
+that X to the phi(N) is equal to one. So what
+
+96
+00:07:35,137 --> 00:07:41,394
+is this whole product equal to? Well since
+X to the phi(N) is equal to one, one to
+
+97
+00:07:41,394 --> 00:07:45,961
+the K is also equal to one, so this whole
+thing over here is simply equal to one.
+
+98
+00:07:45,961 --> 00:07:50,757
+And what we're left with is X. So what we
+just proved is that if I take the output of
+
+99
+00:07:50,757 --> 00:07:55,210
+the RSA function and raise it to the power
+of 'd', I get back X. Which means that
+
+100
+00:07:55,210 --> 00:07:59,663
+raising to the power of 'd' basically
+inverts the RSA function, which is what we
+
+101
+00:07:59,663 --> 00:08:04,638
+wanted to show. So that's it, that's the
+whole description of the function, we've
+
+102
+00:08:04,638 --> 00:08:08,972
+described the key generation. The function
+itself, which is simply raising things to
+
+103
+00:08:08,972 --> 00:08:13,410
+the power of e modulo N, and the inversion
+function which is simply raising things to
+
+104
+00:08:13,410 --> 00:08:17,483
+the power of d, also modulo N. The next
+question is, why is this function secure?
+
+105
+00:08:17,483 --> 00:08:21,609
+In other words, why is this function one
+way if all I have is just a public key,
+
+106
+00:08:21,609 --> 00:08:26,409
+but I don't have the secret key? And so to
+argue that this function is one way we
+
+107
+00:08:26,409 --> 00:08:31,454
+basically state the RSA assumption which
+basically says that the RSA function is a
+
+108
+00:08:31,454 --> 00:08:36,626
+one way permutation. And formally the way
+we state that is that, basically for all
+
+109
+00:08:36,626 --> 00:08:41,416
+efficient algorithms, A, it so happens
+that if I generate two primes p and q,
+
+110
+00:08:41,416 --> 00:08:46,397
+random primes p and q. I multiply them to
+get to modulus N and then I choose a
+
+111
+00:08:46,397 --> 00:08:51,103
+random 'y' in ZN star. And now I give
+the modulus, the exponent and this 'y' to
+
+112
+00:08:51,103 --> 00:08:55,893
+algorithm A, the probability that I'll get
+the inverse of RSA at the point Y, mainly
+
+113
+00:08:55,893 --> 00:09:00,336
+I'll get Y to the power of one over E.
+That's really what the inverse is. This
+
+114
+00:09:00,336 --> 00:09:04,606
+probability is negligible. So this
+assumption is called the RSA assumption.
+
+115
+00:09:04,606 --> 00:09:09,338
+It basically states that RSA is a one way
+permutation just given the public [key?]. And
+
+116
+00:09:09,338 --> 00:09:13,954
+therefore, it is a trapdoor permutation
+because it has a trapdoor. And makes this
+
+117
+00:09:13,954 --> 00:09:19,501
+easy to invert for anyone who knows the
+trap door. So now that we have a secure
+
+118
+00:09:19,501 --> 00:09:23,717
+trap door permutation, we can simply plug
+that into our construction for public key
+
+119
+00:09:23,717 --> 00:09:27,826
+encryption, and get our first real world
+public key encryption system. And so what
+
+120
+00:09:27,826 --> 00:09:32,362
+we'll do is we'll simply plug the, the RSA
+trapdoor permutation into the iso standard
+
+121
+00:09:32,362 --> 00:09:36,151
+construction that we saw in the previous
+segment. So, if you recall, that
+
+122
+00:09:36,151 --> 00:09:40,207
+construction was based on a symmetric
+encryption system that had to provide
+
+123
+00:09:40,207 --> 00:09:44,438
+authenticated encryption. And it was also
+based on a hash function. Then mapped
+
+124
+00:09:44,615 --> 00:09:48,866
+while transferring it into the world of
+RSA, it maps elements in
+
+125
+00:09:48,866 --> 00:09:54,202
+ZN, into secret keys for the
+symmetric key system. And now the
+
+126
+00:09:54,202 --> 00:09:58,947
+way the encryption scheme works is really
+easy to describe. Basically algorithm G
+
+127
+00:09:58,947 --> 00:10:03,751
+just runs the RSA key generation algorithm
+and produces a public key and a secret
+
+128
+00:10:03,751 --> 00:10:07,813
+key. Just as before. So you notice the
+public key contains the encryption
+
+129
+00:10:07,813 --> 00:10:11,948
+exponent and the, secret key contains the
+decryption exponent. And the way we
+
+130
+00:10:11,948 --> 00:10:16,298
+encrypt is as follows. Well, we're going
+to choose a random X in ZN. We're going
+
+131
+00:10:16,298 --> 00:10:21,468
+to apply the RSA function to this X, we're
+going to deduce a symmetric key from this
+
+132
+00:10:21,468 --> 00:10:26,453
+X by hashing it, so we compute H of X to
+obtain the key K, and then we output this
+
+133
+00:10:26,453 --> 00:10:31,130
+Y along with the encryption of the message
+under the symmetric key K. And in
+
+134
+00:10:31,130 --> 00:10:35,930
+practice, the hash function H would be
+just implemented just using SHA-256, and
+
+135
+00:10:35,930 --> 00:10:40,977
+you would use the output of SHA-256 to
+generate a symmetric key that could then
+
+136
+00:10:40,977 --> 00:10:45,687
+be used for the symmetric encryption
+assistant. So that's how we would encrypt
+
+137
+00:10:45,687 --> 00:10:50,084
+and then the way we would decrypt is
+pretty much as we saw in the previous
+
+138
+00:10:50,084 --> 00:10:54,951
+segment, where the first thing we would do
+is we would use the secret key to invert
+
+139
+00:10:54,951 --> 00:10:59,758
+the header of the ciphertext. So we would
+compute RSA invert of Y, that would give
+
+140
+00:10:59,758 --> 00:11:04,566
+us the value X. Then we would apply the
+hash function to X so that this would give
+
+141
+00:11:04,566 --> 00:11:09,198
+us the key K. And then we would run the
+decryption algorithm for the symmetric
+
+142
+00:11:09,198 --> 00:11:15,171
+system on the ciphertext and that would
+produce the original message m. And then
+
+143
+00:11:15,171 --> 00:11:19,103
+we stated a theorem in the previous
+segment to say that if the RSA trapdoor
+
+144
+00:11:19,103 --> 00:11:23,087
+permutation is secure, Es and Ds, the
+symmetric encryption scheme [inaudible]
+
+145
+00:11:23,087 --> 00:11:27,175
+provides authenticated encryption. And as
+we said, H is just random oracle. It's,
+
+146
+00:11:27,332 --> 00:11:31,421
+you know, kind of a random function from
+ZN to the key space. Then, in fact, this
+
+147
+00:11:31,421 --> 00:11:35,720
+system is chosen cipher text secure, and
+is a good public key system to use.
+
+148
+00:11:36,240 --> 00:11:41,729
+So now that we have our first example of a
+good public key system to use, I wanna
+
+149
+00:11:41,729 --> 00:11:46,978
+quickly warn you about how not to use RSA
+for encryption. And this again something
+
+150
+00:11:46,978 --> 00:11:51,101
+that we said in the previous segment. And
+I'm going to repeat it here, except I'm
+
+151
+00:11:51,101 --> 00:11:55,534
+going to make it specific to RSA. So
+I'd like to call this, textbook RSA.
+
+152
+00:11:55,534 --> 00:11:59,400
+Which basically is the first thing that
+comes to mind when you think about
+
+153
+00:11:59,400 --> 00:12:03,678
+encrypting using RSA, namely, the secret
+key and the public key will be as before.
+
+154
+00:12:03,678 --> 00:12:08,162
+But now instead of running through, a hash
+function to generate a symmetric key, what
+
+155
+00:12:08,162 --> 00:12:12,337
+we would do is we would directly use RSA
+to encrypt the given message M. And then
+
+156
+00:12:12,337 --> 00:12:16,202
+we would directly use the decryption
+exponent to decrypt the cipher text and
+
+157
+00:12:16,202 --> 00:12:20,773
+obtain the plain text M. I'm going to call
+this textbook RSA, because there are many
+
+158
+00:12:20,773 --> 00:12:25,350
+textbooks that describe RSA encryption in
+this way. And this is completely wrong.
+
+159
+00:12:25,350 --> 00:12:29,495
+This is not how RSA encryption works.
+It's an insecure system. In particular,
+
+160
+00:12:29,495 --> 00:12:33,936
+it's deterministic encryption, and so it
+can't possibly be semantically secure, but
+
+161
+00:12:33,936 --> 00:12:38,542
+in fact there are many attacks exist that
+I'm going to show you an attack in just a
+
+162
+00:12:38,542 --> 00:12:42,709
+minute, but the message that I want to
+make clear here, is that RSA, all it is,
+
+163
+00:12:42,709 --> 00:12:47,151
+is a trap door permutation. By itself
+it's not an encryption system. You have to
+
+164
+00:12:47,151 --> 00:12:51,427
+embellish it with this ISO standard for
+example, to make it into an encryption
+
+165
+00:12:51,427 --> 00:12:55,826
+system. By itself, all it is, is just a
+function. So let's see what goes wrong if
+
+166
+00:12:55,826 --> 00:13:00,225
+you try to use textbook RSA, In other
+words, if you try to encrypt a message
+
+167
+00:13:00,225 --> 00:13:04,975
+using RSA directly. And I'll give you an
+example attack from the world of the web.
+
+168
+00:13:04,975 --> 00:13:09,725
+So imagine we have a web server. The web
+server has an RSA secret key. Here's it's
+
+169
+00:13:09,725 --> 00:13:14,738
+denoted by N and D. And here we have a web
+browser who's trying to establish a secure
+
+170
+00:13:14,738 --> 00:13:19,124
+session, a secure SSL session, with the web
+server. So the way SSL works is that the
+
+171
+00:13:19,124 --> 00:13:23,401
+web browser starts off by sending this
+client hello message saying, hey, I want
+
+172
+00:13:23,401 --> 00:13:27,787
+to set up a secure session with you. The
+web server responds with a server hello
+
+173
+00:13:27,787 --> 00:13:32,430
+message that contains the server's public
+key And then the web browser will go ahead
+
+174
+00:13:32,430 --> 00:13:36,615
+and generate a random what's called a
+premaster secret K, it will encrypt the
+
+175
+00:13:36,615 --> 00:13:40,692
+premaster secret using K and send the
+result in ciphertext over to the web
+
+176
+00:13:40,692 --> 00:13:44,932
+server. The web server will decrypt and
+then the web server will also get K, so
+
+177
+00:13:44,932 --> 00:13:49,336
+now the two have a shared key that they
+can use to then secure a session between
+
+178
+00:13:49,336 --> 00:13:53,630
+them. So I want to show you what goes
+wrong if we directly use the RSA function
+
+179
+00:13:53,630 --> 00:13:57,762
+for encrypting K. In other words, if
+directly K is encrypted as K to the e
+
+180
+00:13:57,762 --> 00:14:02,828
+modulo N. Just for the sake of argument
+let's suppose that K is a 64-bit key.
+
+181
+00:14:02,828 --> 00:14:08,097
+We're going to treat K as an integer in
+the range as zero to 2 to the 64.
+
+182
+00:14:08,097 --> 00:14:13,100
+More precisely two to the 64 minus one,
+and now what we're going to do is the
+
+183
+00:14:13,100 --> 00:14:18,302
+following. First of all, suppose it so
+happens that K factors into a product of
+
+184
+00:14:18,302 --> 00:14:23,705
+roughly equal sized numbers. So K we can
+write as K1 times K2, where K1 and K2 are
+
+185
+00:14:23,705 --> 00:14:29,745
+integers. And both are say less than two
+to the 34. So, it turns out this happens
+
+186
+00:14:29,745 --> 00:14:34,508
+with probability roughly twenty percent so
+one in five times K can actually be
+
+187
+00:14:34,508 --> 00:14:39,740
+written in this way. But, now if we plug
+this K, K=K1 x K2 if we plug that into the
+
+188
+00:14:39,740 --> 00:14:45,241
+equation that defines the cipher text you
+see that we can simply substitute K by K1 x k2
+
+189
+00:14:45,241 --> 00:14:50,875
+and then we can move k1 to the other side.
+So then we end up with this equation here,
+
+190
+00:14:50,875 --> 00:14:55,897
+namely C over K1 to the e is equal to K2 to the e. You notice if I multiply both
+
+191
+00:14:55,897 --> 00:15:00,659
+sides by K1 to the e, I get that C is
+equal to K1 times K2 to the e,
+
+192
+00:15:00,659 --> 00:15:06,374
+which is precisely this equation here.
+Okay, so all I did is I just replaced K by
+
+193
+00:15:06,374 --> 00:15:11,955
+K1 times K2 and then divided by K1 to the
+e. So by now this should look familiar to
+
+194
+00:15:11,955 --> 00:15:16,146
+you. So now we have two variables in this
+equation, of course. C is known to the
+
+195
+00:15:16,146 --> 00:15:20,092
+attacker, E is known to the attacker, and
+N is known to the attacker. The two
+
+196
+00:15:20,092 --> 00:15:24,518
+variables in this equation are K1 and
+K2, and we've separated them into a
+
+197
+00:15:24,518 --> 00:15:28,891
+different side of the equation, and as a
+result we can do now a meet in the middle
+
+198
+00:15:28,891 --> 00:15:33,157
+attack on this equation. So let's do the
+meet in the middle attack. What we would
+
+199
+00:15:33,157 --> 00:15:37,524
+do is we would build a table of all
+possible values Of the left-hand side. So
+
+200
+00:15:37,524 --> 00:15:43,392
+all possible values of C over K1 to the E,
+there are 2 to the 34 of them. And then,
+
+201
+00:15:43,584 --> 00:15:48,878
+for all possible values on the right-hand
+side, [inaudible] for all possible values
+
+202
+00:15:48,878 --> 00:15:54,175
+of K2 to the e, we're gonna check whether
+this value here lives in the table that we
+
+203
+00:15:54,175 --> 00:15:58,749
+constructed in step one. And if it is then
+we found a collision, and basically we
+
+204
+00:15:58,749 --> 00:16:03,265
+have a solution to this equation. So as
+soon as we find an element of the form K2
+
+205
+00:16:03,265 --> 00:16:07,962
+to the E that lives in the table that
+we built in step one, we've solved this
+
+206
+00:16:07,962 --> 00:16:12,717
+equation and we found K1 and K2. And
+of course once we found K1 and K2,
+
+207
+00:16:12,717 --> 00:16:16,950
+we can easily recover K simply by
+multiplying them. So then we multiply K1
+
+208
+00:16:16,950 --> 00:16:21,428
+and K2 and we get, the secret key
+K. Okay? So, we've broken, basically,
+
+209
+00:16:21,428 --> 00:16:25,604
+this, this encryption system. And how long
+did it take? Well, by brute force, we
+
+210
+00:16:25,604 --> 00:16:29,890
+could have broken it in time 2 to the 64,
+simply by trying all possible keys. But
+
+211
+00:16:29,890 --> 00:16:33,792
+this attack, you notice, it took 2 to
+the 34 time for step number one. Well, it
+
+212
+00:16:33,792 --> 00:16:38,353
+took a little bit more than 2 to the 34,
+'cause we had to do these exponentiations.
+
+213
+00:16:38,518 --> 00:16:42,969
+It took 2 to the 34 time for step two
+against slightly more than two to the 34
+
+214
+00:16:42,969 --> 00:16:47,530
+because of the exponentiations. So let's
+say that the whole algorithm took time two
+
+215
+00:16:47,530 --> 00:16:52,277
+to the 40. The point is that this is much,
+much less time due to the 64. So here you
+
+216
+00:16:52,277 --> 00:16:56,667
+have an example. Where if you encrypt
+using RSA directly, in other words you
+
+217
+00:16:56,667 --> 00:17:01,296
+directly compute, K to the E, mod N,
+instead of going through the ISO standard,
+
+218
+00:17:01,296 --> 00:17:05,983
+for example, then you get an attack that
+runs much faster than exhaustive search.
+
+219
+00:17:05,983 --> 00:17:10,730
+You get an attack that runs in time two to
+the 40, rather than time two to the 64.
+
+220
+00:17:10,730 --> 00:17:14,985
+Okay, so this is a cute example of how
+things can break if you use the RSA
+
+221
+00:17:14,985 --> 00:17:19,299
+trapdoor permutation directly to
+encrypt a message. So the message to
+
+222
+00:17:19,299 --> 00:17:23,670
+remember here, is never, ever, ever use
+RSA directly to encrypt. You have to use to go
+
+223
+00:17:23,670 --> 00:17:27,868
+through an encryption mechanism. For
+example, like the ISO standard. And in
+
+224
+00:17:27,868 --> 00:17:32,354
+fact, in the next segment we are going to
+see other ways of using RSA to build
+
+225
+00:17:32,354 --> 00:17:33,620
+public key encryption.

@@ -1,0 +1,403 @@
+In this module, we're gonna stop talking
+about encryption,
+and instead discuss message integrity.
+Next, we will come back to encryption, and show
+how to provide both encryption and integrity.
+So as I said, our goal here is to provide
+integrity without any confidentiality.
+There are actually in fact many cases in
+the real world where this comes up.
+For example, you can think of
+operating system files on your disk.
+Say if you're using Windows, all the Windows
+operating system files on disk are not confidential,
+they're public and known to the world,
+but it is quite important to make sure that
+they're not modified by a virus or some malware.
+That's an example where you want
+to provide integrity but you don't
+care about confidentiality. Another
+example is banner ads on web pages.
+The provider of the ads doesn't care
+at all if someone copies them
+and shows them to other people.
+So there's no confidentiality issue at all.
+But they do care about modifying those ads.
+So, for example, they do wanna prevent people from
+changing the ads into different types of ads.
+So that's another example where integrity matters
+but confidentiality is not important at all.
+So how do we provide message integrity?
+The basic mechanism is what's called a MAC,
+a message authentication code, MAC.
+And the way we do it is as follows.
+So here we have our friends, Alice and Bob.
+They have a shared key, K, which is not known
+to the attacker, but known to both of them.
+And there's a public message M that Alice
+wants to send to Bob,
+such that an attacker along the way cannot
+modify this message on its way to Bob.
+The way Alice does it, is by using what's called
+a MAC signing algorithm, we'll denote it by S,
+where the MAC signing algorithm takes
+as input the key and the message,
+and produces a very short tag. The tag could
+be like 90 bits or 100 bits, or so on.
+Even though the message is gigabytes long,
+the tag is actually very, very short.
+Then, she appends the tag to the message
+and sends the combination of the two to Bob.
+Bob receives the message and the tag,
+and then he runs what's called a MAC
+verification algorithm on this tag.
+So the MAC verification algorithm takes
+as input to the key, the message,
+and the tag and it says basically yes or no,
+depending on whether the message is valid
+or whether it's been tampered with.
+Okay, so more precisely, what is a MAC?
+Well, we said the MAC basically consists of
+two algorithms,
+a signing algorithm and a verification algorithm.
+As usual, they're defined over a key space,
+a message space, and a tag space.
+And as we said, it's a pair of algorithms.
+So the signing algorithm will output a
+tag in the tag space, and the verification
+algorithm, basically given the key, the
+messages and the tag, will output yes or no.
+And I want to remind you as usual there are
+these consistency requirements, such that
+for every K in the key space and for every
+message in the message space,
+it so happens that if I sign a message
+using a particular key,
+and then I verify the tag using the same
+key, I shall get yes in response.
+So this is the standard consistency
+requirement which is the analog of
+the one that we saw for encryption.
+Now, one thing I'd like to point out is that
+integrity really does require a shared
+key between Alice and Bob.
+And, in fact, there's a common mistake
+that people make, where they try to
+provide integrity without actually a
+shared key. So here's an example.
+So consider CRC. CRC stands for cyclic
+redundancy check. This is a classic
+checksum algorithm that's designed to
+detect random errors in messages.
+So imagine, instead of using a key to
+generate the tag, Alice basically uses a
+CRC algorithm which is keyless. Doesn't
+take any key, to generate a tag.
+And then she appends this tag to the
+message, she sends it over to Bob,
+Bob will basically verify that the CRC is
+still correct. In other words, Bob will still
+verify the tag is equal to CRC(m).
+And if so the verification algorithm
+will say yes, and otherwise the
+verification algorithm will say no.
+So the problem with this is this is
+very easy for an attacker to defeat.
+In other words, an attacker can very easily
+modify the message and route,
+and fool Bob into thinking that the
+new message is a valid one.
+The way the attacker will do it
+is he'll cancel the message in the tag.
+He'll simply block them. And then he'll
+produce his own message,
+M prime, and compute his own CRC
+on this message M prime,
+and then send the concatenation
+of the two over to Bob.
+Bob will run the verification algorithm,
+verification will work properly because
+in fact the right-hand side is in fact
+a valid CRC for the left-hand side.
+And as a result, Bob would think that this
+message came from Alice but in fact its been
+completely modified by the attacker and had
+nothing to do with the original message that Alice sent.
+Okay, so the problem is, because CRC
+doesn't have a key, there's no difference
+between Alice and the attacker. And as a result,
+Bob doesn't know where the message came from.
+Once we introduce a key, now Alice can do
+something that the attacker can't do.
+And as a result, she might be able to compute a
+tag that the attacker can't modify.
+So the point to remember is that CRC is designed
+to detect random errors, not malicious errors.
+And here our goal is to make sure that even a
+malicious attacker cannot modify messages in route.
+So next we want to define what it means
+for a MAC system to be secure.
+So as usual, we define security in terms of the
+attacker's power. What can the attacker do?
+And the attackers goal. What is he trying
+to do? So in the case of MACs, the
+attacker's power is what's called a chosen
+message attack. In other words, the
+attacker can give Alice arbitrary
+messages of his choice, m<u>1 to m<u>q,</u></u>
+and Alice will compute the tag for him on
+those messages, and give him those tags.
+So again, you might wonder, why
+would Alice ever do that?
+Why would Alice ever compute the tag on a
+message that the attacker gave her?
+So just like in the case of chosen plaintext
+attack, it's very common in the real world,
+that the attacker can give Alice a message.
+Alice will compute the tag on that message,
+and then the attacker will obtain the resulting tag.
+For example, the attacker might send Alice an email.
+Alice might want to save the email to
+disk in a way that will prevent someone
+from tampering with the disk. So she'll
+compute a tag on the message,
+and save the message and the tag to disk.
+Later on, the attacker might steal Alice's disk.
+And now he's recovered Alice's tag on the
+message that he sends to Alice.
+So this is an example of a chosen message
+attack in the real world, where the attacker
+actually obtained a tag on a
+message that he gave Alice.
+Okay, so that's what the attacker can do,
+basically, this chosen message attack.
+And what is his goal? Well, his goal is to do
+something called an existential forgery.
+What he's trying to do is to produce some,
+some new valid message tag there.
+Okay, so some message tag pair
+that's different from one of the
+pairs that were given to him during
+the chosen message attack.
+And if he can do that, then we say that
+the system is insecure, and if he can't,
+then we'll say the system is secure.
+So I wanna emphasize this existential
+forgery means that the attacker cannot
+produce a new message/tag pair,
+even for a message that's completely gibberish.
+And again, you might wonder, well,
+why do we care if the attacker computes
+a tag on a message that's gibberish?
+That's not of any value to the attacker.
+But we want to build MACs that are
+secure under any usage settings.
+And there are, in fact cases where, for example,
+you might want to compute an integrity tag on
+a random secret key. In which case, even if the
+attacker is able to compute a tag on a completely
+random message, he might be able to fool
+a user into using the wrong secret key.
+And as a result we want to make sure that
+if the MAC is secure, the attacker can't
+produce a valid tag for any message
+whether it's gibberish or sensical.
+Another property that's implied by the security
+definition is if the attacker is given some
+message tag pair he shouldn't be able to
+produce a new tag for the same message.
+In other words even though there might be
+another tag t´ for the same message m,
+the attacker given m and t shouldn't be able
+to find this new t´ and again you
+might wonder well why do we care the
+attacker already has a tag on message M.
+Why does it matter if he can produce
+another tag for the message M he already
+has one tag. But as we'll see, there are
+actually applications where it's really important
+that the attacker not to be able to produce
+a new tag for a previously signed message.
+In particular, this will come up when we
+combine encryption and integrity.
+So that we are gonna demand that given
+one tag in the message it's impossible
+to find another tag for the same message.
+Okay, so now that we understand the
+intuition of what we are trying to achieve, let's
+define it as usual using a more precise game.
+So here we have two algorithms S and V,
+and we have an adversary A,
+and the game proceeds as follows.
+The challenger as usual just chooses
+a random key for the MAC and the adversary
+basically does his chosen message attack.
+So he submits an m1 to the challenger
+and receives the tag on that message m1.
+Then he submits an m2 to the challenger
+and receives a tag on that m2.
+And so on and so forth, until, you know,
+he submits Q messages to the adversary and
+receives Q tags on all those messages. So
+that's the chosen message attack part.
+And then the adversary goes ahead and
+tries to do an existential forgery.
+Namely, he outputs a message tag pair,
+a new message tag pair.
+We say that he wins the game, in other words
+b is equal to 1 means that he wins the game if,
+first of all, the message tag pair that he
+outputs is a valid message tag pair,
+so the verification algorithm says yes.
+And second of all, it's a fresh message tag pair.
+In other words, it's not one of the message
+tag pairs that we gave him before.
+In other words we say that the attacker lost
+the game. Namely b is equal to zero.
+And as usual we say, we define the advantage
+of an adversary as the probability that
+the challenger outputs one in this game.
+We say that the MAC system is secure
+if for all efficient adversaries the advantage
+is negligible. Okay, in other words,
+no efficient adversary can win this
+game with non negligible probability.
+Alright, that's our definition of secure MACs,
+and our goal is to build secure MACs like this.
+Before we do that, I wanna ask you two questions.
+So the first question is, suppose we have a MAC.
+And it so happens that the attacker can
+find two message, m0 and m1,
+that happen to have the same tag
+for about half of the keys.
+In other words, if you choose a key at
+random with probability one half, the tag
+of the message m0 will be the same as the
+tag of the message m1. And my question to
+you is can this be a secure MAC. So I want
+to emphasize the attacker doesn't know
+what the tag on m0 and m1 is. All he knows
+is that the two messages happen to have
+the same tag with probability one half. So
+the question is whether this is a secure MAC.
+So the answer is no, this is not a secure
+MAC and the reason is because of
+the chosen message attack. Essentially the
+attacker can ask for the tag on the message
+m0, then he will receive m0, T from the
+challenger and in fact T would be a valid
+tag for message m0 and then what he would
+output as his existential forgery is m1, T
+and you notice that m1, T is different from
+m0, T, so this is a valid existential forgery.
+And as a result, the attacker wins
+the game with advantage one-half.
+So we conclude that this MAC is not secure.
+The second question I'd like to ask you, is,
+suppose we have a MAC that happens
+to always output a five bit tag.
+In other words, the tag space for this Mac
+happens to be {0,1} to the five.
+So for every key and for every message, the
+signing algorithm will just output a five bit tag.
+And the question is, can this MAC be secure?
+Of course the answer is no, because the
+attacker can simply guess the tag.
+So what he would do is he wouldn't
+ask any chosen message attacks.
+All he would do, is he would output
+an existential forgery as follows.
+He would just choose a random tag. So
+choose a random tag t at random in {0,1}^5,
+and then he would just output his existential
+forgery as say, the message zero and the tag t.
+And now with probability of 1/2^5, this
+tag will be a valid tag for the message zero.
+And so the adversary's advantage is
+1/32, which is non-negligible.
+So this basically says that tags
+can't be too short.
+They have to have some length to them.
+And in fact, the typical tag length would be,
+say 64 bits. or 96 bits, or 128 bits. Here let's
+for example use the tags that are 96 bits long.
+If you try to guess the tag for a message
+when the tag is 96 bits the probability of
+guessing it correctly is 1/2^96.
+So the adversary's advantage would
+just be 1/2^96 which is negligible.
+So now that we understand what MACs are,
+I wanna show you a simple application.
+In particular, let's see how MACs can be
+used to protect system files on disk.
+So imagine that when you install an operating
+system, say, when you install Windows on
+your machine. One of the things that,
+Windows does, is it asks the user for a
+password, and then derives a key K from
+this password. And then for every file
+that it writes to disk, in this case, the
+files would be F1, F2, up to Fn, what the
+operating system would do is it
+would compute a tag for that file,
+and then store the tag along with the file. So here
+it concatenates the tag, to each one of the files.
+And then it erases the key K.
+So it no longer stores the key K on disc,
+or on memory, or anywhere. Okay, so now
+later imagine that the machine gets
+infected with a virus and the virus tries
+to modify some of the system files.
+The question is whether the user can
+detect which files were modified.
+So here's one way to do it. Basically, the user
+would reboot the machine into some clean OS.
+Say you reboot from a USB disk or something.
+And then, once the machine boots from this
+clean OS, the user would supply his password
+to this clean running operating system.
+And then this new clean running operating
+system would go ahead and check the MAC for
+each one of the system files. Now, the
+fact that the MAC is secure, means that
+the poor virus couldn't actually create a
+new file, let's call it F prime, with a valid tag.
+So it couldn't actually create an
+f´, t´. Because, if it could,
+then that would be an existential forgery
+on this MAC. And because, well,
+the MAC is existentially unforgeable. The
+virus couldn't create any F Prime, no
+matter what the F Prime is. And
+consequently, because of the security of
+the MAC, the user will detect all the
+files that were modified by the virus.
+Now, there's one caveat to that. One thing
+that the virus can do. Is actually swap
+two files. So, for example, he can swap
+this file, file F1, with the file F2 here,
+just literally swap them. So when the
+system, or when the user, tries to run
+file F1, instead they'll be running file
+F2. And of course that could cause all
+sorts of damage. And so the way to defend
+against that is essentially by placing the
+file name inside of the MACed area, so in
+fact we're computing an integrity check on
+the file name as well as on the contents
+of the file. And as a result, if the virus
+tries to swap two files, the system will
+say hey, the file that's located in
+position F1 doesn't have the right name
+and therefore it will detect that the virus
+that did the swap even though the MAC
+actually verifies. So it is important to
+remember that MACs can help you defend
+against file tampering. Or data tampering
+in general. But they won't help you defend
+against swapping of authenticated data,
+and that has to be done by some other
+means. Okay, so that concludes our
+introduction to MACs, and in the next
+segment, we'll go ahead and construct our
+first examples of secure MACs.

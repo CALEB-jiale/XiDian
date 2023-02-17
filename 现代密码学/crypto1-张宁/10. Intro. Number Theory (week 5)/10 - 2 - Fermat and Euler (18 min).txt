@@ -1,0 +1,439 @@
+In the previous segment we talked about
+modular inversion and we said the Euclid's
+algorithm gives us an efficient way to
+find the inverse of an element modulo N.
+In this segment we're going to forward
+through time and we're going to move to
+the seventeenth and eighteenth century
+where we're going to talk about
+Fermat and Euler contributions.
+Before that let's do a quick review of
+what we discussed in the previous segment.
+So as usual I'm going to let N denote the
+positive integer and let's just say that N
+happens to be a n-bit integer, in other
+words it's between two to the n and two to
+the n+1, as usual we're going to let P
+denote a prime. Now we said that
+ZN is a set of integers from zero
+to N-1 and we said that we can add and
+multiply elements in the set modulo N. We
+also said that ZN star is basically the
+set of invertible elements in ZN. And we
+proved a simple lemma to say that, X is
+invertible if and only if X is relatively
+prime to N. And not only did we
+completely understand which elements are
+invertible and which aren't, we also
+showed a very efficient algorithm based on
+Euclid's extended algorithm, to find the
+inverse of an element X in ZN. And we said
+that the running time of this algorithm,
+is basically order n squared, where
+again, n is the number of bits of the
+number capital N. So as I said, now
+we're going to move from Greek times all
+the way to the seventeenth century and
+talk about Fermat. So Fermat did a number
+of important theorems. The one that I want
+to show you here today is the following.
+So suppose I give you a prime P. Then in
+fact for any element X in ZP star, it so
+happens that if I look at X and raise it
+to the power of P - 1, I'm a gonna get
+one, in ZP. So let's look at a quick
+example. Suppose I set the number P to be
+five. And I look at, three to the power of
+P-1. In other words, three to the power of
+four, Three to the power of four is 81,
+which in fact, is one modulo five. This
+example satisfies Fermat's theorem.
+Interestingly, Fermat actually didn't prove this theorem himself. The proof
+actually waited until Euler, who
+proved that almost 100 years later. And in
+fact, he proved a much more general
+version of this theorem. So let's look at
+a simple application of Fermat's theorem.
+Suppose I look at an element X in Z P
+star. And I want to remind you here that P
+[inaudible] must be a prime. Well, then what do we
+know? We know that X to the P minus one is
+equal to one. Well, we can write X to the
+P minus one as X times X to the power of P
+minus two. Well so now we know that X
+times X to the power of P minus two
+happens to be equal to one. And what that
+says, is that really the inverse of X
+modulo P, is simply X to the P minus two.
+So this gives us another algorithm for
+finding the inverse of X modulo a prime.
+Simply raise X to the power of p minus
+two, and that will give us the inverse of
+x. It turns out, actually this is a fine
+way to compute inverses modulo a prime.
+But it has two deficiencies compared to
+Euclid's algorithm. First of all, it only
+works modulo primes, Whereas, Euclid's
+algorithm worked modulo composites as
+well. And second of all, it turns out this
+algorithm is actually less efficient. When
+we talk about how to do modular
+exponentiations--we're gonna do that in
+the last segment in this module--you'll
+see that the running time to compute this
+exponentiation is actually cubic in the
+size of P. So this will take roughly log
+cube of P, whereas if you remember,
+Euclid's algorithm was able to compute the
+inverse in quadratic time in the
+representation of P. So not only is this
+algorithm less general it only works for
+primes, it's also less efficient. So score
+one for Euclid. But nevertheless, this
+fact about primes is extremely important,
+and we're gonna be making extensive use of
+it in the next couple of weeks. So let me
+show you a quick and simple application
+for Fermat's theorem suppose we wanted
+to generate a large random prime, say our
+prime needed to be 1,000 bits or so. So
+the prime we're looking for is on the
+order of two to the 1024 [inaudible]. So here's
+a very simple probabilistic algorithm.
+What we would do is we would choose a
+random integer in the interval that was
+specified. And then we would test whether
+this integer satisfies Fermat's theorem.
+In other words, we would test for example
+using the base two; we would test whether
+two to the power of p minus one equals one
+in Z p. If the answer is no, then if this
+equality doesn't hold, then we know for
+sure that the number p that we chose is
+not a prime. And if that happens, all we
+do is we go back to step one and we try
+another prime. And we do this again and
+again and again, until finally we find an
+integer that satisfies this condition. And
+once we find an integer that satisfies
+this condition, we simply output it and
+stop. Now it turns out, this is actually a
+fairly difficult statement to prove. But
+it turns out if a random number passes
+this test, then it's extremely likely to
+be a prime. In particular the probability
+that P is not a prime is very small. It's
+like less than two to the -60 for the
+range of 1024 bit numbers. As the
+number gets bigger and bigger the
+probability that it passes this test here,
+but is not a prime drops to zero very
+quickly. So this is actually quite an
+interesting algorithm. You realize we're
+not guaranteed that the output is in fact
+a prime. All we know is that it's very,
+very likely to be a prime. In other words
+the only way that it's not a prime is that
+we got extremely unlucky. In fact so
+unlucky that a negligible probability
+event just happened. Another way to say
+this is that if you look at the set of all
+1024 integers, then, well, there's the set
+of primes. Let me write prime here. And
+then there is a small number of
+composites. That actually will falsify the
+test. Let's call them F for false primes.
+Let's call them FP, for false primes.
+There's a very small number of composites
+that are not prime and yet will pass this
+test. But as we choose random integers,
+you know, we choose one here, one here,
+one here, and so on, as we choose random
+integers, the probability that we fall
+into the set of false primes is so small
+That it's essentially a negligible event
+that we can ignore. In other words, one
+can prove that the set of false primes is
+extremely small, and a random choice is
+unlikely to pick such a false prime. Now I
+should mention, in fact, this is a very
+simple algorithm for generating primes.
+It's actually, by far, not the best
+algorithm. We have much better algorithms
+now. And, in fact, once you have a
+candidate prime, we now have very
+efficient algorithms that will actually
+prove beyond a doubt that this candidate
+prime really is a prime. So we don't even
+have to rely on probabilistic statements.
+But nevertheless, this Fermat test is so
+simple, that I just wanted to show you
+that it's an easy way to generate primes.
+Although in reality, this is not how
+primes are generated. As the last point,
+I'll say that you might be wondering how
+many times this iteration has to repeat
+until we actually find the prime. And
+that's actually a classic result; it's
+called the prime number theorem, which
+says that, after a few hundred iterations,
+in fact, we'll find the prime with
+high probability. So in expectation, one would
+expect a few hundred iterations and no
+more. Now that we understand
+Fermat's theorem, the next thing I want
+to talk about is what's called the
+structure of ZP star. So here, we are
+going to move 100 years into the future...
+Into the eighteenth century and look at
+the work of Euler. And one of the first
+things Euler showed is in modern language
+is that ZP star is what's called a
+cyclic group. What does it mean that ZP
+star is a cyclic group? What it means is
+that there exists some element G in ZP
+star, such that if we take G and raise to
+a bunch of powers G, G squared, G cubed, G
+to the fourth. And so on and so forth up
+until we reach G to the P minus two.
+Notice there's no point of going beyond G
+to the p minus two, because G to the p
+minus one by Fermat's theorem is equal to
+one, so then we will cycle back to one. If
+we go back to G to the p minus one, then G
+to the p will be equal to G, G to the p
+plus one will be equal to G squared, and
+so on and so forth. So we'll actually get
+a cycle if we keep raising to higher and
+higher powers of G. So we might as well
+stop at the power of G to the p minus two.
+And what Euler showed is that in fact
+there is an element G such that if you
+look at all of its powers all of its
+powers expand the entire group ZP Star.
+The powers of G give us all the elements
+in ZP star. Elements of this, of this type
+is called a generator. So G would be said
+to be a generator of ZP star. So let's
+look at a quick example. So let's look,
+for example, at P equals seven. And let's
+look at all the powers of three. So three
+squared three cubed, three to the fourth,
+three to the fifth, Three to the six,
+already we know, is equal to one modular
+seven by Fermat's Theorem. So there's no
+point in looking at three to the six. We
+know we would just get one. So here, I
+calculated all these powers for you, and I
+wrote them out. And you see that in fact,
+we get all the numbers [inaudible] in Z,
+in Z7 star. In other words, we get
+one, two, three, four, five, and six. So
+we would say that three is a generator of
+Z7 star. Now I should point out that not
+every element is a generator. For example,
+if we look at all the powers of two, well,
+that's not gonna generate the entire
+group. In particular, if we look at two to
+the zero, we get one. Two to the one, we
+get two. Two squared is four, and two
+cubed is eight, which is one modular
+seven. So we cycled back and then two to
+the fourth would be two, two to the fifth
+would be four. And so on and so forth. So
+if we look at the powers of two, we just
+get one, two, and four. We don't get the
+whole group and therefore we say that two
+is not a generator of Z7 star. Now again,
+something that we'll use very often is
+given an element G of ZP<i>, if we look at a</i>
+set of all powers of G, the resulting set
+is gonna be called the group generated by
+G, okay? So these are all the powers of G.
+They give us what's called a
+multiplicative group. Again, the technical
+term doesn't matter. The point is we're
+gonna call all these powers of G, the
+group generated by G. In fact there's this
+notation which I don't use very often,
+angle G angle, to denote this group that's
+generated by G. And then we call the order
+of G in Z p star, we simply let that be
+the size of the group that's generated by
+G. So in other words, the order of G in Z
+p star is the size of this group. But
+another way to think about that is
+basically it's the smallest integer A such
+that G to the A is equal to one in Z P.
+Okay, it's basically the smallest power
+that causes the power of G to be equal to
+one. And it's very easy to see that this
+equality here basically if we look at all
+the powers of G and we look at one, G, G
+squared, G cubed and so on and so forth up
+until we get to G to the order of G minus
+one. And then if we look at the order of G
+to the order of G. This thing is simply
+going to be equal to one, by definition.
+Okay, so there's no point in looking at
+any higher powers. We might as well just
+stop raising to powers here. And as a
+result the size of the set, in fact, is
+the order of G. And you can see that the
+order is the smallest power such that
+raising G to that power gives us one in Z
+p. So I hope this is clear although it
+might take a little bit of thinking to
+absorb all this notation. But in the
+meantime let's look at a few examples. So,
+again, let's fix our, our prime to be
+seven. And let's look at the order of the
+number of elements. So what is the order
+of three modulus of seven? Well, we're
+asking what is the size of the group that
+three generates modulus of seven? Well, we
+said that three is a generator of Z7 star.
+So it generates all of Z7 star. There are
+six elements in Z7 star. And therefore we
+say that the order of three is equal to
+six. Similarly, I can ask, well, what is
+the order of two modulo seven? And in
+fact, we already saw the answer. So let's,
+I'll ask you, what is the order of two
+modulo seven and see if you can f igure
+out what this answer is. So the answer is
+three and again, the reason is if we look
+at the set of powers of two modulo seven,
+we have one, two, two squared, and then
+two cubed is already equal to one. So this
+is the entire set of powers of two modulo
+seven. There are only three of them and,
+therefore, the order of two modulo seven
+is exactly three. Now let me ask you a
+trick question. What's the order of one
+modulo seven? Well, the answer is one.
+Because if you look at the group that's
+generated by one, well, there's only one
+number in that group, namely the number
+one. If I raise one to a whole bunch of
+powers, I'm always gonna get one, And
+therefore the order of 1 modulo 7
+In fact the order of 1 modulo any prime
+is always gonna be 1. Now there's an
+important theorem of Lagrange, that
+actually this is a very, very special case
+of it, what I am stating here. But
+Langrage's theorem basically implies that
+if you look at the order of G modulo p,
+the order is always going to divide P-1. So in our two example you see,
+six divides seven minus one, six divides
+six, and similarly, three divides seven
+minus one. Namely again three divides six.
+But this is very general; your order is
+always going be a factor of P minus one.
+In fact, I'll tell you, maybe it's a
+puzzle for you to think about. It's
+actually very easy to deduce Fermat's
+theorem directly from this fact, from this
+Lagrange's theorem in fact. And so
+Fermat's theorem really in some sense
+follows directly from Lagrange's theorem.
+Lagrange, by the way, did his work in the
+nineteenth century, so you can already see
+how we're making progress through time. We
+started in Greek times, and already we
+ended up in the nineteenth century. And I
+can tell you that more advanced crypto
+actually uses twentieth century math very
+extensively. Now that we understand the
+structure of ZP star, let's generalize
+that to composites, and look at the
+structure of ZN star. So what I wanna show
+you here is what's called Euler's Theorem
+which is a, a direct generalization of
+Fermat's Theorem. So, Euler defined the
+following function. So given an integer N,
+he defined what's called the phi
+function, phi of M, to be
+basically the size of the set ZN star.
+This is sometimes called, Euler's phi
+function. The size of the set Z N star. So
+for example, we already looked at Z twelve
+star. We said that Z twelve star contains
+these four elements, one, five, seven, and
+eleven. And therefore we say that phi of
+twelve is simply the number four. So let
+me ask you as a puzzle, what is phi of P?
+It will basically be the size of Z P star.
+And so, in fact, we said that in the Z P
+star contains all of Z P except for the
+number zero. And therefore, phi of P for
+any prime P is gonna be P minus one. Now,
+there is a special case, which I'm gonna
+state here and we're gonna use later for
+the RSA system. If N happens to be a
+product of two primes, then phi of N is
+simply N minus P minus Q plus one. And let
+me just show you why that's true. So
+basically N is the size of Z N. And now we
+need to remove all the elements that are
+not relatively prime to m. Well how can an
+element not be relatively prime to m? It's
+gotta be divisible by p or it's gotta be
+divisible by q. Well how many elements
+between zero and m minus one are there,
+there that are divisible by p? Well there
+are exactly q of them. How many elements
+are there that are divisible by q. Well
+there are exactly p of them. So we
+subtract p to get rid of those divisible
+by q. We subtract q to get rid of those
+divisible by p. And you notice we
+subtracted zero twice, because zero is
+divisible both by P and Q. And therefore,
+we add one just to make sure we subtract
+zero only once. And so it's not difficult
+to see that phi(N) is N-P-Q+1. And another way
+of writing that is simply (P-1) times (Q-1). Okay,
+so this is a fact that we will use later
+on, when we come back and talk about the
+RSA system. So far, this is just defining
+this phi function of Euler. But now Euler
+put this phi function to really good use.
+And what he proved is this amazing fact
+here that basically says that if you give
+me any element X in Z N star. In fact, and
+it so happens that X to the power of phi(N)
+is equal to one in Z N. So you can see
+that this is a generalization of Fermat's
+theorem; in particular, Fermat's theorem
+only applied to primes. For primes we know
+that phi(p) is equal to p minus one, and
+in other words if N were prime we would
+simply write p minus one here, and then we
+would get exactly Fermat's theorem. The
+beauty of Euler's theorem is that it
+applies to composites, and not just
+primes. So let's look at some examples. So
+let's look at five to the power of phi(12).
+So five is an element of Z12 star.
+If we raise it to the power of five of
+twelve, we should be getting one. Well, we
+know that phi(12) is 4, so we're
+raising 5 to the power of 4. Five to
+the power of four is 625 and it's a simple
+calculation to show that that's equal to
+1 modulo 12. So this is proof
+by example but of course it's not a proof
+at all. It's just an example. But in fact
+it's not difficult to prove Euler's
+theorem and in fact I'll tell you that
+Euler's theorem is also a very special
+case of Lagrange's general theorem.
+Okay so we say that this is a
+generalization of Fermat's theorem and
+in fact as we'll see this Euler's
+theorem is the basis of the RSA crypto
+system. So I stop here and we continue
+with modular quadratic equations in the
+next segment.

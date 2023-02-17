@@ -1,0 +1,1886 @@
+1
+00:00:00,000 --> 00:00:03,911
+My goal for the next few segments is to
+show you that if we use a secure PRG We'll
+
+2
+00:00:00,000 --> 00:00:03,911
+下面几节我将说明，如果我们使用一个安全的PRG
+
+3
+00:00:03,911 --> 00:00:07,892
+get a secure stream cipher. The first thing
+we have to do is define is, what does it
+
+4
+00:00:03,911 --> 00:00:07,892
+我们将得到一个安全的流密码。首先我们必须要定义
+
+5
+00:00:07,892 --> 00:00:11,679
+mean for a stream cipher to be secure? So
+whenever we define security we always
+
+6
+00:00:07,892 --> 00:00:11,679
+流密码的安全性是指什么。无论何时我们定义安全
+
+7
+00:00:11,679 --> 00:00:15,174
+define it in terms of what can the
+attacker do? And what is the attacker
+
+8
+00:00:11,679 --> 00:00:15,174
+我们总是根据攻击者能干什么或者企图干什么来定义
+
+9
+00:00:15,174 --> 00:00:18,670
+trying to do? In the context of
+stream ciphers remember these are only used
+
+10
+00:00:15,174 --> 00:00:18,670
+记住在流密码的情况下，只使用一次性密钥
+
+11
+00:00:18,670 --> 00:00:22,737
+with a onetime key, and as a result the
+most the attacker is ever going to see is
+
+12
+00:00:18,670 --> 00:00:22,737
+因此攻击者最多只看到
+
+13
+00:00:22,737 --> 00:00:26,754
+just one cypher text encrypted using the
+key that we're using. And so we're gonna
+
+14
+00:00:22,737 --> 00:00:26,754
+当前我们使用的密钥加密后的密文
+
+15
+00:00:26,754 --> 00:00:30,772
+limit the attacker's ability to basically
+obtain just one cypher text. And in
+
+16
+00:00:26,754 --> 00:00:30,772
+那么我们将要限制攻击者只能获得一个密文
+
+17
+00:00:30,772 --> 00:00:34,641
+fact later on we're going to allow the
+attacker to do much, much, much more, but
+
+18
+00:00:30,772 --> 00:00:34,641
+事实上稍后我们将允许攻击者做更多事情
+
+19
+00:00:34,641 --> 00:00:38,460
+for now we're just gonna give him one
+cypher text. And we wanted to find,
+
+20
+00:00:34,641 --> 00:00:38,460
+但现在我们只给他一个密文  我们想探究
+
+21
+00:00:38,460 --> 00:00:42,560
+what does it mean for the cypher to
+be secure? So the first definition that
+
+22
+00:00:38,460 --> 00:00:42,560
+密码的安全性到底指什么？那么首先想到的第一个定义
+
+23
+00:00:42,560 --> 00:00:46,892
+comes to mind is basically to say, well
+maybe we wanna require that the attacker
+
+24
+00:00:42,560 --> 00:00:46,892
+就是我们会要求攻击者
+
+25
+00:00:46,892 --> 00:00:50,718
+can't actually recover the secret key.
+Okay so given ciphertext you
+
+26
+00:00:46,892 --> 00:00:50,718
+无法还原密钥。给定密文
+
+27
+00:00:50,718 --> 00:00:54,609
+shouldn't be able to recover the secretkey.
+But that's a terrible definition
+
+28
+00:00:50,718 --> 00:00:54,609
+你应该是无法还原密钥的。但这是一个糟糕的定义
+
+29
+00:00:54,609 --> 00:00:58,717
+because think about the falling brilliant
+cipher but the way we encrypt the
+
+30
+00:00:54,609 --> 00:00:58,717
+因为想想这个聪明但失败了的密码
+
+31
+00:00:58,717 --> 00:01:02,855
+message using a key K is basically
+we just output the message. Okay this
+
+32
+00:00:58,717 --> 00:01:02,855
+我们使用密钥K加密消息的方式只是输出消息
+
+33
+00:01:02,855 --> 00:01:07,427
+is a brilliant cipher yeah of course it
+doesn't do anything given a message just
+
+34
+00:01:02,855 --> 00:01:07,427
+这是一个聪明的密码，当然，它没有做任何事情
+
+35
+00:01:07,427 --> 00:01:12,000
+output a message as the cipher text.
+This is not a particularly good encryption
+
+36
+00:01:07,427 --> 00:01:12,000
+只是输出明文当做密文。这并不是一个特别好的加密机制
+
+37
+00:01:12,000 --> 00:01:16,029
+scheme; however, given the cipher text,
+mainly the message the poor attacker
+
+38
+00:01:12,000 --> 00:01:16,029
+然而给定密文，弱攻击者无法还原密钥
+
+39
+00:01:16,029 --> 00:01:20,493
+cannot recover the key because he doesn't
+know what the key is. And so as a result
+
+40
+00:01:16,029 --> 00:01:20,493
+因为他不知道密钥
+
+41
+00:01:20,493 --> 00:01:24,630
+this cipher which clearly is insecure,
+would be considered secure under this
+
+42
+00:01:20,493 --> 00:01:24,630
+因此这个明显不安全的密码，在这个安全要求下被认为是安全的
+
+43
+00:01:24,793 --> 00:01:28,636
+requirement for security. So this
+definition will be no good. Okay so it's
+
+44
+00:01:24,793 --> 00:01:28,636
+所以这个定义不好
+
+45
+00:01:28,636 --> 00:01:32,317
+recovering the secret key is the wrong way
+to define security. So the next thing we
+
+46
+00:01:28,636 --> 00:01:32,317
+所以从还原密钥的角度定义安全是错误的
+
+47
+00:01:32,317 --> 00:01:35,999
+can kinda attempt is basically just say,
+well maybe the attacker doesn't care about
+
+48
+00:01:32,317 --> 00:01:35,999
+下一步我们要尝试的是，或许攻击者并不在意密钥
+
+49
+00:01:35,999 --> 00:01:39,680
+the secret key, what he really cares about
+are the plain text. So maybe it should be
+
+50
+00:01:35,999 --> 00:01:39,680
+他真正在乎的是明文
+
+51
+00:01:39,680 --> 00:01:43,518
+hard for the attacker to recover the
+entire plain text. But even that doesn't
+
+52
+00:01:39,680 --> 00:01:43,518
+因此对攻击者来说还原整个明文可能比较困难
+
+53
+00:01:43,518 --> 00:01:48,223
+work because let's think about the
+following encryption scheme. So suppose
+
+54
+00:01:43,518 --> 00:01:48,223
+但而这样也没有用。想一想下面的加密机制
+
+55
+00:01:48,223 --> 00:01:53,436
+what this encryption scheme does is it
+takes two messages, so I'm gonna use two
+
+56
+00:01:48,223 --> 00:01:53,436
+假设这个加密机制是取两个信息
+
+57
+00:01:53,436 --> 00:01:58,014
+lines to denote concatenation of two
+messages M0 line, line M1 means
+
+58
+00:01:53,436 --> 00:01:58,014
+我用双竖线来表示两个信息的串联，M0||M1表示M0串上M1
+
+59
+00:01:58,014 --> 00:02:03,100
+concatenate M0 and M1. And imagine
+what the scheme does is really it outputs
+
+60
+00:01:58,014 --> 00:02:03,100
+这个加密机制输出M0的明文
+
+61
+00:02:03,100 --> 00:02:08,060
+M0 in the clear and concatenate to
+that the encryption of M1. Perhaps even
+
+62
+00:02:03,100 --> 00:02:08,060
+串上M1的加密后的密文
+
+63
+00:02:08,060 --> 00:02:13,337
+using the One Time Pad okay? And
+so here the attacker is gonna be given one
+
+64
+00:02:08,060 --> 00:02:13,337
+可能使用了一次一密，怎么样?这里攻击者得到了密文
+
+65
+00:02:13,337 --> 00:02:17,478
+cipher text. And his goal would be to
+recover the entire plain texts. But the
+
+66
+00:02:13,337 --> 00:02:17,478
+他的目标是还原整个明文
+
+67
+00:02:17,478 --> 00:02:21,702
+poor attacker can't do that because here
+maybe we've encrypted M1 using the One
+
+68
+00:02:17,478 --> 00:02:21,702
+但弱攻击者做不到，因为这里我们可以用一次一密加密M1
+
+69
+00:02:21,702 --> 00:02:25,872
+Time Pad so the attacker can't
+actually recover M1 because we know the
+
+70
+00:02:21,702 --> 00:02:25,872
+这样攻击者无法还原M1
+
+71
+00:02:25,872 --> 00:02:30,043
+One Time Pad is secure given just
+one cipher text. So this construction
+
+72
+00:02:25,872 --> 00:02:30,043
+因为只给一个密文的话，一次一密是安全的
+
+73
+00:02:30,043 --> 00:02:34,055
+would satisfy the definition but
+unfortunately clearly this is not a secure
+
+74
+00:02:30,043 --> 00:02:34,055
+所以这个结构会符合这个定义。但不幸的是，这明显不是安全的加密机制
+
+75
+00:02:34,055 --> 00:02:37,962
+encryption scheme because we just leaked
+half of the plain text. M0 is
+
+76
+00:02:34,055 --> 00:02:37,962
+因为我们泄露了一半的明文内容
+
+77
+00:02:37,962 --> 00:02:42,185
+completely available to the attacker so
+even though he can't recover all of the
+
+78
+00:02:37,962 --> 00:02:42,185
+攻击者完全知道M0，即使他无法完全还原出所有的明文
+
+79
+00:02:42,185 --> 00:02:46,462
+plain text he might be able to recover
+most of the plain text, and that's clearly
+
+80
+00:02:42,185 --> 00:02:46,462
+他也能还原出大部分明文了，这明显是不安全的
+
+81
+00:02:46,462 --> 00:02:50,658
+unsecured. So of course we already know
+the solution to this and we talked about
+
+82
+00:02:46,462 --> 00:02:50,658
+我们已经知道了这个问题的解决方案
+
+83
+00:02:50,658 --> 00:02:54,747
+Shanon definition of security perfect
+secrecy where Shannon's idea was that in
+
+84
+00:02:50,658 --> 00:02:54,747
+我们讨论过香农对完善保密性的定义
+
+85
+00:02:54,747 --> 00:02:58,835
+fact when the attacker intercepts a cipher
+text he should learn absolutely no
+
+86
+00:02:54,747 --> 00:02:58,835
+香农的想法是，当攻击者截获密文时
+
+87
+00:02:58,835 --> 00:03:02,818
+information about the plain texts. He
+shouldn't even learn one bit about the
+
+88
+00:02:58,835 --> 00:03:02,818
+他得不到关于明文的任何信息，甚至得不到明文一个比特的信息
+
+89
+00:03:02,818 --> 00:03:07,221
+plain text or even he shouldn't learn, he
+shouldn't even be able to predict a little
+
+90
+00:03:02,818 --> 00:03:07,221
+预测不到明文一个比特的信息
+
+91
+00:03:07,221 --> 00:03:11,205
+bit about a bid of the plain text.
+Absolutely no information about the plain text.
+
+92
+00:03:07,221 --> 00:03:11,205
+完全没有关于明文的任何信息
+
+93
+00:03:11,205 --> 00:03:14,926
+So let's recall very briefly
+Shannon's concept of perfect secrecy
+
+94
+00:03:11,205 --> 00:03:14,926
+我们简要回顾一下香农的完善保密性的概念
+
+95
+00:03:14,926 --> 00:03:19,442
+basically we said that you know given a
+cipher We said the cipher has perfect
+
+96
+00:03:14,926 --> 00:03:19,442
+我们说一个密码具备完善保密性
+
+97
+00:03:19,442 --> 00:03:25,069
+secrecy if given two messages of the same
+length it so happens that the distribution
+
+98
+00:03:19,442 --> 00:03:25,069
+只有当给定两个长度相同的消息
+
+99
+00:03:25,069 --> 00:03:30,167
+of cipher texts. Yet if we pick a random
+key and we look into distribution of
+
+100
+00:03:25,069 --> 00:03:30,167
+和随机选择的一个密钥
+
+101
+00:03:30,167 --> 00:03:34,838
+cipher texts we encrypt M0 we get
+exactly the same distribution as when we
+
+102
+00:03:30,167 --> 00:03:34,838
+M0的密文与M1的密文具有完全相同的分布时成立
+
+103
+00:03:34,838 --> 00:03:39,257
+encrypt M1. The intuition here was that if
+the advisory observes the cipher texts
+
+104
+00:03:34,838 --> 00:03:39,257
+直观地看，如果敌手观察密文
+
+105
+00:03:39,257 --> 00:03:43,839
+then he doesn't know whether it came from
+the distribution the result of encrypting
+
+106
+00:03:39,257 --> 00:03:43,839
+那么他无法得知密文的分布
+
+107
+00:03:43,839 --> 00:03:48,203
+M0 or it came from the distribution as
+the result of encrypting M1. And as a
+
+108
+00:03:43,839 --> 00:03:48,203
+是加密M0的结果还是加密M1的结果
+
+109
+00:03:48,203 --> 00:03:52,513
+result he can't tell whether we encrypted
+M0 or M1. And that's true for all
+
+110
+00:03:48,203 --> 00:03:52,513
+于是他无法判断我们加密的是M0还是M1
+
+111
+00:03:52,513 --> 00:03:56,877
+messages of the same length and as a
+result a poor attacker doesn't really know
+
+112
+00:03:52,513 --> 00:03:56,877
+这一点对所有等长的消息都成立。弱攻击者无法得知
+
+113
+00:03:56,877 --> 00:04:01,212
+what message was encrypted. Of course we
+already said that this definition is too
+
+114
+00:03:56,877 --> 00:04:01,212
+我们加密的是什么消息。当然从某种意义上
+
+115
+00:04:01,212 --> 00:04:05,400
+strong in the sense that it requires
+really long keys if cipher has short
+
+116
+00:04:01,212 --> 00:04:05,400
+这个定义太强了，它需要很长的密钥
+
+117
+00:04:05,400 --> 00:04:09,535
+keys can't possibly satisfy this
+definition in a particular stream ciphers
+
+118
+00:04:05,400 --> 00:04:09,535
+如果密钥太短，不可能满足这一定义
+
+119
+00:04:09,535 --> 00:04:14,328
+can satisfy this definition. Okay so let's
+try to weaken the definition a little bit
+
+120
+00:04:09,535 --> 00:04:14,328
+特别地，流密码不能满足这个定义。好的，我们试图削弱这个定义
+
+121
+00:04:14,328 --> 00:04:19,114
+and let's think to the previous segment,
+and we can say that instead of requiring
+
+122
+00:04:14,328 --> 00:04:19,114
+想一想上节的内容
+
+123
+00:04:19,114 --> 00:04:23,841
+the two distributions to be absolutely
+identical what we can require is, is that
+
+124
+00:04:19,114 --> 00:04:23,841
+我们不是要求两个分布绝对相同
+
+125
+00:04:23,841 --> 00:04:28,686
+two distributions just be computationally
+indistinguishable. In other words a poor,
+
+126
+00:04:23,841 --> 00:04:28,686
+而是要求两个分布只在计算上不可区分
+
+127
+00:04:28,863 --> 00:04:33,353
+efficient attacker cannot distinguish the
+two distributions even though the
+
+128
+00:04:28,863 --> 00:04:33,353
+换句话说，高效的弱攻击者无法区分两个分布
+
+129
+00:04:33,353 --> 00:04:37,815
+distributions might be very, very, very
+different. That just given a sample for
+
+130
+00:04:33,353 --> 00:04:37,815
+即使这两个分布非常不同。仅仅给一个分布的样本
+
+131
+00:04:37,815 --> 00:04:42,580
+one distribution and a sample for another
+distribution the attacker can't tell which
+
+132
+00:04:37,815 --> 00:04:42,580
+和另一分布的样本，攻击者无法区分
+
+133
+00:04:42,580 --> 00:04:47,120
+distribution he was given a sample from.
+It turns out this definition is actually
+
+134
+00:04:42,580 --> 00:04:47,120
+他得到的样本来自哪一个分布。这个定义基本上是正确的
+
+135
+00:04:47,120 --> 00:04:51,716
+almost right, but it's still a little too
+strong, that still cannot be satisfied, so
+
+136
+00:04:47,120 --> 00:04:51,716
+但它还是有点太强了，仍然无法满足
+
+137
+00:04:51,716 --> 00:04:56,200
+we have to add one more constraint, and
+that is that instead of saying that this
+
+138
+00:04:51,716 --> 00:04:56,200
+所以我们不得不再加一条限制，那就是不要求这个定义
+
+139
+00:04:56,200 --> 00:05:00,797
+definition should have hold for all M0 and M1. It is to hold for only pairs M0 M1
+
+140
+00:04:56,200 --> 00:05:00,797
+对所有的和M0和M1都成立，而只要求对攻击者
+
+141
+00:05:00,797 --> 00:05:05,208
+that the attackers could
+actually exhibit. Okay so this actually
+
+142
+00:05:00,797 --> 00:05:05,208
+实际能建立的一对明文（M0，M1）成立
+
+143
+00:05:05,208 --> 00:05:10,038
+leads us to the definition of semantics
+security. And so, again this is semantics
+
+144
+00:05:05,208 --> 00:05:10,038
+好，那么我们来定义语义安全
+
+145
+00:05:10,038 --> 00:05:15,050
+security for one time key in other words
+when the attacker is only given one cipher
+
+146
+00:05:10,038 --> 00:05:15,050
+这里指一次性密钥的语义安全。换句话说，这是当攻击者只得到一个密文的情况
+
+147
+00:05:15,050 --> 00:05:19,819
+text. And so the way we define semantic
+security is by defining two experiments,
+
+148
+00:05:15,050 --> 00:05:19,819
+我们通过定义两个实验来定义语义安全
+
+149
+00:05:19,819 --> 00:05:24,562
+okay we'll define experiment 0 and
+experiment 1. And more generally we will
+
+150
+00:05:19,819 --> 00:05:24,562
+分别是实验0和实验1
+
+151
+00:05:24,562 --> 00:05:29,230
+think of these as experiments parentheses
+B, where B can be zero or one. Okay so the
+
+152
+00:05:24,562 --> 00:05:29,230
+更一般地，我们可以把这些实验当做实验B，B可以是0或1
+
+153
+00:05:29,230 --> 00:05:32,890
+way the experiment is defined is as
+follows, we have an adversary that's
+
+154
+00:05:29,230 --> 00:05:32,890
+所以实验如下定义：有一敌手A试图攻破加密系统
+
+155
+00:05:32,890 --> 00:05:37,161
+trying to break the system. An adversary
+A, that's kinda the analog of statistical
+
+156
+00:05:32,890 --> 00:05:37,161
+，就像伪随机数发生器的统计测试那样
+
+157
+00:05:37,161 --> 00:05:41,279
+tests in the world of pseudo random
+generators. And then the challenger does
+
+158
+00:05:37,161 --> 00:05:41,279
+然后挑战者这样做
+
+159
+00:05:41,279 --> 00:05:45,093
+the following, so really we have two
+challengers, but the challengers are so
+
+160
+00:05:41,279 --> 00:05:45,093
+事实上我们有两个挑战者
+
+161
+00:05:45,093 --> 00:05:49,414
+similar that we can just describe them as
+a single challenger that in one case takes
+
+162
+00:05:45,093 --> 00:05:49,414
+但这两个挑战者很相似，所以我们可以把他们想象成一个挑战者
+
+163
+00:05:49,414 --> 00:05:53,634
+his inputs bits set to zero, and the other
+case takes his inputs bits set to
+
+164
+00:05:49,414 --> 00:05:53,634
+在一种情况下输入比特为0，在另一种情况下输入比特为1
+
+165
+00:05:53,634 --> 00:05:57,193
+one. And let me show you what these
+challengers do. The first thing the
+
+166
+00:05:53,634 --> 00:05:57,193
+我们来看这些挑战者做了什么
+
+167
+00:05:57,193 --> 00:06:01,349
+challenger is gonna do is it's gonna pick
+a random key and then the adversary
+
+168
+00:05:57,193 --> 00:06:01,349
+首先，挑战者选取一个随机密钥
+
+169
+00:06:01,349 --> 00:06:06,076
+basically is going to output two messages
+M0 and M1. Okay so this is an explicit
+
+170
+00:06:01,349 --> 00:06:06,076
+然后敌手输出两个消息M0和M1
+
+171
+00:06:06,076 --> 00:06:11,039
+pair of messages that the attacker wants
+to be challenged on and as usual we're not
+
+172
+00:06:06,076 --> 00:06:11,039
+那么这是攻击者希望被挑战的一对信息
+
+173
+00:06:11,039 --> 00:06:15,766
+trying to hide the length of the messages,
+we require that the messages be equal
+
+174
+00:06:11,039 --> 00:06:15,766
+与往常一样，我们不试图隐藏信息长度，我们要求两个信息的长度一致
+
+175
+00:06:15,766 --> 00:06:21,643
+length. And then the challenger basically
+will output either the encryption of M0
+
+176
+00:06:15,766 --> 00:06:21,643
+然后挑战者输出M0的加密结果或M1的加密结果
+
+177
+00:06:21,643 --> 00:06:25,890
+or the encryption of M1, okay so in
+experiment 0 the challenger will output
+
+178
+00:06:21,643 --> 00:06:25,890
+在实验0里挑战者会输出M0的加密
+
+179
+00:06:25,890 --> 00:06:30,301
+the encryption of M0. In experiment 1 the challenger will output the encryption
+
+180
+00:06:25,890 --> 00:06:30,301
+在实验1里挑战者会输出M1的加密
+
+181
+00:06:30,301 --> 00:06:34,385
+of M1. Okay so that the difference between
+the two experiments. And then the
+
+182
+00:06:30,301 --> 00:06:34,385
+这就是两个实验之间的差别
+
+183
+00:06:34,385 --> 00:06:38,796
+adversary is trying to guess basically
+whether he was given the encryption of M0
+
+184
+00:06:34,385 --> 00:06:38,796
+然后敌手试图猜测，他得到的是M0的加密
+
+185
+00:06:38,796 --> 00:06:44,051
+or given the encryption of M1. Okay so
+here's a little bit of notation let's
+
+186
+00:06:38,796 --> 00:06:44,051
+还是M1的加密。这里引入一些记号
+
+187
+00:06:44,051 --> 00:06:50,260
+define the events Wb to be the events that
+an experiment B the adversary output one.
+
+188
+00:06:44,051 --> 00:06:50,260
+我们定义事件Wb为在实验B中敌手输出1的所有事件
+
+189
+00:06:50,260 --> 00:06:55,084
+Okay so that is just an event that
+basically in experiment zero W0 means that
+
+190
+00:06:50,260 --> 00:06:55,084
+事件W0意思是在实验0中敌手输出1
+
+191
+00:06:55,084 --> 00:07:00,342
+the adversary output one and in experiment
+one W1 means the adversary output one. And
+
+192
+00:06:55,084 --> 00:07:00,342
+W1意思是在实验1中输出1
+
+193
+00:07:00,342 --> 00:07:05,291
+now we can define the advantage of this
+adversary, basically to say that this is
+
+194
+00:07:00,342 --> 00:07:05,291
+现在我们可以定义敌手的优势
+
+195
+00:07:05,291 --> 00:07:10,425
+called the semantics security advantage of
+the adversary A against the scheme E,
+
+196
+00:07:05,291 --> 00:07:10,425
+即敌手A对加密机制E的语义安全的优势
+
+197
+00:07:10,425 --> 00:07:15,497
+to be the difference of the probability of
+these two events. In other words we are
+
+198
+00:07:10,425 --> 00:07:15,497
+定义为两个事件概率的差
+
+199
+00:07:15,497 --> 00:07:20,136
+looking at whether the adversary behaves
+differently when he was given the
+
+200
+00:07:15,497 --> 00:07:20,136
+换句话说，我们关注的是敌手得到M0的加密和M1的加密时
+
+201
+00:07:20,136 --> 00:07:24,818
+encryption of M0 from when he was given
+the encryption of M1. And I wanna make
+
+202
+00:07:20,136 --> 00:07:24,818
+他的行为有何不同
+
+203
+00:07:24,818 --> 00:07:29,201
+sure this is clear so I'm gonna say it one
+more time. So in experiment zero he was
+
+204
+00:07:24,818 --> 00:07:29,201
+为确保这点讲清楚我再说一遍
+
+205
+00:07:29,201 --> 00:07:33,530
+given the encryption of M0 and in
+experiment one he was given the encryption
+
+206
+00:07:29,201 --> 00:07:33,530
+在实验0中给敌手M0的加密，在实验1中给他M1的加密
+
+207
+00:07:33,530 --> 00:07:37,700
+of M1. Now we're just interested in
+whether the adversary output 1 or not.
+
+208
+00:07:33,530 --> 00:07:37,700
+现在我们感兴趣的是敌手是否输出1
+
+209
+00:07:37,700 --> 00:07:42,356
+... In these experiments. If in both
+experiments the adversary output 1 with
+
+210
+00:07:37,700 --> 00:07:42,356
+如果两个实验中敌手以同样的概率输出1
+
+211
+00:07:42,356 --> 00:07:47,013
+the same probability that means the
+adversary wasn't able to distinguish the
+
+212
+00:07:42,356 --> 00:07:47,013
+就意味着敌手无法区分两个实验
+
+213
+00:07:47,013 --> 00:07:51,549
+two experiments. Experiments zero
+basically looks to the adversary the same
+
+214
+00:07:47,013 --> 00:07:51,549
+对敌手而言实验0与实验1相同
+
+215
+00:07:51,549 --> 00:07:56,206
+as experiment one because in both cases
+upload one with the same probability.
+
+216
+00:07:51,549 --> 00:07:56,206
+因为两种情况都以同样概率输出1
+
+217
+00:07:56,206 --> 00:08:01,286
+However if the adversary is able to output
+1 in one experiment with significantly
+
+218
+00:07:56,206 --> 00:08:01,286
+然而如果敌手在两个实验中输出1的概率差别很大
+
+219
+00:08:01,286 --> 00:08:05,761
+different probability than in the other
+experiment, then the adversary was
+
+220
+00:08:01,286 --> 00:08:05,761
+那么敌手是可以区分两个实验的
+
+221
+00:08:05,761 --> 00:08:10,266
+actually able to distinguish the two
+experiments. Okay so... To say this more
+
+222
+00:08:05,761 --> 00:08:10,266
+更正式地说
+
+223
+00:08:10,266 --> 00:08:14,455
+formally, essentially the advantage again
+because it's the difference of two
+
+224
+00:08:10,266 --> 00:08:14,455
+就用优势来表示。因为优势是两概率之差，值在0到1之间
+
+225
+00:08:14,455 --> 00:08:18,918
+probabilities the advantage is a number
+between zero and one. If the advantage is
+
+226
+00:08:14,455 --> 00:08:18,918
+如果优势接近0
+
+227
+00:08:18,918 --> 00:08:22,886
+close to zero that means that the
+adversary was not able to distinguish
+
+228
+00:08:18,918 --> 00:08:22,886
+意味着敌手无法区分实验0和1
+
+229
+00:08:22,886 --> 00:08:27,129
+experiment zero from experiment one.
+However if the advantage is close to one,
+
+230
+00:08:22,886 --> 00:08:27,129
+但如果优势接近1
+
+231
+00:08:27,129 --> 00:08:31,538
+that means the adversary was very well
+able to distinguish experiment zero from
+
+232
+00:08:27,129 --> 00:08:31,538
+意味着敌手能很好地区分实验0和1
+
+233
+00:08:31,538 --> 00:08:36,112
+experiment one and that really means that
+he was able to distinguish an encryption
+
+234
+00:08:31,538 --> 00:08:36,112
+也就是他能很好地区分M0和M1的加密
+
+235
+00:08:36,112 --> 00:08:40,299
+of M0 from an encryption of M1, okay?So that's out definition. Actually
+
+236
+00:08:36,112 --> 00:08:40,299
+那么这就是我们的定义
+
+237
+00:08:40,299 --> 00:08:44,055
+that is just the definition of the
+advantage and the definition is just what
+
+238
+00:08:40,299 --> 00:08:44,055
+实际上这就是优势的定义
+
+239
+00:08:44,055 --> 00:08:47,714
+you would expect basically we'll say that
+a symmetric encryption scheme is
+
+240
+00:08:44,055 --> 00:08:47,714
+我们说，一个对称加密机制
+
+241
+00:08:47,714 --> 00:08:52,346
+semantically secure if for all efficient
+adversaries here I'll put these in quotes
+
+242
+00:08:47,714 --> 00:08:52,346
+是语义安全的，如果对于所有有效的敌手
+这里要加上双引号
+
+243
+00:08:52,346 --> 00:08:56,932
+again, "For all efficient adversaries the
+advantage is negligible." In other words,
+
+244
+00:08:52,346 --> 00:08:56,932
+“对所有有效敌手，优势可忽略”
+
+245
+00:08:56,982 --> 00:09:01,808
+no efficient adversary can distinguish the
+encryption of M0 from the encryption
+
+246
+00:08:56,982 --> 00:09:01,808
+换句话说，没有有效敌手可以区分M0和M1的加密
+
+247
+00:09:01,808 --> 00:09:06,103
+of M1 and basically this is what it
+says repeatedly that for these two
+
+248
+00:09:01,808 --> 00:09:06,103
+这一定义反复在说
+
+249
+00:09:06,103 --> 00:09:10,759
+messages that the adversary was able to
+exhibit he wasn't able to distinguish
+
+250
+00:09:06,103 --> 00:09:10,759
+对这两个给定的明文
+敌手无法区分这两种分布
+
+251
+00:09:10,759 --> 00:09:15,064
+these two distributions. Now I want to
+show you this, this is actually a very
+
+252
+00:09:10,759 --> 00:09:15,064
+这是一个优雅的定义
+
+253
+00:09:15,064 --> 00:09:19,595
+elegant definition. It might not seem so
+right away, but I want to show you some
+
+254
+00:09:15,064 --> 00:09:19,595
+可能不是很直观，但我想说明这个定义的一些含义
+
+255
+00:09:19,595 --> 00:09:24,410
+implications of this definition and you'll
+see exactly why the definition is the way
+
+256
+00:09:19,595 --> 00:09:24,410
+然后你们会清楚地看到为何这么定义
+
+257
+00:09:24,410 --> 00:09:28,601
+it is. Okay so let's look at some
+examples. So the first example is suppose
+
+258
+00:09:24,410 --> 00:09:28,601
+好的，我们来看一些例子。第一个例子
+
+259
+00:09:28,601 --> 00:09:33,190
+we have a broken encryption scheme, in
+other words suppose we have an adversary A
+
+260
+00:09:28,601 --> 00:09:33,190
+假设我们有一个被破解的加密机制。也就是说，我们有一个敌手A
+
+261
+00:09:33,190 --> 00:09:38,285
+that somehow given the cipher text he is
+always able to deduce the least
+
+262
+00:09:33,190 --> 00:09:38,285
+给定密文，他总能推断出明文的最低有效位
+
+263
+00:09:38,285 --> 00:09:44,149
+significant bit of the plain text. Okay so
+given the encryption of M0, this adversary
+
+264
+00:09:38,285 --> 00:09:44,149
+那么给定明文M0的加密
+
+265
+00:09:44,149 --> 00:09:48,799
+is able to deduce the least significant
+bit of M0. So that is a terrible
+
+266
+00:09:44,149 --> 00:09:48,799
+敌手可以推断出M0的最低有效位
+
+267
+00:09:48,799 --> 00:09:52,911
+encryption scheme because it basically
+leaks the least significant bit of the
+
+268
+00:09:48,799 --> 00:09:52,911
+那么这是个糟糕的加密机制
+
+269
+00:09:52,911 --> 00:09:57,128
+plain text just given the cipher text. So
+I want to show you that this scheme is
+
+270
+00:09:52,911 --> 00:09:57,128
+因为给定密文的话，它泄露了明文的最低位
+
+271
+00:09:57,128 --> 00:10:01,609
+therefore semantically secure so that kind
+of shows that if a system is semantically
+
+272
+00:09:57,128 --> 00:10:01,609
+如果加密系统是语义安全的话
+
+273
+00:10:01,609 --> 00:10:05,931
+secure than there is no attacker of this
+type. Okay so let's see why is the system
+
+274
+00:10:01,609 --> 00:10:05,931
+是不会有这样的攻击者的
+
+275
+00:10:05,931 --> 00:10:10,254
+not semantically secure well so what we
+are gonna do is we're gonna basically use
+
+276
+00:10:05,931 --> 00:10:10,254
+我们看为什么这个系统不是语义安全的。我们要做的就是利用这个敌手
+
+277
+00:10:10,254 --> 00:10:14,366
+our adversary who is able to learn our
+most insignificant bits, we're going to
+
+278
+00:10:10,254 --> 00:10:14,366
+他可以获得我们的有效位
+
+279
+00:10:14,366 --> 00:10:18,372
+use him to break semantic security so
+we're going to use him to distinguish
+
+280
+00:10:14,366 --> 00:10:18,372
+我们就利用他来破坏语义安全，利用他来区分
+
+281
+00:10:18,372 --> 00:10:22,755
+experiment zero from experiment one Okay
+so here is what we are going to do. We are
+
+282
+00:10:18,372 --> 00:10:22,755
+实验0和实验1。这就是我们要做的
+
+283
+00:10:22,755 --> 00:10:26,987
+algorithm B, we are going to be algorithm
+B and this algorithm B is going to use
+
+284
+00:10:22,755 --> 00:10:26,987
+我们是算法B，算法B里面将会用到算法A
+
+285
+00:10:26,987 --> 00:10:31,165
+algorithm A in its belly. Okay so the
+first thing that is going to happen is of
+
+286
+00:10:26,987 --> 00:10:31,165
+所以在一开始
+
+287
+00:10:31,165 --> 00:10:35,608
+course the challenger is going to choose a
+random key. The first thing that is going
+
+288
+00:10:31,165 --> 00:10:35,608
+挑战者选择一个随机密钥
+
+289
+00:10:35,608 --> 00:10:39,762
+to happen is that we need to output two
+messages. The messages that we are going
+
+290
+00:10:35,608 --> 00:10:39,762
+我们首先需要输出两个消息
+
+291
+00:10:39,762 --> 00:10:43,493
+to output basically are going to have
+differently significant bits. So one
+
+292
+00:10:39,762 --> 00:10:43,493
+具有不同的有效位
+
+293
+00:10:43,493 --> 00:10:47,727
+message is going to end with zero and one
+message is going to end with one. Now what
+
+294
+00:10:43,493 --> 00:10:47,727
+一个消息以0结尾，一个消息以1结尾
+
+295
+00:10:47,727 --> 00:10:51,205
+is the challenger going to do? The
+challenger is going to give us the
+
+296
+00:10:47,727 --> 00:10:51,205
+现在挑战者要干什么？他将为我们
+
+297
+00:10:51,205 --> 00:10:55,238
+encryption of either M0 or M1,
+depending on whether in experiment 0 or
+
+298
+00:10:51,205 --> 00:10:55,238
+加密M0或M1，这取决于是实验0还是1
+
+299
+00:10:55,238 --> 00:10:59,120
+in experiment 1. And then we just
+forward this cipher text to the adversary
+
+300
+00:10:55,238 --> 00:10:59,120
+然后我们就把得到的密文给敌手
+
+301
+00:10:59,120 --> 00:11:03,871
+okay so the adversary A. Now what is the
+property of adversary A? Given the cipher
+
+302
+00:10:59,120 --> 00:11:03,871
+现在敌手A有什么特性？
+
+303
+00:11:03,871 --> 00:11:08,505
+text, adversary A can tell us what the
+least significant bits of the plain text is.
+
+304
+00:11:03,871 --> 00:11:08,505
+给定密文，敌手A可以算出明文的最低有效位
+
+305
+00:11:08,505 --> 00:11:13,374
+In other words the adversary is going
+to output the least significant bits of M0 or M1
+
+306
+00:11:08,505 --> 00:11:13,374
+换句话说，敌手会输出M0或M1的最低位
+
+307
+00:11:13,374 --> 00:11:17,892
+but low and behold that's
+basically the bit B. And then we're just
+
+308
+00:11:13,374 --> 00:11:17,892
+现在注意到那是位B
+
+309
+00:11:17,892 --> 00:11:23,050
+going to output that as our guest so let?s
+call this thing B prime Okay so now this
+
+310
+00:11:17,892 --> 00:11:23,050
+然后把它当作我们的猜测输出，记为B'
+
+311
+00:11:23,050 --> 00:11:28,376
+describes the semantic security adversary.
+And now you tell me what is the semantic
+
+312
+00:11:23,050 --> 00:11:28,376
+这就是语义安全敌手的描述。现在你们说
+
+313
+00:11:28,376 --> 00:11:33,593
+security advantage of this adversary? Well
+so let's see. In experiment zero, what is
+
+314
+00:11:28,376 --> 00:11:33,593
+这个敌手语义安全的优势是多少？我们看一下，在实验0中
+
+315
+00:11:33,593 --> 00:11:38,775
+the probability that adversary B outputs
+one? Well in experiment zero it is always
+
+316
+00:11:33,593 --> 00:11:38,775
+敌手B输出1的概率是多少？在实验0中
+
+317
+00:11:38,775 --> 00:11:43,704
+given the encryption of M zero and
+therefore adversary A is always output the
+
+318
+00:11:38,775 --> 00:11:43,704
+总是得到M0的加密，因此敌手A
+
+319
+00:11:43,704 --> 00:11:48,633
+least significant bit of M zero which
+always happens to be zero. In experiment
+
+320
+00:11:43,704 --> 00:11:48,633
+总是输出M0的最低位0
+
+321
+00:11:48,633 --> 00:11:53,120
+zero, B always outputs zero. So the
+probability that outputs one is zero.
+
+322
+00:11:48,633 --> 00:11:53,120
+在实验0中，B总是输出0，所以输出1的概率是0
+
+323
+00:11:53,120 --> 00:11:57,827
+However in experiment one, we're given the
+encryption of M1. So how likely is
+
+324
+00:11:53,120 --> 00:11:57,827
+但在实验1中，我们得到M1的加密
+
+325
+00:11:57,827 --> 00:12:02,783
+adversary B to output one in experiment
+one well it always outputs one, again by
+
+326
+00:11:57,827 --> 00:12:02,783
+那么敌手B在实验1中输出1的概率是多少？
+
+327
+00:12:02,783 --> 00:12:07,428
+the properties of algorithm A and
+therefore the advantage basically is one.
+
+328
+00:12:02,783 --> 00:12:07,428
+根据算法A的性质，概率总是1，因此优势为1
+
+329
+00:12:07,428 --> 00:12:12,384
+So this is a huge advantage, it's as big
+as it's gonna get. Which means that this
+
+330
+00:12:07,428 --> 00:12:12,384
+所以这是个很大的优势，取到了最大值
+
+331
+00:12:12,384 --> 00:12:17,091
+adversary completely broke the system.
+Okay so we consider, so under semantic
+
+332
+00:12:12,384 --> 00:12:17,091
+这意味着敌手完全破解了这个系统。那么我们认为，在语义安全下
+
+333
+00:12:17,091 --> 00:12:22,295
+security basically just deducing the least
+significant bits is enough to completely
+
+334
+00:12:17,091 --> 00:12:22,295
+能推导出最低位就足以完全破解系统
+
+335
+00:12:22,295 --> 00:12:27,187
+break the system under a semantic security
+definition. Okay, now the interesting
+
+336
+00:12:22,295 --> 00:12:27,187
+这是根据语义安全的定义来的
+
+337
+00:12:27,187 --> 00:12:32,388
+thing here of course is that this is not
+just about the least significant bit, in
+
+338
+00:12:27,187 --> 00:12:32,388
+有趣的是，不仅仅是最低位
+
+339
+00:12:32,388 --> 00:12:37,117
+fact of the message for
+example the most significant bit, you know
+
+340
+00:12:32,388 --> 00:12:37,117
+事实上，例如消息的最有效高位即第七位
+
+341
+00:12:37,117 --> 00:12:42,040
+bit number seven Maybe the XOR of all the bits in the message and so on
+
+342
+00:12:37,117 --> 00:12:42,040
+或者明文所有位的异或，等等
+
+343
+00:12:42,040 --> 00:12:46,552
+and so forth any kind of information, any
+bit about the plain text they can be
+
+344
+00:12:42,040 --> 00:12:46,552
+任何一种信息，明文的任一位
+
+345
+00:12:46,552 --> 00:12:50,814
+learned basically would mean that the
+system is not semantically secure. So
+
+346
+00:12:46,552 --> 00:12:50,814
+如果它们能被获得，都意味着系统不是语义安全的
+
+347
+00:12:50,814 --> 00:12:55,532
+basically all the adversary would have to
+do would be to come up with two messages
+
+348
+00:12:50,814 --> 00:12:55,532
+敌手要做的就是用两个消息M0和M1
+
+349
+00:12:55,532 --> 00:13:00,249
+M0 and M1 such that under one thing that
+they learned it's the value zero and then
+
+350
+00:12:55,532 --> 00:13:00,249
+一种情况下能够得到值0，另一种能得到值1
+
+351
+00:13:00,249 --> 00:13:04,626
+the other thing, the value, is one. So for
+example if A was able to learn the XOR
+
+352
+00:13:00,249 --> 00:13:04,626
+例如如果A知道明文所有位的异或
+
+353
+00:13:04,626 --> 00:13:08,775
+bits of the message then M0
+and M1 would just have different
+
+354
+00:13:04,626 --> 00:13:08,775
+M0和M1所有位的异或刚好不同
+
+355
+00:13:08,775 --> 00:13:13,265
+XOR for all the bits of their
+messages and then this adversary A would
+
+356
+00:13:08,775 --> 00:13:13,265
+这样敌手A就可以
+
+357
+00:13:13,265 --> 00:13:18,174
+also be sufficient to break semantic
+security. Okay so, basically for cipher
+
+358
+00:13:13,265 --> 00:13:18,174
+破解语义安全了
+
+359
+00:13:18,174 --> 00:13:23,203
+is semantically secure then no
+bit of information is revealed to an
+
+360
+00:13:18,174 --> 00:13:23,203
+对于语义安全的密码，任一有效敌手
+
+361
+00:13:23,203 --> 00:13:27,392
+efficient adversary. Okay so this is
+exactly a concept of perfect secrecy only
+
+362
+00:13:23,203 --> 00:13:27,392
+都无法得知明文一个比特的信息。这就是完善保密性的概念
+
+363
+00:13:27,392 --> 00:13:31,318
+applied just efficient adversaries
+rather than all adversaries. So the next
+
+364
+00:13:27,392 --> 00:13:31,318
+只针对有效的敌手，而不是所有的敌手
+
+365
+00:13:31,318 --> 00:13:35,045
+thing I wanna show you is that in fact the
+one time pad in fact is
+
+366
+00:13:31,318 --> 00:13:35,045
+下面我想说的是，事实上
+
+367
+00:13:35,045 --> 00:13:38,821
+semantically secure, they better be
+semantically secure because it's in fact,
+
+368
+00:13:35,045 --> 00:13:38,821
+一次一密是语义安全的，它比语义安全还要好
+
+369
+00:13:38,821 --> 00:13:42,773
+it's more than that it's perfectly secure.
+So let's see why that's true. Well so
+
+370
+00:13:38,821 --> 00:13:42,773
+因为它不仅仅是完善保密的。那么我们来看看这是为什么
+
+371
+00:13:42,773 --> 00:13:47,010
+again it's one of these experiments, so
+suppose we have an adversary that claims
+
+372
+00:13:42,773 --> 00:13:47,010
+再来看看这个实验，设想我们有一敌手
+
+373
+00:13:47,010 --> 00:13:51,449
+to break semantic security of the one time
+pad. The first the adversary is gonna do
+
+374
+00:13:47,010 --> 00:13:51,449
+他声称破解了一次一密的语义安全
+
+375
+00:13:51,449 --> 00:13:55,874
+is he's gonna output two messages M0
+and M1 of the same length.
+
+376
+00:13:51,449 --> 00:13:55,874
+首先敌手输出两个等长明文M0和M1
+
+377
+00:13:55,874 --> 00:13:59,667
+Now what does he get back as a challenge? As a
+challenge, he gets either the encryption
+
+378
+00:13:55,874 --> 00:13:59,667
+作为挑战他能得到什么呢？
+
+379
+00:13:59,667 --> 00:14:03,988
+of M0 or the encryption of M1 under
+the one time pad.
+
+380
+00:13:59,667 --> 00:14:03,988
+他能得到用一次一密加密的M0或M1
+
+381
+00:14:03,988 --> 00:14:07,886
+And he's trying to distinguish between those two possible
+cipher texts that he gets, right?
+
+382
+00:14:03,988 --> 00:14:07,886
+他试图区分这两个可能的密文
+
+383
+00:14:07,886 --> 00:14:12,259
+In experiment zero, he gets the encryption of
+M0 and in experiment one, he gets the
+
+384
+00:14:07,886 --> 00:14:12,259
+在实验0中，他获得了M0的加密，在实验1中，他获得了M1的加密
+
+385
+00:14:12,259 --> 00:14:16,579
+encryption of M1. Well so let me ask
+you, so what is the advantage of adversary
+
+386
+00:14:12,259 --> 00:14:16,579
+那么敌手对一次一密的优势是多少？
+
+387
+00:14:16,579 --> 00:14:21,297
+A against the one time patent? So I
+remember that the property of the ones I
+
+388
+00:14:16,579 --> 00:14:21,297
+一次一密的性质是
+
+389
+00:14:21,297 --> 00:14:26,208
+had is that, that K, XOR M0 is
+distributed identically to K, XOR M1.
+
+390
+00:14:21,297 --> 00:14:26,208
+K异或M0的分布和K异或M1的分布是一样的
+
+391
+00:14:26,208 --> 00:14:31,187
+In other words, these distributions are
+absolutely identical distribution,
+
+392
+00:14:26,208 --> 00:14:31,187
+也就是说，这些分布是完全相同的分布
+
+393
+00:14:31,187 --> 00:14:36,026
+distributions, identical. This is a
+property of XOR. If we XOR the random pad
+
+394
+00:14:31,187 --> 00:14:36,026
+这是异或的性质。如果我们把随机密钥K与任何消息异或
+
+395
+00:14:36,026 --> 00:14:40,674
+K with anything, either M0 or M1,
+we get uniform distribution. So in both
+
+396
+00:14:36,026 --> 00:14:40,674
+不管是M0还是M1，我们都得到均匀分布
+
+397
+00:14:40,674 --> 00:14:45,382
+cases, algorithm A is given as in input
+exactly the same distribution. Maybe the
+
+398
+00:14:40,674 --> 00:14:45,382
+所以在两种情况下，算法A的输入都是是严格的同分布
+
+399
+00:14:45,382 --> 00:14:50,209
+uniform distribution on cipher texts. And
+therefore it's gonna behave exactly the
+
+400
+00:14:45,382 --> 00:14:50,209
+密文都是均匀分布。所以两种情况下敌手表现相同
+
+401
+00:14:50,209 --> 00:14:55,036
+same in both cases because it was given
+the exact distribution as input. And as a
+
+402
+00:14:50,209 --> 00:14:55,036
+因为它得到了相同的分布作为输入
+
+403
+00:14:55,036 --> 00:14:59,699
+result, its advantage is zero, which means
+that the onetime pad is semantically
+
+404
+00:14:55,036 --> 00:14:59,699
+因此它的优势是0，即一次一密是语义安全的
+
+405
+00:14:59,723 --> 00:15:04,148
+secure. Now the interesting thing here is
+not only is it semantically secure, it's
+
+406
+00:14:59,723 --> 00:15:04,148
+有趣的是它不仅是语义安全的
+
+407
+00:15:04,148 --> 00:15:08,244
+semantically secure for all adversaries.
+We don't even have to restrict the
+
+408
+00:15:04,148 --> 00:15:08,244
+它对任何敌手都是语义安全的，我们甚至不必限制
+
+409
+00:15:08,244 --> 00:15:12,450
+adversaries to be efficient. No adversary,
+doesn't matter how smart you are, no
+
+410
+00:15:08,244 --> 00:15:12,450
+敌手是有效的，无论多聪明的敌手
+
+411
+00:15:12,450 --> 00:15:16,875
+adversary will be able to distinguish K XOR M0 from K XOR M1 because the two
+
+412
+00:15:12,450 --> 00:15:16,875
+都无法区分K异或M0和K异或M1
+
+413
+00:15:16,875 --> 00:15:21,299
+distributions are identical. Okay, so the
+one time pad is semantically secure. Okay,
+
+414
+00:15:16,875 --> 00:15:21,299
+因为它们同分布。所以一次性密码本是语义安全的
+
+415
+00:15:21,299 --> 00:15:25,559
+so that completes our definition of
+semantic security so the next thing we're
+
+416
+00:15:21,299 --> 00:15:25,559
+这就完善了语义安全的定义
+
+417
+00:15:25,559 --> 00:15:30,093
+going to do is prove to the secure PRG,
+in fact implies that the stream cipher is
+
+418
+00:15:25,559 --> 00:15:30,093
+下面我们要证明，安全的PRG意味着流密码
+
+419
+00:15:30,093 --> 00:15:31,186
+semantically secure.
+
+420
+00:15:30,093 --> 00:15:31,186
+是语义安全的
+

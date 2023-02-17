@@ -1,0 +1,1878 @@
+1
+00:00:00,000 --> 00:00:03,583
+Last week, we learned a number theory
+that's needed for public key encryption.
+
+2
+00:00:00,000 --> 00:00:03,583
+上周我们学了公钥加密所需的数论知识
+
+3
+00:00:03,583 --> 00:00:07,166
+This week we're gonna put this knowledge
+to work, and we're gonna construct a
+
+4
+00:00:03,583 --> 00:00:07,166
+这周我们要用这些知识了，我们将构建
+
+5
+00:00:07,166 --> 00:00:10,889
+number of secure public key encryption
+schemes. But first, we need to define what
+
+6
+00:00:07,166 --> 00:00:10,889
+许多安全的公钥加密机制。首先，我们需要定义
+
+7
+00:00:10,889 --> 00:00:14,565
+is public key encryption, and what does it
+mean for public key encryption to be
+
+8
+00:00:10,889 --> 00:00:14,565
+什么是公钥加密，以及安全的公钥加密是什么意思？
+
+9
+00:00:14,565 --> 00:00:18,241
+secure? So let me remind you that in a
+public key encryption scheme, there is an
+
+10
+00:00:14,565 --> 00:00:18,241
+我提示大家，在公钥加密机制中
+
+11
+00:00:18,241 --> 00:00:21,778
+encryption algorithm which is usually
+denoted by E, and there's a decryption
+
+12
+00:00:18,241 --> 00:00:21,778
+有一个加密算法记为E，还有个解密算法
+
+13
+00:00:21,778 --> 00:00:25,361
+algorithm which we denote by D. However
+here, the encryption algorithm takes a
+
+14
+00:00:21,778 --> 00:00:25,361
+我们记为D。不过这里的加密算法
+
+15
+00:00:25,361 --> 00:00:29,477
+public key, while the decryption algorithm
+takes a secret key. This pair is called a
+
+16
+00:00:25,361 --> 00:00:29,477
+取一个公钥为输入，而解密算法取一个私钥为输入
+
+17
+00:00:29,477 --> 00:00:34,356
+key pair. And the public key is used for
+encrypting messages while the secret key
+
+18
+00:00:29,477 --> 00:00:34,356
+这一对叫做密钥对。公钥用于加密信息
+
+19
+00:00:34,356 --> 00:00:39,002
+is used for decrypting messages. So in
+this case a message m is encrypting using
+
+20
+00:00:34,356 --> 00:00:39,002
+私钥用于解密信息。那么这里，一个明文m
+
+21
+00:00:39,002 --> 00:00:43,880
+the public key and what comes out of that
+is the ciphertext c. And similarly the
+
+22
+00:00:39,002 --> 00:00:43,880
+使用公钥加密，得到密文c。类似地
+
+23
+00:00:43,880 --> 00:00:48,643
+ciphertext is fed into the decryption
+algorithm and using the secret key, what
+
+24
+00:00:43,880 --> 00:00:48,643
+把密文c交给解密算法，使用私钥
+
+25
+00:00:48,643 --> 00:00:53,577
+comes out of the decryption algorithm is
+the original message m. Now public key
+
+26
+00:00:48,643 --> 00:00:53,577
+解密算法的输出就是原明文m
+
+27
+00:00:53,577 --> 00:00:57,989
+encryption has many applications. Last
+week we saw the classic application which
+
+28
+00:00:53,577 --> 00:00:57,989
+公钥加密有许多应用。上周我们看了经典的应用
+
+29
+00:00:57,989 --> 00:01:02,455
+is session setup, namely, key exchange and
+for now we're just looking at key exchange
+
+30
+00:00:57,989 --> 00:01:02,455
+比如会话建立，密钥交换，目前我们只看了
+
+31
+00:01:02,455 --> 00:01:06,867
+that is secure against eavesdropping only.
+And if you remember the way the protocol
+
+32
+00:01:02,455 --> 00:01:06,867
+仅对窃听攻击安全的密钥交换。如果大家还记得
+
+33
+00:01:06,867 --> 00:01:11,227
+works, basically Alice, what she would do
+is she would generate a public key secret
+
+34
+00:01:06,867 --> 00:01:11,227
+这个协议的工作过程Alice会产生一个公钥、私钥对
+
+35
+00:01:11,227 --> 00:01:15,546
+pair. She would send the public key to
+Bob. Bob will generate a random X, which
+
+36
+00:01:11,227 --> 00:01:15,546
+她会把公钥发给Bob.Bob会产生一个随机X
+
+37
+00:01:15,546 --> 00:01:20,136
+is gonna serve as their shared secret, and
+then he sends X encrypted to Alice,
+
+38
+00:01:15,546 --> 00:01:20,136
+X被作为共享密钥，然后Bob把X加密后发送给Alice
+
+39
+00:01:20,136 --> 00:01:24,904
+encrypted under her public key. Alice can
+decrypt, recover X and now both of them
+
+40
+00:01:20,136 --> 00:01:24,904
+使用Alice的公钥进行加密。Alice可以解密，还原X
+
+41
+00:01:24,904 --> 00:01:29,554
+have this shared secret X which they can
+use to communicate securely with one
+
+42
+00:01:24,904 --> 00:01:29,554
+现在双方都有了这个共享密钥X了，他们可以使用它来安全的互相通信
+
+43
+00:01:29,554 --> 00:01:34,143
+another. The attacker, of course, all he
+gets to see is just the public key, the
+
+44
+00:01:29,554 --> 00:01:34,143
+攻击者当然只能看到公钥
+
+45
+00:01:34,143 --> 00:01:38,972
+encryption of X under the public key, from
+which he should not be able to get any
+
+46
+00:01:34,143 --> 00:01:38,972
+和使用公钥加密后的X，根据这些他不应该能
+
+47
+00:01:38,972 --> 00:01:43,800
+information about X. And we are going to
+define that more precisely to understand
+
+48
+00:01:38,972 --> 00:01:43,800
+获得任何关于X的信息。我们要更精确地定义
+
+49
+00:01:43,800 --> 00:01:48,507
+what it means to not be able to learn
+anything about X. Public key encryption
+
+50
+00:01:43,800 --> 00:01:48,507
+不能学到任何关于X的信息是什么意思
+
+51
+00:01:48,507 --> 00:01:52,522
+actually has many other applications. For
+example, it's very useful in
+
+52
+00:01:48,507 --> 00:01:52,522
+公钥加密实际上有很多应用。例如
+
+53
+00:01:52,522 --> 00:01:57,235
+non-interactive applications. So think of
+an email system for example. So here, Bob
+
+54
+00:01:52,522 --> 00:01:57,235
+它在非互动应用中非常有用。考虑一个电子邮件系统为例
+
+55
+00:01:57,235 --> 00:02:01,716
+wants to send mail to Alice, and as Bob
+sends the email, the email passes from
+
+56
+00:01:57,235 --> 00:02:01,716
+这里Bob想发送电子邮件给Alice，随着Bob发送了这份邮件
+
+57
+00:02:01,716 --> 00:02:06,603
+mail relay to mail relay until finally it
+reaches Alice, at which point Alice should
+
+58
+00:02:01,716 --> 00:02:06,603
+电子邮件经由一个个邮件中转点，最终到达Alice
+
+59
+00:02:06,603 --> 00:02:10,502
+decrypt. The way the email system is set
+up, is designed for kind of
+
+60
+00:02:06,603 --> 00:02:10,502
+Alice可以解密之。这样建立的电子邮件系统
+
+61
+00:02:10,502 --> 00:02:15,045
+non-interactive settings where Bob sends
+the email. And then Alice is supposed to
+
+62
+00:02:10,502 --> 00:02:15,045
+是为Bob发送邮件的非互动情形设计的
+
+63
+00:02:15,045 --> 00:02:19,195
+receive it. And Alice should not be to
+communicate with Bob in order to decrypt
+
+64
+00:02:15,045 --> 00:02:19,195
+然后Alice应收到邮件，为解密邮件
+
+65
+00:02:19,195 --> 00:02:23,502
+the email. So in this case, because of the
+non-interactivity, there's no opportunity
+
+66
+00:02:19,195 --> 00:02:23,502
+Alice不应与Bob通信。这里，因为这种非互动性
+
+67
+00:02:23,502 --> 00:02:27,705
+for setting up a shared secret between
+Alice and Bob. So in this case, what would
+
+68
+00:02:23,502 --> 00:02:27,705
+没有建立Alice和Bob之间的共享密钥的机会
+
+69
+00:02:27,705 --> 00:02:32,169
+happen is, Bob basically would, would send
+the email encrypted, using Alice's, public
+
+70
+00:02:27,705 --> 00:02:32,169
+这里Bob会发送加密的邮件，使用Alice的公钥
+
+71
+00:02:32,169 --> 00:02:36,571
+key. So he sends the email. Anyone in the
+world can send the email encrypted to
+
+72
+00:02:32,169 --> 00:02:36,571
+他发送了邮件，世界上任何人可以发送加密后的电子邮件
+
+73
+00:02:36,571 --> 00:02:41,103
+Alice, encrypted using her public key.
+When Alice receives this email, she uses
+
+74
+00:02:36,571 --> 00:02:41,103
+给Alice，使用她的公钥。当Alice接收到邮件时
+
+75
+00:02:41,103 --> 00:02:45,748
+her secret key to decrypt the ciphertext and recover the plain text message.
+
+76
+00:02:41,103 --> 00:02:45,748
+她使用她的私钥来解密密文，还原明文
+
+77
+00:02:45,748 --> 00:02:50,507
+Of course the one caveat in a system like
+this is that in fact Bob needs to somehow
+
+78
+00:02:45,748 --> 00:02:50,507
+当然这种系统有一个警告，事实上Bob
+
+79
+00:02:50,507 --> 00:02:54,804
+obtain Alice's public key So for now we
+are just going to assume Bob already has
+
+80
+00:02:50,507 --> 00:02:54,804
+需要通过某种方法知道Alice的公钥。目前我们还只是假设
+
+81
+00:02:54,804 --> 00:02:58,297
+Alice's public key, but later on,
+actually, when we talk about digital
+
+82
+00:02:54,804 --> 00:02:58,297
+Bob已经有了Alice的公钥，但待会儿当我们讨论
+
+83
+00:02:58,297 --> 00:03:02,457
+signatures we're gonna see how, this can
+actually be done very efficiently using what's
+
+84
+00:02:58,297 --> 00:03:02,457
+数字签名时，我们会看到，这点使用所谓的
+
+85
+00:03:02,457 --> 00:03:06,823
+called public key management and as I said
+we'll actually get back to that at a later
+
+86
+00:03:02,457 --> 00:03:06,823
+公钥管理将非常有效，如我所说，我们待会再来看
+
+87
+00:03:06,823 --> 00:03:10,931
+time. But the main thing I want you to
+remember, is that public key encryption is
+
+88
+00:03:06,823 --> 00:03:10,931
+我想让大家记住的主要是，公钥加密
+
+89
+00:03:10,931 --> 00:03:14,578
+used for session setup. This is very
+common on the web, where public key
+
+90
+00:03:10,931 --> 00:03:14,578
+用于会话建立。这在网络上很普遍
+
+91
+00:03:14,578 --> 00:03:18,840
+encryption is used to set up a secure key
+between a web browser and, and web server.
+
+92
+00:03:14,578 --> 00:03:18,840
+公钥加密用于建立起一个浏览器和网页服务器之间的安全密钥
+
+93
+00:03:18,840 --> 00:03:22,898
+And public key encryption is also very
+useful for non-interactive applications,
+
+94
+00:03:18,840 --> 00:03:22,898
+公约加密对非互动的应用也很实用
+
+95
+00:03:22,898 --> 00:03:26,390
+where anyone in the world,
+non-interactively, needs to send a message
+
+96
+00:03:22,898 --> 00:03:26,390
+这个世界的任何人，需要非互动的发送信息
+
+97
+00:03:26,390 --> 00:03:30,653
+to Alice, they can encrypt the message using
+Alice's public key, and Alice can decrypt
+
+98
+00:03:26,390 --> 00:03:30,653
+给Alice时，可以使用Alice的公钥加密信息
+
+99
+00:03:30,653 --> 00:03:36,105
+and recover the plain text. So let me
+remind you in a bit more detail what a
+
+100
+00:03:30,653 --> 00:03:36,105
+Alice可以解密并还原明文。那么我来提示大家
+
+101
+00:03:36,105 --> 00:03:40,347
+public key encryption system is. Well,
+it's made up of three algorithms G, E, and
+
+102
+00:03:36,105 --> 00:03:40,347
+关于公钥加密系统的更多细节。公钥加密系统由三个算法构成G,E,D
+
+103
+00:03:40,347 --> 00:03:44,431
+D. G is called the key generation algorithm.
+Basically what it will do is it will
+
+104
+00:03:40,347 --> 00:03:44,431
+G叫做密钥生成算法
+
+105
+00:03:44,431 --> 00:03:48,672
+generate this key pair, the public key and
+the secret key. As written here, G takes
+
+106
+00:03:44,431 --> 00:03:48,672
+G会生成这个密钥对，即公钥和私钥。如此所写
+
+107
+00:03:48,672 --> 00:03:53,018
+no arguments, but in real life, G actually
+does take an argument called the security
+
+108
+00:03:48,672 --> 00:03:53,018
+G无输入参数，但在现实中，G其实有一个参数
+
+109
+00:03:53,018 --> 00:03:57,260
+parameter which specifies the size of the
+keys that are generated by this key
+
+110
+00:03:53,018 --> 00:03:57,260
+叫做安全参数，指定了这个密钥生成算法将要生成的密钥大小
+
+111
+00:03:57,260 --> 00:04:01,731
+generation algorithm. Then there are these
+encryption algorithms as usual that take a
+
+112
+00:03:57,260 --> 00:04:01,731
+通常有这些加密算法
+
+113
+00:04:01,731 --> 00:04:06,051
+public key and a message and produce a
+ciphertext in a decryption algorithm that
+
+114
+00:04:01,731 --> 00:04:06,051
+它们取一个公钥和明文为输入，产生一个密文
+
+115
+00:04:06,051 --> 00:04:10,530
+takes the corresponding secret key and a
+ciphertext and it produces a corresponding
+
+116
+00:04:06,051 --> 00:04:10,530
+在解密算法中，取对应私钥和密文为输入
+
+117
+00:04:10,530 --> 00:04:14,955
+message. And as usual for consistency we
+say that if we encrypt a message under a
+
+118
+00:04:10,530 --> 00:04:14,955
+产生对应明文。通常为求一致性，我们说如果我们使用一个给定的公钥加密了一个明文
+
+119
+00:04:14,955 --> 00:04:19,380
+given public key and then decrypt with a
+corresponding secret key we should get the
+
+120
+00:04:14,955 --> 00:04:19,380
+然后我们用对应的私钥解密
+
+121
+00:04:19,380 --> 00:04:23,852
+original message back. Now what does it
+mean for a public key encryption to be
+
+122
+00:04:19,380 --> 00:04:23,852
+我们可以获得原先的明文 现在 一个公钥加密是安全的 是什么意思呢
+
+123
+00:04:23,852 --> 00:04:27,913
+secure? I'm going to start off by
+defining, security against eavesdropping.
+
+124
+00:04:23,852 --> 00:04:27,913
+我想先从定义对抗窃听的安全性出发
+
+125
+00:04:27,913 --> 00:04:32,002
+And then we're going to define security
+against active attacks. So the way to
+
+126
+00:04:27,913 --> 00:04:32,002
+然后再定义对抗主动性攻击的安全性
+
+127
+00:04:32,002 --> 00:04:36,237
+define security against eavesdropping is
+very similar to the symmetric case we've
+
+128
+00:04:32,002 --> 00:04:36,237
+定义对抗窃听的安全性 与对称密码的情况很类似
+
+129
+00:04:36,237 --> 00:04:40,626
+already this last week so we're gonna go
+through this quickly just as a review.
+
+130
+00:04:36,237 --> 00:04:40,626
+上周我们已经看过 来快速回顾一下
+
+131
+00:04:40,626 --> 00:04:44,808
+Basically the attack game is defined as
+follows. We defined these two experiments,
+
+132
+00:04:40,626 --> 00:04:44,808
+这个攻击游戏如下定义 我们定义两个实验
+
+133
+00:04:44,808 --> 00:04:49,249
+experiment zero and experiment one. At in
+either experiment the challenger is gonna
+
+134
+00:04:44,808 --> 00:04:49,249
+实验0和实验1 在两个实验中
+
+135
+00:04:49,249 --> 00:04:52,965
+generate a public and a secret key pair. He's gonna give the public
+
+136
+00:04:49,249 --> 00:04:52,965
+挑战者都会生成一对公钥和私钥
+
+137
+00:04:52,965 --> 00:04:57,342
+key to the adversary. The adversary's
+gonna output two messages m0 and m1 of
+
+138
+00:04:52,965 --> 00:04:57,342
+他把公钥给攻击者 攻击者产生两个信息m0和m1
+
+139
+00:04:57,342 --> 00:05:01,663
+equal length and then what he gets back is
+either the encryption of m0 or the
+
+140
+00:04:57,342 --> 00:05:01,663
+长度相同 然后攻击者会得到m0或m1的加密
+
+141
+00:05:01,663 --> 00:05:06,039
+encryption of m1. In experiment zero he
+gets the encryption of m0. In experiment
+
+142
+00:05:01,663 --> 00:05:06,039
+在实验0中 他会得到m0的加密
+
+143
+00:05:06,039 --> 00:05:10,748
+one he gets the encryption of m1. And then
+the adversary is supposed to say which one
+
+144
+00:05:06,039 --> 00:05:10,748
+在实验1中 他会得到m1的加密 然后攻击者要识别
+
+145
+00:05:10,748 --> 00:05:15,240
+did he get. Did he get the encryption of
+m0 or did he get the encryption of m1? So
+
+146
+00:05:10,748 --> 00:05:15,240
+他得到的是哪个信息的加密 他得到的是m0还是m1的加密
+
+147
+00:05:15,240 --> 00:05:19,676
+in this game, the attacker only gets one
+ciphertext. This corresponds to an
+
+148
+00:05:15,240 --> 00:05:19,676
+那么在这个有效中 攻击者只会得到一个密文
+
+149
+00:05:19,676 --> 00:05:24,226
+eavesdropping attack where he simply
+eavesdropped on that ciphertext C. And now
+
+150
+00:05:19,676 --> 00:05:24,226
+这个对应于窃听攻击中他监听的密文C
+
+151
+00:05:24,226 --> 00:05:28,719
+his goal is to tell whether the ciphertext
+C i s the encryption of M0 or M1. No
+
+152
+00:05:24,226 --> 00:05:28,719
+现在他的目标是分辨出密文C是m0还是m1的加密
+
+153
+00:05:28,719 --> 00:05:34,221
+tampering on the ciphertext C is allowed
+just yet. And as usual we say that the
+
+154
+00:05:28,719 --> 00:05:34,221
+对密文C的篡改是不被允许的 通常我们说
+
+155
+00:05:34,221 --> 00:05:38,206
+public key encryption scheme is
+semantically secure if the attacker cannot
+
+156
+00:05:34,221 --> 00:05:38,206
+这个公钥加密机制是语义安全的 如果攻击者不能
+
+157
+00:05:38,206 --> 00:05:42,085
+distinguish experiment zero from
+experiment one. In other words he cannot
+
+158
+00:05:38,206 --> 00:05:42,085
+区分实验0和实验1 换句话
+
+159
+00:05:42,085 --> 00:05:47,757
+tell whether he got the encryption of M0,
+or the encryption of M1. Before we move on
+
+160
+00:05:42,085 --> 00:05:47,757
+他不能区分他获得的是m0还是m1的加密
+
+161
+00:05:47,757 --> 00:05:52,311
+to active attacks, I want to mention a
+quick relation between the definition we
+
+162
+00:05:47,757 --> 00:05:52,311
+在我们讨论主动攻击之前 我想简单提一下这个定义
+
+163
+00:05:52,311 --> 00:05:56,105
+just saw, And the definition of, of
+eavesdropping security for symmetric
+
+164
+00:05:52,311 --> 00:05:56,105
+与对称密码的窃听安全的定义之间的关系
+
+165
+00:05:56,105 --> 00:06:00,438
+ciphers. If you remember, when we talked
+about eavesdropping security for symmetric
+
+166
+00:05:56,105 --> 00:06:00,438
+如果大家还记得 当我们讨论对称密码的窃听攻击时
+
+167
+00:06:00,438 --> 00:06:04,771
+ciphers, we distinguished between the case
+where the key is used once, and the case
+
+168
+00:06:00,438 --> 00:06:04,771
+我们区分了两种情况 密钥只使用一次
+
+169
+00:06:04,771 --> 00:06:08,998
+where the key is used multiple times. And,
+in fact we saw that, there's a clear
+
+170
+00:06:04,771 --> 00:06:08,998
+和密钥使用多次 事实上我们看到有明确的区分
+
+171
+00:06:08,998 --> 00:06:13,357
+separation. For example, the onetime pad.
+Is secure if the key is used to encrypt a
+
+172
+00:06:08,998 --> 00:06:13,357
+例如 一次性密码本是安全的 如果密钥只被用于加密当个明文
+
+173
+00:06:13,357 --> 00:06:17,382
+single message, but is completely insecure
+if the key is used to encrypt multiple
+
+174
+00:06:13,357 --> 00:06:17,382
+但如果密钥用于加密多个明文 将是不安全的了
+
+175
+00:06:17,382 --> 00:06:21,358
+messages. And in fact we had two different
+definitions if you remember we had a
+
+176
+00:06:17,382 --> 00:06:21,358
+如果大家还记得 事实上我们有两个不同的定义
+
+177
+00:06:21,358 --> 00:06:25,383
+definition for one-time security, and then
+we had a separate definition, which was
+
+178
+00:06:21,358 --> 00:06:25,383
+一个是一次性安全 还有另一个不同的定义
+
+179
+00:06:25,383 --> 00:06:29,700
+stronger, when the key was used multiple
+times. The definition that I showed you on
+
+180
+00:06:25,383 --> 00:06:29,700
+更强一点 当密钥被使用多次
+
+181
+00:06:29,700 --> 00:06:34,043
+the previous slide's very similar to the
+definition of one time security for
+
+182
+00:06:29,700 --> 00:06:34,043
+上一张幻灯片里的定义与对称密码的一次性安全很类似
+
+183
+00:06:34,043 --> 00:06:38,499
+symmetric ciphers. And in fact, it turns
+out that for public key encryption, if a
+
+184
+00:06:34,043 --> 00:06:38,499
+事实上 对于公钥加密
+
+185
+00:06:38,499 --> 00:06:43,124
+system is secure under a onetime key, in a
+sense, it's also secure for a many time
+
+186
+00:06:38,499 --> 00:06:43,124
+如果系统的一次性密钥是安全的 那么它对多次密钥也安全
+
+187
+00:06:43,124 --> 00:06:47,929
+key. So in other words, we don't have to
+explicitly give the attacker the ability
+
+188
+00:06:43,124 --> 00:06:47,929
+换句话 如果我们不必赋予攻击者
+
+189
+00:06:47,929 --> 00:06:53,171
+to, request encryptions of messages of his
+choice. Because he could just create those
+
+190
+00:06:47,929 --> 00:06:53,171
+请求加密他选择的明文的能力 因为他自己可以
+
+191
+00:06:53,171 --> 00:06:57,870
+encryptions all by himself. He is given
+the public key, and therefore he can by
+
+192
+00:06:53,171 --> 00:06:57,870
+创建这些加密 他有了公钥 因此它可以
+
+193
+00:06:57,870 --> 00:07:04,672
+himself encrypt any message he likes. As a
+result any public key secret pair in some
+
+194
+00:06:57,870 --> 00:07:04,672
+自己加密任何他喜欢的明文 因此从某种意义上
+
+195
+00:07:04,672 --> 00:07:09,289
+sense inherently is used to encrypt
+multiple messages because the attacker
+
+196
+00:07:04,672 --> 00:07:09,289
+公钥私钥对天生就是用来加密多个信息的
+
+197
+00:07:09,289 --> 00:07:13,905
+could have just encrypted many, many
+messages of his choice using the given
+
+198
+00:07:09,289 --> 00:07:13,905
+因为攻击者可以加密很多他选择的明文
+
+199
+00:07:13,905 --> 00:07:18,891
+public key that we just gave him in the
+first step. And so, as a result in fact,
+
+200
+00:07:13,905 --> 00:07:18,891
+使用我们第一步给定的公钥 所以事实上
+
+201
+00:07:18,891 --> 00:07:23,692
+the definition of one time security is
+enough to imply many time security and
+
+202
+00:07:18,891 --> 00:07:23,692
+一次性安全的定义足以蕴含着多次安全
+
+203
+00:07:23,692 --> 00:07:28,801
+that's why we refer to the concept as
+indistinguishability under a chosen plain
+
+204
+00:07:23,692 --> 00:07:28,801
+这就是为什么我们称这个概念是选择明文攻击下的不可区分性
+
+205
+00:07:28,801 --> 00:07:34,012
+text attach. So this is just a minor point
+to explain why the settings of public
+
+206
+00:07:28,801 --> 00:07:34,012
+这只是稍微解释下为什么在公钥加密的设定里
+
+207
+00:07:34,012 --> 00:07:37,770
+encryption, we don't need a more
+complicated definition to capture
+
+208
+00:07:34,012 --> 00:07:37,770
+我们不需要更复杂的定义来理解窃听安全
+
+209
+00:07:37,770 --> 00:07:42,515
+eavesdropping security. Now that we
+understand eavesdropping security, let's
+
+210
+00:07:37,770 --> 00:07:42,515
+现在我们理解了窃听安全性
+
+211
+00:07:42,515 --> 00:07:47,343
+look at more powerful adversaries that can
+actually mount active attacks. So, in
+
+212
+00:07:42,515 --> 00:07:47,343
+我们来看一下更有力的可以产生实际攻击的对手
+
+213
+00:07:47,343 --> 00:07:51,585
+particular, let's look at the email
+example. So here, we have our friend Bob
+
+214
+00:07:47,343 --> 00:07:51,585
+特别地，我们来看一下电子邮件的例子，那么这里我们有我们的朋友Bob
+
+215
+00:07:51,585 --> 00:07:56,228
+who wants to send mail to his friend
+Caroline. And Caroline happens to have, an
+
+216
+00:07:51,585 --> 00:07:56,228
+他想给他的朋友Caroline发邮件。并且Caroline恰好有一个
+
+217
+00:07:56,228 --> 00:08:00,699
+account at Gmail. And the way this works
+is basically, the email is sent to the
+
+218
+00:07:56,228 --> 00:08:00,699
+Gmail上的账户。过程如下，这个被加密的邮件
+
+219
+00:08:00,699 --> 00:08:05,514
+Gmail server, encrypted. The Gmail server
+decrypts the email, looks at the, intended
+
+220
+00:08:00,699 --> 00:08:05,514
+被发送到Gmail的服务器上。服务器解密这封邮件，找寻预期的接收者
+
+221
+00:08:05,514 --> 00:08:09,297
+recipients. And then, if it's, the
+intended recipient is Caroline, it
+
+222
+00:08:05,514 --> 00:08:09,297
+之后，如果是，预期接收者是Caroline，
+
+223
+00:08:09,297 --> 00:08:13,653
+forwards the email to Caroline. If the
+intended recipient is the attacker, it
+
+224
+00:08:09,297 --> 00:08:13,653
+它就把邮件给Caroline。如果预期接收者是攻击者，
+
+225
+00:08:13,653 --> 00:08:18,573
+forwards the email to the attacker. This
+is similar to how Gmail actually works
+
+226
+00:08:13,653 --> 00:08:18,573
+他就会把邮件交给攻击者。这很像Gmail的工作方式
+
+227
+00:08:18,573 --> 00:08:23,441
+because the sender would send the email
+encrypted over SSL to the Gmail server.
+
+228
+00:08:18,573 --> 00:08:23,441
+因为发送者会发送通过SSL加密的邮件给Gmail服务器
+
+229
+00:08:23,441 --> 00:08:28,087
+The Gmail server would terminate the SSL
+and then forward the email to the
+
+230
+00:08:23,441 --> 00:08:28,087
+Gmail服务器会中断SSL连接然后将邮件给
+
+231
+00:08:28,087 --> 00:08:33,081
+appropriate recipients. Now suppose Bob
+encrypts the email using a system that
+
+232
+00:08:28,087 --> 00:08:33,081
+合适的接收者。现在假设Bob加密的邮件，使用的系统
+
+233
+00:08:33,081 --> 00:08:37,764
+allows the adversary to tamper with the
+ciphertext without being detected. For
+
+234
+00:08:33,081 --> 00:08:37,764
+允许攻击者在不被探测到的情况下篡改密文。
+
+235
+00:08:37,764 --> 00:08:42,387
+example, imagine this email is encrypted
+using Counter Mode, or something like
+
+236
+00:08:37,764 --> 00:08:42,387
+例如，假设这个邮件用计数模式加密的，或者类似的方法。
+
+237
+00:08:42,387 --> 00:08:47,070
+that. Then when the attacker intercepts
+this email, he can change the recipient,
+
+238
+00:08:42,387 --> 00:08:47,070
+然后，当攻击者拦截这封邮件时，他可以改变接收者，
+
+239
+00:08:47,070 --> 00:08:50,732
+so that now the recipient says
+attacker@gmail.com, and we know that for
+
+240
+00:08:47,070 --> 00:08:50,732
+因此现在接收者是attacker@gmail.com，并且我们知道对于
+
+241
+00:08:50,732 --> 00:08:55,415
+Counter Mode, for example, this is quite
+easy to do. The attacker knows that the
+
+242
+00:08:50,732 --> 00:08:55,415
+计数模式，这样做是很容易的。攻击者知道
+
+243
+00:08:55,415 --> 00:09:00,278
+email is intended for Caroline, he is just
+interested in the email body. So he can
+
+244
+00:08:55,415 --> 00:09:00,278
+邮件是发送给Caroline的，他只是对邮件内容感兴趣。因此，他可以
+
+245
+00:09:00,278 --> 00:09:04,226
+easily change the email recipient to
+attacker@gmail.com and now when the server
+
+246
+00:09:00,278 --> 00:09:04,226
+简单的将邮件接收者改为attacker@gmail.com并且当服务器
+
+247
+00:09:04,226 --> 00:09:08,129
+receives the email, he will decrypt it,
+see that the recipient is supposed to be
+
+248
+00:09:04,226 --> 00:09:08,129
+接收到邮件时，他将会解密邮件，看到接收者应该是攻击者
+
+249
+00:09:08,129 --> 00:09:12,033
+attacker, and forward the body to the
+attacker. And now the attacker was able to
+
+250
+00:09:08,129 --> 00:09:12,033
+然后就将邮件给了攻击者。并且现在攻击者可以
+
+251
+00:09:12,033 --> 00:09:16,022
+read the body of the email that was
+intended for Caroline. So this is a
+
+252
+00:09:12,033 --> 00:09:16,022
+阅读本来要送给Caroline的邮件的内容。所以这是一个
+
+253
+00:09:16,022 --> 00:09:21,198
+classic example of an active attack, and
+you notice what the attacker could do
+
+254
+00:09:16,022 --> 00:09:21,198
+典型的主动攻击的实例，并且你可以注意到攻击者
+
+255
+00:09:21,198 --> 00:09:26,174
+here, is it could decrypt any ciphertext
+where the intended recipient is to:
+
+256
+00:09:21,198 --> 00:09:26,174
+只能解密接收方是攻击者的密文
+
+257
+00:09:26,174 --> 00:09:31,548
+attacker. So any ciphertext where the plain
+text begins with the words "to: attacker". So our goal is
+
+258
+00:09:26,174 --> 00:09:31,548
+也就是以“致攻击者”开头的明文所对应的密文。所以我们的目标是
+
+259
+00:09:31,548 --> 00:09:36,657
+to design public key systems that are
+secure, even if the attacker can tamper
+
+260
+00:09:31,548 --> 00:09:36,657
+设计一个安全的公共密钥系统，即使攻击者可以篡改密文
+
+261
+00:09:36,657 --> 00:09:42,999
+with ciphertext and possibly decrypt
+certain cyphertexts. And again, I want to
+
+262
+00:09:36,657 --> 00:09:42,999
+并且有可能解密某些密文。再次，我想要
+
+263
+00:09:42,999 --> 00:09:47,612
+emphasize that here the attacker's goal
+was to get the message body. The attacker
+
+264
+00:09:42,999 --> 00:09:47,612
+强调攻击者的目的是得到明文的内容。攻击者
+
+265
+00:09:47,612 --> 00:09:52,055
+already knew that the email is intended
+for Caroline. And all he had to do was
+
+266
+00:09:47,612 --> 00:09:52,055
+已经知道邮件的接收方是Caroline。并且他要做的只是
+
+267
+00:09:52,055 --> 00:09:56,863
+just change the, intended recipient. So
+this tampering attack motivates the
+
+268
+00:09:52,055 --> 00:09:56,863
+改变接收方。因次这次篡改攻击就引入了
+
+269
+00:09:56,863 --> 00:10:01,620
+definition of chosen ciphertext security.
+And in fact this is the standard notion of
+
+270
+00:09:56,863 --> 00:10:01,620
+选择密文安全的定义。事实上，这就是公钥加密安全性的
+
+271
+00:10:01,620 --> 00:10:07,462
+security for public key encryption. So let
+me explain how the attack [here procedes] and as I
+
+272
+00:10:01,620 --> 00:10:07,462
+标准概念。那么让我解释这个攻击，
+
+273
+00:10:07,462 --> 00:10:11,899
+said our goal is to build systems that are
+secure under this very, very conservative
+
+274
+00:10:07,462 --> 00:10:11,899
+如我所说我们的目标是建立一个在非常保守的加密概念下安全的
+
+275
+00:10:11,899 --> 00:10:15,756
+notion of encryption. So we have an
+encryption scheme (G, E, D). And let's say
+
+276
+00:10:11,899 --> 00:10:15,756
+系统。因次我们有一个加密体系（G,E,D）。并且我们说
+
+277
+00:10:15,756 --> 00:10:20,140
+that's defined over a message space and
+a ciphertext (M, C) and as usual we're
+
+278
+00:10:15,756 --> 00:10:20,140
+它在一个明文空间和一个密文（M,C）上定义的，并且像往常一样
+
+279
+00:10:20,140 --> 00:10:24,313
+gonna define two experiments, experiment
+zero, and experiment one. So 'b' here
+
+280
+00:10:20,140 --> 00:10:24,313
+我们将定义两个实验，实验0，实验1.这里‘b’
+
+281
+00:10:24,313 --> 00:10:28,222
+says whether the challenger is
+implementing experiment zero or experiment
+
+282
+00:10:24,313 --> 00:10:28,222
+表示挑战者是否执行了实验0或实验1.
+
+283
+00:10:28,222 --> 00:10:32,659
+one. The challenger begins by generating a
+public key and a secret key, and then gives
+
+284
+00:10:28,222 --> 00:10:32,659
+挑战者最开始产生一个公钥和一个私钥，然后
+
+285
+00:10:32,659 --> 00:10:37,254
+the public key to the adversary. Now the
+adversary can say, "Well, here are a bunch
+
+286
+00:10:32,659 --> 00:10:37,254
+将公钥给了攻击者。现在攻击者可以说：“这里有一系列
+
+287
+00:10:37,254 --> 00:10:41,611
+of ciphertexts, please decrypt them for
+me." So here the adversary submits
+
+288
+00:10:37,254 --> 00:10:41,611
+密文，请为我解密”攻击者上传
+
+289
+00:10:41,611 --> 00:10:46,452
+ciphertext C1 and he gets the decryption
+of ciphertext C1, namely M1. And he gets
+
+290
+00:10:41,611 --> 00:10:46,452
+密文C1并且得到了C1的解密，叫它M1。
+
+291
+00:10:46,452 --> 00:10:51,414
+to do this again and again, so he submits
+ciphertext C2, and he gets the decryption,
+
+292
+00:10:46,452 --> 00:10:51,414
+然后他反复的操作，他上传密文C2，然后又得到解密的信息
+
+293
+00:10:51,414 --> 00:10:56,195
+which is M2, ciphertext C3, and he gets
+the decryption M3, and so on and so forth.
+
+294
+00:10:51,414 --> 00:10:56,195
+M2，密文C3，然后得到M3，诸如此类。
+
+295
+00:10:56,195 --> 00:11:00,188
+Finally, the adversary says, "This
+squaring phase is over," and now he
+
+296
+00:10:56,195 --> 00:11:00,188
+最后，攻击者说“游戏结束”，然后他
+
+297
+00:11:00,188 --> 00:11:04,485
+submits basically two equal length
+messages, M0 and M1 as normal, and he
+
+298
+00:11:00,188 --> 00:11:04,485
+上传两个等长的明文M0和M1，
+
+299
+00:11:04,485 --> 00:11:08,820
+receives in response the challenge
+ciphertext C, Which is the encryption of M
+
+300
+00:11:04,485 --> 00:11:08,820
+并且接收挑战密文C，
+
+301
+00:11:08,820 --> 00:11:13,052
+zero or the encryption of M one. Depending
+on whether we're in experiment zero or
+
+302
+00:11:08,820 --> 00:11:13,052
+也就是m0或m1的加密。取决于我们在实验0还是实验1
+
+303
+00:11:13,052 --> 00:11:17,003
+experiment one. Now, the adversary can
+continue to issue these ciphertext
+
+304
+00:11:13,052 --> 00:11:17,003
+现在攻击者可以继续提交密文询问
+
+305
+00:11:17,003 --> 00:11:21,063
+queries. So he can continue to issue,
+decryption requests. So he submits a
+
+306
+00:11:17,003 --> 00:11:21,063
+因此他可以继续请求解密密文。所以他提交一个
+
+307
+00:11:21,063 --> 00:11:25,447
+ciphertext, and he gets a decryption of
+that ciphertext, but of course, now, there
+
+308
+00:11:21,063 --> 00:11:25,447
+密文，之后得到密文的解密，当然，
+
+309
+00:11:25,447 --> 00:11:29,994
+has to be a caveat. If the attacker could
+submit arbitrary ciphertext of his choice,
+
+310
+00:11:25,447 --> 00:11:29,994
+现在应该有一个警告。如果攻击者可以提交他选择的任意密文
+
+311
+00:11:29,994 --> 00:11:34,270
+of course, he could break the challenge.
+What he would do is he would submit the
+
+312
+00:11:29,994 --> 00:11:34,270
+当然他可以破解挑战。他将要做的是上传一个
+
+313
+00:11:34,270 --> 00:11:38,506
+challenge ciphertext C as a decryption
+query. And then he would be told whether
+
+314
+00:11:34,270 --> 00:11:38,506
+挑战密文C作为解密询问。然后他被告知
+
+315
+00:11:38,506 --> 00:11:42,665
+in the challenge phase he was given the
+encryption of M0 or the encryption of M1.
+
+316
+00:11:38,506 --> 00:11:42,665
+他在挑战阶段获得的是M0还是M1的加密结果
+
+317
+00:11:42,665 --> 00:11:46,825
+As a result we put this limitation here,
+that says that he can in fact submit any
+
+318
+00:11:42,665 --> 00:11:46,825
+因为我们有这么一个限制，攻击者可以提交
+
+319
+00:11:46,825 --> 00:11:51,031
+ciphertext of his choice except. For the
+challenge ciphertext. So the attacker
+
+320
+00:11:46,825 --> 00:11:51,031
+任何他选择的密文，除了挑战密文
+
+321
+00:11:51,031 --> 00:11:55,034
+could ask for the decryption of any
+ciphertext of his choice other than the
+
+322
+00:11:51,031 --> 00:11:55,034
+那么攻击者可以询问他选择的任何密文的解密
+
+323
+00:11:55,034 --> 00:11:59,297
+challenge ciphertext. And even though he
+was given all these decryptions, he still
+
+324
+00:11:55,034 --> 00:11:59,297
+除了挑战密文。即使攻击者有所有这些的解密
+
+325
+00:11:59,297 --> 00:12:03,196
+shouldn't be able to tell whether he was
+given the encryption of M0 or the
+
+326
+00:11:59,297 --> 00:12:03,196
+他依然不能分辨出他得到的是M0还是M1的加密
+
+327
+00:12:03,196 --> 00:12:09,212
+encryption of M1. So you notice this is a
+very conservative definition. It gives the
+
+328
+00:12:03,196 --> 00:12:09,212
+所以大家注意，这是一个非常保守的定义
+
+329
+00:12:09,212 --> 00:12:14,113
+attacker more power than what we saw in
+the previous slide. On the previous slide,
+
+330
+00:12:09,212 --> 00:12:14,113
+它赋予了攻击者比我们上一张幻灯片里看到的更多的能力
+
+331
+00:12:14,113 --> 00:12:18,710
+the attacker could only decrypt messages
+where the plain text began with the words
+
+332
+00:12:14,113 --> 00:12:18,710
+上一张幻灯片里，攻击只能解密以“致攻击者”开头的信息
+
+333
+00:12:18,710 --> 00:12:23,611
+"to: attacker". Here, we're saying the attacker
+can decrypt any ciphertext of his choice,
+
+334
+00:12:18,710 --> 00:12:23,611
+这里，攻击者可以解密任何他选择的密文
+
+335
+00:12:23,611 --> 00:12:29,717
+as long as it's different from the
+challenge ciphertext C. Okay? And then his
+
+336
+00:12:23,611 --> 00:12:29,717
+只要提交的密文与挑战密文C不同
+
+337
+00:12:29,717 --> 00:12:34,094
+goal is to say whether the challenge
+ciphertext is the encryption of M0 or the
+
+338
+00:12:29,717 --> 00:12:34,094
+然后攻击者的目标是，判断挑战密文是M0还是M1的加密
+
+339
+00:12:34,094 --> 00:12:37,918
+encryption of M1. And as usual, if he
+can't do that, in other words, his
+
+340
+00:12:34,094 --> 00:12:37,918
+通常，如果攻击者不能做到，换句话说
+
+341
+00:12:37,918 --> 00:12:42,351
+behavior in experiment zero is basically
+the same as his behavior in experiment
+
+342
+00:12:37,918 --> 00:12:42,351
+他的表现在实验0和实验1中是一样的
+
+343
+00:12:42,351 --> 00:12:46,839
+one, so he wasn't able to distinguish the
+encryption of M0 from the encryption of
+
+344
+00:12:42,351 --> 00:12:46,839
+那么他不能区分M0与M1的加密
+
+345
+00:12:46,839 --> 00:12:51,219
+M1, even though he had all this power Then
+we say that the system is chosen
+
+346
+00:12:46,839 --> 00:12:51,219
+即使他拥有这么多的能力。那么我们说
+
+347
+00:12:51,219 --> 00:12:55,877
+ciphertext secure, CCA secure. And
+sometimes there is an acronym, the acronym
+
+348
+00:12:51,219 --> 00:12:55,877
+这个系统是选择密文CCA安全的。有时有一个缩写词
+
+349
+00:12:55,877 --> 00:13:00,596
+for this is indistinguishability under a
+chosen ciphertext attack, but I'm just
+
+350
+00:12:55,877 --> 00:13:00,596
+对选择密文攻击的不可区分性
+
+351
+00:13:00,596 --> 00:13:05,745
+gonna say CCA secured. So let's see how
+this captures, the email example we saw
+
+352
+00:13:00,596 --> 00:13:05,745
+我记为CCA安全。那么我们看这如何抓住了我们前边看的电子邮件的例子的特点
+
+353
+00:13:05,745 --> 00:13:10,587
+before. So suppose the encryption system
+being used is such that just given the
+
+354
+00:13:05,745 --> 00:13:10,587
+那么假设使用的加密系统满足
+
+355
+00:13:10,587 --> 00:13:15,429
+encryption of a message the attacker can
+change the intended recipient from to
+
+356
+00:13:10,587 --> 00:13:15,429
+给定信息的加密，攻击者可以改变接收方
+
+357
+00:13:15,429 --> 00:13:20,129
+Alice say to, to Charlie. Then here's how
+we would win the CCA game. Well in the
+
+358
+00:13:15,429 --> 00:13:20,129
+从“致Alice”改为“致Charlie”,那么我们可以这样赢得游戏
+
+359
+00:13:20,129 --> 00:13:25,033
+first step he's given the public key of
+course. And then what the attacker will do
+
+360
+00:13:20,129 --> 00:13:25,033
+第一步攻击者当然得到了公钥，
+
+361
+00:13:25,033 --> 00:13:29,578
+is he would issue two equal length
+messages, namely in the first message, the
+
+362
+00:13:25,033 --> 00:13:29,578
+然后攻击者会发出两个等长度的密文，第一个明文内容是0
+
+363
+00:13:29,578 --> 00:13:33,943
+body is zero. In the second message the
+body is one. But both messages are
+
+364
+00:13:29,578 --> 00:13:33,943
+第二个明文内容是1   两个明文都给Alice
+
+365
+00:13:33,943 --> 00:13:39,890
+intended for Alice. And in response, he
+would be given the challenge ciphertext C.
+
+366
+00:13:33,943 --> 00:13:39,890
+Alice回复后，攻击者会得到密文C
+
+367
+00:13:39,890 --> 00:13:45,130
+Okay, so now here we have our challenge
+ciphertext C. Now what the attacker is
+
+368
+00:13:39,890 --> 00:13:45,130
+那么现在我们有挑战密文C了
+
+369
+00:13:45,130 --> 00:13:49,961
+gonna do is he's gonna use his, his
+ability here to modify the intended
+
+370
+00:13:45,130 --> 00:13:49,961
+现在攻击者会使用他的能力去修改接收方
+
+371
+00:13:49,961 --> 00:13:55,269
+recipient. And he's gonna send back a
+ciphertext C', where C' is the encryption
+
+372
+00:13:49,961 --> 00:13:55,269
+他会返回给Alice一个密文C'
+
+373
+00:13:55,269 --> 00:14:01,760
+of the message to Charlie with body being
+the challenge body b. So if you remember is
+
+374
+00:13:55,269 --> 00:14:01,760
+C'是Charlie的明文加密结果，其内容是挑战密文的内容b
+
+375
+00:14:01,760 --> 00:14:07,822
+either zero or one. Now, because the plain
+text is different, we know that the
+
+376
+00:14:01,760 --> 00:14:07,822
+如果大家记得是0还是1  现在因为明文不同
+
+377
+00:14:07,822 --> 00:14:12,486
+ciphertext must also be different. So in
+particular, C prime must be different from
+
+378
+00:14:07,822 --> 00:14:12,486
+我们知道密文也不同  那么特别地
+
+379
+00:14:12,486 --> 00:14:17,206
+the challenge ciphertext C, yeah? So the
+C prime here must be different from C. And
+
+380
+00:14:12,486 --> 00:14:17,206
+C'一定和挑战密文C不一样，对吧？那么C'一定不同于C
+
+381
+00:14:17,206 --> 00:14:21,758
+as a result, the poor challenger now has
+to decrypt by definition of the CCA game.
+
+382
+00:14:17,206 --> 00:14:21,758
+因此可怜的挑战者现在必须解密，根据CCA游戏的定义
+
+383
+00:14:21,758 --> 00:14:26,141
+The challenger must decrypt any ciphertext
+that's not equal to a challenge
+
+384
+00:14:21,758 --> 00:14:26,141
+挑战者必须解密任何不同于挑战密文的密文
+
+385
+00:14:26,141 --> 00:14:30,648
+ciphertext. So the challenger decrypts
+give the adversary M prime. Basically he
+
+386
+00:14:26,141 --> 00:14:30,648
+那么挑战者解密了，给攻击者解密结果M'
+
+387
+00:14:30,648 --> 00:14:35,256
+gave the adversary B, and now the
+adversary can output the challenge B and
+
+388
+00:14:30,648 --> 00:14:35,256
+他给了攻击者B，现在攻击者可以输出挑战结果b
+
+389
+00:14:35,256 --> 00:14:40,293
+he wins the game with advantage one. So
+he's advantage with this particular scheme
+
+390
+00:14:35,256 --> 00:14:40,293
+他以优势1赢得了这个游戏，那么他对这个游戏的优势是1
+
+391
+00:14:40,293 --> 00:14:45,143
+is one. So, simply because the attacker
+was able to change the challenge ciphertext
+
+392
+00:14:40,293 --> 00:14:45,143
+因为攻击者能够改变挑战密文
+
+393
+00:14:45,146 --> 00:14:49,999
+from one recipient to another that
+allows him to, to win the CCA game with
+
+394
+00:14:45,146 --> 00:14:49,999
+从一个接收方改到另一个，使得他能以优势1赢得这个CCA游戏
+
+395
+00:14:49,999 --> 00:14:55,003
+advantage one. So as I said, chosen
+ciphertext security turns out actually is
+
+396
+00:14:49,999 --> 00:14:55,003
+如我所说，选择密文安全事实上是
+
+397
+00:14:55,003 --> 00:14:59,327
+the correct notion of security for public
+key encryption systems. And it's a very,
+
+398
+00:14:55,003 --> 00:14:59,327
+公钥加密的正确的观念
+
+399
+00:14:59,327 --> 00:15:03,651
+very interesting concept, right? Basically, somehow
+even though the attacker has this ability
+
+400
+00:14:59,327 --> 00:15:03,651
+这是个非常有趣的概念，对吧？即使攻击者有这能力
+
+401
+00:15:03,651 --> 00:15:07,839
+to decrypt anything he wants. Other than
+the challenge ciphertext, still he can't
+
+402
+00:15:03,651 --> 00:15:07,839
+能解密任何他想解密的密文，挑战密文除外
+
+403
+00:15:07,839 --> 00:15:12,028
+learn what the challenge ciphertext is.
+And so the goal for the remainder of this module
+
+404
+00:15:07,839 --> 00:15:12,028
+他依然不能学到挑战密文是什么。那么本章余下的目标
+
+405
+00:15:12,028 --> 00:15:16,275
+and actually the next module as well, is
+to construct CCA secure systems. It's
+
+406
+00:15:12,028 --> 00:15:16,275
+其实也包括下一章，目标是构建CCA安全的系统
+
+407
+00:15:16,275 --> 00:15:20,093
+actually quite remarkable that this is
+achievable and I'm going to show you
+
+408
+00:15:16,275 --> 00:15:20,093
+很惊人的是，这是可以做到的
+
+409
+00:15:20,093 --> 00:15:24,310
+exactly how to do it. And in fact those
+CCA secure systems that we build are the
+
+410
+00:15:20,093 --> 00:15:24,310
+我会告诉大家怎么做。事实上我们构建的这些CCA安全系统
+
+411
+00:15:24,310 --> 00:15:28,579
+ones that are used in the real world. And
+every time a system has tried to deploy
+
+412
+00:15:24,310 --> 00:15:28,579
+就是在现实中使用的系统。每次系统试图
+
+413
+00:15:28,737 --> 00:15:33,007
+a public key encryption mechanism that's not
+CCA secure someone has come up with an
+
+414
+00:15:28,737 --> 00:15:33,007
+布置一个不是CCA安全的公钥加密机制时
+
+415
+00:15:33,007 --> 00:15:37,487
+attack and was able to break it. And we're
+going to see some of these example attacks
+
+416
+00:15:33,007 --> 00:15:37,487
+都有人提出攻击并破解了它
+
+417
+00:15:37,487 --> 00:15:39,280
+actually in the next few segments.
+
+418
+00:15:37,487 --> 00:15:39,280
+下面几节我们将看到这些攻击的几个例子
+

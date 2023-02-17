@@ -1,0 +1,1 @@
+Assume CTR-mode encryption with PKCS #5padding and a block cipher with 8-byte blocklength. Say a 4-byte message is encrypted,resulting in ciphertext Ox00 01 02 03 04 05 0607 00 01 02 03 04 05 06 07.Which of thefollowing ciphertexts will NOT yield an errorupon decryption?

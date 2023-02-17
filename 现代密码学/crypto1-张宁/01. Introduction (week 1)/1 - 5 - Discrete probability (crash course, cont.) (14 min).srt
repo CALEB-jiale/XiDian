@@ -1,0 +1,859 @@
+1
+00:00:00,000 --> 00:00:03,540
+In this segment, we're gonna continue with
+a few more tools from discrete
+
+2
+00:00:03,540 --> 00:00:07,468
+probability, and I want to remind everyone
+that if you wanna read more about this,
+
+3
+00:00:07,468 --> 00:00:11,521
+there's more information in wiki books
+article that is linked over here. So first
+
+4
+00:00:11,521 --> 00:00:16,446
+let's do a quick recap of where we are. We
+said that the discrete probability is
+
+5
+00:00:16,446 --> 00:00:21,496
+always defined over a finite set, which
+we're gonna denote by U, and typically for
+
+6
+00:00:21,496 --> 00:00:26,671
+us, U is going to be the set of all N bit
+binary strings, which we denote by zero
+
+7
+00:00:26,671 --> 00:00:31,534
+130 N. Now a probability distribution P
+over this universe U is basically a
+
+8
+00:00:31,534 --> 00:00:36,834
+function that assigns to every element in
+the universe a weight in the interval zero
+
+9
+00:00:36,834 --> 00:00:42,196
+to one, such that if we sum the weight of
+all these elements, the sum basically sums
+
+10
+00:00:42,196 --> 00:00:47,210
+up to one. Now we have said that subset of
+the universe is what called an event, and
+
+11
+00:00:47,210 --> 00:00:52,021
+we said that probability of an event is
+basically the sum of all the weights of
+
+12
+00:00:52,021 --> 00:00:57,073
+all the elements in the event and we said
+that probability of an event is some real
+
+13
+00:00:57,073 --> 00:01:01,764
+numbers in the interval zero to one And I
+would remind everyone the basically
+
+14
+00:01:01,764 --> 00:01:06,575
+probability of the entire universe is
+basically the one by the fact that sum of
+
+15
+00:01:06,575 --> 00:01:11,268
+all the weights sums up to one. Then we
+define what a random variable is Formally,
+
+16
+00:01:11,268 --> 00:01:15,908
+a random variable is a, is a function from
+the universe of some other sets But the
+
+17
+00:01:15,908 --> 00:01:20,773
+thing that I want you to remember is that
+the random variable takes, values in some
+
+18
+00:01:20,773 --> 00:01:25,289
+set v And, in fact, the random variable
+defines the distribution on this set v. So
+
+19
+00:01:25,289 --> 00:01:29,651
+the next concept we need is what's called
+independence And I'm gonna very briefly
+
+20
+00:01:29,651 --> 00:01:34,278
+define this If you want to read more about
+independence, please go ahead and look at
+
+21
+00:01:34,278 --> 00:01:38,374
+the wiki books article. But essentially we
+say that two events A and B are
+
+22
+00:01:38,374 --> 00:01:42,932
+independent of one another if When you
+know that event A happens, that tells you
+
+23
+00:01:42,932 --> 00:01:47,377
+nothing about whether event B actually
+happened or not. Formally, the way we
+
+24
+00:01:47,377 --> 00:01:52,236
+define independence is to say that, the
+probability of A and B, namely, that both
+
+25
+00:01:52,236 --> 00:01:56,621
+events happened, is actually=to the
+probability of event A the probability of
+
+26
+00:01:56,621 --> 00:02:01,539
+event B So mult iplication, in some sense,
+the fact that probabilities multiply under
+
+27
+00:02:01,539 --> 00:02:06,339
+conjunction, captures the fact that these
+events are independent And as I said, if
+
+28
+00:02:06,339 --> 00:02:11,080
+you wanna read more about that, please
+take a look at the background material.
+
+29
+00:02:11,080 --> 00:02:16,636
+Now the same thing can be said for random
+variables. So suppose we have two random
+
+30
+00:02:16,636 --> 00:02:21,921
+variables x and y. They take values in
+some set v. Then we say that these random
+
+31
+00:02:21,921 --> 00:02:26,868
+variables are independent if the
+probability that x = a, and y = b is equal
+
+32
+00:02:26,868 --> 00:02:32,492
+to the product of these two probabilities.
+Basically what this means is, even if you
+
+33
+00:02:32,492 --> 00:02:37,606
+know that x = a, that tells you nothing
+about the value of y. Okay, that, that's
+
+34
+00:02:37,606 --> 00:02:43,060
+what this multiplication means And again
+this needs to hold for all A and B in the
+
+35
+00:02:43,060 --> 00:02:48,185
+space of values of these random variables
+So, just again to job your memory If
+
+36
+00:02:48,185 --> 00:02:53,112
+you've seen this before, a very quick
+example. Suppose we look at the, set of,
+
+37
+00:02:53,112 --> 00:02:58,171
+of two bit strings So, zero, zero, zero,
+one, one zero and, one, one And suppose we
+
+38
+00:02:58,171 --> 00:03:03,625
+choose a random, from this set. Okay so we
+randomly choose one of these four elements
+
+39
+00:03:03,625 --> 00:03:08,431
+with equal probability. Now let's define
+two random variables. X is gonna be the
+
+40
+00:03:08,431 --> 00:03:13,541
+least significant bit that was generated,
+and Y is gonna be the most significant bit
+
+41
+00:03:13,541 --> 00:03:18,981
+generated. So I claim that, these random
+variables, x and y, are independent of one
+
+42
+00:03:18,981 --> 00:03:23,880
+another. And the way to see that
+intuitively, is to realize that choosing r
+
+43
+00:03:23,880 --> 00:03:29,440
+uniformly, from the set of four elements
+is basically the same as flipping a coin
+
+44
+00:03:29,440 --> 00:03:37,051
+An unbiased coin twice. The first bit
+corresponds to the outcome of the first
+
+45
+00:03:37,051 --> 00:03:38,517
+flip and the second bit corresponds to the
+outcome of the second flip And of course
+
+46
+00:03:38,517 --> 00:03:43,197
+there are four possible outcomes. All four
+outcomes are equally likely which is why
+
+47
+00:03:43,197 --> 00:03:47,821
+we get the uniform distributions over two
+bit strings Now our variables X and Y. Y
+
+48
+00:03:47,821 --> 00:03:52,557
+the independents Basically if I tell you
+result of the first flip namely I tell you
+
+49
+00:03:52,557 --> 00:03:57,181
+the lest signify bit of R So I tell you
+how the first coin you know whether it
+
+50
+00:03:57,181 --> 00:04:01,804
+fell on its head or fell on its tails.
+That tells you nothing about the result of
+
+51
+00:04:01,804 --> 00:04:06,844
+the second flip. Which is why intuitively,
+you might, you might expect these random
+
+52
+00:04:06,844 --> 00:04:11,624
+variables to be independent of one
+another. But formally, we would have to
+
+53
+00:04:11,624 --> 00:04:16,142
+prove that, for, all 01 pairs, the
+probability of, x=0 and y=0, x=1, y=1, and
+
+54
+00:04:16,142 --> 00:04:21,446
+so on. These probabilities multiply. Let's
+just do it for one of these pairs. So
+
+55
+00:04:21,446 --> 00:04:26,721
+let's look at the probability that x is =
+to zero, and y is = to zero. Well, you see
+
+56
+00:04:26,721 --> 00:04:31,027
+that the probability that x is equal to
+zero and y is equal to zero is basically
+
+57
+00:04:31,027 --> 00:04:35,387
+the probability that r is equal to zero,
+zero And what's the probability that r is
+
+58
+00:04:35,387 --> 00:04:39,535
+equal to zero, zero? Well, by the uniform
+distribution, that's basically equal to
+
+59
+00:04:39,535 --> 00:04:44,327
+one-fourth. What it's one over side of the
+set which is one fourth in this case And
+
+60
+00:04:44,327 --> 00:04:49,095
+well low and behold that's in fact these
+probably provability multiply Because
+
+61
+00:04:49,095 --> 00:04:53,583
+again the probability that X is equal to
+zero. The probability that lest signify
+
+62
+00:04:53,583 --> 00:04:57,566
+bit of R is equal to zero. This
+provability is exactly one half because
+
+63
+00:04:57,566 --> 00:05:01,941
+there is exactly two elements that have
+their, lest signify bit equals to zero.
+
+64
+00:05:01,941 --> 00:05:06,373
+Two out of four elements gives you a
+provability of one half And similarly the
+
+65
+00:05:06,373 --> 00:05:10,738
+probability that Y is equal to zero is
+also one half so in fact the provability
+
+66
+00:05:10,738 --> 00:05:16,434
+multiplies. Okay, so that's, this concept
+of independence And the reason I wanted to
+
+67
+00:05:16,434 --> 00:05:21,892
+show you that is because we're gonna look
+at an, an important property of XOR that
+
+68
+00:05:21,892 --> 00:05:27,349
+we're gonna use again and again. So before
+we talk about XOR, let me just do a very
+
+69
+00:05:27,349 --> 00:05:32,408
+quick review of what XOR is. So, of
+course, XOR of two bits means the addition
+
+70
+00:05:32,408 --> 00:05:38,065
+of those bits, modular two. So just too
+kind of, make sure everybody's on the same
+
+71
+00:05:38,065 --> 00:05:43,233
+page If we have two bits, so 0001, ten and
+eleven. Their XOR or the truth table of
+
+72
+00:05:43,233 --> 00:05:48,106
+the XOR is basically just the addition
+modular two. As you can see, one+1 is= to
+
+73
+00:05:48,106 --> 00:05:52,978
+two, modular two. That's=to zero. So this
+is the truth table for [inaudible] XOR And
+
+74
+00:05:52,978 --> 00:05:57,665
+I'm always going to denote XOR by the
+circle with a + inside And then when I
+
+75
+00:05:57,665 --> 00:06:02,353
+wanna apply XOR to bit strings, I apply
+the, addition modular two operation,
+
+76
+00:06:02,538 --> 00:06:07,472
+bitwise. So, for example, the XOR of these
+two strings would be, 110, and I guess
+
+77
+00:06:07,472 --> 00:06:12,283
+I'll let you fill out the rest of the
+XORs, just to make sure we're all on the
+
+78
+00:06:12,283 --> 00:06:18,941
+same page. So of course is comes out to
+one, one zero one. Now, we're gonna be
+
+79
+00:06:18,941 --> 00:06:23,092
+doing a lot of XORing in this class. In
+fact, there's a classical joke that the
+
+80
+00:06:23,092 --> 00:06:27,669
+only think cryptographers know how to do
+is just XOR things together But I want to
+
+81
+00:06:27,669 --> 00:06:31,607
+explain to you why we see XOR so
+frequently in cryptography. Basically, XOR
+
+82
+00:06:31,607 --> 00:06:35,865
+has a very important property, and the
+property is the following. Suppose we have
+
+83
+00:06:35,865 --> 00:06:40,630
+a random variable y. That's distributed
+arbitrarily over 01 to the n. So we know
+
+84
+00:06:40,630 --> 00:06:45,773
+nothing about the distribution of y But
+now, suppose we have an independent random
+
+85
+00:06:45,773 --> 00:06:50,790
+variable that happens to be uniformly
+distributed also over 01 to the n. So it's
+
+86
+00:06:50,790 --> 00:06:55,766
+very important that x is uniform. N's
+independent of y. So now let's define the
+
+87
+00:06:55,766 --> 00:07:00,851
+random variable which is the XOR of x and
+y. Then I claim that no matter what
+
+88
+00:07:00,851 --> 00:07:05,937
+distribution y started with, this z is
+always going to be a uniform, random
+
+89
+00:07:05,937 --> 00:07:11,287
+variable. So in other words if I take an
+arbitrarily malicious distribution and I
+
+90
+00:07:11,287 --> 00:07:16,373
+XOR with independent uniform random
+variable what I end up with is a uniform
+
+91
+00:07:16,373 --> 00:07:20,672
+random variable. Okay and this again is
+kind of a key property that makes x or
+
+92
+00:07:20,672 --> 00:07:24,490
+very useful for crypto. So this is
+actually a very simple factor to prove,
+
+93
+00:07:24,490 --> 00:07:28,851
+let's just go ahead and do it, let's just
+prove it for one bit so for n = one. Okay,
+
+94
+00:07:28,851 --> 00:07:33,472
+so the way we'll do it is we'll basically
+write out the probability distributions
+
+95
+00:07:33,472 --> 00:07:38,242
+for the various random variables. So let's
+see, for the random variable y. Well, the
+
+96
+00:07:38,242 --> 00:07:43,167
+random variable can be either zero or one.
+And let's say that P0 is the probability
+
+97
+00:07:43,167 --> 00:07:47,320
+that it's = to zero, and P1 is the
+probability that it's =to one. Okay, so
+
+98
+00:07:47,320 --> 00:07:52,008
+that's one of our tables. Similarly, we're
+gonna have a table for the variable x.
+
+99
+00:07:52,008 --> 00:07:56,458
+Well, the variable x is much easier.
+That's a uniform random variable. So the
+
+100
+00:07:56,458 --> 00:08:00,909
+probability that it's=to zero is exactly
+one half The probability that's it's=to
+
+101
+00:08:00,909 --> 00:08:05,428
+one is also exactly one half. Now, let's
+write out the probabilities for the join
+
+102
+00:08:05,428 --> 00:08:09,599
+di stribution. In, in other words, let's
+see what the probability, is for the
+
+103
+00:08:09,599 --> 00:08:14,099
+various, joint values of y and x. In other
+words, how likely is, it that y is zero,
+
+104
+00:08:14,099 --> 00:08:18,435
+and x is zero. Y is zero, and x is one. Y
+is one and x is zero, and eleven. Well, so
+
+105
+00:08:18,435 --> 00:08:22,770
+what we do is, basically, because we
+assume the variables are independent, all
+
+106
+00:08:22,770 --> 00:08:26,518
+we have to do is multiply the
+probabilities. So The probability that y
+
+107
+00:08:26,518 --> 00:08:30,552
+is equal to zero is p zero. Probability
+that x is equal to zero is one-half. So
+
+108
+00:08:30,552 --> 00:08:36,843
+the proximity that, we get 00 as exactly p
+zero over two. Similarly for zero one
+
+109
+00:08:36,843 --> 00:08:42,387
+we'll get p zero over two, for one zero
+we'll get p one over two And for 1-1,
+
+110
+00:08:42,387 --> 00:08:47,232
+again, the probability that y is=to one,
+and x is=to one, Well, that's P1  the
+
+111
+00:08:47,232 --> 00:08:52,347
+probability that x is=to one, which is a
+half, so it's P1 over two. Okay? So those
+
+112
+00:08:52,347 --> 00:08:57,664
+are the four, probabilities for the
+various options for x and y. So now, let's
+
+113
+00:08:57,664 --> 00:09:03,182
+analyze, what is the probability that z is
+equal to zero? Well, the probability that
+
+114
+00:09:03,182 --> 00:09:08,768
+z is=to zero is basically the same as the
+probability that, let's write it this way,
+
+115
+00:09:08,768 --> 00:09:15,342
+xy. Is=to 00. Or xy is=to, eleven. Those
+are the two possible cases that z is=to
+
+116
+00:09:15,342 --> 00:09:22,652
+zero Because z is the XOR of x and y. Now,
+these events are disjoint, so, this
+
+117
+00:09:22,652 --> 00:09:30,336
+expression can simply be written as the
+sum of the two expressions given above. So
+
+118
+00:09:30,336 --> 00:09:37,271
+basically, it's the probability that xy
+is=to 00, plus the probability that xy,
+
+119
+00:09:37,552 --> 00:09:43,281
+is=to eleven. So now we can simply look up
+these probabilities in our table. So the
+
+120
+00:09:43,281 --> 00:09:47,874
+probability that xy is equal to 00 is
+simply p zero over two, and the
+
+121
+00:09:47,874 --> 00:09:53,156
+probability that xy is equal to one, one
+is simply p one over two. So we get P0
+
+122
+00:09:53,156 --> 00:09:58,818
+over two +P1 over two But what do we kn-,
+what do we know about P0 and P1? Well,
+
+123
+00:09:58,818 --> 00:10:03,819
+it's a probability distribution.
+Therefore, P0+P1 must =one And therefore,
+
+124
+00:10:03,819 --> 00:10:09,482
+this fraction here must= to a half. P0+P1
+is =to one. So therefore, the sum of these
+
+125
+00:10:09,482 --> 00:10:15,292
+two terms must = a half And we're done.
+Basically, we proved that the probability
+
+126
+00:10:15,292 --> 00:10:20,143
+that z is = to zero. Is one half,
+therefore the probability that z is equal
+
+127
+00:10:20,143 --> 00:10:25,123
+to one is also one half. Therefore z is a
+unif orm random variable. So the simple
+
+128
+00:10:25,123 --> 00:10:29,773
+theorem is the main reason why x o is so
+useful in cartography. The last thing I
+
+129
+00:10:29,773 --> 00:10:34,437
+wanna show you about discreet probability
+is what's called the birthday paradox And
+
+130
+00:10:34,437 --> 00:10:38,934
+I'm gonna do it really fast here Because
+we're gonna come back later on, and talk
+
+131
+00:10:38,934 --> 00:10:42,931
+about this in more detail. So, the
+birthday paradox says the following
+
+132
+00:10:42,931 --> 00:10:47,370
+suppose I choose n random variables in our
+universe u. Okay And it just so happens
+
+133
+00:10:47,370 --> 00:10:51,485
+that these variables are independent of
+one another. They actually don't have to
+
+134
+00:10:51,485 --> 00:10:55,651
+be uniform. All we need to assume is that
+they're distributed in the same way. The
+
+135
+00:10:55,651 --> 00:10:59,818
+most important property though is that
+they're independent of one another. So the
+
+136
+00:10:59,818 --> 00:11:04,035
+theorem says that if you choose roughly
+the square root of the size of u elements,
+
+137
+00:11:04,035 --> 00:11:08,202
+we're kind of this one point two here, it
+doesn't really matter. But if you choose
+
+138
+00:11:08,202 --> 00:11:12,471
+square root of the size of u elements,
+then basically there's a good chance that
+
+139
+00:11:12,471 --> 00:11:16,740
+there are two elements that are the same.
+In other words, if you sample about square
+
+140
+00:11:16,740 --> 00:11:21,158
+root a few times, then it's likely that
+two of your samples. [inaudible] will be
+
+141
+00:11:21,158 --> 00:11:25,763
+equal to each other. And by the way, I
+should point out that this inverted e,
+
+142
+00:11:25,947 --> 00:11:30,860
+just means exists. So there exists in
+[inaudible] I and j such that r I is equal
+
+143
+00:11:30,860 --> 00:11:35,057
+to r j. So here's a concrete example.
+We'll actually see many, many times.
+
+144
+00:11:35,057 --> 00:11:39,493
+Suppose our universe consist of all
+strings of length of one hundred and
+
+145
+00:11:39,493 --> 00:11:44,279
+twenty eight bits. So the size of you is
+gigantic it's actually two to the hundred
+
+146
+00:11:44,279 --> 00:11:49,123
+and twenty eight. It's a very, very large
+set But it so happens if you sample say
+
+147
+00:11:49,123 --> 00:11:53,909
+around two the sixty four times from the
+set. This is about the square root of U
+
+148
+00:11:53,909 --> 00:11:58,520
+then is very likely that two of your
+sample messages will actually be the same.
+
+149
+00:11:58,520 --> 00:12:02,871
+So why is, this called the paradox? Well,
+traditionally it's described in terms of
+
+150
+00:12:02,871 --> 00:12:06,896
+people's birthdays. So you would think
+that each of these samples would be
+
+151
+00:12:06,896 --> 00:12:11,772
+someone's birthday And so the question is
+how many people need to get together so
+
+152
+00:12:11,772 --> 00:12:16,510
+that there are two people that have the
+same birthday? So, just as a simple cal
+
+153
+00:12:16,510 --> 00:12:21,349
+culation you can see there are 365 days in
+the year, so you would need about 1.2
+
+154
+00:12:21,349 --> 00:12:26,656
+times the square root of 365 people until
+the probability that two of them have the
+
+155
+00:12:26,656 --> 00:12:31,327
+same birthday is more than a half. This if
+I'm not mistaken is about 24, which means
+
+156
+00:12:31,327 --> 00:12:35,673
+that if 24 random people get together in a
+room it's very likely that two of them
+
+157
+00:12:35,673 --> 00:12:40,020
+will actually have the same birthday. This
+is why it's called a paradox, because 24
+
+158
+00:12:40,020 --> 00:12:44,457
+supposedly is a smaller number than you
+would expect. Interestingly, people's
+
+159
+00:12:44,457 --> 00:12:50,401
+birthdays are not actually uniform across
+all 365 days of the year. There's actually
+
+160
+00:12:50,401 --> 00:12:55,223
+a bias towards December. >> But, I guess
+that's not, that's not relative to the
+
+161
+00:12:55,223 --> 00:12:59,878
+discussion here. >> The last thing I
+wanted to do is just show you the birthday
+
+162
+00:12:59,878 --> 00:13:04,533
+paradox a bit more concretely. So, suppose
+we have a universe of about a million
+
+163
+00:13:04,533 --> 00:13:09,244
+samples, then you can see that when we
+sample roughly 1200 times, the probability
+
+164
+00:13:09,247 --> 00:13:14,197
+that we get, we sample the same number,
+the same element twice is roughly half But
+
+165
+00:13:14,197 --> 00:13:18,498
+the probability of sampling the same
+number twice actually converges very
+
+166
+00:13:18,498 --> 00:13:22,857
+quickly to one. You can see that if we
+about 2200 items, then the probability
+
+167
+00:13:22,859 --> 00:13:26,790
+that two of those items are the same,
+already is 90 percent and You know, 3000
+
+168
+00:13:26,790 --> 00:13:30,440
+then it's basically one. So this
+conversion is very quickly to one as soon
+
+169
+00:13:30,440 --> 00:13:34,484
+as he goes beyond the square root of the
+size of the universe. So we're gonna come
+
+170
+00:13:34,484 --> 00:13:38,380
+back and study the birthday paradox in
+more detail later on, but I just for now,
+
+171
+00:13:38,380 --> 00:13:42,597
+wanted you to know what it is. So that's
+the end of this segment, and then in the
+
+172
+00:13:42,597 --> 00:13:49,509
+next segment we'll start with our first
+example of encryption systems. [sound]

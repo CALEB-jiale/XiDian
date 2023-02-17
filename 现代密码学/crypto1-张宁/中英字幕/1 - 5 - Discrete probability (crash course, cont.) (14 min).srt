@@ -1,0 +1,1548 @@
+1
+00:00:00,000 --> 00:00:03,540
+在这部分，我们会继续了解一些其他的离散概率的工具
+
+2
+00:00:00,000 --> 00:00:03,540
+In this segment, we're gonna continue with
+a few more tools from discrete
+
+3
+00:00:03,540 --> 00:00:07,468
+我想提醒大家如果你们想在维基百科中
+
+4
+00:00:03,540 --> 00:00:07,468
+probability, and I want to remind everyone
+that if you wanna read more about this,
+
+5
+00:00:07,468 --> 00:00:11,521
+了解更多关于这个工具,那么链接在这里。所以首先
+
+6
+00:00:07,468 --> 00:00:11,521
+there's more information in wiki books
+article that is linked over here. So first
+
+7
+00:00:11,521 --> 00:00:16,446
+让我们快速回顾一下之前学到了哪里。我们说离散概率
+
+8
+00:00:11,521 --> 00:00:16,446
+let's do a quick recap of where we are. We
+said that the discrete probability is
+
+9
+00:00:16,446 --> 00:00:21,496
+总是定义在一个有限的集合上，我们用U来表示，通常表示为这些，
+
+10
+00:00:16,446 --> 00:00:21,496
+always defined over a finite set, which
+we're gonna denote by U, and typically for
+
+11
+00:00:21,496 --> 00:00:26,671
+U将成为所有N位的设置二进制字符串，指示为01N
+
+12
+00:00:21,496 --> 00:00:26,671
+us, U is going to be the set of all N bit
+binary strings, which we denote by zero
+
+13
+00:00:26,671 --> 00:00:31,534
+现在的一个概率分布P在这个集合U上基本上是一个
+
+14
+00:00:26,671 --> 00:00:31,534
+130 N. Now a probability distribution P
+over this universe U is basically a
+
+15
+00:00:31,534 --> 00:00:36,834
+函数，指定在区域[0,1]区间内的每一个元素，
+
+16
+00:00:31,534 --> 00:00:36,834
+function that assigns to every element in
+the universe a weight in the interval zero
+
+17
+00:00:36,834 --> 00:00:42,196
+这样如果我们将所有这些元素的权重求和，会发现和就会等于一
+
+18
+00:00:36,834 --> 00:00:42,196
+to one, such that if we sum the weight of
+all these elements, the sum basically sums
+
+19
+00:00:42,196 --> 00:00:47,210
+现在我们说，集合的子集是什么被称为一个事件，
+
+20
+00:00:42,196 --> 00:00:47,210
+up to one. Now we have said that subset of
+the universe is what called an event, and
+
+21
+00:00:47,210 --> 00:00:52,021
+一个事件的概率是事件中所有元素权重的总和，
+
+22
+00:00:47,210 --> 00:00:52,021
+we said that probability of an event is
+basically the sum of all the weights of
+
+23
+00:00:52,021 --> 00:00:57,073
+我们说，事件的概率是在
+
+24
+00:00:52,021 --> 00:00:57,073
+all the elements in the event and we said
+that probability of an event is some real
+
+25
+00:00:57,073 --> 00:01:01,764
+零到一之间的实数，并且还有一点
+
+26
+00:00:57,073 --> 00:01:01,764
+numbers in the interval zero to one And I
+would remind everyone the basically
+
+27
+00:01:01,764 --> 00:01:06,575
+整个集合概率一定是所有的权重和，并且等于一。
+
+28
+00:01:01,764 --> 00:01:06,575
+probability of the entire universe is
+basically the one by the fact that sum of
+
+29
+00:01:06,575 --> 00:01:11,268
+然后我们定义一个正式的随机变量
+
+30
+00:01:06,575 --> 00:01:11,268
+all the weights sums up to one. Then we
+define what a random variable is Formally,
+
+31
+00:01:11,268 --> 00:01:15,908
+这个随机变量是一个来自其他集合来的函数
+
+32
+00:01:11,268 --> 00:01:15,908
+a random variable is a, is a function from
+the universe of some other sets But the
+
+33
+00:01:15,908 --> 00:01:20,773
+但你要记住的是，这些随机变量在集合V中所代表的含义
+
+34
+00:01:15,908 --> 00:01:20,773
+thing that I want you to remember is that
+the random variable takes, values in some
+
+35
+00:01:20,773 --> 00:01:25,289
+事实上，随机变量的分布定义了这个集合V。
+
+36
+00:01:20,773 --> 00:01:25,289
+set v And, in fact, the random variable
+defines the distribution on this set v. So
+
+37
+00:01:25,289 --> 00:01:29,651
+所以我们需要学习的下一个概念是什么叫做独立性，我会非常简要的定义它，
+
+38
+00:01:25,289 --> 00:01:29,651
+the next concept we need is what's called
+independence And I'm gonna very briefly
+
+39
+00:01:29,651 --> 00:01:34,278
+如果你想了解更多关于独立性的内容，请去看看维基百科
+
+40
+00:01:29,651 --> 00:01:34,278
+define this If you want to read more about
+independence, please go ahead and look at
+
+41
+00:01:34,278 --> 00:01:38,374
+但本质上我们说A和B这两个事件是
+
+42
+00:01:34,278 --> 00:01:38,374
+the wiki books article. But essentially we
+say that two events A and B are
+
+43
+00:01:38,374 --> 00:01:42,932
+彼此独立的，如果你知道当事件A发生时，
+
+44
+00:01:38,374 --> 00:01:42,932
+independent of one another if When you
+know that event A happens, that tells you
+
+45
+00:01:42,932 --> 00:01:47,377
+你不知道事件B是否发生。形式上，
+
+46
+00:01:42,932 --> 00:01:47,377
+nothing about whether event B actually
+happened or not. Formally, the way we
+
+47
+00:01:47,377 --> 00:01:52,236
+我们定义独立性就是说，A和B同时发生的概率
+
+48
+00:01:47,377 --> 00:01:52,236
+define independence is to say that, the
+probability of A and B, namely, that both
+
+49
+00:01:52,236 --> 00:01:56,621
+就等于事件A的概率和事件B的概率的乘积
+
+50
+00:01:52,236 --> 00:01:56,621
+events happened, is actually=to the
+probability of event A the probability of
+
+51
+00:01:56,621 --> 00:02:01,539
+从某种意义上说，只要符合这一事实
+
+52
+00:01:56,621 --> 00:02:01,539
+event B So mult iplication, in some sense,
+the fact that probabilities multiply under
+
+53
+00:02:01,539 --> 00:02:06,339
+这些事件就是独立的。就像我之前说的那样，
+
+54
+00:02:01,539 --> 00:02:06,339
+conjunction, captures the fact that these
+events are independent And as I said, if
+
+55
+00:02:06,339 --> 00:02:11,080
+如果你想了解更多，请看背景材料。
+
+56
+00:02:06,339 --> 00:02:11,080
+you wanna read more about that, please
+take a look at the background material.
+
+57
+00:02:11,080 --> 00:02:16,636
+现在同样的理论可以应用在随机变量上。假如我们有两个随机
+
+58
+00:02:11,080 --> 00:02:16,636
+Now the same thing can be said for random
+variables. So suppose we have two random
+
+59
+00:02:16,636 --> 00:02:21,921
+变量X和Y。它们从集合V中取值。然后我们设这些随机
+
+60
+00:02:16,636 --> 00:02:21,921
+variables x and y. They take values in
+some set v. Then we say that these random
+
+61
+00:02:21,921 --> 00:02:26,868
+变量是独立的，如果X=a和Y=b的概率
+
+62
+00:02:21,921 --> 00:02:26,868
+variables are independent if the
+probability that x = a, and y = b is equal
+
+63
+00:02:26,868 --> 00:02:32,492
+等于这两个概率的乘积，基本上就是说，即使
+
+64
+00:02:26,868 --> 00:02:32,492
+to the product of these two probabilities.
+Basically what this means is, even if you
+
+65
+00:02:32,492 --> 00:02:37,606
+你知道X=a的概率，你也不知道Y的值是多少。
+
+66
+00:02:32,492 --> 00:02:37,606
+know that x = a, that tells you nothing
+about the value of y. Okay, that, that's
+
+67
+00:02:37,606 --> 00:02:43,060
+这意味着乘法需要知道所有A和B
+
+68
+00:02:37,606 --> 00:02:43,060
+what this multiplication means And again
+this needs to hold for all A and B in the
+
+69
+00:02:43,060 --> 00:02:48,185
+在这些随机变量的取值空间，如果你之前看过的话
+
+70
+00:02:43,060 --> 00:02:48,185
+space of values of these random variables
+So, just again to job your memory If
+
+71
+00:02:48,185 --> 00:02:53,112
+再加深一下印象。举个很简单的例子，我们看到这有一个
+
+72
+00:02:48,185 --> 00:02:53,112
+you've seen this before, a very quick
+example. Suppose we look at the, set of,
+
+73
+00:02:53,112 --> 00:02:58,171
+两比特串的集合，00,01,10,11，
+
+74
+00:02:53,112 --> 00:02:58,171
+of two bit strings So, zero, zero, zero,
+one, one zero and, one, one And suppose we
+
+75
+00:02:58,171 --> 00:03:03,625
+我们从这个集合中随机选取一个。我们随机选取这四个元素中任一个元素
+
+76
+00:02:58,171 --> 00:03:03,625
+choose a random, from this set. Okay so we
+randomly choose one of these four elements
+
+77
+00:03:03,625 --> 00:03:08,431
+的概率相等。现在让我们定义两个随机变量。
+
+78
+00:03:03,625 --> 00:03:08,431
+with equal probability. Now let's define
+two random variables. X is gonna be the
+
+79
+00:03:08,431 --> 00:03:13,541
+X是生成的最低有效位 即lsb(r)，Y是生成的最高有效位 即msb（r）。
+
+80
+00:03:08,431 --> 00:03:13,541
+least significant bit that was generated,
+and Y is gonna be the most significant bit
+
+81
+00:03:13,541 --> 00:03:18,981
+然后我任命，随机变量X和Y是相互独立的。
+
+82
+00:03:13,541 --> 00:03:18,981
+generated. So I claim that, these random
+variables, x and y, are independent of one
+
+83
+00:03:18,981 --> 00:03:23,880
+从四个元素中无差别选择r最直观的方法
+
+84
+00:03:18,981 --> 00:03:23,880
+another. And the way to see that
+intuitively, is to realize that choosing r
+
+85
+00:03:23,880 --> 00:03:29,440
+就和抛两次硬币一样，公平的硬币两次
+
+86
+00:03:23,880 --> 00:03:29,440
+uniformly, from the set of four elements
+is basically the same as flipping a coin
+
+87
+00:03:29,440 --> 00:03:37,051
+第一位对应第一次抛的结果和
+
+88
+00:03:29,440 --> 00:03:37,051
+An unbiased coin twice. The first bit
+corresponds to the outcome of the first
+
+89
+00:03:37,051 --> 00:03:38,517
+第二位对应第二次抛的结果
+
+90
+00:03:37,051 --> 00:03:38,517
+flip and the second bit corresponds to the
+outcome of the second flip And of course
+
+91
+00:03:38,517 --> 00:03:43,197
+当然有四种可能的结果。所有的四种结果
+
+92
+00:03:38,517 --> 00:03:43,197
+there are four possible outcomes. All four
+outcomes are equally likely which is why
+
+93
+00:03:43,197 --> 00:03:47,821
+都等概率出现在这些两比特串中，现在我们的变量X和Y，
+
+94
+00:03:43,197 --> 00:03:47,821
+we get the uniform distributions over two
+bit strings Now our variables X and Y. Y
+
+95
+00:03:47,821 --> 00:03:52,557
+Y是独立的，如果我告诉你抛一次的结果
+
+96
+00:03:47,821 --> 00:03:52,557
+the independents Basically if I tell you
+result of the first flip namely I tell you
+
+97
+00:03:52,557 --> 00:03:57,181
+就是r，就相当于我告诉了你硬币落下来是正面还是反面
+
+98
+00:03:52,557 --> 00:03:57,181
+the lest signify bit of R So I tell you
+how the first coin you know whether it
+
+99
+00:03:57,181 --> 00:04:01,804
+而第二次抛的结果什么都没有告诉你
+
+100
+00:03:57,181 --> 00:04:01,804
+fell on its head or fell on its tails.
+That tells you nothing about the result of
+
+101
+00:04:01,804 --> 00:04:06,844
+这就是你的直觉，你可能期望这些随机
+
+102
+00:04:01,804 --> 00:04:06,844
+the second flip. Which is why intuitively,
+you might, you might expect these random
+
+103
+00:04:06,844 --> 00:04:11,624
+变量是相互独立的，而实际上我们需要证明它。
+
+104
+00:04:06,844 --> 00:04:11,624
+variables to be independent of one
+another. But formally, we would have to
+
+105
+00:04:11,624 --> 00:04:16,142
+所有的0 1对，X=0,Y=0,X=1,Y=1,的概率
+
+106
+00:04:11,624 --> 00:04:16,142
+prove that, for, all 01 pairs, the
+probability of, x=0 and y=0, x=1, y=1, and
+
+107
+00:04:16,142 --> 00:04:21,446
+这些概率相乘。让我们先做其中的一个。
+
+108
+00:04:16,142 --> 00:04:21,446
+so on. These probabilities multiply. Let's
+just do it for one of these pairs. So
+
+109
+00:04:21,446 --> 00:04:26,721
+看一下X=0和Y=0的概率。
+
+110
+00:04:21,446 --> 00:04:26,721
+let's look at the probability that x is =
+to zero, and y is = to zero. Well, you see
+
+111
+00:04:26,721 --> 00:04:31,027
+你看X=0同时Y=0的概率应该是
+
+112
+00:04:26,721 --> 00:04:31,027
+that the probability that x is equal to
+zero and y is equal to zero is basically
+
+113
+00:04:31,027 --> 00:04:35,387
+r=00的概率，然而r=00的概率是多少？
+
+114
+00:04:31,027 --> 00:04:35,387
+the probability that r is equal to zero,
+zero And what's the probability that r is
+
+115
+00:04:35,387 --> 00:04:39,535
+通过均匀分布，这基本上等于四分之一
+
+116
+00:04:35,387 --> 00:04:39,535
+equal to zero, zero? Well, by the uniform
+distribution, that's basically equal to
+
+117
+00:04:39,535 --> 00:04:44,327
+在这种情况下集合中的一个元素的概率就是1/4
+
+118
+00:04:39,535 --> 00:04:44,327
+one-fourth. What it's one over side of the
+set which is one fourth in this case And
+
+119
+00:04:44,327 --> 00:04:49,095
+事实上这些可能的证明
+
+120
+00:04:44,327 --> 00:04:49,095
+well low and behold that's in fact these
+probably provability multiply Because
+
+121
+00:04:49,095 --> 00:04:53,583
+因为再乘上了X=0的概率，即lsb（r=0）的概率
+
+122
+00:04:49,095 --> 00:04:53,583
+again the probability that X is equal to
+zero. The probability that lest signify
+
+123
+00:04:53,583 --> 00:04:57,566
+这可能正是二分之一
+
+124
+00:04:53,583 --> 00:04:57,566
+bit of R is equal to zero. This
+provability is exactly one half because
+
+125
+00:04:57,566 --> 00:05:01,941
+因为有两个元素他们的lsb等于零
+
+126
+00:04:57,566 --> 00:05:01,941
+there is exactly two elements that have
+their, lest signify bit equals to zero.
+
+127
+00:05:01,941 --> 00:05:06,373
+四个元素证明了一半，同样的
+
+128
+00:05:01,941 --> 00:05:06,373
+Two out of four elements gives you a
+provability of one half And similarly the
+
+129
+00:05:06,373 --> 00:05:10,738
+Y=0的概率也是二分之一。
+
+130
+00:05:06,373 --> 00:05:10,738
+probability that Y is equal to zero is
+also one half so in fact the provability
+
+131
+00:05:10,738 --> 00:05:16,434
+我告诉你这个独立性的概念
+
+132
+00:05:10,738 --> 00:05:16,434
+multiplies. Okay, so that's, this concept
+of independence And the reason I wanted to
+
+133
+00:05:16,434 --> 00:05:21,892
+是因为我们将要看一个异或重要的性质
+
+134
+00:05:16,434 --> 00:05:21,892
+show you that is because we're gonna look
+at an, an important property of XOR that
+
+135
+00:05:21,892 --> 00:05:27,349
+我们将重复使用它。所以在我们讨论异或之前，让我
+
+136
+00:05:21,892 --> 00:05:27,349
+we're gonna use again and again. So before
+we talk about XOR, let me just do a very
+
+137
+00:05:27,349 --> 00:05:32,408
+很快复习一下关于异或是什么。两位异或是指两个
+
+138
+00:05:27,349 --> 00:05:32,408
+quick review of what XOR is. So, of
+course, XOR of two bits means the addition
+
+139
+00:05:32,408 --> 00:05:38,065
+比特相加再模2。确保每个人都在同一页上。
+
+140
+00:05:32,408 --> 00:05:38,065
+of those bits, modular two. So just too
+kind of, make sure everybody's on the same
+
+141
+00:05:38,065 --> 00:05:43,233
+如果我们有两位，00,01,10,11，他们的真值表
+
+142
+00:05:38,065 --> 00:05:43,233
+page If we have two bits, so 0001, ten and
+eleven. Their XOR or the truth table of
+
+143
+00:05:43,233 --> 00:05:48,106
+异或就是相加再模2。正如你所看到的，1+1=2
+
+144
+00:05:43,233 --> 00:05:48,106
+the XOR is basically just the addition
+modular two. As you can see, one+1 is= to
+
+145
+00:05:48,106 --> 00:05:52,978
+再模2，就等于0.所以这就是异或的真值表
+
+146
+00:05:48,106 --> 00:05:52,978
+two, modular two. That's=to zero. So this
+is the truth table for [inaudible] XOR And
+
+147
+00:05:52,978 --> 00:05:57,665
+我总是想通过圈的外加里来表示异或，
+
+148
+00:05:52,978 --> 00:05:57,665
+I'm always going to denote XOR by the
+circle with a + inside And then when I
+
+149
+00:05:57,665 --> 00:06:02,353
+然后当我想异或比特串时，就按位进行相加再模2的操作
+
+150
+00:05:57,665 --> 00:06:02,353
+wanna apply XOR to bit strings, I apply
+the, addition modular two operation,
+
+151
+00:06:02,538 --> 00:06:07,472
+例如，这两个字符串异或为110，
+
+152
+00:06:02,538 --> 00:06:07,472
+bitwise. So, for example, the XOR of these
+two strings would be, 110, and I guess
+
+153
+00:06:07,472 --> 00:06:12,283
+我想让你填写剩下异或的结果，只是为了确保我们都在
+
+154
+00:06:07,472 --> 00:06:12,283
+I'll let you fill out the rest of the
+XORs, just to make sure we're all on the
+
+155
+00:06:12,283 --> 00:06:18,941
+同一页上。它的结果为1,1,0,1，现在，我们
+
+156
+00:06:12,283 --> 00:06:18,941
+same page. So of course is comes out to
+one, one zero one. Now, we're gonna be
+
+157
+00:06:18,941 --> 00:06:23,092
+会做在这堂课上做很多异或。事实上，有一个经典的笑话是
+
+158
+00:06:18,941 --> 00:06:23,092
+doing a lot of XORing in this class. In
+fact, there's a classical joke that the
+
+159
+00:06:23,092 --> 00:06:27,669
+有的人认为译解密码者只是把事物异或在一起，但我想
+
+160
+00:06:23,092 --> 00:06:27,669
+only think cryptographers know how to do
+is just XOR things together But I want to
+
+161
+00:06:27,669 --> 00:06:31,607
+向你解释为什么我们在密码学中看到如此频繁的异或。基本上，异或
+
+162
+00:06:27,669 --> 00:06:31,607
+explain to you why we see XOR so
+frequently in cryptography. Basically, XOR
+
+163
+00:06:31,607 --> 00:06:35,865
+有一个很重要的性质，这性质是，假设有一个
+
+164
+00:06:31,607 --> 00:06:35,865
+has a very important property, and the
+property is the following. Suppose we have
+
+165
+00:06:35,865 --> 00:06:40,630
+随机变量Y，任意分布在0,1区间上，所以我们
+
+166
+00:06:35,865 --> 00:06:40,630
+a random variable y. That's distributed
+arbitrarily over 01 to the n. So we know
+
+167
+00:06:40,630 --> 00:06:45,773
+对Y的分布一无所知。但现在，假设我们有一个独立的随机
+
+168
+00:06:40,630 --> 00:06:45,773
+nothing about the distribution of y But
+now, suppose we have an independent random
+
+169
+00:06:45,773 --> 00:06:50,790
+变量也均匀分布在0,1区间之上， 且X是均匀分布的很重要。
+
+170
+00:06:45,773 --> 00:06:50,790
+variable that happens to be uniformly
+distributed also over 01 to the n. So it's
+
+171
+00:06:50,790 --> 00:06:55,766
+n对于Y是独立的。现在让我们来定义
+
+172
+00:06:50,790 --> 00:06:55,766
+very important that x is uniform. N's
+independent of y. So now let's define the
+
+173
+00:06:55,766 --> 00:07:00,851
+随机变量X和Y的异或，我认为无论
+
+174
+00:06:55,766 --> 00:07:00,851
+random variable which is the XOR of x and
+y. Then I claim that no matter what
+
+175
+00:07:00,851 --> 00:07:05,937
+Y怎么开始分布，Z总是均匀分布的随机变量。
+
+176
+00:07:00,851 --> 00:07:05,937
+distribution y started with, this z is
+always going to be a uniform, random
+
+177
+00:07:05,937 --> 00:07:11,287
+换句话说，如果拿一个任意不均匀分布
+
+178
+00:07:05,937 --> 00:07:11,287
+variable. So in other words if I take an
+arbitrarily malicious distribution and I
+
+179
+00:07:11,287 --> 00:07:16,373
+与一个独立均匀分布的随机变量异或最终得到的是一个均匀分布的
+
+180
+00:07:11,287 --> 00:07:16,373
+XOR with independent uniform random
+variable what I end up with is a uniform
+
+181
+00:07:16,373 --> 00:07:20,672
+随机变量。这又是一个很好的性质
+
+182
+00:07:16,373 --> 00:07:20,672
+random variable. Okay and this again is
+kind of a key property that makes x or
+
+183
+00:07:20,672 --> 00:07:24,490
+对密码学很有用。所以这是一个需要证明的非常简单的因素
+
+184
+00:07:20,672 --> 00:07:24,490
+very useful for crypto. So this is
+actually a very simple factor to prove,
+
+185
+00:07:24,490 --> 00:07:28,851
+我们只需要去证明它，我们只需证明一点，n=1.
+
+186
+00:07:24,490 --> 00:07:28,851
+let's just go ahead and do it, let's just
+prove it for one bit so for n = one. Okay,
+
+187
+00:07:28,851 --> 00:07:33,472
+我们证明它的方式是写出各种随机变量的
+
+188
+00:07:28,851 --> 00:07:33,472
+so the way we'll do it is we'll basically
+write out the probability distributions
+
+189
+00:07:33,472 --> 00:07:38,242
+概率分布。所以我们会看到，对于随机变量Y，
+
+190
+00:07:33,472 --> 00:07:38,242
+for the various random variables. So let's
+see, for the random variable y. Well, the
+
+191
+00:07:38,242 --> 00:07:43,167
+随机变量可以是0或1，并且那个P0是Y=0的概率，
+
+192
+00:07:38,242 --> 00:07:43,167
+random variable can be either zero or one.
+And let's say that P0 is the probability
+
+193
+00:07:43,167 --> 00:07:47,320
+P1是Y=1的概率。
+
+194
+00:07:43,167 --> 00:07:47,320
+that it's = to zero, and P1 is the
+probability that it's =to one. Okay, so
+
+195
+00:07:47,320 --> 00:07:52,008
+那就是我们的一个表格。同样的，我们会有一个变量X的表格。
+
+196
+00:07:47,320 --> 00:07:52,008
+that's one of our tables. Similarly, we're
+gonna have a table for the variable x.
+
+197
+00:07:52,008 --> 00:07:56,458
+变量X的表格就相对容易些，X是一个均匀分布的随机变量。
+
+198
+00:07:52,008 --> 00:07:56,458
+Well, the variable x is much easier.
+That's a uniform random variable. So the
+
+199
+00:07:56,458 --> 00:08:00,909
+X=0的概率就是二分之一，X=1的概率也是
+
+200
+00:07:56,458 --> 00:08:00,909
+probability that it's=to zero is exactly
+one half The probability that's it's=to
+
+201
+00:08:00,909 --> 00:08:05,428
+二分之一。现在，让我们写出来联合分布概率。
+
+202
+00:08:00,909 --> 00:08:05,428
+one is also exactly one half. Now, let's
+write out the probabilities for the join
+
+203
+00:08:05,428 --> 00:08:09,599
+换句话说，让我们先看看那不同的概率，
+
+204
+00:08:05,428 --> 00:08:09,599
+di stribution. In, in other words, let's
+see what the probability, is for the
+
+205
+00:08:09,599 --> 00:08:14,099
+Y和X是联合分布概率。即Y为,0，
+
+206
+00:08:09,599 --> 00:08:14,099
+various, joint values of y and x. In other
+words, how likely is, it that y is zero,
+
+207
+00:08:14,099 --> 00:08:18,435
+X为0。Y为0，X为1.Y为1，X为0，还有1 1
+
+208
+00:08:14,099 --> 00:08:18,435
+and x is zero. Y is zero, and x is one. Y
+is one and x is zero, and eleven. Well, so
+
+209
+00:08:18,435 --> 00:08:22,770
+所以我们要做的是，因为我们假设的变量是独立的，
+
+210
+00:08:18,435 --> 00:08:22,770
+what we do is, basically, because we
+assume the variables are independent, all
+
+211
+00:08:22,770 --> 00:08:26,518
+我们要做的就是把概率相乘。所以，Y等于0的概率
+
+212
+00:08:22,770 --> 00:08:26,518
+we have to do is multiply the
+probabilities. So The probability that y
+
+213
+00:08:26,518 --> 00:08:30,552
+是P0，X等于0的概率是二分之一。
+
+214
+00:08:26,518 --> 00:08:30,552
+is equal to zero is p zero. Probability
+that x is equal to zero is one-half. So
+
+215
+00:08:30,552 --> 00:08:36,843
+我们得到00是P0/2，同样的
+
+216
+00:08:30,552 --> 00:08:36,843
+the proximity that, we get 00 as exactly p
+zero over two. Similarly for zero one
+
+217
+00:08:36,843 --> 00:08:42,387
+得到01是P0/2，得到10是P1/2,得到11
+
+218
+00:08:36,843 --> 00:08:42,387
+we'll get p zero over two, for one zero
+we'll get p one over two And for 1-1,
+
+219
+00:08:42,387 --> 00:08:47,232
+是P1/2，Y=1和X=1的概率
+
+220
+00:08:42,387 --> 00:08:47,232
+again, the probability that y is=to one,
+and x is=to one, Well, that's P1  the
+
+221
+00:08:47,232 --> 00:08:52,347
+是P1/2.
+
+222
+00:08:47,232 --> 00:08:52,347
+probability that x is=to one, which is a
+half, so it's P1 over two. Okay? So those
+
+223
+00:08:52,347 --> 00:08:57,664
+所以这些就是X和Y各种选择可能性的四个概率。
+
+224
+00:08:52,347 --> 00:08:57,664
+are the four, probabilities for the
+various options for x and y. So now, let's
+
+225
+00:08:57,664 --> 00:09:03,182
+让我们来分析一下，Z=0的概率是多少？Z=0的概率
+
+226
+00:08:57,664 --> 00:09:03,182
+analyze, what is the probability that z is
+equal to zero? Well, the probability that
+
+227
+00:09:03,182 --> 00:09:08,768
+基本上相同的概率是，让我们这样写，
+
+228
+00:09:03,182 --> 00:09:08,768
+z is=to zero is basically the same as the
+probability that, let's write it this way,
+
+229
+00:09:08,768 --> 00:09:15,342
+（X,Y）=(0,0)或（X,Y）=(1,1),这些都是Z=0可能出现的两种情况。
+
+230
+00:09:08,768 --> 00:09:15,342
+xy. Is=to 00. Or xy is=to, eleven. Those
+are the two possible cases that z is=to
+
+231
+00:09:15,342 --> 00:09:22,652
+因为Z是X和Y的异或，这些事件是不相交的，所以，
+
+232
+00:09:15,342 --> 00:09:22,652
+zero Because z is the XOR of x and y. Now,
+these events are disjoint, so, this
+
+233
+00:09:22,652 --> 00:09:30,336
+这个表达式可以写成上述两个表达式的和。
+
+234
+00:09:22,652 --> 00:09:30,336
+expression can simply be written as the
+sum of the two expressions given above. So
+
+235
+00:09:30,336 --> 00:09:37,271
+基本上，这就是XY=00的概率，再加上XY=11的概率，
+
+236
+00:09:30,336 --> 00:09:37,271
+basically, it's the probability that xy
+is=to 00, plus the probability that xy,
+
+237
+00:09:37,552 --> 00:09:43,281
+所以我们可以简单地在表中找一下这些概率。
+
+238
+00:09:37,552 --> 00:09:43,281
+is=to eleven. So now we can simply look up
+these probabilities in our table. So the
+
+239
+00:09:43,281 --> 00:09:47,874
+所以XY=00的概率是P0/2，
+
+240
+00:09:43,281 --> 00:09:47,874
+probability that xy is equal to 00 is
+simply p zero over two, and the
+
+241
+00:09:47,874 --> 00:09:53,156
+XY=11的概率是P1/2.所以我们得到
+
+242
+00:09:47,874 --> 00:09:53,156
+probability that xy is equal to one, one
+is simply p one over two. So we get P0
+
+243
+00:09:53,156 --> 00:09:58,818
+P0/2+P1/2,但是我们怎么知道P0和P1呢？
+
+244
+00:09:53,156 --> 00:09:58,818
+over two +P1 over two But what do we kn-,
+what do we know about P0 and P1? Well,
+
+245
+00:09:58,818 --> 00:10:03,819
+这是一个概率分布，因此，P0+P1＝１。因此，
+
+246
+00:09:58,818 --> 00:10:03,819
+it's a probability distribution.
+Therefore, P0+P1 must =one And therefore,
+
+247
+00:10:03,819 --> 00:10:09,482
+这个部分一定等于一半，P0+P1=1。所以，
+
+248
+00:10:03,819 --> 00:10:09,482
+this fraction here must= to a half. P0+P1
+is =to one. So therefore, the sum of these
+
+249
+00:10:09,482 --> 00:10:15,292
+两个部分的和一定等于一半，这样就完成了。基本上我们证明
+
+250
+00:10:09,482 --> 00:10:15,292
+two terms must = a half And we're done.
+Basically, we proved that the probability
+
+251
+00:10:15,292 --> 00:10:20,143
+了Z=0的概率是二分之一，然而Z=1的概率
+
+252
+00:10:15,292 --> 00:10:20,143
+that z is = to zero. Is one half,
+therefore the probability that z is equal
+
+253
+00:10:20,143 --> 00:10:25,123
+也是二分之一。因此，Z是一个均匀分布的随机变量
+
+254
+00:10:20,143 --> 00:10:25,123
+to one is also one half. Therefore z is a
+unif orm random variable. So the simple
+
+255
+00:10:25,123 --> 00:10:29,773
+这个定理如此简单的原因是XOR在密码学上非常有用。我想告诉你
+
+256
+00:10:25,123 --> 00:10:29,773
+theorem is the main reason why x o is so
+useful in cryptography. The last thing I
+
+257
+00:10:29,773 --> 00:10:34,437
+最后一件事就是关于一个叫做生日悖论的离散概率
+
+258
+00:10:29,773 --> 00:10:34,437
+wanna show you about discreet probability
+is what's called the birthday paradox And
+
+259
+00:10:34,437 --> 00:10:38,934
+在这里我会说很快，因为我们以后会回来
+
+260
+00:10:34,437 --> 00:10:38,934
+I'm gonna do it really fast here Because
+we're gonna come back later on, and talk
+
+261
+00:10:38,934 --> 00:10:42,931
+详细的讨论它。生日悖论就是下面
+
+262
+00:10:38,934 --> 00:10:42,931
+about this in more detail. So, the
+birthday paradox says the following
+
+263
+00:10:42,931 --> 00:10:47,370
+假设我在区域U中选择n个随机变量，碰巧的是，
+
+264
+00:10:42,931 --> 00:10:47,370
+suppose I choose n random variables in our
+universe u. Okay And it just so happens
+
+265
+00:10:47,370 --> 00:10:51,485
+这些变量是相互独立的，他们其实不必相同。
+
+266
+00:10:47,370 --> 00:10:51,485
+that these variables are independent of
+one another. They actually don't have to
+
+267
+00:10:51,485 --> 00:10:55,651
+我们需要假设的是，他们分布的方式相同。
+
+268
+00:10:51,485 --> 00:10:55,651
+be uniform. All we need to assume is that
+they're distributed in the same way. The
+
+269
+00:10:55,651 --> 00:10:59,818
+最重要的性质是他们是相互独立的。所以定理说，
+
+270
+00:10:55,651 --> 00:10:59,818
+most important property though is that
+they're independent of one another. So the
+
+271
+00:10:59,818 --> 00:11:04,035
+如果你选择元素U大小的平方根，
+
+272
+00:10:59,818 --> 00:11:04,035
+theorem says that if you choose roughly
+the square root of the size of u elements,
+
+273
+00:11:04,035 --> 00:11:08,202
+这里有一个1.2，没关系，但如果你选择
+
+274
+00:11:04,035 --> 00:11:08,202
+we're kind of this one point two here, it
+doesn't really matter. But if you choose
+
+275
+00:11:08,202 --> 00:11:12,471
+元素U绝对值的平方根，有一个很大的概率会有
+
+276
+00:11:08,202 --> 00:11:12,471
+square root of the size of u elements,
+then basically there's a good chance that
+
+277
+00:11:12,471 --> 00:11:16,740
+两个元素是相同的。换句话说，如果你把样本
+
+278
+00:11:12,471 --> 00:11:16,740
+there are two elements that are the same.
+In other words, if you sample about square
+
+279
+00:11:16,740 --> 00:11:21,158
+平方根几次，那么很有可能你的两个样本不会
+
+280
+00:11:16,740 --> 00:11:21,158
+root a few times, then it's likely that
+two of your samples. [inaudible] will be
+
+281
+00:11:21,158 --> 00:11:25,763
+相等。顺便指出，这个反向的E
+
+282
+00:11:21,158 --> 00:11:25,763
+equal to each other. And by the way, I
+should point out that this inverted e,
+
+283
+00:11:25,947 --> 00:11:30,860
+的含义是存在。所以存在i不等于j并且ri=rj,
+
+284
+00:11:25,947 --> 00:11:30,860
+just means exists. So there exists in
+[inaudible] I and j such that r I is equal
+
+285
+00:11:30,860 --> 00:11:35,057
+这是一个具体的例子，我们会看到很多次。
+
+286
+00:11:30,860 --> 00:11:35,057
+to r j. So here's a concrete example.
+We'll actually see many, many times.
+
+287
+00:11:35,057 --> 00:11:39,493
+假设我们的区域由128位长度的字符串构成，
+
+288
+00:11:35,057 --> 00:11:39,493
+Suppose our universe consist of all
+strings of length of one hundred and
+
+289
+00:11:39,493 --> 00:11:44,279
+所以U的大小其实是2的128次方，
+
+290
+00:11:39,493 --> 00:11:44,279
+twenty eight bits. So the size of you is
+gigantic it's actually two to the hundred
+
+291
+00:11:44,279 --> 00:11:49,123
+它非常大，但是碰巧如果你从这个集合中
+
+292
+00:11:44,279 --> 00:11:49,123
+and twenty eight. It's a very, very large
+set But it so happens if you sample say
+
+293
+00:11:49,123 --> 00:11:53,909
+取样取了2的64次方次，这是关于U的平方根
+
+294
+00:11:49,123 --> 00:11:53,909
+around two the sixty four times from the
+set. This is about the square root of U
+
+295
+00:11:53,909 --> 00:11:58,520
+那么很有可能你的两个样本信息实际上是相同的。
+
+296
+00:11:53,909 --> 00:11:58,520
+then is very likely that two of your
+sample messages will actually be the same.
+
+297
+00:11:58,520 --> 00:12:02,871
+所以为什么这叫做悖论？通常它用来描述
+
+298
+00:11:58,520 --> 00:12:02,871
+So why is, this called the paradox? Well,
+traditionally it's described in terms of
+
+299
+00:12:02,871 --> 00:12:06,896
+人们的生日，所以你会认为这些样本是
+
+300
+00:12:02,871 --> 00:12:06,896
+people's birthdays. So you would think
+that each of these samples would be
+
+301
+00:12:06,896 --> 00:12:11,772
+某些人的生日，所以问题是多少人需要在一起以至于
+
+302
+00:12:06,896 --> 00:12:11,772
+someone's birthday And so the question is
+how many people need to get together so
+
+303
+00:12:11,772 --> 00:12:16,510
+有两个人的生日是相同的？所以，做一个简单的计算，
+
+304
+00:12:11,772 --> 00:12:16,510
+that there are two people that have the
+same birthday? So, just as a simple cal
+
+305
+00:12:16,510 --> 00:12:21,349
+你会看到一年有365天，你需要大约1.2倍的
+
+306
+00:12:16,510 --> 00:12:21,349
+culation you can see there are 365 days in
+the year, so you would need about 1.2
+
+307
+00:12:21,349 --> 00:12:26,656
+的365人的平方根，直到其中两人生日相同的
+
+308
+00:12:21,349 --> 00:12:26,656
+times the square root of 365 people until
+the probability that two of them have the
+
+309
+00:12:26,656 --> 00:12:31,327
+概率超过一半。这个如果我没记错的话大概是24，这意味着
+
+310
+00:12:26,656 --> 00:12:31,327
+same birthday is more than a half. This if
+I'm not mistaken is about 24, which means
+
+311
+00:12:31,327 --> 00:12:35,673
+如果24个随机的人呆在一间屋子里，很有可能其中会有两个人
+
+312
+00:12:31,327 --> 00:12:35,673
+that if 24 random people get together in a
+room it's very likely that two of them
+
+313
+00:12:35,673 --> 00:12:40,020
+有相同的生日。这就是为什么它被称为一个悖论，因为24
+
+314
+00:12:35,673 --> 00:12:40,020
+will actually have the same birthday. This
+is why it's called a paradox, because 24
+
+315
+00:12:40,020 --> 00:12:44,457
+可能是一个比你想象的要小的数字。有趣的是，人们的
+
+316
+00:12:40,020 --> 00:12:44,457
+supposedly is a smaller number than you
+would expect. Interestingly, people's
+
+317
+00:12:44,457 --> 00:12:50,401
+生日其实不是均衡的分布在一年的365天，实际上
+
+318
+00:12:44,457 --> 00:12:50,401
+birthdays are not actually uniform across
+all 365 days of the year. There's actually
+
+319
+00:12:50,401 --> 00:12:55,223
+更偏向于十二月。但是我认为没有必要
+
+320
+00:12:50,401 --> 00:12:55,223
+a bias towards December. >> But, I guess
+that's not, that's not relative to the
+
+321
+00:12:55,223 --> 00:12:59,878
+在这里讨论这个。我想做的最后一件事是给你看
+
+322
+00:12:55,223 --> 00:12:59,878
+discussion here. >> The last thing I
+wanted to do is just show you the birthday
+
+323
+00:12:59,878 --> 00:13:04,533
+更具体的生日悖论。假设我们有一个大约一百万样本的
+
+324
+00:12:59,878 --> 00:13:04,533
+paradox a bit more concretely. So, suppose
+we have a universe of about a million
+
+325
+00:13:04,533 --> 00:13:09,244
+区域，那么你可以看到，当我们的取样大约1200次的时候，
+
+326
+00:13:04,533 --> 00:13:09,244
+samples, then you can see that when we
+sample roughly 1200 times, the probability
+
+327
+00:13:09,247 --> 00:13:14,197
+我们有一半的概率在其中两次取样中取到了相同的元素
+
+328
+00:13:09,247 --> 00:13:14,197
+that we get, we sample the same number,
+the same element twice is roughly half But
+
+329
+00:13:14,197 --> 00:13:18,498
+但是两次抽样相同数的概率其实非常快的收敛到了一。
+
+330
+00:13:14,197 --> 00:13:18,498
+the probability of sampling the same
+number twice actually converges very
+
+331
+00:13:18,498 --> 00:13:22,857
+你可以看到如果我们有2200个样本，然后这些物品中
+
+332
+00:13:18,498 --> 00:13:22,857
+quickly to one. You can see that if we
+about 2200 items, then the probability
+
+333
+00:13:22,859 --> 00:13:26,790
+两个取样相同的概率已经是90%，你知道，如果是3000
+
+334
+00:13:22,859 --> 00:13:26,790
+that two of those items are the same,
+already is 90 percent and You know, 3000
+
+335
+00:13:26,790 --> 00:13:30,440
+的话，概率基本上是一。所以一旦超越了U大小的平方根，
+
+336
+00:13:26,790 --> 00:13:30,440
+then it's basically one. So this
+conversion is very quickly to one as soon
+
+337
+00:13:30,440 --> 00:13:34,484
+这个变化非常快的收敛到一。所以我们以后会
+
+338
+00:13:30,440 --> 00:13:34,484
+as he goes beyond the square root of the
+size of the universe. So we're gonna come
+
+339
+00:13:34,484 --> 00:13:38,380
+回来更详细的研究生日悖论，但我现在只想
+
+340
+00:13:34,484 --> 00:13:38,380
+back and study the birthday paradox in
+more detail later on, but I just for now,
+
+341
+00:13:38,380 --> 00:13:42,597
+让你知道它是什么。所以这节就结束了，
+
+342
+00:13:38,380 --> 00:13:42,597
+wanted you to know what it is. So that's
+the end of this segment, and then in the
+
+343
+00:13:42,597 --> 00:13:49,509
+在下一节我们将开始加密系统的第一个例子。
+
+344
+00:13:42,597 --> 00:13:49,509
+next segment we'll start with our first
+example of encryption systems. [sound]
+

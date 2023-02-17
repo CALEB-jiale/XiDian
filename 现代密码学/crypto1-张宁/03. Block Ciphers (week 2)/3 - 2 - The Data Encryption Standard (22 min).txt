@@ -1,0 +1,536 @@
+So now that we understand what block
+ciphers are, let's look at a classic
+example called the Data Encryption
+Standard. So, just a quick reminder. Block
+ciphers basically map N bits of input to N
+bits of output. And we talked about two
+canonical examples, triple DES and AES. In
+this segment, we're gonna talk about DES,
+and we'll talk about triple DES, actually,
+in the next segment. And then I also
+mentioned before that block ciphers are
+often built by iteration. In particular,
+we're gonna look at block ciphers that are
+built by a form of iteration where a key K
+is first expanded into a bunch of round
+keys. And then a round function is applied
+to the input message, again and again and
+again. And essentially, after all these
+round functions are applied, we obtain the
+resulting cipher text, okay? And again,
+what we're gonna look at, how DES, the
+data encryption standard, uses this
+format. I just wanna be clear that, in
+fact, to specify a block cipher of this
+type, one needs to specify the key
+expansion mechanism, and one needs to
+specify the round function. In the segment
+here, I'm gonna focus on the round
+function, and I'm not gonna talk much
+about key expansion. But I just wanted to
+mention that, in fact, key expansion is
+also a big part of describing how block
+cipher works. Okay, so let's talk about
+the history of DES. Essentially, in the
+early 1970s, IBM realized that their
+customers are demanding some form of
+encryption. And so they formed a crypto
+group, and the head of that group, was
+Horst Feistel, who, in the early 70s,
+designed a cipher called Lucifer. Now,
+it's interesting. In fact Lucifer had a
+number of variations but one of the later
+variations in fact had a key length that
+was 128 bits and a block length that's
+also 128 bits. Okay, in 1973 the governor
+realized that it's buying many commercial
+off-the-shelf computers and so it wanted
+its suppliers to actually have a good grip
+to algorithm that they could use in
+products sold to the government. So in
+1973 the National Bureau of Standards as
+it was called at the time put out a
+request for proposals for a block cipher
+that is going to become a federal
+standard. And in fact IBM submitted a
+variant of Lucifer. That variant actually
+went through some modification during the
+standardization process and then finally
+in 1976, the national bureau standard
+adopted DES as a federal standard. And, in
+fact, for DES it's interesting that the
+key length was far reduced from Lucifer.
+It's only 56 bits. And the block length
+was also reduced to 64 bits. And in
+fact, these decisions, especially the
+decision to reduce the key length, is
+going to be a key length yield of DES and
+was a source of many complaints over its
+life. In particular, already back in 1997,
+DES was broken by exhaustive search
+meaning that a machine was able to search
+through all two to the 56 possible keys to
+recover a particular challenge key. And in
+fact we're going to talk about exhaustive
+search quite a bit. It's quite an
+interesting question, and there are
+various ways to defend against exhaustive
+search. And basically this 1997 experiment
+kinda spelled the doom of DES. It meant
+that DES is itself, is no longer secure.
+And as a result, the National Institute of
+Standards, as it became known, issued a
+request for proposals. For our next
+generation's block cipher standard and in
+2000 it standardized on a cipher called Rijndael.
+Which became the advanced encryption
+standard, AES. And we'll talk about AES
+later on. But in this segment, I wanna
+describe how DES works. Now, DES is a
+cipher, it's an amazingly successful
+cipher. It's been used in the banking
+industry. In fact, there's a classic
+network called the Electronic
+Clearinghouse, which banks use to clear
+checks with one another. And DES is used
+for integrity in those transactions. It's
+also used in commerce. In fact, it was
+very popular up until recently, as the
+main encryption mechanism for the web. Of
+course, now, that's been replaced with AES
+and other ciphers. Overall, it's a
+very successful cipher in terms of
+deployment. DES also has a very rich
+history of attacks, which we'll talk about
+in the next segment. Okay, so now, let's
+talking about the construction of DES. So,
+the core idea behind DES is what's called
+a Feistel network, due to Horst Feistel.
+And basically, it's a very clever idea for
+building the block cipher out of arbitrary
+functions, F1 to FD. Okay so imagine we
+have these functions F1 to FD
+that happens to match n bits to n bits.
+Now these are arbitrary functions,
+they don't have to be invertible or
+anything. What we want to do is build an
+invertible function out of those D
+functions and the way we'll do it is by
+building a new function we'll call capital
+F that maps 2n bits to 2n bits.
+And the construction is described right
+here. So here we have our inputs. You
+notice, there are two blocks of n bits.
+In other words, the input is actually
+2n bits. The R and L stand for right and
+left. Typically, people describe a
+Feistel network from top to bottom. In
+which case, these n bits really would be
+right and left. But here it is more
+convenient for me to describe it
+horizontally. So if we follow the R
+inputs. You realize it basically gets
+copied into the L output, without any
+change at all. Okay? However, the L
+inputs, is changed somewhat. What happens
+is, basically, the R inputs is fit into
+the function F1 and the result is then
+XORed with L0 and that becomes the new R1
+input. Okay, so this is called one round
+of a Feistel network, and is done using
+the function F1. Now we do this again with
+another round of the Feistel network
+with the function F2, and we do it again
+and again and again, 'till we get to the
+last round, and we do it again with the
+function FD. And finally, the output is
+R<u>d L<u>d. Okay. So, if you like, we can write
+this in symbols. That basically, L<u>i is</u></u></u>
+simply equal to R<u>i-1. And R<u>i,
+let's see, that's the more complicated</u></u>
+one. R<u>i is equal, well, let's just follow
+the lines here. R<u>i is just equal to F<u>i</u></u></u>
+applied to, R<u>i-1 XOR L<u>i. Okay?
+So this, and this is basically, i goes</u></u>
+from, 1 to d. So this is the, equation
+that defines a Feistel network, mapping a
+2n bit input to 2n bit outputs. So
+here we have the, again, I just copied the
+picture of the Feistel network. And the
+amazing claim is that, in fact, it doesn't
+matter which functions you give me. For
+any functions, F1 to FD that you give me,
+the resulting Feistel network function is,
+in fact, invertible. And the way we're
+going to prove that is basically we're
+going to construct an inverse, because not
+only is it invertible, it's efficiently
+invertible. So let's see. So let's look at
+one round of a Feistel network, so
+here, this is the inputs, R<u>i L<u>i, and this</u></u>
+is the output R<u>i+1, L<u>i+1. And now what I'm
+going to ask you is to invert this.</u></u>
+So let's see. So suppose now the input that
+we're given is R<u>i+1, L<u>i+1 and we want to</u></u>
+compute R<u>i L<u>i. So we want to compute the
+round in the reverse direction. So let's</u></u>
+see if we can do it. Well, let's look at
+R<u>i. So, R<u>i is very easy. Basically, R<u>i is</u></u></u>
+just equal to L<u>i+1. So L<u>i+1 just becomes
+R<u>i. But now, let me ask you, to write the</u></u></u>
+expression for L<u>i in terms of R<u>i+1, and L<u>i+1.</u></u></u>
+So I hope everybody sees that, basically, L<u>i+1
+is fed into the function F<u>i+1.</u></u>
+The result is XORed with R<u>i+1,
+and that gives the L<u>i input.</u></u>
+So this the inverse of one round
+of a Feistel network.
+And if we draw this as a diagram, let's just
+write the picture for the inverse.
+So here you notice the input is R<u>i+1, L<u>i+1
+and the output is R<u>i L<u>i. Right?</u></u></u></u>
+So we're computing, we're inverting, the
+rounds. So you notice that the inverse of
+a Feistel round looks pretty much the
+same as the Feistel round in the
+forward direction. It's literally, you
+know, just for a technical reason, it's
+kinda the mirror image of one another. But
+it's basically, the same construct. And
+when we put these inverted rounds back
+together. We essentially get the inverse
+of the entire Feistel network. So you
+notice we start off with the round number D
+with the inverse of round number D,
+then we do the inverse of round number D-1
+and so on and so forth until we
+get to the inverse of the first round. And
+we get our final outputs which is R<u>0, L<u>0,
+like this is the inputs and we manage to</u></u>
+invert basically R<u>d, L<u>d and get R<u>0, L<u>0
+and the interesting thing is that</u></u></u></u>
+basically these inversion circuits look
+pretty much the same as the encryption
+circuits and the only difference is that
+the functions are applied in reverse order.
+Right we started with F<u>d and ended with
+F<u>1. Whereas when we were encrypting, we</u></u>
+started with F<u>1 and ended with F<u>d. So, for
+hardware designers, this is very</u></u>
+attractive, because, basically, if you
+wanna save hardware, you realize that your
+encryption hardware is identical to your
+decryption hardware. So you only have to
+implement one algorithm, and you get both
+algorithms the same way. The only
+difference is that the functions are
+applied in reverse order. Okay. So this
+Feistel mechanism is a general method
+for building invertible functions from
+arbitrary functions F<u>1 to F<u>d and in fact,
+it's used in many different block ciphers.</u></u>
+Although, interestingly, it's not actually
+used in AES. So, there are many other
+block ciphers that use a Feistel
+network. Or, of course, they differ from
+DES in the functions F<u>1 to F<u>d. But AES
+actually uses a completely different type</u></u>
+of structure that's actually not a
+Feistel network. We'll see how AES
+works in a couple of segments. So now that
+we know what Feistel networks are, let
+me mention an important theorem about the
+theory of Feistel networks that shows
+why they're a good idea. This theorem is
+due to Luby and Rackoff back in 1985, and it
+says the following. Suppose I have a
+function that is a secure pseudorandom
+function, okay. So it's indistinguishable
+from random and happens to act on N bits.
+So it maps N bits to N bits and uses a
+key K. Then, it turns out, that if you use
+this function in three rounds of a Feistel
+network. What you end up with is a secure
+pseudo random permutation. In other words,
+what you end up with is an invertible
+function that is indistinguishable from a
+truly random invertible function. And I
+hope you remember that the true definition
+of a secure block cipher is that it needs
+to be a secure pseudo random permutation.
+So what this theorem says, is that if you
+start with a secure pseudo random
+function, you end up with a secure block
+cipher. Basically, that's what this is.
+And let me explain in a little bit more
+detail what's actually going on here. So,
+essentially, the PRF is used in every
+round of the Feistel network. So, in
+other words, here, what's actually
+computed is the PRF using one secret key,
+K0. Here, what's computed is the PRF
+using a different secret key, of course
+applied to R1. And here we have yet
+another secret key, K1 applied, K2 applied
+to R2. And you notice, this is why,
+basically this Feistel construction,
+uses keys in K cubed. In other words, it
+uses three independent keys. So it's very
+important that the keys are actually
+independent. So really, we need three,
+independent keys. And then we end up with
+a secure pseudorandom permutation. Okay,
+so that's the theory behind Feistel
+networks. And now that we understand that,
+we can actually look at the specifics of DES.
+So DES is basically a sixteen round
+Feistel network, okay. So there are
+functions F1 to F16 that map 32 bits to
+32 bits, and as a result, the DES itself
+acts on 64 bit blocks, 2x32. Now the
+sixteen round functions in DES are
+actually all derived from a single
+function F. Just used with different keys.
+So in fact, these are the different round
+keys. So K<u>i is, a round key. And it's</u>
+basically derived from the key K, derived
+from the 56 bit DES key K. Okay and I'll
+describe what this function F is in just a
+minute. But basically that, you see that
+by using sixteen different round keys, we
+get sixteen different round functions. And
+that gives us the Feistel network. So just
+on a high level how the DES works
+basically you have a 64 bit input. The
+first thing it does is, this initial
+permutation that just permutes the 64 bits
+around. Namely it maps bit number one to
+bit number six. Bit number two to bit
+number seventeen, and so on. This is not
+for security reasons, this is just
+specified in the standard. Then we go into
+the sixteen round Feistel network. That
+actually, you now know how it works.
+Basically uses the function F1 to F16, as
+specified before. And then, basically we
+have another permutation, it's called the
+final permutation. That's just the inverse
+of the initial permutation. Again,
+it just permutes bits around, this is not
+necessary for security reasons. And then
+we finally get, the final outputs. Okay.
+Now, as we said, there's a key expansion
+step, which I'm not gonna describe. But
+basically, this 56-bit DES key is expanded
+into these rounds keys. Where each round
+key, is 48 bits. Okay, so we have sixteen
+48 bit round keys, and they're basically
+used in the sixteen rounds of DES. And
+then when you want to invert the cipher,
+all you do is you use these, round keys,
+these sixteen round keys, in reverse
+order. Okay, so now that we understand the
+DES structure, the only thing that's left
+to do is specify the function, capital F.
+So let me explain how this function works.
+So basically, it takes, as inputs, its, 32
+bit value, let's call it X. But in
+reality, you remember, this is R<u>0,
+R<u>1, R-2, R<u>3, so on and so</u></u></u>
+forth. These are 32 bit values. And then
+it takes, also, a 48 bit round key. So
+here we have our key K<u>i, which happens to
+be 48 bits. The first thing it does, is it</u>
+goes through an expansion box. And this
+expansion box basically take thirty two
+bits, and maps them into 48 bits. Now, all
+the expansion box does is just replicates
+some bits, and move other bits around. So,
+for example, bit #1 of X is replicated
+into positions 2 and 48 in the output.
+Bit #2 of X is positioned in as bit
+#3 of the output. And so on and so
+forth, just by replicating some of the
+bits of X, we expand the input into 48
+bits. The next thing we do is we compute
+an XOR with the round key.
+Sometimes people say that cryptographers
+only compute XORs. This is an example of
+that, where, well, we just do XORs in this
+function. And then comes the magic of DES,
+where, actually, these 48 bits are broken
+into eight groups of six bits. Six, seven,
+eight. And so let me draw, and then what
+happens is, so yes. Each one of these,
+each one of these wires is, six bits. And
+then they, they go into what, what are
+called S boxes. And I'll explain S boxes
+in just a minute. The S boxes are kind of
+the smarts of, DES. And then, the S
+box is basically a map, six bits to four
+bits. So, the outputs of the S boxes are
+these four bits. They're collected. This
+gives up 32 bits, right? Eight groups of
+four bits, gives us 32 bits and then
+finally this is fed into yet another
+permutation which just maps the bits
+around. So, for example bit number one
+will go to bit number nine, bit number two
+will go to bit number fifteen and so on.
+So it just permutes the 32 bits around and
+that's the final 32 bit output of this F function.
+Okay? So by using different
+round keys, essentially, we get different
+round functions, and that's how we form
+the sixteen round functions of DES. Now,
+the only thing that, left to specify are
+these S boxes. So the S boxes, literally,
+are just functions from six bits to four
+bits. They are just implemented as a look
+up table. Right? So describing a function
+from six bits to four bits basically
+amounts to writing the output of the
+function on all two to the six possible inputs.
+Two to the six is 64. So we just
+have a table that literally contains 64 values.
+Where each value is four bits. So
+here is an example, this happens to be the
+fifth S box, and you see that this is a
+table that contains 64 values right?
+It's four by sixteen. So, 64 values. For
+example, if you wanna look at, the output,
+that corresponds to 0-1-1-0-1-1. Okay, then
+you look at these two bits. This is 01,
+and these four bits are 1101, and you see
+that the output is 1001. The four bits
+output 1001. Okay, so the S boxes are just
+implemented as these tables.
+Now the question is, how are these S boxes chosen.
+How are these tables actually chosen by
+the designers of this. So to give you some
+intuitions for that, lets start with a
+very bad choice for S boxes. So imagine
+the S boxes were linear. What do I mean by
+that? I mean that imagine that these six
+bit inputs literally were just
+XORed with one another in different
+ways to produce the four bit outputs.
+Okay, another way of writing that is that
+we can write the S box as a matrix vector product.
+So here you have the matrix Ai.
+And the vector, the six bit vector X.
+And you can see that, if we write this matrix
+vector product, basically, we take the
+inner product of this vector with the
+input vector. Remember, these are all bits.
+So the six bits vector inner
+product. Another six bit vector, and we do
+that modulo two, you realize, basically,
+what we're computing is X2 XOR X3.
+Right? Because only position two and
+position three have 1's in it.
+And similarly the next, inner product will
+produce X1 XOR X4 XOR X5 and so on and
+so forth. Okay. So you can literally see
+that if the S boxes are implemented this
+way. Then, all they do, is just apply the
+matrix A to the input vector X. Which is
+why we say, that in this case the S boxes
+are completely linear. Now, I claimed that
+in fact that if the S boxes were linear, then DES
+would be totally insecure. The reason is,
+if the S boxes are linear, then all that
+DES does is just compute XOR of various
+things and permute and shuffle bits
+around. So it's just XORs and bit
+permutations, which means that as a
+result, all of DES is just a linear
+function. In other words, there will be a
+Matrix B. Of these dimensions. Basically,
+it's a matrix B that has width 832.
+Basically what I will do is I will write
+the 64 bit message plus the sixteen round
+keys as one long vector. Alright, so the
+message is 64 bits and there are sixteen
+round keys. Each one is 48 and that, if
+you do the math, it's basically 832. Okay?
+So I write these values, the keys and the
+message, as one long vector and then there
+will be this matrix that essentially when
+you compute these matrix vector products.
+Essentially you get the different bits of
+the ciphertext. So there's 64 of these
+rows and as a result, you get 64 bits of
+ciphertext. Okay, so this is what it
+means for DES to be linear. So if you
+think a little bit about this, you realize
+that the S boxes are the only nonlinear
+part of DES. So if the S boxes were
+linear, then the entire circuit is linear
+and therefore can be expressed as this
+matrix. Now if that's the case then DES
+would be terrible as a secure pseudorandom
+permutation. And let me give you a very
+simple example. Basically if you did the
+XOR of three outputs of DES, well
+let's think what that means. Basically we
+would be looking at B times, the matrix B
+that defines DES, times, one vector
+XOR B times another vector,
+XOR B times a third vector. We
+could take the B out of the parentheses so
+we'd be basically doing B times this
+vector over here. But of course K XOR K XOR K,
+this is just K. And so if you
+think about what that means, basically we
+just got back DES of K at the point M1 XOR M2 XOR M3. But this means that now DES
+has this horrible relation. That can be
+tested. Right? So, basically, if you
+XOR the output of three values,
+M1, M2, M3, you'll get the value of
+DES, at the point M1 XOR M2 XOR M3. Now this
+is not a relation that is going to hold
+for a random function. A random function
+is not going to satisfy this equality.
+And so you get a very easy test to tell you
+that DES is not a random function.
+In fact, maybe you can take that as a small
+exercise. It's not even difficult to see,
+that given enough input output pairs, you
+can literally recover the entire secret key.
+Yeah. You just need 832 input output
+pairs, and you'll be able recover the
+entire secret key. And so if the S boxes
+were linear, DES would be completely
+insecure. It turns out, actually, even if
+the S boxes were close to being linear. In
+other words, the S boxes were linear most
+of the time. So maybe for 60 out of the 64
+inputs, the S boxes were linear. It turns
+out that would also be enough to break
+DES, and we're gonna see why later on. In
+particular, if you choose the S boxes at
+random, it turns out they'll tend to be
+somewhat close to linear functions. As a
+result, you'll be able to totally break
+DES. You'll just be able to recover the
+key, in basically, very little time. And
+so, the designers of DES actually
+specified a number of rules they use for
+choosing the S boxes. And it's not
+surprising, the first rule is that these
+functions are far away from being linear.
+Okay. So, in other words, there is no
+function that agrees with a large fraction
+of the outputs of the S box. And then
+there are all these other rules, for
+example, there are exactly four to one
+maps, right? So, every output has exactly
+four pre-images and so on and so forth. So
+we understand now why they chose the S
+boxes they way they did and in fact its
+all done to defeat certain attacks on DES.
+Okay. So that's the end of the
+description of DES, and in the next few
+segments we are going to look at the
+security of DES.

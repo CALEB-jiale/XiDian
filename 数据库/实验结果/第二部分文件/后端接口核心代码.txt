@@ -1,0 +1,164 @@
+#退学警告后端接口
+@app.route('/student/list1', methods=['POST'])
+def student_list1():
+    if request.method == "POST":
+        cursor.execute("select id,sno,sname,sex,school,major,sclass,date from student where sno in "
+                       +"(select sno from sc join course on course.cno=sc.cno where grade<60 and exam>0 and feature=\"必修课\" group by sno having sum(credit)>28 "
+                       +"union select sno from sc join course on course.cno=sc.cno where grade<60 and exam>0 and feature=\"必修课\" group by sno,semester having sum(credit)>8"
+                       +" union select sno from sc join course on course.cno=sc.cno where grade<60 and exam>0 and feature=\"选修课\" group by sno having sum(credit)>18)")
+        data = cursor.fetchall()
+        temp={}
+        result=[]
+        if(data!=None):
+            for i in data:
+                temp["id"]=i[0]
+                temp["sno"]=i[1]
+                temp["sname"]=i[2]
+                temp["sex"]=i[3]
+                temp["school"]=i[4]
+                temp["major"]=i[5]
+                temp["sclass"]=i[6]
+                temp["date"]=i[7]
+                result.append(temp.copy()) #特别注意要用copy，否则只是内存的引用
+            print("result:",len(data))
+            return jsonify(result)
+        else:
+            print("result: NULL")
+            return jsonify([])
+
+
+#增的例子
+@app.route('/login/add', methods=['POST'])
+def login_add():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        role = request.form.get("role")
+        try:
+            cursor.execute("insert into login(username,password,role) values (\""
+                            +str(username)+"\",\""+str(password)+"\",\""+
+                            str(role)+"\")")
+            db.commit() #提交，使操作生效
+            print("add a new user successfully!")
+            return "1"
+        except Exception as e:
+            print("add a new user failed:",e)
+            db.rollback() #发生错误就回滚
+            return "-1"
+
+
+#删的例子
+@app.route('/login/del', methods=['POST'])
+def login_del():
+    if request.method == "POST":
+        id = request.form.get("id")
+        try:
+            cursor.execute("delete from login where id="+str(id))
+            db.commit()
+            print("delete user "+str(id)+" successfully!")
+            return "1"
+        except Exception as e:
+            print("delete the user failed:",e)
+            db.rollback() #发生错误就回滚
+            return "-1"
+
+
+#改的例子
+@app.route('/student/update', methods=['POST'])
+def student_update():
+    if request.method == "POST":
+        id = request.form.get("id")
+        sname = request.form.get("sname")
+        school = request.form.get("school")
+        major = request.form.get("major")
+        sclass = request.form.get("sclass")
+        date = request.form.get("date")
+        try:
+            cursor.execute("update student set date=\""+str(date)+"\",sname=\""+str(sname)
+                           +"\",school=\""+str(school)+"\", major=\""+str(major)
+                           +"\",sclass=\""+str(sclass)+"\" where id="+str(id))
+            db.commit()
+            print("update successfully!")
+            return "1"
+        except Exception as e:
+            print("update failed:",e)
+            db.rollback() #发生错误就回滚
+            return "-1"
+
+#查的例子
+@app.route('/student/loc_sno', methods=['POST'])
+def student_loc_sno():
+    if request.method == "POST":
+        sno = request.form.get("sno")
+        cursor.execute("select * from student where sno=\""+str(sno)+"\"")
+        data = cursor.fetchall()
+        temp={}
+        result=[]
+        if(data!=None):
+            for i in data:
+                temp["id"]=i[0]
+                temp["sno"]=i[1]
+                temp["sname"]=i[2]
+                temp["sex"]=i[3]
+                temp["school"]=i[4]
+                temp["major"]=i[5]
+                temp["sclass"]=i[6]
+                temp["date"]=i[7]
+                result.append(temp.copy()) #特别注意要用copy，否则只是内存的引用
+            print("result:",len(data))
+            return jsonify(result)
+        else:
+            print("result: NULL")
+            return jsonify([])
+
+
+#登录
+@app.route('/login/login', methods=['POST'])
+def login_login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        cursor.execute("select id,username,role from login where username=\""
+                       +str(username)+"\" and password=\""+str(password)+"\"")
+        data = cursor.fetchone()
+        if(data!=None):
+            print("result:",data)
+            jsondata = {"id":str(data[0]),"username":str(data[1]),
+                        "role":str(data[2])}
+            return jsonify(jsondata)
+        else:
+            print("result: NULL")
+            jsondata = {}
+            return jsonify(jsondata)
+
+
+#求必修课平均分
+@app.route('/sc/average1', methods=['POST'])
+def sc_average1():
+    if request.method == "POST":
+        sno = request.form.get("sno")
+        cursor.execute("select avg(grade) from sc join course on course.cno=sc.cno where exam>0 and feature=\"必修课\" and sno=\""+str(sno)+"\"")
+        data = cursor.fetchone()
+        if(data!=None):
+            print("result:",data)
+            jsondata = {"average1":str(data[0])}
+            return jsonify(jsondata)
+        else:
+            print("result: NULL")
+            return jsonify([])
+
+
+#求已修总学分
+@app.route('/sc/sum', methods=['POST'])
+def sc_sum():
+    if request.method == "POST":
+        sno = request.form.get("sno")
+        cursor.execute("select sum(credit) from sc join course on course.cno=sc.cno where grade>60 and sno=\""+str(sno)+"\"")
+        data = cursor.fetchone()
+        if(data!=None):
+            print("result:",data)
+            jsondata = {"sum":str(data[0])}
+            return jsonify(jsondata)
+        else:
+            print("result: NULL")
+            return jsonify([])

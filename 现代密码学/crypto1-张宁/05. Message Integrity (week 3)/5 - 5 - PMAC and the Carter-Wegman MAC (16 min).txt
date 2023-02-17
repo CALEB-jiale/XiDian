@@ -1,0 +1,418 @@
+In the last two segments we talked about
+the CBC-MAC and NMAC to convert a PRF for
+small messages into a PRF for much larger
+messages. Those two constructions were
+sequential, in the sense that if you had
+multiple processors you couldn't make the
+construction work any faster. In this
+segment we're gonna look at a parallel MAC
+that also converts a small PRF into a
+large PRF, but does it in a very
+parallelizable fashion. In particular we're
+gonna look at a parallel MAC construction
+called PMAC, that uses an underlying PRF
+to construct a PRF for much larger
+messages. In particular, the PRF can
+process much longer messages that can have
+variable length and have as many as L
+blocks in them. Now the construction works
+as follows. We take our message and we
+break it into blocks. And then we process
+each block independently of the other. So,
+the first thing we do, is we evaluate some
+function P and we XOR the result
+into the first message block, and then we
+apply our function F using a key k1.
+We do the same for each one of the
+message blocks and you notice that we can
+do it all parallel, all message blocks are
+processed independently of one another.
+And we collect all these results into some
+final XOR and then we encrypt one more time
+to get the final tag value. Now for a
+technical reason, actually on the very
+last one. We actually don't need to apply
+the PRF F, but as I said, this is just
+for technical reason, and I'm going to
+ignore that for now. Now, I want to
+explain what the function P is for and
+what it does. So imagine, just for a
+second, that the function P isn't actually
+there. That is, imagine we actually,
+directly feed each message block into the
+PRF without applying any other
+processing to it. Then I claim that the
+resulting MAC is completely insecure and
+the reason is essentially no order is
+enforced between the message blocks. In
+particular, if I swap two message blocks,
+that doesn't change the value of the final
+tag. Because the XOR is commutative, the
+tag will be the same whether we swap the
+blocks or not. As a result, an attacker
+can request the tag for a particular
+message, and then he obtains the tag for a
+message where two of the blocks are
+swapped and that counts as an existential
+forgery. So what this function P tries to
+do is essentially enforce order on these
+blocks. And you notice that the function
+takes, first of all, it's a heed function,
+so it takes a key as input. And second of
+all, more importantly, it takes the block
+number as input. In other words, the
+value of the function is different for
+each one of the blocks. And that's
+actually exactly what's preventing this,
+blocks swapping attack. So the function P
+actually, is a very easy to compute
+function. Essentially given the key and
+the message block, all it is, is just a
+multiplication in some finite fields. So
+it's a very, very simple function to
+compute. It adds very little to the
+running time of PMAC. And yet, it's
+enough in ensure that the PMAC is
+actually secure. As we've said, the key
+for PMAC is this pair of keys. One key for
+the PRF, and one key for this masking
+function P. And finally, I'll tell you
+that if the message length is not a
+multiple of the block length. That is,
+imagine the last block is shorter than
+full block length, then PMAC actually uses
+a padding that's similar to CMAC, so that
+there is no need for an additional dummy
+block, ever. So that's the PMAC
+construction and as usual, we can state
+its security theorem. So the security
+theorem, by now, you should be used to it.
+Essentially, it says that if you give me
+an adversary attacking PMAC, I can
+construct an adversary attacking the
+underlying PRF. Plus an additional error
+term. And so, since again, the PRF is
+secure, we know that this term is
+negligible. And so if we want this term to
+be negligible, we know that, we need this
+error term to also be negligible. Here, as
+usual, q is the number of messages that
+are MAC-ed using a particular key. And L
+is the maximum length of all those
+messages. And PMAC is secure, as long as
+its product is less than the square root
+of the block size. So for A, yes, this would be
+two to the 128, and the square root,
+therefore, would be two to the 64th. So the
+MAC would be secure, as long as Q times L
+is less than two to the 64th. And every time,
+as it gets closer to that value, of
+course, you would have to change the key
+in order to continue MAC-ing more
+messages. So the main thing to remember is
+that PMAC also gives us a PRF, and when it
+processes the message blocks independently
+of one another. Turns out that PMAC also
+has a very interesting property. Namely,
+that PMAC math is incremental. So let me
+explain to you what that means. So suppose
+the function F that's used to construct PMAC
+is not just a PRF, but, in fact, a
+permutation, PRP. So we can actually
+invert it when we need to. Now suppose
+we've already computed the MAC for a
+particularly long message m. And now,
+suppose just one message block of this
+long message changes. So here, m[1] has
+changed into m'[1]. But the
+remaining message blocks all remain the
+same. For other MAC-s, like CBC-MAC, even
+though only one message block changed, you
+would have to recompute the tag on the
+entire message. Recomputing the tag
+basically will take time that's
+proportional to the length of the message.
+It turns out, with PMAC, if we only
+change one block, or a small number of
+blocks, actually, we can recompute the
+value of the tag for the new message very,
+very quickly. And let me ask you a puzzle
+to see if you can figure out how to do
+that yourself. And remember, the function
+F is a PRP, and therefore is invertible.
+So let's see if you can figure out how to
+compute the MAC in the new message by
+yourself. So it turns out this can be
+done. And you can quickly recompute the
+tag on the new message using this third
+line here. Just to make sure we all see
+the solution let's quickly go back to the
+original diagram for PMAC and I can show
+you what I mean. So imagine this one
+message block changed into some other
+block, say, it changed into M'[1]. Then
+what we could do is we can take the tag on
+the original message before the change was
+made. So we can invert the function F, and
+determine the value before the function F
+was applied. Now, well, since we now have
+an XOR of a bunch of blocks, what
+we can do is we can cancel out the XOR
+that came from the original message block,
+basically by XOR-ing this value that came
+from the original message block into this
+XOR-ed accumulator. And then XOR-ing again
+the value that would come from the new
+message block back into the XOR
+accumulator. And then apply the function F
+again. And that will give us the tag for
+the new message, where just one block was
+changed. So in symbols, basically, I wrote
+the formula over here. You can see,
+basically, we decrypt the tag, and then we
+XOR with the block that comes from the
+original message block. We XOR again with
+the block that comes from the new message
+block. And then we re-encrypt the final
+XOR accumulator to get the new tag for the
+message with a one block changed. So
+that's kind of a neat property. It kind of
+shows that if you have very large
+messages, you can very quickly update the
+tag. Of course you would need the secret
+key to do the update, but you can quickly
+update the tag if just a small number of
+message blocks changed. Okay, so that
+concludes our discussion of PMAC. And now
+I wanna switch topics a little bit, and
+talk about the concept of a one time MAC,
+which is basically the analog of the one
+time pad, but in the world of integrity.
+So let me explain what I mean by that. So
+imagine we wanna build a MAC that is only
+used for integrity of a single message. In
+other words, every time we compute the
+integrity of a particular message, we also
+change the key. So that any particular key
+is used only for integrity of one message.
+Then we can define the security game as
+basically saying, the attacker's gonna see
+one message. Therefore, we only allow him
+to do one chosen message attack. So he
+gets to submit one message query, and he
+is given the tag corresponding to that one
+message query. And now his goal is to
+forge a message tag pair. Okay, so you
+can see his goal was to produce one
+message tag pair that verifies correctly and
+is different from the pair that he was
+actually given. As we'll see, just like
+the one time pad and stream ciphers were
+quite useful, it turns out one time MAC-s
+are also quite useful for the same
+applications when we only wanna use a key
+to encrypt or to provide integrity for
+just a single message. So as usual we
+would say that a one time act is secure,
+because basically no adversary can win
+this game. Now the interesting thing is
+that one time MAC-s, just like the one time
+pad can be secure against infinitely
+powerful adversaries. And not only that,
+because they're only designed to be secure
+for one time use, they can actually be
+faster than MAC-s that are based on PRFs.
+And so I just wanted to give you a quick
+example of one one time MAC, this is a
+classic construction for a one time MAC,
+let me show you how it works. The first
+step is to pick a prime that's slightly
+larger than our block size. In this case
+we're going to use 128-bit blocks, so
+let's pick the first prime that's bigger
+than two to the 128th. This happens to be
+two to the 128th plus 51. And now the key
+is going to be a pair of random numbers in
+the range 1 to our prime, so 1 to q. So we
+choose two random integers in the range 1
+to q. Now we're given a message so we're
+going to take our message and break it
+into blocks where each block is 128 bits,
+and we're going to regard each number as
+an integer in the range 0 to 2 to the
+128th minus 1. Now the MAC is defined as
+follows. The first thing we do is we take
+our message blocks and we kind of
+construct the polynomial out of them. So
+if there are L blocks in our message,
+we're going to construct the polynomial of
+degree L and you notice that the constant
+term of the polynomial is set to zero. And
+then we define the MAC very simply.
+Basically what we do is we take the
+polynomial that corresponds to the
+message, we evaluate it at the point K
+that's one half of our secret key, and
+then we add the value A which is the
+second half of our secret key. And that's
+it. That's the whole MAC. So just
+basically construct the polynomial that
+corresponds to our message, evaluate that
+polynomial at half of the secret key, and
+add the other half of the secret key to
+the result, and of course reduce final
+result modulo q. Okay so that's it, so
+the whole MAC, it's a one time secure MAC
+and we will argue that this MAC is one
+time secure, essentially by arguing that
+if I tell you the value of MAC for one
+particular message, that tells you nothing
+at all about the value of the MAC at
+another message. And as a result, even
+though you've seen the value of the MAC on
+a particular message, you have no way of
+forging this MAC on some other message.
+Now I should emphasize that this is a one
+time MAC, but it's not two time secure. In
+other words, if you get to see the value
+of the MAC on two different messages, that
+actually completely compromises the
+secret key. And you can actually predict a MAC
+for a third or fourth message of your
+choice. So then the MAC becomes forgeable.
+But for one time use, it is a perfectly
+secure MAC, and I'll tell you that in fact
+it's a very fast MAC to evaluate. So now
+that we've constructed one time MAC-s,
+turns out there's actually a general
+technique that will convert one time MAC-s
+into many time MAC-s. And I just wanted to
+briefly show you how that works. So
+suppose we have our one time MAC, let's
+call it S and V for signing and
+verification algorithms, and let's just
+assume that the tags themselves are n bit
+strings. In addition, let's also look at a
+PRF, a secure PRF, that also happens to
+output n bit strings but also takes as
+inputs n bit strings. So let's now define
+a general construction for a MAC. These
+MAC-s are called Carter-Wegman MAC-s that
+works as follows. Basically what we would
+do is we would apply the one time MAC to
+the message M and then we're going to
+encrypt the results using the PRF. So how do
+we encrypt the result? Well, we choose a
+random r and then we compute kind of a
+one time path from this r by applying the
+PRF to it. And then we XOR the result
+with the actual one time MAC. So the neat
+thing about this construction is that the
+fast one time MAC is applied to the long
+message, which could be gigabytes long.
+And the slower PRF is only applied to this
+nonce r, which is then used to
+encrypt the final results of the MAC. And
+you can argue that if the MAC that was
+given to us as a building block is a one
+time secure MAC, and the PRF is secure,
+then, in fact, we get a many time secure
+MAC that happens to output 2n bit tags.
+So we're gonna see Carter-Wegman MAC-s later
+on when we talk about authenticated
+encryption. And, in fact, one of the NIST standard
+methods for doing encryption with
+integrity, uses a Carter-Wegman MAC for
+providing integrity. I want to mention
+that this Carter-Wegman MAC is a good
+example of a randomized MAC where this nonce
+r is chosen afresh every time the tag is
+computed. And so for example if you try to
+compute a tag for the same message twice
+each time you'll choose a different r and
+as a result you'll get different tags both
+times. And so this is a nice example of a
+MAC that's actually not a pseudo random
+function, not a PRF, because a single
+message could actually be mapped to many
+different tags all of which are valid for
+that one message. To conclude our
+discussion on the Carter-Wegman MAC, let me
+ask you the following question. Here we
+have the equation for the Carter-Wegman
+MAC. As usual, you see the nonce r as
+part of the MAC. And the second part of
+the MAC I'm gonna denote by t. This is
+basically the one time MAC applied to the
+message M, and then encrypted using the
+pseudo-random function applied to the
+nonce r. So we'll denote the result of
+this XOR by t. So my question to
+you is, given the Carter-Wegman MAC pair r,t
+for particular message m, how
+would you verify that this MAC is valid?
+And recall that its algorithm V here, is
+the verification algorithm for the
+underlying one time MAC. So this is the
+right answer, and to see why, just observe
+that this XOR here decrypts the quantity t
+to its plain text value, which is
+basically the original underlying one time
+MAC. And so we can directly feed that into
+the verification algorithm for the one
+time MAC. The last type of MAC I wanted
+to tell you about is one that is very
+popular in internet protocols. It's called the HMAC. But before we talk about the HMAC we
+have to talk about hash functions and in particular, collision resistant hash
+functions and we are going to do that in
+the next module. So this is the end of our
+first module on MAC-s and I wanted to point
+out that there's beautiful theory that
+went into constructing all the MAC-s that
+we saw. I gave you the highlights showed
+you the main constructions, but
+there's really quite a bit of theory that
+goes into constructing these MAC-s, and if
+you'd like to learn more about that, I
+listed a couple of key papers you might
+want to look at. Let me quickly tell you what they
+are. The first one is, what's called the
+three key construction, which is the basis
+of CMAC. A very elegant paper that give a
+very efficient construction out of CBC-MAC.
+The second paper is a more technical
+paper, but basically shows how to prove
+that bounds of CBC-MAC as a PRF. The
+third paper talks about PMAC and its
+construction. Again, a very acute paper.
+The fourth paper talks about security of
+NMAC and HMAC as well. HMAC we're going to
+cover in, the next module. The last paper
+I listed asks an intriguing question.
+Recall that all of our constructions, we
+always assume that AES is a pseudo-random
+function for sixteen byte messages and we
+then built a pseudo-random function and
+therefore a MAC for much longer messages.
+This paper says well, what do we do if AES
+is not a pseudo-random function, but still
+satisfies some weaker security property
+called an unpredictable function. And then
+they ask if AES is only an unpredictable
+function, but not a pseudo-random
+function, can we still build MAC-s for long
+messages? And so they succeed in actually
+giving constructions just based on the
+weaker assumption that AES is an
+unpredictable function. But their
+constructions are far less sufficient than
+CBC-MAC or NMAC, or PMAC that we discussed
+in these segments. And so if you're
+interested in a different perspective on
+how to build MAC-s from block ciphers like
+AES, please take a look at this paper. And
+there are actually some nice open
+questions to work on in this area. So this
+concludes our first segment on integrity.
+And in the next segment, we're gonna talk
+about collision resistance.

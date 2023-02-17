@@ -1,0 +1,729 @@
+1
+00:00:00,000 --> 00:00:03,765
+Now that we know that block cyphers are we
+know how to construct them, let's see how
+
+2
+00:00:03,765 --> 00:00:07,898
+to use them for secure encryption? But
+before that, I wanna briefly remind you of
+
+3
+00:00:07,898 --> 00:00:11,413
+an important abstraction called a
+pseudo-random function, and a
+
+4
+00:00:11,413 --> 00:00:15,949
+pseudo-random permutation. So as we said
+in the last module, a block cipher's map,
+
+5
+00:00:15,949 --> 00:00:20,428
+N bits of inputs to N bits of outputs. And
+we saw two examples of block ciphers,
+
+6
+00:00:20,598 --> 00:00:24,737
+triple DES and AES. Now, an important
+abstraction of the concept of a block
+
+7
+00:00:24,737 --> 00:00:28,762
+cipher, is captured by this idea of a PRP
+and a PRF. And remember that a
+
+8
+00:00:28,762 --> 00:00:33,185
+pseudo-random function, a PRF, basically
+is a function that takes two inputs. It
+
+9
+00:00:33,185 --> 00:00:37,470
+takes a key and an element in some set X.
+And in outputs an element in some set Y
+
+10
+00:00:37,470 --> 00:00:41,390
+and for now the only requirement is that
+there's an efficient algorithm to evaluate
+
+11
+00:00:41,390 --> 00:00:45,118
+this function. We're going to talk about
+security for PRFs in just a minute. And
+
+12
+00:00:45,118 --> 00:00:49,811
+then similarly, there's a related concept
+called a pseudo-random permutation, which
+
+13
+00:00:49,811 --> 00:00:54,561
+is similar to a PRF. In fact, there's also
+an efficient algorithm to evaluate, the
+
+14
+00:00:54,561 --> 00:00:58,739
+pseudo-random permutation. However,
+there's an additional requirement, that
+
+15
+00:00:58,739 --> 00:01:02,918
+there's also an algorithm D that will
+invert this function E. So a PRP, is
+
+16
+00:01:02,918 --> 00:01:07,562
+basically a PRF, but where the function is
+required to be one to one for all keys.
+
+17
+00:01:07,562 --> 00:01:12,204
+And there is an efficient inversion
+algorithm. So now lets talk about how to
+
+18
+00:01:12,204 --> 00:01:17,550
+define secure PRF's. So we already said
+that essentially the goal of a PRF is to
+
+19
+00:01:17,550 --> 00:01:23,229
+look like a random function from the set X
+to Y. So to capture that more precisely we
+
+20
+00:01:23,229 --> 00:01:28,508
+define this notation, funs XY to be the
+set of all functions from the set X, to
+
+21
+00:01:28,508 --> 00:01:34,054
+the set Y. Similarly, we defined the set S
+sub F to be the set of all functions from
+
+22
+00:01:34,054 --> 00:01:39,458
+the set X to Y that are defined by the
+PRF. In other words. Once you fix the key
+
+23
+00:01:39,458 --> 00:01:44,991
+K, you obtain a function from the set X to
+the set Y. And the set of all such
+
+24
+00:01:44,991 --> 00:01:50,597
+functions, given a particular PRF, would
+be the set S sub F. So as we said last
+
+25
+00:01:50,597 --> 00:01:56,713
+time, funs XY is generally a gigantic set
+of all functions from S to Y. I think I
+
+26
+00:01:56,713 --> 00:02:02,537
+mentioned that, in fact, for AES, where X
+and Y are two to the 128, the size of the
+
+27
+00:02:02,537 --> 00:02:08,215
+set is two to the 128 times two to the
+128. It's a double exponential, which is
+
+28
+00:02:08,215 --> 00:02:12,788
+an absolutely enormous number. On the
+other hand, the number of functions
+
+29
+00:02:12,788 --> 00:02:17,110
+defined by the AES block cipher is just
+two to the hundred and twenty-eight.
+
+30
+00:02:17,110 --> 00:02:21,717
+Namely, one function from each key. And
+what we would like to say is that a random
+
+31
+00:02:21,717 --> 00:02:25,584
+choice from this huge set is
+indistinguishable from a random choice
+
+32
+00:02:25,584 --> 00:02:29,906
+from the small set. And what do we mean by
+indistinguishable, we mean that an
+
+33
+00:02:29,906 --> 00:02:34,513
+adversary who can interact with a random
+function in here, can't distinguish that
+
+34
+00:02:34,513 --> 00:02:38,949
+interaction from an interaction with a
+random function in here. Now let's find
+
+35
+00:02:38,949 --> 00:02:43,268
+out more precisely. So we're gonna, as
+usual, define two experiments. Experiment
+
+36
+00:02:43,268 --> 00:02:47,289
+zero and experiment one. And our goal is
+to say that the adversary can't
+
+37
+00:02:47,289 --> 00:02:51,254
+distinguish these two experiments. So in
+experiment zero, the challenger,
+
+38
+00:02:51,254 --> 00:02:55,219
+basically, is gonna choose a random,
+pseudo-random function. Okay? So he's
+
+39
+00:02:55,219 --> 00:02:59,798
+gonna fix the key K at random, and that's
+gonna define this function, little f over
+
+40
+00:02:59,798 --> 00:03:03,765
+here, to be one of the functions
+implemented by the PRF. And experiment
+
+41
+00:03:03,765 --> 00:03:08,662
+one, on the other hand, the challenger is
+gonna choose a truly random function from
+
+42
+00:03:08,662 --> 00:03:13,261
+the set X to the set Y. And again, we're
+gonna call this truly random function
+
+43
+00:03:13,261 --> 00:03:17,979
+little f, either way, either experiment
+zero or experiment one, the challenger
+
+44
+00:03:17,979 --> 00:03:23,142
+ends up with this little function f that's
+either chosen from the PRF, or chosen as a
+
+45
+00:03:23,142 --> 00:03:28,447
+truly random function from X to Y. Now the
+adversary basically gets to query this
+
+46
+00:03:28,447 --> 00:03:33,882
+function, little f. So he gets to submit a
+query X1 and he obtains the value of f at
+
+47
+00:03:33,882 --> 00:03:39,056
+the point X1, then he gets to submit at
+X2, and he obtains the value of f at the
+
+48
+00:03:39,056 --> 00:03:44,351
+point X2. So on and so fourth, he makes Q
+queries. And so he learns the value of the
+
+49
+00:03:44,351 --> 00:03:49,477
+function little f at those Q points. Now
+his goal is to say whether the function
+
+50
+00:03:49,477 --> 00:03:54,603
+little f is chosen truly at random from
+funs XY, or chosen just from the set of
+
+51
+00:03:54,603 --> 00:03:59,603
+functions implemented by the PRF. So he
+outputs a certain bit b prime and we'll
+
+52
+00:03:59,603 --> 00:04:04,602
+refer to that output as the output of
+experiments, either as experiment zero or
+
+53
+00:04:04,602 --> 00:04:09,365
+experiment one. As usual we say that the
+PRF is secure. If, in fact, the adversary
+
+54
+00:04:09,365 --> 00:04:13,616
+can't distinguish these two experiments.
+In other words, the probability that he
+
+55
+00:04:13,616 --> 00:04:17,974
+outputs one, experiments zero is the same,
+pretty much the same as the probability
+
+56
+00:04:17,974 --> 00:04:22,333
+that he outputs one in experiment one. In
+other words, the difference of these two
+
+57
+00:04:22,333 --> 00:04:26,417
+probabilities is negligible. So this
+captures nicely, the fact that the
+
+58
+00:04:26,417 --> 00:04:31,080
+adversary couldn't distinguish a
+pseudo-random function from a truly random
+
+59
+00:04:31,080 --> 00:04:35,682
+function from the set X to Y. Now, the
+definition for a secure pseudo-random
+
+60
+00:04:35,682 --> 00:04:40,345
+permutation, a secure PRP, which is
+basically a secure block cipher, is pretty
+
+61
+00:04:40,345 --> 00:04:45,254
+much the same. In experiment zero, the
+adversary's gonna change a random instance
+
+62
+00:04:45,254 --> 00:04:50,285
+of the PRP. So he's gonna choose a random
+K, and define little f to be the function
+
+63
+00:04:50,285 --> 00:04:55,194
+that corresponds to little k within the
+pseudo-random permutation. In experiment
+
+64
+00:04:55,194 --> 00:05:00,311
+one: the adversary is gonna choose not a
+truly random function from X to Y, but a
+
+65
+00:05:00,311 --> 00:05:05,694
+truly random one to one function from X to
+X. Okay? So the goal of our PRP is to look
+
+66
+00:05:05,694 --> 00:05:10,758
+like a random permutation from X to X.
+Namely, a random one to one function from
+
+67
+00:05:10,758 --> 00:05:15,247
+the set X to itself. So the little
+functional little f here is again gonna be
+
+68
+00:05:15,247 --> 00:05:19,448
+a random function. From the set X to
+itself. And again, the challenger ends up
+
+69
+00:05:19,448 --> 00:05:23,791
+with this function, little f. As before,
+the adversary gets to submit queries and
+
+70
+00:05:23,791 --> 00:05:28,124
+it gets to see the results of those
+queries. And then he shouldn't be able to
+
+71
+00:05:28,124 --> 00:05:32,707
+distinguish, again, experiment zero from
+experiment one. So again, given the value
+
+72
+00:05:32,707 --> 00:05:37,464
+of the function f at cue points chosen by
+the adversary, he can't tell whether the
+
+73
+00:05:37,464 --> 00:05:41,873
+function f came from a PRP, or
+whether it's a truly random permutation
+
+74
+00:05:41,873 --> 00:05:46,476
+from X to X. So let's look at a simple
+example. Suppose the set X contains only
+
+75
+00:05:46,476 --> 00:05:50,974
+two points, zero and one. In this case,
+Perms[X] is really easy to define.
+
+76
+00:05:50,974 --> 00:05:55,473
+Essentially, there are two points, and
+we're looking at, you know, 01. And we're
+
+77
+00:05:55,473 --> 00:06:00,208
+asking, what is the set of all invertible
+functions on the set 01. Well, there are
+
+78
+00:06:00,208 --> 00:06:04,706
+only two such functions. One function is
+the identity function. And the other
+
+79
+00:06:04,706 --> 00:06:09,264
+function is basically the function that
+does crossovers, namely this function
+
+80
+00:06:09,264 --> 00:06:14,028
+here. These are the only two invertible
+functions in the set 01. So really, Perms[X]
+
+81
+00:06:14,028 --> 00:06:18,557
+only contains two functions, in this
+case. Now, let's look at the following
+
+82
+00:06:18,557 --> 00:06:23,448
+PRP. The key space is gonna be 01, and of
+course, X is gonna be 01. And let's define
+
+83
+00:06:23,448 --> 00:06:28,348
+the PRP as basically X XOR K. Okay so
+that's our PRP and my question to you is,
+
+84
+00:06:28,348 --> 00:06:33,488
+is this a secure PRP. In other words, is
+this PRP indistinguishable from a random
+
+85
+00:06:33,488 --> 00:06:39,211
+function on Perms[X]? I hope everybody
+said, yes, because essentially, the sets
+
+86
+00:06:39,211 --> 00:06:45,521
+of functions implemented in this PRP, is
+identical to the set of functions in Perms[X].
+
+87
+00:06:45,521 --> 00:06:50,550
+So a random choice of key here is
+identical to a random choice of function
+
+88
+00:06:50,550 --> 00:06:54,675
+over here. And as a result, the two
+distributions, either pseudo-random or
+
+89
+00:06:54,675 --> 00:06:58,743
+random, are identical. So clearly, an
+adversary can't distinguish the two
+
+90
+00:06:58,743 --> 00:07:03,212
+distributions. Now, we already said that
+we have a couple of examples of secure
+
+91
+00:07:03,212 --> 00:07:07,853
+PRPs triple DES and AES. And I just wanted
+to mention that, if you want to make
+
+92
+00:07:07,853 --> 00:07:12,322
+things very concrete, here's a concrete
+security assumptions about AES. Just to
+
+93
+00:07:12,322 --> 00:07:17,077
+give an example, say that all algorithms
+had run in time 2^80 have advantage
+
+94
+00:07:17,077 --> 00:07:22,295
+against AES of utmost 2^-40. This
+is, a reasonable assumption about AES, and
+
+95
+00:07:22,295 --> 00:07:26,674
+I just wanted to state it for
+concreteness. So let's look at another
+
+96
+00:07:26,674 --> 00:07:31,376
+example. Consider again the PRP from the
+previous question. Namely XX or K.
+
+97
+00:07:31,376 --> 00:07:36,270
+Remember the set X was just one bit,
+namely the value zero and one. And this
+
+98
+00:07:36,270 --> 00:07:40,726
+time, we're asking, is this PRP a secure
+PRF? In other words, is this PRP
+
+99
+00:07:40,726 --> 00:07:45,411
+indistinguishable from a random function
+from X to X? Now, the set of random
+
+100
+00:07:45,411 --> 00:07:50,282
+functions from X to X, Funs[XX] in
+this case, contains only four elements.
+
+101
+00:07:50,282 --> 00:07:54,967
+There are the two invertible functions,
+which we already saw in... I believe the
+
+102
+00:07:54,967 --> 00:07:59,589
+identity function, and the negation
+function, the function that
+
+103
+00:07:59,589 --> 00:08:04,524
+sends zero to one, and one to zero. But
+there are two other functions. Namely, the
+
+104
+00:08:04,524 --> 00:08:10,183
+function that sends everything to zero.
+And the function that sends everything to
+
+105
+00:08:10,183 --> 00:08:16,498
+one. Okay, these are four functions inside
+Funs[XX], and the question is: Is this
+
+106
+00:08:16,498 --> 00:08:22,507
+PRP that we just looked at, is it also
+indistinguishable from a random choice
+
+107
+00:08:22,507 --> 00:08:27,542
+from Funs[XX]? So I hope everybody said no
+and the reason it's not a secure prf is
+
+108
+00:08:27,542 --> 00:08:31,949
+because there's a simple attack, namely
+the attacker supposed to distinguish
+
+109
+00:08:31,949 --> 00:08:36,762
+whether he's interacting with this PRP or
+is he interacting with a random function
+
+110
+00:08:36,762 --> 00:08:41,343
+from Funs[XX]. And the distinguisher
+is very simple. Basically we're gonna
+
+111
+00:08:41,343 --> 00:08:45,923
+query the function at both x equals zero
+and x equals one, and then if we get a
+
+112
+00:08:45,923 --> 00:08:50,736
+collision, in other words, if f of zero is
+equal to f of one, then for sure we're not
+
+113
+00:08:50,736 --> 00:08:54,907
+interacting with a PRP. In which case we
+can just output one. In other words we're
+
+114
+00:08:54,907 --> 00:08:58,967
+interacting with a random function. In
+other words we say zero. So let's look at
+
+115
+00:08:58,967 --> 00:09:03,723
+the advantage of this distinguisher. Well
+when it's interacting with a PRP, it'll
+
+116
+00:09:03,723 --> 00:09:08,087
+never output a one, because f of zero can
+never be equal to f of one. In other
+
+117
+00:09:08,087 --> 00:09:12,621
+words, the probability of outputting one
+is zero. However, when we interact with a
+
+118
+00:09:12,621 --> 00:09:17,324
+truly random function in Funs[XX],
+the probability that f of zero is equal to
+
+119
+00:09:17,324 --> 00:09:21,915
+f of one is exactly one-half.  Cause half the
+functions satisfy F of zero's equal to F
+
+120
+00:09:21,915 --> 00:09:26,335
+of one, and half the functions don't. So
+then, we'll output one with probability
+
+121
+00:09:26,335 --> 00:09:30,472
+one-half. So the advantage of this
+distinguisher is one-half, which is non-negligible.
+
+122
+00:09:30,472 --> 00:09:35,274
+And as a result, this PRP here
+is not a secure PRF. Now it turns out this
+
+123
+00:09:35,274 --> 00:09:40,226
+only true because if set X is very small.
+And in fact there is an important lemma,
+
+124
+00:09:40,226 --> 00:09:44,810
+called the PRF Switching Lemma, that
+says that a secure PRP, is in fact a
+
+125
+00:09:44,810 --> 00:09:49,212
+secure PRF, whenever the set X is
+sufficiently large. And by sufficiently
+
+126
+00:09:49,212 --> 00:09:53,919
+large, I mean say the output space of AES
+which is two to the 128th. So by this
+
+127
+00:09:53,919 --> 00:09:58,870
+lemma which will state more precisely in a
+second, AES if it's a secure PRP, it is
+
+128
+00:09:58,870 --> 00:10:03,883
+also a secure PRF. So this lemma basically
+says the following, if you give me a PRP
+
+129
+00:10:03,883 --> 00:10:10,313
+over the set X Then for any adversary that
+queries the PRP, at at most Q points, so it
+
+130
+00:10:10,313 --> 00:10:15,857
+makes at most Q queries into the
+challenge function. Then, the difference
+
+131
+00:10:15,857 --> 00:10:20,911
+between its advantage in attacking the PRP
+when compared to a random function, is
+
+132
+00:10:20,911 --> 00:10:25,154
+very close to its advantage in
+distinguishing the PRP from a random
+
+133
+00:10:25,154 --> 00:10:30,020
+permutation. In fact the difference, is
+bounded by this quantity here, and since
+
+134
+00:10:30,020 --> 00:10:34,700
+we said that X is very large, this
+quantity Q squared over 2X is negligible.
+
+135
+00:10:34,700 --> 00:10:38,876
+Okay. That's gonna be our goal. So
+essentially, again, when X is large, say
+
+136
+00:10:38,876 --> 00:10:43,630
+two to the 128, Q say is going to be two
+to the 32. That's a billion queries that
+
+137
+00:10:43,630 --> 00:10:48,443
+the adversary makes. Then, still the ratio
+is going to be negligible. In which case,
+
+138
+00:10:48,443 --> 00:10:52,847
+we say that the adversary's advantage is
+distinguishing the PRP from a random
+
+139
+00:10:52,847 --> 00:10:58,010
+function. It's pretty much the same as its
+advantage of distinguishing a PRP from a
+
+140
+00:10:58,010 --> 00:11:02,431
+random permutation. So, again, it's
+basically, if E is already a secure PRP,
+
+141
+00:11:02,431 --> 00:11:08,844
+then it's already a secure PRF. So for
+AES, AES, we believe, is a secure PRP.
+
+142
+00:11:08,844 --> 00:11:14,517
+And therefore, AES, we can also use it as a
+secure PRF. And so, as a final note, I
+
+143
+00:11:14,517 --> 00:11:16,530
+just want to mention that, really, from
+now on, you can kinda forget about the
+
+144
+00:11:16,530 --> 00:11:21,312
+inner workings of AES and triple DES.
+We're simply gonna assume that both are
+
+145
+00:11:21,312 --> 00:11:26,218
+secure PRPs, and then we're gonna see how
+to use them. But whenever I say PRP, or
+
+146
+00:11:26,218 --> 00:11:30,442
+PRF, you should be thinking in your mind,
+basically, AES or triple DES.

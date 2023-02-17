@@ -1,0 +1,983 @@
+1
+00:00:00,000 --> 00:00:03,866
+In the previous segment, we talked about
+how to solve modular linear equations.
+
+2
+00:00:03,866 --> 00:00:07,733
+In this segment, we're gonna talk about how
+to solve modular quadratic equations.
+
+3
+00:00:07,733 --> 00:00:11,815
+And more generally, we're gonna talk about how
+to compute modular e'th roots. As I said,
+
+4
+00:00:11,815 --> 00:00:17,238
+now we know how to solve linear equations
+simply by using an inversion algorithm to
+
+5
+00:00:17,238 --> 00:00:22,468
+compute a inverse and then multiplying
+the result by minus B. So the question is
+
+6
+00:00:22,468 --> 00:00:27,375
+what about higher degree polynomials and
+in particular we are interested in
+
+7
+00:00:27,375 --> 00:00:32,669
+solving, polynomials modulo primes. So
+solving polynomials in ZP, but polynomials
+
+8
+00:00:32,669 --> 00:00:38,092
+particularly of the form x squared - c
+or y cubed - c or z to the 37 - c, all in ZP.
+
+9
+00:00:38,092 --> 00:00:43,172
+So solving this polynomial, for
+example, involved computing the square root of C.
+
+10
+00:00:43,172 --> 00:00:47,589
+Solving this polynomial
+involves computing the cube root of C.
+
+11
+00:00:47,589 --> 00:00:52,620
+Solving this polynomial involves computing
+the thirty-seventh root of C. And so on.
+
+12
+00:00:53,440 --> 00:00:59,268
+So, again, let's fix the primes P, and
+let's say that C is some element in ZP.
+
+13
+00:00:59,268 --> 00:01:05,709
+We'll say that X in ZP that satisfies X to
+the E is equal to C. We'll call such an X
+
+14
+00:01:05,709 --> 00:01:13,801
+the modular E-th root of C. So let's look
+at an example. We say that the cube root
+
+15
+00:01:13,801 --> 00:01:20,932
+of 7 in Z11 is equal to 6,
+because 6 cubed is equal to 216, which
+
+16
+00:01:20,932 --> 00:01:28,434
+happens to be 7 modulo 11. And
+therefore, the cube root of 7 modulo 11
+
+17
+00:01:28,434 --> 00:01:35,751
+is equal to 6. So let me ask you,
+what is the square root of 3 in Z11?
+
+18
+00:01:35,751 --> 00:01:46,167
+So the answer is 5 because 5
+squared is equal to 25, which is 3 modulo 11.
+
+19
+00:01:46,167 --> 00:01:50,555
+And similarly, let me ask
+you, what is the cubed root of 1, modulo 11.
+
+20
+00:01:50,555 --> 00:01:57,449
+Well the cube root of 1
+is simply 1, because one cubed is equal to 1, in Z11.
+
+21
+00:01:57,449 --> 00:02:01,791
+In fact that's true
+in modulo any prime. One thing I'd like to
+
+22
+00:02:01,791 --> 00:02:05,802
+point out is that these e'th roots
+don't always exist. For example, if I
+
+23
+00:02:05,802 --> 00:02:09,865
+asked you to compute the square root of
+2 modulo 11, you'd have a problem,
+
+24
+00:02:09,865 --> 00:02:14,625
+because the square root of two simply
+doesn't exist modulo 11. So now that
+
+25
+00:02:14,625 --> 00:02:19,099
+we understand what an e'th root is, the next
+question is, when do these e'th roots
+
+26
+00:02:19,099 --> 00:02:23,391
+exist, and when we know that they do
+exist, can we actually compute them efficiently?
+
+27
+00:02:23,391 --> 00:02:28,167
+So, let's start with the easy
+case. The easy case is, when we want to
+
+28
+00:02:28,167 --> 00:02:33,185
+compute an e'th root of something, and it
+so happens that e is relatively prime to p-1.
+
+29
+00:02:33,185 --> 00:02:38,082
+In this case, c to the one over
+e always exists, and there's a very easy
+
+30
+00:02:38,082 --> 00:02:43,100
+algorithm to actually compute the e'th root
+of c and ZP. So let's see how this works.
+
+31
+00:02:43,100 --> 00:02:48,628
+So first, since e is relatively prime to
+p-1, we know that e has an inverse
+
+32
+00:02:48,628 --> 00:02:53,623
+modulo of p-1. So let's compute
+this inverse, and let's call it d.
+
+33
+00:02:53,623 --> 00:03:00,872
+So let's let d be the inverse of e modulo p-1. Then I claim that in fact c to the 1/e
+
+34
+00:03:00,872 --> 00:03:09,017
+is simply c to the d,
+modulo p. So if this equation holds then
+
+35
+00:03:09,017 --> 00:03:15,337
+first of all it proves that for all
+с in ZP the e'th root to c actually
+
+36
+00:03:15,337 --> 00:03:20,682
+exists. And moreover, it gives a very
+efficient algorithm to compute this e'th root to c,
+
+37
+00:03:20,682 --> 00:03:25,976
+simply by computing the inverse
+of e modulo p-1, and then raising
+
+38
+00:03:25,976 --> 00:03:30,955
+c to the power of that inverse. Okay? So
+we kill two birds in one stone. So let's
+
+39
+00:03:30,955 --> 00:03:37,579
+see why this equation holds. So first of
+all the fact that d times e is equal to
+
+40
+00:03:37,579 --> 00:03:44,705
+one mod p-1, what that means is there
+exists some integer k. Such that if I look
+
+41
+00:03:44,705 --> 00:03:52,006
+at d times e for that's basically gonna be
+k times p-1 plus 1. That's basically
+
+42
+00:03:52,006 --> 00:03:58,222
+what it means that d times e is equal to
+one modulo p-1. Well, so now we can
+
+43
+00:03:58,222 --> 00:04:03,206
+actually confirm that c to the d is a
+e'th root of C. Well, how do we
+
+44
+00:04:03,206 --> 00:04:08,323
+confirm that? Well, let's take C to the D,
+and raise it to the power of E. If in
+
+45
+00:04:08,323 --> 00:04:13,572
+fact, c to the d is an e'th root of
+c, when we raise it to the power of e;
+
+46
+00:04:13,572 --> 00:04:19,020
+we're supposed to get c back. So let's see
+why that's true. Well, that's simply equal
+
+47
+00:04:19,020 --> 00:04:24,106
+to c times d to the e, and c times d to
+the e, well, by definition, is equal to c
+
+48
+00:04:24,106 --> 00:04:29,488
+to the power of k times p-1 plus 1
+Well, using the laws of
+
+49
+00:04:29,488 --> 00:04:37,375
+exponentiation, we can write this as c to
+the power of p-1 to the power of k times c.
+
+50
+00:04:37,375 --> 00:04:41,948
+All I did is I distributed the
+exponentiation using the standard laws of exponentiation.
+
+51
+00:04:41,948 --> 00:04:47,087
+Now what do we know about
+c to the p-1? Since c lives in ZP
+
+52
+00:04:47,087 --> 00:04:52,421
+by Fermat's theorem we know that c
+to the p-1 is equal to 1, in ZP.
+
+53
+00:04:52,421 --> 00:04:57,755
+1 to the k is also equal to 1 and as a
+result, this is simply equal to c in ZP,
+
+54
+00:04:57,755 --> 00:05:03,822
+which is exactly what we needed to prove
+that c to the d is an e'th root of c.
+
+55
+00:05:03,822 --> 00:05:08,790
+Okay. So this is what I call the easy
+case. In fact, the e'th root always exists
+
+56
+00:05:08,790 --> 00:05:13,633
+when e is relatively prime to p-1. And it's very easy to compute it
+
+57
+00:05:13,633 --> 00:05:18,730
+simply by using this formula here. Now
+let's turn to the less easy case. So the
+
+58
+00:05:18,730 --> 00:05:24,192
+less easy case is when e is not relatively
+prime to p-1. And the canonical example
+
+59
+00:05:24,192 --> 00:05:29,787
+here is when e is equal to 2. So now
+suppose we want to compute square roots of
+
+60
+00:05:29,787 --> 00:05:35,183
+c in ZP. So if p is an odd prime, and in
+fact we are going to focus on odd primes
+
+61
+00:05:35,183 --> 00:05:40,645
+from now on, then in fact p-1 is going to
+be even. Which means that two are divided
+
+62
+00:05:40,645 --> 00:05:46,106
+p-1, and indeed the gcd(2,p-1) is
+not equal to 1, So this is not the easy case.
+
+63
+00:05:46,106 --> 00:05:51,827
+So the algorithm that we just saw on
+the previous slide is not gonna work when
+
+64
+00:05:51,827 --> 00:05:56,565
+we want to compute square roots modulo
+an odd prime.
+
+65
+00:05:56,565 --> 00:06:03,282
+So when we work modulo odd prime, the squaring function is actually a
+2-to-1 function. Namely, it maps X and
+
+66
+00:06:03,282 --> 00:06:09,416
+minus X to the same value. It matched both
+of them to X squared. And as a result, we
+
+67
+00:06:09,416 --> 00:06:15,192
+say that this function is a 2-to-1
+function. So here's a simple example.
+
+68
+00:06:15,192 --> 00:06:20,585
+Let's look at what happens when we compute
+squares modulo eleven. So you can see that
+
+69
+00:06:20,585 --> 00:06:25,508
+1 and -1 modulo 11 both map
+to 1. 2 and -2 both map to 4.
+
+70
+00:06:25,508 --> 00:06:30,391
+3 and -3  both map to
+9, and so on and so forth, So you can
+
+71
+00:06:30,391 --> 00:06:34,837
+see that it's a 2-to-1 map. So, in
+fact, these elements here, 1, 4,
+
+72
+00:06:34,837 --> 00:06:39,595
+9, 5, 3, all are gonna have square roots. For example, the square root
+
+73
+00:06:39,595 --> 00:06:44,475
+of 4 is simply gonna be 2 and 9.
+And I claim that, in fact, none of the
+
+74
+00:06:44,475 --> 00:06:49,227
+other elements of Z11 are gonna have
+a square root. And that motivates this
+
+75
+00:06:49,227 --> 00:06:53,979
+definition to say that an element x in ZP,
+we're gonna say, is called a quadratic
+
+76
+00:06:53,979 --> 00:06:58,493
+residue. If in fact, it has a square root
+in ZP. Okay, and if it doesn't have a
+
+77
+00:06:58,493 --> 00:07:03,963
+square root, we'll say that it's a non
+quadratic residue. For example modulo 11
+
+78
+00:07:03,963 --> 00:07:09,283
+4 is going to be a quadratic
+residue, 9 is a quadratic residue, 5
+
+79
+00:07:09,283 --> 00:07:14,137
+is a quadratic residue, 3 is a
+quadratic residue, and, of course, 1 is
+
+80
+00:07:14,137 --> 00:07:19,457
+a quadratic residue. So let me ask you, if
+p is an odd prime, what do you think is
+
+81
+00:07:19,457 --> 00:07:24,578
+the number of quadratic residues in ZP?
+And I'll give you a hint; the squaring
+
+82
+00:07:24,578 --> 00:07:30,097
+function is a 2-to-1 map, which means
+that half the elements in ZP can't have a
+
+83
+00:07:30,097 --> 00:07:35,699
+pre-image under this map. So the number of
+quadratic residues is simply (p-1)/2 + 1
+
+84
+00:07:35,699 --> 00:07:40,336
+And the reason that's
+true is because we know that exactly half
+
+85
+00:07:40,336 --> 00:07:44,634
+the elements in ZP are gonna be
+quadratic residues, Because of the fact
+
+86
+00:07:44,634 --> 00:07:49,328
+that the squaring function is a 2-to-1
+map. So there can be, at most (p-1)/2
+
+87
+00:07:49,328 --> 00:07:54,123
+elements in the image of that
+map. So half the elements in ZP are
+
+88
+00:07:54,123 --> 00:07:59,113
+quadratic residues, And then, in ZP,
+there's also zero. We also have to account
+
+89
+00:07:59,113 --> 00:08:04,036
+for zero. Zero is always a quadratic
+residue, 'cause zero squared is equal to
+
+90
+00:08:04,036 --> 00:08:08,632
+zero. So overall, we get (p-1)/2
+quadratic residues in ZP<i>, plus 1,</i>
+
+91
+00:08:08,632 --> 00:08:13,556
+the zero element, which is a quadratic
+residue in ZP. So overall, in ZP, there
+
+92
+00:08:13,556 --> 00:08:18,875
+are (p-1)/2 + 1 quadratic
+residues. Okay, so the main points to
+
+93
+00:08:18,875 --> 00:08:24,401
+remember is that roughly half the elements
+have a square root and the other half does
+
+94
+00:08:24,401 --> 00:08:29,763
+not have a square root. I wanna emphasize
+that this is very different from the easy
+
+95
+00:08:29,763 --> 00:08:34,748
+case, where e was relatively prime to p-1. If you remember in the easy
+
+96
+00:08:34,748 --> 00:08:40,120
+case, every element in ZP had an e'th
+root. When e is not relatively prime to p-1,
+
+97
+00:08:40,120 --> 00:08:45,428
+that's no longer the case, and
+in particular in the case of e equals 2,
+
+98
+00:08:45,428 --> 00:08:50,412
+only half of the elements in ZP have
+a square root. Well, so the natural
+
+99
+00:08:50,412 --> 00:08:55,720
+question then is, can we given an element x
+that's in ZP<i>, can we tell whether it has</i>
+
+100
+00:08:55,720 --> 00:09:02,735
+a square root or not? So Euler did some
+important work on that too and in fact, he
+
+101
+00:09:02,735 --> 00:09:08,195
+came up with a very clean criteria to test
+exactly which elements are quadratic
+
+102
+00:09:08,195 --> 00:09:13,041
+residues and which are not. And in
+particular he said that x and ZP is a
+
+103
+00:09:13,041 --> 00:09:18,501
+quadratic residue if and only if x to the
+power of (p-1)/2 is equal to 1 modulo p.
+
+104
+00:09:18,501 --> 00:09:23,538
+Okay, very, very elegant and
+very simple condition. Let's see a simple
+
+105
+00:09:23,538 --> 00:09:28,137
+example in Z11, so when we work mod 11. So here I compute it at the 5th
+
+106
+00:09:28,137 --> 00:09:32,452
+power of all the elements in 11 for
+you, and you can see that this symbol,
+
+107
+00:09:32,452 --> 00:09:36,880
+this X to the (p-1)/2, is
+always either one or minus one, and it's
+
+108
+00:09:36,880 --> 00:09:40,741
+one precisely at the quadratic
+residues--so 1, 3, 4, 5, and 9.
+
+109
+00:09:40,741 --> 00:09:44,942
+Okay, those are the quadratic
+residues, and the other elements are not
+
+110
+00:09:44,942 --> 00:09:49,541
+quadratic residues. Here, I'll circle them
+in green. These are the elements that do
+
+111
+00:09:49,541 --> 00:09:54,432
+not have a square root when we work modulo
+11. One thing I'd like to point out
+
+112
+00:09:54,432 --> 00:09:58,704
+is, in fact, if we take an x that's not
+equal to 0, and we look at x to the (p-1)/2
+
+113
+00:09:58,704 --> 00:10:02,812
+Well, we can write that as the square root of x to the p-1
+
+114
+00:10:02,812 --> 00:10:07,138
+The kind of, the half bubbles out, and this is simply the square
+
+115
+00:10:07,138 --> 00:10:11,410
+root of x to the p-1. Well, x to
+the p-1 by Fermat's theorem, is 1.
+
+116
+00:10:11,410 --> 00:10:17,579
+So, x to the (p-1)/2 is
+simply a square root of 1, which must be 1 or -1.
+
+117
+00:10:17,579 --> 00:10:21,688
+So what this proves is that really this exponentiation here must
+
+118
+00:10:21,688 --> 00:10:26,654
+output 1 or -1, and we actually
+saw that happening here. It outputs 1
+
+119
+00:10:26,654 --> 00:10:31,118
+when x is a quadratic residue, and it
+outputs -1 when x is not a
+
+120
+00:10:31,118 --> 00:10:34,755
+quadratic residue. This is not a
+particularly difficult proof, but I'm not
+
+121
+00:10:34,755 --> 00:10:38,492
+going to show it to you here. It's in the
+reference that I point to you at the end
+
+122
+00:10:38,492 --> 00:10:43,643
+of the module. And just for completeness,
+I'll mention that this value, x to the (p-1)/2
+
+123
+00:10:43,643 --> 00:10:48,841
+has a name, it's called the Legendre's symbol of x over p.
+
+124
+00:10:48,841 --> 00:10:54,517
+And as we said, this for elements in ZP the symbol is either 1 or -1
+
+125
+00:10:54,517 --> 00:10:59,924
+depending on the quadratic residuosity
+of x. Now, the sad thing about Euler's
+
+126
+00:10:59,924 --> 00:11:03,726
+Theorem is that it's not constructive.
+Even though it's a very, very cute theorem,
+
+127
+00:11:03,726 --> 00:11:07,631
+it tells us exactly which elements are quadratic residues and which
+
+128
+00:11:07,631 --> 00:11:11,382
+aren't, this theorem doesn't do it
+constructively, in the sense that if we
+
+129
+00:11:11,382 --> 00:11:15,287
+want to compute the square roots of a
+quadratic residue, the theorem doesn't
+
+130
+00:11:15,287 --> 00:11:19,295
+actually tell us how to do that. And in
+fact, even if you look at the proof, the
+
+131
+00:11:19,295 --> 00:11:23,508
+proof is by an existential argument. So it
+proves that the square roots exists, but
+
+132
+00:11:23,508 --> 00:11:28,541
+it doesn't show us how to compute the
+square root when we want it.
+
+133
+00:11:28,695 --> 00:11:33,149
+So the next question is then how do we compute square roots modulo primes. So it turns out
+
+134
+00:11:33,149 --> 00:11:37,423
+that's actually not so hard and, again, it
+breaks up into two cases. The first case
+
+135
+00:11:37,423 --> 00:11:41,327
+is when p is equal to 3 modulo 4
+in, which case, it's really easy to
+
+136
+00:11:41,327 --> 00:11:45,707
+compute the square root and I'll just tell
+you there's a simple formula. The square
+
+137
+00:11:45,707 --> 00:11:49,876
+root of c in this case is simply c to the
+power of (p+1)/4.
+
+138
+00:11:49,876 --> 00:11:54,143
+You'll notice that because p is equal to 3
+modulo 4, p+1 is necessarily,
+
+139
+00:11:54,143 --> 00:11:59,094
+p+1 is equal to 0 modulo 4.
+Which means that p+1 is divisible by
+
+140
+00:11:59,094 --> 00:12:04,236
+4, and therefore (p+1)/4 is an integer. And that's exactly what allows
+
+141
+00:12:04,236 --> 00:12:09,188
+us to compute this exponentiation, and I
+claim that, that actually gives us the
+
+142
+00:12:09,188 --> 00:12:14,203
+square root of c. Very simple formula,
+that directly gives us the square root of c.
+
+143
+00:12:14,203 --> 00:12:17,099
+So let's verify that that's actually
+true.
+
+144
+00:12:17,099 --> 00:12:22,441
+Well I'll take c to the power of (p+1)/4 and square that.
+
+145
+00:12:22,441 --> 00:12:29,663
+And if, in fact, if c to the (p+1)/4 is the square root of c, when I square it, I should get c.
+
+146
+00:12:29,663 --> 00:12:36,358
+So let's see what happens. So first of all, by laws of exponentiation, this is simply equal to c
+
+147
+00:12:36,358 --> 00:12:43,232
+to the power of (p+1)/2. And that I can write as c to the power of (p-1)/2 times c
+
+148
+00:12:43,232 --> 00:12:47,804
+Okay, again, this is basically, I took, one-half, and moved it
+
+149
+00:12:47,804 --> 00:12:53,221
+out of the exponentiation. Now, what do we
+know about c to the power of (p-1)/2 ?
+
+150
+00:12:53,221 --> 00:12:58,441
+Since c is a quadratic residue,
+we know that c to the power of (p-1)/2 is 1.
+
+151
+00:12:58,441 --> 00:13:03,472
+And therefore, this is really equal to one times c, which is c in
+
+152
+00:13:03,472 --> 00:13:08,390
+ZP as we wanted to show. Okay. So this
+basically proves that c to the power of (p+1)/4
+
+153
+00:13:08,390 --> 00:13:13,374
+is the square root of c, at least in the case when p is equal to 3 modulo 4.
+
+154
+00:13:13,374 --> 00:13:18,175
+Now you should ask me, well, what about the case when p is equal to 1 mod 4 ?
+
+155
+00:13:18,175 --> 00:13:22,672
+In that case, this formula doesn't even make sense. Because (p+1)/4
+
+156
+00:13:22,672 --> 00:13:27,534
+this exponent here, (p+1)/4 is gonna be a rational fraction, and I don't
+
+157
+00:13:27,534 --> 00:13:32,858
+know how to raise, c to the power of a
+rational fraction. Nevertheless, it turns
+
+158
+00:13:32,858 --> 00:13:37,151
+out that even in the case where p is equal
+to 1 mod 4; we can efficiently find
+
+159
+00:13:37,151 --> 00:13:41,341
+square roots, although it's a little bit
+harder. And in particular, we don't have a
+
+160
+00:13:41,341 --> 00:13:45,480
+deterministic algorithm to do it. We have
+to use a randomized algorithm to do it.
+
+161
+00:13:46,180 --> 00:13:51,132
+But this randomized algorithm will
+actually find the square root of x mod p,
+
+162
+00:13:51,132 --> 00:13:56,795
+very efficiently. I guess I should mention
+that if someone could prove that the
+
+163
+00:13:56,795 --> 00:14:01,559
+extended Riemann hypothesis--this is some deep
+hypothesis of analytic number theory. If
+
+164
+00:14:01,559 --> 00:14:05,651
+someone could prove that, that hypothesis
+is true, in fact, it would give a
+
+165
+00:14:05,651 --> 00:14:10,079
+deterministic algorithm for computing square roots even when p is equal to 1 modulo 4.
+
+166
+00:14:10,079 --> 00:14:14,507
+So the reason I like to mention that is because you notice that as
+
+167
+00:14:14,507 --> 00:14:18,879
+soon as you put the computational lens on
+something--for example, I ask you to
+
+168
+00:14:18,879 --> 00:14:23,255
+compute the square roots of a number x
+modulo p. Coming up with an algorithm
+
+169
+00:14:23,255 --> 00:14:28,253
+already requires extremely, extremely deep
+results in mathematics some of which are
+
+170
+00:14:28,253 --> 00:14:33,835
+not even known to be true today. So as
+things stand today, we simply don't have a
+
+171
+00:14:33,835 --> 00:14:38,428
+deterministic algorithm to compute square
+roots where p is 1 mod 4. But as I
+
+172
+00:14:38,428 --> 00:14:42,791
+said, we have good randomized algorithms,
+and this problem is considered easy.
+
+173
+00:14:42,791 --> 00:14:47,326
+Essentially, it boils down to a few exponentiations. And as a result, as we'll
+
+174
+00:14:47,326 --> 00:14:52,033
+see, the running time of computing square
+roots essentially is cubic in the number
+
+175
+00:14:52,033 --> 00:14:57,154
+of bits of p. So excellence. And now we
+know how to compute square roots mod p,
+
+176
+00:14:57,154 --> 00:15:01,100
+and so now we can talk about solving
+quadratic equations modulo p. So suppose
+
+177
+00:15:01,100 --> 00:15:04,924
+I give you a quadratic equation and I
+asked you to find a solution of this
+
+178
+00:15:04,924 --> 00:15:08,951
+quadratic equation in ZP. Well so now I
+claim that you know how to solve it. The
+
+179
+00:15:08,951 --> 00:15:12,927
+way you would solve it is basically you
+would use the high school formula for
+
+180
+00:15:12,927 --> 00:15:16,955
+solving quadratic equations, you know. So
+the solution is minus b plus minus the
+
+181
+00:15:16,955 --> 00:15:20,982
+square root of b squared minus 4ac over
+2a. And I claim that you know how to
+
+182
+00:15:20,982 --> 00:15:25,213
+compute all the elements in this formula. So you know how to compute the inverse of 2a.
+
+183
+00:15:25,213 --> 00:15:29,189
+So you can divide by 2a. That's done using the extended Euclidean algorithm.
+
+184
+00:15:29,189 --> 00:15:33,420
+And you know how to complete a square root of b squared minus 4ac, using one of
+
+185
+00:15:33,420 --> 00:15:37,761
+the square root algorithms from the
+previous slide. And of course the formula
+
+186
+00:15:37,761 --> 00:15:43,495
+will only be solvable if the square root
+actually exists in ZP. So that's cool. So
+
+187
+00:15:43,495 --> 00:15:49,592
+now, you guys know how to solve quadratic
+equations in ZP. So now, the next obvious
+
+188
+00:15:49,592 --> 00:15:54,760
+question is what about computing these
+roots, modulo composites rather than
+
+189
+00:15:54,760 --> 00:16:00,036
+modulo primes. So we can ask exactly the
+same questions that we asked before. So
+
+190
+00:16:00,036 --> 00:16:05,012
+when does the e'th root modulo N exist?
+And if we know that it exists, can we
+
+191
+00:16:05,012 --> 00:16:10,120
+actually compute it efficiently? And here,
+the problem is much, much, much harder.
+
+192
+00:16:10,120 --> 00:16:14,692
+And in fact it turns out that, for all we
+know, computing e'th roots modular
+
+193
+00:16:14,692 --> 00:16:19,751
+composites is in fact as hard as factoring
+that composite. Now, for a general e, this
+
+194
+00:16:19,751 --> 00:16:24,811
+is actually not known to be true, but the
+best algorithm that we have for computing
+
+195
+00:16:24,811 --> 00:16:29,505
+e'th roots modulo N requires us to factor
+the modulus. And once we factor the
+
+196
+00:16:29,505 --> 00:16:34,078
+modulus, then it's actually easier to
+compute e'th roots modulo each of the
+
+197
+00:16:34,078 --> 00:16:39,137
+prime factors. And we can combine all the
+e'th roots together to get the e'th roots
+
+198
+00:16:39,137 --> 00:16:44,378
+modulo the composite N. So it's a very
+interesting case, where computing e'th
+
+199
+00:16:44,378 --> 00:16:48,919
+root modulo prime was very easy. In
+fact, for many e's, it was very easy. But
+
+200
+00:16:48,919 --> 00:16:53,403
+computing e'th root  modulo composite is much, much, much harder and, in fact,
+
+201
+00:16:53,403 --> 00:16:59,265
+requires the factorization of N. So that's
+all I wanted to tell you about e'th roots.
+
+202
+00:16:59,265 --> 00:17:03,489
+In the next segment, we're gonna turn to
+modular algorithms and we're gonna talk
+
+203
+00:17:03,489 --> 00:17:08,562
+about addition and multiplication and exponentiation algorithms, modulo primes and composites.

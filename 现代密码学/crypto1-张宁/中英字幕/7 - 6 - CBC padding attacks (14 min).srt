@@ -1,0 +1,1637 @@
+1
+00:00:00,000 --> 00:00:04,412
+这节课以及下节课 我要为你们展示两种很智能
+
+2
+00:00:00,000 --> 00:00:04,412
+In this segment and the next, I wanna show
+you two very cute attacks on deployed
+
+3
+00:00:04,412 --> 00:00:08,603
+对认证加密系统的攻击 但首先让我们来快速的回顾下
+
+4
+00:00:04,412 --> 00:00:08,603
+authenticated encryption systems. But
+first let's do a quick recap. So recall
+
+5
+00:00:08,603 --> 00:00:12,961
+回想下 认证加密系统保证了面对选择明文攻击的安全性以及密文完整性
+
+6
+00:00:08,603 --> 00:00:12,961
+that authenticated encryption means that
+the system provides CPA security plus
+
+7
+00:00:12,961 --> 00:00:17,207
+并且认证加密面对一个主动攻击的敌手
+
+8
+00:00:12,961 --> 00:00:17,207
+cipher text integrity. And authenticated
+encryption means that we can preserve
+
+9
+00:00:17,207 --> 00:00:21,178
+也具有保密性 不仅如此 攻击者
+
+10
+00:00:17,207 --> 00:00:21,178
+confidentiality in the presence of an
+active adversary, and moreover, the
+
+11
+00:00:21,178 --> 00:00:25,544
+不可能做到不被察觉的修改密文信息 我们可以说
+
+12
+00:00:21,178 --> 00:00:25,544
+adversary can't modify the cipher text in
+any way without being detected. We also
+
+13
+00:00:25,544 --> 00:00:29,485
+认证加密技术抵御了这些非常强大的选择密文攻击
+
+14
+00:00:25,544 --> 00:00:29,485
+showed that authenticated encryption
+prevents these very powerful chosen cipher
+
+15
+00:00:29,485 --> 00:00:33,279
+不幸的是 认证加密也有一个非常明显的缺陷
+
+16
+00:00:29,485 --> 00:00:33,279
+text attacks. Unfortunately, authenticated
+encryption has a pretty significant
+
+17
+00:00:33,279 --> 00:00:37,122
+就是它非常不容易实现 假如你没有正确的实现认证加密技术
+
+18
+00:00:33,279 --> 00:00:37,122
+limitation in that it simply can't help a
+bad implementation. If you implement
+
+19
+00:00:37,122 --> 00:00:41,260
+那你的实现可能面对主动攻击时非常的脆弱
+
+20
+00:00:37,122 --> 00:00:41,260
+authenticated encryption incorrectly, then
+your implementation will be vulnerable to
+
+21
+00:00:41,260 --> 00:00:45,094
+我们来看下标准的结构 前面我提到过
+
+22
+00:00:41,260 --> 00:00:45,094
+active attacks. And then we looked at
+standards constructions. I mentioned these
+
+23
+00:00:45,094 --> 00:00:49,108
+这三个标准规定了认证加密技术 并且我想指出
+
+24
+00:00:45,094 --> 00:00:49,108
+three standards that provide authenticated
+encryption. And I want to point out, when
+
+25
+00:00:49,108 --> 00:00:53,073
+当你在练习中要用到认证加密时 你应该会用到
+
+26
+00:00:49,108 --> 00:00:53,073
+you need to use authenticated encryption
+in practice, you should just be using one
+
+27
+00:00:53,073 --> 00:00:56,990
+这三个标准 而不应该实现你自己的认证加密
+
+28
+00:00:53,073 --> 00:00:56,990
+of these three standards. You shouldn't
+try to implement authenticated encryption
+
+29
+00:00:56,990 --> 00:01:00,617
+所以 我希望我在这一节中所讲的能说服你们
+
+30
+00:00:56,990 --> 00:01:00,617
+by yourself, and I hope that the attack
+that I'll show you in this segment
+
+31
+00:01:00,617 --> 00:01:04,486
+不要做自己来做认证加密 而是使用GCM,CCM,EAX中的一个
+
+32
+00:01:00,617 --> 00:01:04,486
+convinces you that this is not something
+you should do yourself. Just use one of
+
+33
+00:01:04,486 --> 00:01:08,306
+我们先来做一个大致上的了解吧
+
+34
+00:01:04,486 --> 00:01:08,306
+GCM, CCM or EAX. However, it's good for
+you to know that in general, when you want
+
+35
+00:01:08,306 --> 00:01:12,223
+当你想要提供一个认证加密时 正确的做法就是加密 然后消息验证码
+
+36
+00:01:08,306 --> 00:01:12,223
+to provide authenticated encryption, the
+correct way to do things is encrypt, then
+
+37
+00:01:12,223 --> 00:01:15,850
+因为无论你怎么结合加密和MAC算法
+
+38
+00:01:12,223 --> 00:01:15,850
+MAC, because then no matter which
+encryption and MAC algorithms you combine.
+
+39
+00:01:15,850 --> 00:01:19,493
+结局都会被认证加密 然后再次正确地使用加密和MAC算法
+
+40
+00:01:15,850 --> 00:01:19,493
+The result will be authenticated
+encryption, again assuming the encryption
+
+41
+00:01:19,493 --> 00:01:23,504
+好吧 我们再来看一个关于安全传输层协议记录协议的攻击
+
+42
+00:01:19,493 --> 00:01:23,504
+and Mac algorithm are implemented
+correctly. Okay, so let's look at a very
+
+43
+00:01:23,504 --> 00:01:28,402
+尤其是使用加密块链模式来加密的时候
+
+44
+00:01:23,504 --> 00:01:28,402
+acute attack on the TLS record protocol.
+In particular, when CBC encryption is
+
+45
+00:01:28,402 --> 00:01:33,617
+我简要说明下TLS加密是怎么工作的
+
+46
+00:01:28,402 --> 00:01:33,617
+used. Let me just briefly remind you that
+the way TLS decryption works, is, first of
+
+47
+00:01:33,617 --> 00:01:38,176
+首先 一个输入的密文是由CBC解密的
+
+48
+00:01:33,617 --> 00:01:38,176
+all, an incoming cipher text is CBC
+decrypted. Then the next thing that
+
+49
+00:01:38,176 --> 00:01:43,537
+然后这个实现将要检查填充格式是否正确
+
+50
+00:01:38,176 --> 00:01:43,537
+happens is the implementation will check
+if the pad has the correct format. For
+
+51
+00:01:43,537 --> 00:01:49,170
+举个例子 假如填充的长度是5 那格式就应该是55555
+
+52
+00:01:43,537 --> 00:01:49,170
+example, if the pad is of length five, the
+format should be 55555. And if it's not of
+
+53
+00:01:49,170 --> 00:01:54,054
+如果填充格式不正确的话 这个密文就会被丢弃
+
+54
+00:01:49,170 --> 00:01:54,054
+the correct format. Then the cipher text
+is rejected. So this basically checks that
+
+55
+00:01:54,054 --> 00:01:58,391
+所以基本上都要检查解密记录的最后是否包含正确的填充
+
+56
+00:01:54,054 --> 00:01:58,391
+the ending of the decrypted record
+contains the correct pad. And then if the
+
+57
+00:01:58,391 --> 00:02:02,899
+如果填充正确的话 下一步就是检查消息认证码和标签
+
+58
+00:01:58,391 --> 00:02:02,899
+pad has the correct format, then the next
+thing that happens is that the MAC is
+
+59
+00:02:02,899 --> 00:02:07,350
+如果标签不正确的话 记录也要被丢弃
+
+60
+00:02:02,899 --> 00:02:07,350
+checked, the tag is checked. And if the
+tag turns out to be incorrect, again, the
+
+61
+00:02:07,350 --> 00:02:11,915
+如果标签正确 那么剩下的数据就会被看作被认证了
+
+62
+00:02:07,350 --> 00:02:11,915
+record is rejected. If the tag is valid,
+then the remaining data is considered to
+
+63
+00:02:11,915 --> 00:02:16,194
+并且会提交给应用程序 那么我想指出的就是
+
+64
+00:02:11,915 --> 00:02:16,194
+be authentic and is given to the
+application. So what I wanted to point out
+
+65
+00:02:16,194 --> 00:02:20,874
+有两种错误在TLS解密中 一个是填充错误
+
+66
+00:02:16,194 --> 00:02:20,874
+is there are two types of errors in TLS
+decryption. One is a padding error and one
+
+67
+00:02:20,874 --> 00:02:25,473
+另一个是消息验证码错误 这很重要 因为你的对手不知道
+
+68
+00:02:20,874 --> 00:02:25,473
+is a MAC error. And it turns out it's very
+important that the adversary not be told
+
+69
+00:02:25,473 --> 00:02:29,657
+发生的是那种错误 让我来解释下
+
+70
+00:02:25,473 --> 00:02:29,657
+which of these errors occurred. And let me
+briefly explain why. So, suppose an
+
+71
+00:02:29,657 --> 00:02:33,951
+想象下 一个攻击者可以区分这两种错误 就是说他可以找到
+
+72
+00:02:29,657 --> 00:02:33,951
+attacker can actually differentiate the
+two types of errors. In other words, he
+
+73
+00:02:33,951 --> 00:02:38,645
+发生的是填充错误还是消息认证码错误 我们称为填充预言机
+
+74
+00:02:33,951 --> 00:02:38,645
+can tell if a pad error occurred, or a Mac
+error occurred. The result is what we call
+
+75
+00:02:38,645 --> 00:02:43,138
+现在 想象这个攻击者截获了一个确定的密文
+
+76
+00:02:38,645 --> 00:02:43,138
+the padding oracle. Bcause now, imagine
+the adversary has a certain cipher text
+
+77
+00:02:43,138 --> 00:02:47,574
+并且他想要尝试破解这段密文
+
+78
+00:02:43,138 --> 00:02:47,574
+that it intercepted. And it wants to try
+and decrypt that cipher text. What it
+
+79
+00:02:47,574 --> 00:02:52,010
+他可能要做的就是把这段密文提交给服务器
+
+80
+00:02:47,574 --> 00:02:52,010
+could do, is it could take that cipher
+text as is, and submit it to the server.
+
+81
+00:02:52,010 --> 00:02:56,365
+服务器会解密这段密文然后看填充格式是否正确
+
+82
+00:02:52,010 --> 00:02:56,365
+The server is gonna decrypt the cipher
+text and then look to see if the pad has
+
+83
+00:02:56,365 --> 00:03:00,491
+如果填充格式不正确 我们就得到了一种错误
+
+84
+00:02:56,365 --> 00:03:00,491
+the correct format. If the pad doesn't
+have the correct format, we'll get one
+
+85
+00:03:00,491 --> 00:03:04,775
+如果填充有一个正确的格式 那很可能就是
+
+86
+00:03:00,491 --> 00:03:04,775
+type of error. If the pad has the correct
+format, it's very likely since this is
+
+87
+00:03:04,775 --> 00:03:08,896
+敌手自己捏造了一个随机密文 很可能
+
+88
+00:03:04,775 --> 00:03:08,896
+just some random cipher text that the
+adversary concocted himself, it's very
+
+89
+00:03:08,896 --> 00:03:13,452
+消息认证码就是不正确的 然后对手就会得知一个消息认证码错误
+
+90
+00:03:08,896 --> 00:03:13,452
+likely the mac will be incorrect, and then
+the adversary will observe a mac error. So
+
+91
+00:03:13,452 --> 00:03:17,682
+如果填充无效 我们会看到填充错误 反之 如果填充正确 我们会看到
+
+92
+00:03:13,452 --> 00:03:17,682
+if the pad is invalid, we'll see a pad
+error, whereas if the pad is valid we'll
+
+93
+00:03:17,682 --> 00:03:21,747
+消息认证码错误 结果就是 攻击者 在提交密文给服务器后
+
+94
+00:03:17,682 --> 00:03:21,747
+see a mac error. As a result, the
+adversary, after submitting the cipher
+
+95
+00:03:21,747 --> 00:03:26,603
+他就可以知道解密后的密文最后一个字节是否是一个有效的填充
+
+96
+00:03:21,747 --> 00:03:26,603
+text to the server, the adversary can tell
+whether the last bytes in the decrypted
+
+97
+00:03:26,603 --> 00:03:31,400
+换句话说 他会知道解密后的密文最后的字节是否是
+
+98
+00:03:26,603 --> 00:03:31,400
+cipher text have a valid pad or not. In
+other words, whether the last bites in the
+
+99
+00:03:31,400 --> 00:03:36,564
+1 2-2 3-3-3 4-4-4-4 等等这样的形式
+
+100
+00:03:31,400 --> 00:03:36,564
+decrypted cipher text are end with one. Or
+2-2, or 3-3-3, or 4-4-4-4, and so on. So
+
+101
+00:03:36,564 --> 00:03:42,415
+所以敌手就可以得知解密后的密文 仅仅通过把密文
+
+102
+00:03:36,564 --> 00:03:42,415
+the adversary learns something about the
+decrypted cipher text, just by submitting
+
+103
+00:03:42,415 --> 00:03:48,124
+提交给服务器 那么 这就是一个非常好玩的例子 叫做选择密文攻击
+
+104
+00:03:42,415 --> 00:03:48,124
+the cipher text to the server. So this is
+a beautiful example of what's called a
+
+105
+00:03:48,124 --> 00:03:52,564
+在来一遍 你把密文提交给服务器
+
+106
+00:03:48,124 --> 00:03:52,564
+chosen cipher text attack. Where again,
+the address that you submit the cipher
+
+107
+00:03:52,564 --> 00:03:56,617
+然后攻击者就可以得知最后的明文
+
+108
+00:03:52,564 --> 00:03:56,617
+text and then he gets to learn something
+about the resulting plain text. And now
+
+109
+00:03:56,617 --> 00:04:00,772
+那么问题来了 他是否能使用这些信息来完全破解一个密文？
+
+110
+00:03:56,617 --> 00:04:00,772
+the question is whether he can use that
+information to completely decrypt a given
+
+111
+00:04:00,772 --> 00:04:04,876
+让我来展示下 一个填充预言机是怎么完全破解
+
+112
+00:04:00,772 --> 00:04:04,876
+cipher text. And I want to show you that a
+padding oracle can actually be used to
+
+113
+00:04:04,876 --> 00:04:08,829
+一个给定的密文的 不过在这之前我再说下
+
+114
+00:04:04,876 --> 00:04:08,829
+completely decrypt a given cipher text.
+But before I say that, I want to remind
+
+115
+00:04:08,829 --> 00:04:13,295
+TLS的较老的版本 它会在送还给窥窃者的警告信息中
+
+116
+00:04:08,829 --> 00:04:13,295
+you that older versions of TLS. Actually
+leaked the type of error simply in the
+
+117
+00:04:13,295 --> 00:04:18,021
+泄露错误的类型 发送出不同种类的警告信息
+
+118
+00:04:13,295 --> 00:04:18,021
+alert message that was sent back to the
+peer. Different types of alerts were sent
+
+119
+00:04:18,021 --> 00:04:22,380
+依赖于发生的不同种类的错误 这种攻击一产生
+
+120
+00:04:18,021 --> 00:04:22,380
+depending on which type of error occurred.
+As soon as this attack came out, SSL
+
+121
+00:04:22,380 --> 00:04:27,131
+SSL就只报告同一种类的错误了 所以
+
+122
+00:04:22,380 --> 00:04:27,131
+implementations simply always reported the
+same type of error, so just looking at the
+
+123
+00:04:27,131 --> 00:04:31,546
+只通过看警告 敌方已经不能得知错误类型了
+
+124
+00:04:27,131 --> 00:04:31,546
+alert type wouldn't tell the adversary
+which error occurred. Nevertheless, there
+
+125
+00:04:31,546 --> 00:04:35,849
+无论如何 还是有一个填充预言机 我来解释下
+
+126
+00:04:31,546 --> 00:04:35,849
+was still a padding oracle. So let me
+explain why. So this was observed by Canvel
+
+127
+00:04:35,849 --> 00:04:40,487
+比如 这被Canvel发现了 他察觉到
+
+128
+00:04:35,849 --> 00:04:40,487
+et. al. Canvel et. al. realized that
+the way TLS decryption is implemented is
+
+129
+00:04:40,487 --> 00:04:44,902
+TLS解密的第一步是先解密记录 然后再检查填充
+
+130
+00:04:40,487 --> 00:04:44,902
+first of all, the record is decrypted,
+then the pad is checked, and if the pad is
+
+131
+00:04:44,902 --> 00:04:49,150
+如果填充无效 解密中止 一个错误发生 如果填充有效
+
+132
+00:04:44,902 --> 00:04:49,150
+invalid, decryption is aborted and an
+error is generated. If the pad is valid.
+
+133
+00:04:49,150 --> 00:04:53,792
+继续检查消息验证码 然后如果验证码无效的话 解密中止 再生成一个错误
+
+134
+00:04:49,150 --> 00:04:53,792
+Then the Mac is checked. And then if the
+Mac is invalid, decryption is aborted, and
+
+135
+00:04:53,792 --> 00:04:58,321
+这样做的结果 就是会产生一个时序攻击
+
+136
+00:04:53,792 --> 00:04:58,321
+an error is generated. As a result, this
+causes a timing attack. You realize that
+
+137
+00:04:58,321 --> 00:05:03,021
+你这样想 如果填充无效 很快就会发送一个警告信息
+
+138
+00:04:58,321 --> 00:05:03,021
+if pad is invalid, then the alert message
+is sent very quickly. And you notice here,
+
+139
+00:05:03,021 --> 00:05:07,435
+注意这里 在第21毫秒的时候 密文被丢弃
+
+140
+00:05:03,021 --> 00:05:07,435
+that, in fact, you see that, within 21
+milliseconds, the cipher text is rejected.
+
+141
+00:05:07,435 --> 00:05:11,686
+然而 如果填充是有效的 就需要检查MAC
+
+142
+00:05:07,435 --> 00:05:11,686
+However, if the pad is valid. Then now the
+mac needs to be checked, and when it's
+
+143
+00:05:11,686 --> 00:05:15,553
+然后 当发现MAC是无效时 警告就会同时产生
+
+144
+00:05:11,686 --> 00:05:15,553
+discovered to be invalid, the alert is
+only generated at that point. In other
+
+145
+00:05:15,553 --> 00:05:19,726
+就是说 在这种情况下 警告会晚一点产生
+
+146
+00:05:15,553 --> 00:05:19,726
+words, then in that case it takes a little
+bit longer until the alert is generated,
+
+147
+00:05:19,726 --> 00:05:23,797
+这里 你会看到 大概平均花费23毫秒时间
+
+148
+00:05:19,726 --> 00:05:23,797
+and you see that on average this takes
+about 23 milliseconds. So even though the
+
+149
+00:05:23,797 --> 00:05:28,114
+所以 即使收到相同的警告 敌手还是可以通过观察警告信息
+
+150
+00:05:23,797 --> 00:05:28,114
+same alert is sent back to the peer. The
+adversary can simply observe the time
+
+151
+00:05:28,114 --> 00:05:32,787
+生成的时间 如果时间比较短 就是填充无效
+
+152
+00:05:28,114 --> 00:05:32,787
+until the alert message is generated. If
+the time is short, it knows the pad was
+
+153
+00:05:32,787 --> 00:05:37,460
+如果时间比较长 就是填充有效 消息认证码无效
+
+154
+00:05:32,787 --> 00:05:37,460
+invalid. If the time is long, it knows the
+pad was valid, but the Mac was invalid.
+
+155
+00:05:37,460 --> 00:05:42,232
+结果就是 敌方仍然可以通过填充预言机来判断
+
+156
+00:05:37,460 --> 00:05:42,232
+And as a result the adversary still has a
+padding oracle that can tell it whether
+
+157
+00:05:42,232 --> 00:05:46,463
+填充是否有效 现在我们来看下怎么使用填充预言机
+
+158
+00:05:42,232 --> 00:05:46,463
+the pad was valid or invalid. So now let's
+see how to use a padding oracle. So I
+
+159
+00:05:46,463 --> 00:05:50,583
+我先声明下 如果攻击者有一个确定的密文C 那么
+
+160
+00:05:46,463 --> 00:05:50,583
+claim that if the attacker has a certain
+cipher text C, he can completely decrypt
+
+161
+00:05:50,583 --> 00:05:54,449
+他就可以用填充预言机来破解密文 我们来看看他是如果做到的
+
+162
+00:05:50,583 --> 00:05:54,449
+the cipher text just using the padding
+oracle. So let's see how to do it. And
+
+163
+00:05:54,449 --> 00:05:58,518
+举个例子 想象下他想要得到M1 就是密文第二个分组
+
+164
+00:05:54,449 --> 00:05:58,518
+just as an example, suppose he wants to
+obtain M1, in other words, a decryption of
+
+165
+00:05:58,518 --> 00:06:02,485
+解密出的消息 那么我们来看看他会用到什么
+
+166
+00:05:58,518 --> 00:06:02,485
+the second block of the cipher text. So
+let's see what he would use. So here we
+
+167
+00:06:02,485 --> 00:06:06,649
+这里我们知道攻击者截获的密文 并且下面正好是
+
+168
+00:06:02,485 --> 00:06:06,649
+have the cipher text that the attacker
+intercepted. And this just happens to be
+
+169
+00:06:06,649 --> 00:06:11,133
+这段密文解密出的消息 我把这些写下来的原因是我想让你
+
+170
+00:06:06,649 --> 00:06:11,133
+the decryption of that cipher text. And
+the reason I wrote this down is I wanted
+
+171
+00:06:11,133 --> 00:06:15,841
+记住分组块链密码是如何解密的 一个密文分组直接
+
+172
+00:06:11,133 --> 00:06:15,841
+you to remember how CBC decryption works.
+So you should keep in mind that one cipher
+
+173
+00:06:15,841 --> 00:06:20,269
+和解密后的下一个密文分组异或
+
+174
+00:06:15,841 --> 00:06:20,269
+text block is directly XOR into
+the decryption of the next cipher text
+
+175
+00:06:20,269 --> 00:06:24,753
+那么 攻击者想要得到这部分的明文
+
+176
+00:06:20,269 --> 00:06:24,753
+block. Okay, so the adversary here wants
+to basically learn just this part of the
+
+177
+00:06:24,753 --> 00:06:29,946
+那他将要做的就是 首先他先丢弃C2
+
+178
+00:06:24,753 --> 00:06:29,946
+plain text. So, here's what he's gonna do.
+So first of all he's going to throw away
+
+179
+00:06:30,164 --> 00:06:36,044
+那么最后一个分组就变成了C1 这也是他想要破解的
+
+180
+00:06:30,164 --> 00:06:36,044
+C2 so that, that last block really is just
+C1, which is the one he's interested in
+
+181
+00:06:36,044 --> 00:06:41,852
+我们假设 他有一个猜想G 作为M1的最后一个字节
+
+182
+00:06:36,044 --> 00:06:41,852
+decrypting. Now let's suppose that he has
+a certain guess, G, for the last byte of
+
+183
+00:06:41,852 --> 00:06:47,442
+就是说 他猜测了最后一个字节G
+
+184
+00:06:41,852 --> 00:06:47,442
+M1, in other words, he just has a guess
+for this very, very, very last byte. G is
+
+185
+00:06:47,442 --> 00:06:53,250
+G的值是在0到255之间 然后攻击者接下来会这么做
+
+186
+00:06:47,442 --> 00:06:53,250
+a value between zero and 255. What the
+attacker will do is the following, he will
+
+187
+00:06:53,250 --> 00:06:59,091
+他会用C0的最后一个字节来异或G的值然后再异或01.
+
+188
+00:06:53,250 --> 00:06:59,091
+XOR the value G XOR 01 into the last byte
+of the block C0, the previous block. Yes
+
+189
+00:06:59,091 --> 00:07:04,435
+他所做的就是用前面这个分组的最后一个字节来
+
+190
+00:06:59,091 --> 00:07:04,435
+so all he did is he took the last byte of
+the previous block and XOR that with
+
+191
+00:07:04,435 --> 00:07:09,590
+异或他的猜测G再异或01 我们想想看如果这两个
+
+192
+00:07:04,435 --> 00:07:09,590
+his guess XOR 01. Now lets think for
+just a second and see what happens when
+
+193
+00:07:09,590 --> 00:07:14,808
+分组密码被解密了会发生什么 C0是会得到解密
+
+194
+00:07:09,590 --> 00:07:14,808
+this two block cipher text is decrypted.
+Well C0 is gonna get decrypted to whatever
+
+195
+00:07:14,808 --> 00:07:20,088
+尽管其解密只会得到一些垃圾 但我们不在乎
+
+196
+00:07:14,808 --> 00:07:20,088
+its decrypted to that's just gonna be some
+garbage that we don't care about but, now
+
+197
+00:07:20,088 --> 00:07:25,055
+现在如果c1被解密 最后一个字节是要和修改后的CO进行异或
+
+198
+00:07:20,088 --> 00:07:25,055
+when C1 is decrypted the last byte is
+gonna be XOR with this modified C0,
+
+199
+00:07:25,055 --> 00:07:30,663
+和明文的最后一个字节 也将被异或
+
+200
+00:07:25,055 --> 00:07:30,663
+and the result the last byte of the plain
+text. Is gonna be also XORed with this
+
+201
+00:07:30,663 --> 00:07:37,257
+用我们插入到C0的值 这里进入实际的明文
+
+202
+00:07:30,663 --> 00:07:37,257
+extra value that we stuck into C0. So
+what goes in here is the actual original
+
+203
+00:07:37,257 --> 00:07:44,198
+M1中最后一个字节 但是现在它将要异或g异或0x01
+
+204
+00:07:37,257 --> 00:07:44,198
+last byte in the plain text M1. But now it
+gets XORed with G XOR zero X zero one. So
+
+205
+00:07:44,198 --> 00:07:49,233
+现在看我讲的这里 如果为m1的最后一比特猜测的g值是
+
+206
+00:07:44,198 --> 00:07:49,233
+now you see where I'm going with this. If
+the guess G for the last byte of M1 is
+
+207
+00:07:49,233 --> 00:07:54,332
+正确的 然后这两个项将彼此抵消 最后一比特异或g结果就是0
+
+208
+00:07:49,233 --> 00:07:54,332
+correct, then these two guys will cancel
+one another. Last byte XOR G is just zero.
+
+209
+00:07:54,332 --> 00:07:59,556
+我们将得到明文的最后一比特是0x01 顺便提一下
+
+210
+00:07:54,332 --> 00:07:59,556
+And what we'll get is the last byte of the
+plaintext is just 0x01. I should mention,
+
+211
+00:07:59,556 --> 00:08:04,528
+0x01意味着十六进制记数法中的01 所以这只是
+
+212
+00:07:59,556 --> 00:08:04,528
+by the way, 0x01 just means hex notation
+for 01. So literally this is just a one
+
+213
+00:08:04,528 --> 00:08:09,371
+一个数量的一个字节表示 好 我们再看 如果我们对m1的
+
+214
+00:08:04,528 --> 00:08:09,371
+byte representation of the number one.
+Good. So, again, what this means, is if
+
+215
+00:08:09,371 --> 00:08:14,478
+最后一比特的猜测正确 这意味着我们得到了一个
+
+216
+00:08:09,371 --> 00:08:14,478
+our guess for the last byte of M1 is
+correct, then we get a pad that's well
+
+217
+00:08:14,478 --> 00:08:19,925
+已形成的填充 这只是数字1是个已经完成的填充 因此
+
+218
+00:08:14,478 --> 00:08:19,925
+formed. It's just a number one. The number
+one is a well formed pad, and therefore,
+
+219
+00:08:19,925 --> 00:08:25,448
+填充的是有效的 填充预言机会显示填充是有效的 如果猜测
+
+220
+00:08:19,925 --> 00:08:25,448
+the pad is valid. And the padding oracle
+will say the pad is valid. If the guess is
+
+221
+00:08:25,448 --> 00:08:30,657
+不对 我们会得到一个不等于1的值 那我们很有
+
+222
+00:08:25,448 --> 00:08:30,657
+incorrect then we'll get a value here
+that's not equal to one and then it's very
+
+223
+00:08:30,657 --> 00:08:35,995
+可能会得到一个无效的填充 因此 填充机会显示
+
+224
+00:08:30,657 --> 00:08:35,995
+likely that we have an invalid pad. And as
+a result the padding worker will say the
+
+225
+00:08:35,995 --> 00:08:40,543
+填充无效 我们再来看 如果我们对m1最后一比特的猜测
+
+226
+00:08:35,995 --> 00:08:40,543
+pad is invalid. So again you see that if
+our guess for the last byte of M1 is
+
+227
+00:08:40,543 --> 00:08:44,936
+正确 我们会发现g事实上是正确的猜测 然而如果猜测
+
+228
+00:08:40,543 --> 00:08:44,936
+correct, we learn that G was in fact a
+correct guess. Whereas if our guess is
+
+229
+00:08:44,936 --> 00:08:49,429
+不对 那g同样是错误的猜测
+
+230
+00:08:44,936 --> 00:08:49,429
+incorrect, then we learn that G is an
+incorrect guess. So what the attacker is
+
+231
+00:08:49,429 --> 00:08:54,311
+所攻击者要做的是 他会创建修改后的密文 我们注意到
+
+232
+00:08:49,429 --> 00:08:54,311
+gonna do is he's gonna create his modified
+cipher text. You notice he only modifies
+
+233
+00:08:54,311 --> 00:08:59,253
+他只是修改了密文的第二个分组 我们要把这个发送到填充预言机
+
+234
+00:08:54,311 --> 00:08:59,253
+the second block of the cipher text. We're
+gonna send this to the padding oracle and
+
+235
+00:08:59,253 --> 00:09:04,136
+基于填充预言机的输出 我们将知道最后一比特
+
+236
+00:08:59,253 --> 00:09:04,136
+then based on the results of the padding
+oracle, we learn whether the last byte is
+
+237
+00:09:04,136 --> 00:09:08,900
+是否等于g  这里我们会重复使用g从0到255
+
+238
+00:09:04,136 --> 00:09:08,900
+equal to G or not. Well, now we can simply
+repeat this again and again for G from
+
+239
+00:09:08,900 --> 00:09:13,539
+从0到255 这基本上需要256次选择密文查询 其实
+
+240
+00:09:08,900 --> 00:09:13,539
+zero to 255. This basically requires 256
+chosen cipher text queries. Actually, I
+
+241
+00:09:13,539 --> 00:09:18,954
+我觉得我们平均只需做128次选择密文求平方 直到
+
+242
+00:09:13,539 --> 00:09:18,954
+guess on average we'll only have to do 128
+chosen ciphers and squares until we find
+
+243
+00:09:18,954 --> 00:09:23,828
+找到正确的g 然后我们会得到m1的最后一比特 那现在我们知道了m1的最后一比特
+
+244
+00:09:18,954 --> 00:09:23,828
+the right G. Then, we learn the last byte
+of M1. Well, so now we know the last byte
+
+245
+00:09:23,828 --> 00:09:28,320
+我认为我们现在可以使用相同的过程来得知M1的
+
+246
+00:09:23,828 --> 00:09:28,320
+of M1. I claim that we can now use the
+exact same process to learn the second to
+
+247
+00:09:28,320 --> 00:09:32,811
+倒数第二字节 我来问你们 当我们要得知m1的倒数第二个字节时
+
+248
+00:09:28,320 --> 00:09:32,811
+last byte of M1. Let me ask you, what pad
+are we gonna use to learn the second to
+
+249
+00:09:32,811 --> 00:09:37,515
+我们该用什么填充 令人惊讶的是 我们不用刚才用到的
+
+250
+00:09:32,811 --> 00:09:37,515
+last byte of M1? Well, it shouldn't be
+surprising that, instead of just using the
+
+251
+00:09:37,515 --> 00:09:42,348
+一个字节填充 而是用一个两个字节的填充机制 就是2-2
+
+252
+00:09:37,515 --> 00:09:42,348
+pad containing the byte one, we're gonna
+use a two byte pad containing the bytes
+
+253
+00:09:42,348 --> 00:09:47,655
+这也是一种成熟的填充机制 现在我们可以确定 因为我们知道了
+
+254
+00:09:42,348 --> 00:09:47,655
+2-2. That's a well formed pad. And now we
+can always make sure because we know the
+
+255
+00:09:47,655 --> 00:09:53,399
+m1的最后一比特 当我们进行异或运算的时候 我们能很肯定
+
+256
+00:09:47,655 --> 00:09:53,399
+last byte of m1, when we do our XORing trick
+we can always make sure that the last byte
+
+257
+00:09:53,399 --> 00:09:59,280
+其实明文的最后一比特是02 现在我们可以猜测m2的倒数第二比特
+
+258
+00:09:53,399 --> 00:09:59,280
+of the plain text is in fact 02 and now we
+can guess the second to last byte of m2 by
+
+259
+00:09:59,280 --> 00:10:04,887
+通过大量的尝试g的值 直到找到合适的填充 其实
+
+260
+00:09:59,280 --> 00:10:04,887
+simply trying lots of values in g until we
+find one that makes the pad, in fact, be
+
+261
+00:10:04,887 --> 00:10:10,153
+就是0202 通过对预言机发行256个额外的查询 我们就能
+
+262
+00:10:04,887 --> 00:10:10,153
+0202. And by issuing 256 additional
+queries to the padding oracle we will get
+
+263
+00:10:10,153 --> 00:10:15,364
+得到m1的倒数第二个比特 接下来就是一次又一次的迭代
+
+264
+00:10:10,153 --> 00:10:15,364
+to learn the second to last byte of m1.
+And now we can iterate this again and
+
+265
+00:10:15,364 --> 00:10:21,088
+由于分组的长度是16比特  16次的256查询后
+
+266
+00:10:15,364 --> 00:10:21,088
+again, and basically since the length of
+the block is sixteen bytes after sixteen
+
+267
+00:10:21,088 --> 00:10:28,475
+我们会得到所有的值 所以这是一个非常重要的攻击
+
+268
+00:10:21,088 --> 00:10:28,475
+times 256 queries. We get to learn all of
+them one. So this is a pretty significant
+
+269
+00:10:28,475 --> 00:10:33,441
+它可以解密TLS的记录分组 你们所知道的
+
+270
+00:10:28,475 --> 00:10:33,441
+attack that is able to decrypt blocks of
+the TLS record. So those of you who know
+
+271
+00:10:33,441 --> 00:10:37,766
+那些TLS的内部工作人员抱怨说这个攻击不会实现
+
+272
+00:10:33,441 --> 00:10:37,766
+the inner workings of TLS should complain
+that this attack isn't gonna work. The
+
+273
+00:10:37,766 --> 00:10:42,361
+问题是当TLS收到一个坏的填充或者坏的Mac 就会
+
+274
+00:10:37,766 --> 00:10:42,361
+problem is that when TLS receives a record
+with a bad pad or a bad Mac, it shuts down
+
+275
+00:10:42,361 --> 00:10:46,362
+关闭连接 再次协商一个新密钥 因此 攻击者现在
+
+276
+00:10:42,361 --> 00:10:46,362
+the connection, and renegotiates a new
+key. As a result, the attacker is now
+
+277
+00:10:46,362 --> 00:10:50,849
+正在尝试破解用旧密钥加密的密文 但是那个密钥
+
+278
+00:10:46,362 --> 00:10:50,849
+stuck with a cipher text encrypted using
+an old key. And that key is no longer used
+
+279
+00:10:50,849 --> 00:10:54,904
+已经不用了 所以也不能提交更多的查询 对TLS 其实只能
+
+280
+00:10:50,849 --> 00:10:54,904
+anywhere, so it cannot submit any more
+queries. So with TLS, basically, it can
+
+281
+00:10:54,904 --> 00:10:59,229
+提交一个查询 就是这样 即便是一个查询也能给攻击者
+
+282
+00:10:54,904 --> 00:10:59,229
+only submit one query, and that's it. Even
+a single query still leaks information
+
+283
+00:10:59,229 --> 00:11:03,851
+泄露很多关于密文的信息 但是不会暴露秘闻的整个
+
+284
+00:10:59,229 --> 00:11:03,851
+about the plain text to the attacker. But
+it doesn't expose the entire plain text
+
+285
+00:11:03,851 --> 00:11:08,795
+m1分组 然而这个攻击很智能 只要有这样的一个错误的
+
+286
+00:11:03,851 --> 00:11:08,795
+block m1. However this attack is so acute
+that whenever there's a mistake like this
+
+287
+00:11:08,795 --> 00:11:13,798
+协议将会有一些设置出现 在这种情况下
+
+288
+00:11:08,795 --> 00:11:13,798
+in a protocol there will be some settings
+in which it comes up and in this case the
+
+289
+00:11:13,798 --> 00:11:18,743
+设置imap服务器的情况 IMAP是一种从IMAP邮件服务
+
+290
+00:11:13,798 --> 00:11:18,743
+setting is in the case of an imap server.
+So imap is a popular protocol for reading
+
+291
+00:11:18,743 --> 00:11:23,627
+读邮件的流行的协议 通常都是保护IMAP协议
+
+292
+00:11:18,743 --> 00:11:23,627
+email from an imap email server, and it's
+very common to protect the imap protocol
+
+293
+00:11:23,627 --> 00:11:28,090
+运行在TLS协议的顶部  现在 结果变成了IMAP  每5分钟
+
+294
+00:11:23,627 --> 00:11:28,090
+by running it on top of a tls protocol.
+Now, it turns out an imap. Every five
+
+295
+00:11:28,090 --> 00:11:32,943
+IMAP客户会连接到IMAP服服务器 检查是否有
+
+296
+00:11:28,090 --> 00:11:32,943
+minutes, the IMap client will connect to
+the IMap server, and check whether there's
+
+297
+00:11:32,943 --> 00:11:37,559
+新邮件 其工作方式是对IMAP服务器的第一次登陆
+
+298
+00:11:32,943 --> 00:11:37,559
+new email. And the way it does it is by
+first logging in to the IMap server, by
+
+299
+00:11:37,559 --> 00:11:42,175
+通过将登录名和口令都发送过去的方式 然后它继续
+
+300
+00:11:37,559 --> 00:11:42,175
+sending this login username password
+message. And then it goes ahead and check
+
+301
+00:11:42,175 --> 00:11:47,242
+检查是否有新邮件到达 这就意味着每5分钟
+
+302
+00:11:42,175 --> 00:11:47,242
+if there's new email available. Well, what
+this means is that every five minutes, the
+
+303
+00:11:47,242 --> 00:11:52,278
+攻击者就可以得到 尤其是一个完全相同的加密信息 我想
+
+304
+00:11:47,242 --> 00:11:52,278
+attacker gets an encryption of exactly the
+same message in particular, I guess, an
+
+305
+00:11:52,278 --> 00:11:57,189
+是关于登录口令的加密信息 所以每5分钟 他就可以增加一个
+
+306
+00:11:52,278 --> 00:11:57,189
+encryption of the password. And so every
+five minutes, it can mount one guess on
+
+307
+00:11:57,189 --> 00:12:02,243
+包括登录口令在内的分组 如果你的口令是8个字符长的
+
+308
+00:11:57,189 --> 00:12:02,243
+the block that contains the password. And
+so, if your password is eight characters
+
+309
+00:12:02,243 --> 00:12:07,249
+攻击者只需恢复这8个字符 他会
+
+310
+00:12:02,243 --> 00:12:07,249
+long, the attacker simply needs to recover
+those eight characters. And he's gonna
+
+311
+00:12:07,249 --> 00:12:12,130
+一次恢复一比特  每5分钟做一次猜测
+
+312
+00:12:07,249 --> 00:12:12,130
+recover them one byte at, at a time, by
+doing one guess per five minutes. And so
+
+313
+00:12:12,130 --> 00:12:16,698
+Canvel等人发现 在数小时内 你就可以恢复出一个
+
+314
+00:12:12,130 --> 00:12:16,698
+Canvel et. al. showed that, within a few
+hours, you can basically recover the
+
+315
+00:12:16,698 --> 00:12:21,186
+用户的口令 仅仅是每5分钟增加一个猜测 所以这是一个
+
+316
+00:12:16,698 --> 00:12:21,186
+user's password. Just by mounting one
+guest every five minutes. So this is a
+
+317
+00:12:21,186 --> 00:12:25,617
+对TLS的实现的很重要的攻击 对此攻击的
+
+318
+00:12:21,186 --> 00:12:25,617
+pretty significant attack against an
+implementation of TLS and the defense
+
+319
+00:12:25,617 --> 00:12:30,404
+防卫就是经常检查Mac 看填充是否有效
+
+320
+00:12:25,617 --> 00:12:30,404
+against this was to always check the Mac,
+whether the pad is valid or invalid. And
+
+321
+00:12:30,404 --> 00:12:35,190
+因此需要相同的时间回应填充是否有效
+
+322
+00:12:30,404 --> 00:12:35,190
+as a result it takes the same amount of
+time to respond whether the pad is valid
+
+323
+00:12:35,190 --> 00:12:39,858
+这消除了时间攻击 增加了攻击难度
+
+324
+00:12:35,190 --> 00:12:39,858
+or invalid. So this removes the timing
+attack and makes this attack much harder
+
+325
+00:12:39,858 --> 00:12:44,511
+所以这里有两个教训 第一 你们会发现 如果TLS
+
+326
+00:12:39,858 --> 00:12:44,511
+to mount. So there are two lessons here.
+First of all, you notice that if TLS had
+
+327
+00:12:44,511 --> 00:12:49,163
+使用先加密后mac 而不是先mac后加密 那这整个事件会
+
+328
+00:12:44,511 --> 00:12:49,163
+used encrypt then MAC, rather than MAC
+then encrypt, then this whole issue would
+
+329
+00:12:49,163 --> 00:12:53,814
+完全没意义的 因为如果我先加密后Mac 那Mac是先检验
+
+330
+00:12:49,163 --> 00:12:53,814
+be completely moot, because if I encrypt
+then MAC then MAC is checked first, and
+
+331
+00:12:53,814 --> 00:12:58,407
+然后只有先解密然后填充检验发生 当先加密后填充时
+
+332
+00:12:53,814 --> 00:12:58,407
+only then does decryption and pad-checking
+take place. In encrypt then MAC, the
+
+333
+00:12:58,407 --> 00:13:03,294
+密文被丢弃 因为MAC是无效的 我们从来没有填充检查
+
+334
+00:12:58,407 --> 00:13:03,294
+cipher-text is discarded because the MAC
+is invalid and we never even get to a pad
+
+335
+00:13:03,294 --> 00:13:08,004
+因此 任何篡改或获得与密文将立即丢弃
+
+336
+00:13:03,294 --> 00:13:08,004
+check. As a result, any tampering or gain
+is with a cipher-text will be discarded
+
+337
+00:13:08,004 --> 00:13:12,497
+因为MAC是会失败的 第二个要记住的教训是
+
+338
+00:13:08,004 --> 00:13:12,497
+immediately because the MAC is simply
+gonna fail. And second lesson to remember
+
+339
+00:13:12,497 --> 00:13:16,676
+记住我跟你们说过 Mac-then-CBC确实提供了经过认证加密
+
+340
+00:13:12,497 --> 00:13:16,676
+is that remember I told you that MAC-then-CBC
+actually does provide authenticated
+
+341
+00:13:16,676 --> 00:13:21,016
+但只要如果你不透露cryption失败的原因 这样的话
+
+342
+00:13:16,676 --> 00:13:21,016
+encryption but only if you don't reveal
+why the cryption failed. In this case the
+
+343
+00:13:21,016 --> 00:13:25,087
+填充墙完全摧毁了验证加密属性
+
+344
+00:13:21,016 --> 00:13:25,087
+padding wall will completely
+destroyed the authenticating encryption
+
+345
+00:13:25,087 --> 00:13:29,427
+基本上我展示给你的这种攻击显示了这种模式
+
+346
+00:13:25,087 --> 00:13:29,427
+property and basically I showed you an
+attack this shows that now this mode does
+
+347
+00:13:29,427 --> 00:13:34,121
+没有提供认证加密 我来问你们如下问题
+
+348
+00:13:29,427 --> 00:13:34,121
+not provide authenticated encryption. So
+let me ask you the following question.
+
+349
+00:13:34,121 --> 00:13:39,016
+假设TLS不用先Mac后CBC 而是先Mac后计数
+
+350
+00:13:34,121 --> 00:13:39,016
+Supposing TLS instead of using MAC then
+CBC, TLS did MAC then counter mode
+
+351
+00:13:39,016 --> 00:13:43,794
+加密填充预言机攻击任然会是有可能的吗 答案是
+
+352
+00:13:39,016 --> 00:13:43,794
+encryption. Would the padding oracle
+attack still be possible or not? The
+
+353
+00:13:43,794 --> 00:13:48,029
+不可能 只是因为 计数模式不用任何
+
+354
+00:13:43,794 --> 00:13:48,029
+answer is it wouldn't be possible, simply
+because counter-mode doesn't use any
+
+355
+00:13:48,029 --> 00:13:52,263
+填充 所以填充预言机攻击只会影响TLS里的CBC加密
+
+356
+00:13:48,029 --> 00:13:52,263
+padding at all. So this padding oracle
+attack only effects CBC encryption modes
+
+357
+00:13:52,263 --> 00:13:56,391
+TLS也支持计数模式加密 计数的模式加密模式
+
+358
+00:13:52,263 --> 00:13:56,391
+in TLS. Tls also supports counter-mode
+encryption, and counter-mode encryption
+
+359
+00:13:56,391 --> 00:14:00,733
+是不会被这些填充攻击影响 那这节课就讲到这里
+
+360
+00:13:56,391 --> 00:14:00,733
+modes are simply not affected by these
+padding attacks. So that's the end of this
+
+361
+00:14:00,733 --> 00:14:04,807
+下一节课我要给你们讲另一个非常非常聪明的
+
+362
+00:14:00,733 --> 00:14:04,807
+segment. In the next segment I want to
+show you another very, very clever attack on
+
+363
+00:14:04,807 --> 00:14:06,576
+对认证加密系统的攻击
+
+364
+00:14:04,807 --> 00:14:06,576
+authenticated encryption systems.
+

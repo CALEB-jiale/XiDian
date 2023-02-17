@@ -1,0 +1,1087 @@
+1
+00:00:00,152 --> 00:00:01,703
+The next question, we're going to ask:
+
+2
+00:00:01,703 --> 00:00:03,638
+is RSA really an one-way function?
+
+3
+00:00:03,638 --> 00:00:05,788
+In other words, is it really hard to
+
+4
+00:00:05,788 --> 00:00:08,104
+invert RSA without knowing the trapdoor?
+
+5
+00:00:09,012 --> 00:00:11,998
+So, if an attacker wanted to invert the RSA function,
+
+6
+00:00:11,998 --> 00:00:15,001
+well, what the attacker has, is basically the public key,
+
+7
+00:00:15,001 --> 00:00:19,054
+namely he has N and e. And now, he is given x to the e
+
+8
+00:00:19,054 --> 00:00:23,293
+and his goal is to recover x. OK, so the question really is:
+
+9
+00:00:23,293 --> 00:00:26,131
+given x to the e modulo N, how hard is it to
+
+10
+00:00:26,131 --> 00:00:28,933
+recover x? So, what we're really asking is,
+
+11
+00:00:28,933 --> 00:00:33,113
+how hard is it to compute e'th roots modulo a composite?
+
+12
+00:00:34,178 --> 00:00:38,544
+If this problem turns out to be hard, then RSA is in fact an one-way function.
+
+13
+00:00:38,544 --> 00:00:39,968
+If this problem turns out to be easy, which
+
+14
+00:00:39,968 --> 00:00:44,564
+of course we don't believe it's easy, then RSA would actually be broken.
+
+15
+00:00:44,564 --> 00:00:46,832
+So, it turns out the best algorithm for this problem
+
+16
+00:00:46,832 --> 00:00:49,563
+requires us to first factor the modulus N.
+
+17
+00:00:50,050 --> 00:00:52,236
+And then, once we factored the modulus, we have already
+
+18
+00:00:52,236 --> 00:00:55,892
+seen last week, that it's easy to compute the e'th root modulo p,
+
+19
+00:00:55,892 --> 00:00:58,483
+it's easy to compute the e'th root modulo q.
+
+20
+00:00:58,483 --> 00:01:02,107
+And, then given both those e'th roots, it's actually easy to combine them together,
+
+21
+00:01:02,107 --> 00:01:04,699
+using what's called the Chinese remainder theorem
+
+22
+00:01:04,699 --> 00:01:07,667
+and actually recover the e'th root modulo N.
+
+23
+00:01:07,667 --> 00:01:09,946
+So, once we are able to factor the modulus,
+
+24
+00:01:09,946 --> 00:01:12,848
+computing e'th roots modulo N becomes easy.
+
+25
+00:01:12,848 --> 00:01:14,636
+But,  factoring  the modulus, as far as
+
+26
+00:01:14,636 --> 00:01:16,761
+we know, is a very, very difficult problem.
+
+27
+00:01:16,761 --> 00:01:19,865
+But a natural question is, is it true that in
+
+28
+00:01:19,865 --> 00:01:22,568
+order to compute e'th roots modulo N, we have to
+
+29
+00:01:22,568 --> 00:01:25,707
+factor the modulus N? As far as we know, the
+
+30
+00:01:25,707 --> 00:01:27,369
+best algorithm for computing e'th roots
+
+31
+00:01:27,369 --> 00:01:30,002
+modulo N requires factorization of N.
+
+32
+00:01:30,002 --> 00:01:31,626
+But, who knows, maybe there is a short cut
+
+33
+00:01:31,626 --> 00:01:33,771
+that allows us to compute e'th roots modulo N,
+
+34
+00:01:33,771 --> 00:01:36,704
+without factoring the modulus. To show that
+
+35
+00:01:36,704 --> 00:01:38,808
+that's not possible, we have to show a reduction.
+
+36
+00:01:38,808 --> 00:01:40,314
+That is, we have to show that,
+
+37
+00:01:40,314 --> 00:01:42,001
+if I give you an efficient algorithm for
+
+38
+00:01:42,001 --> 00:01:43,872
+computing e'th roots modulo N, that
+
+39
+00:01:43,872 --> 00:01:48,132
+efficient algorithm can be turned into a factoring algorithm.
+
+40
+00:01:48,132 --> 00:01:51,015
+So, this is called a reduction. Namely, given an algorithm for
+
+41
+00:01:51,015 --> 00:01:53,137
+e'th roots modulo N, we obtain a factoring algorithm.
+
+42
+00:01:53,137 --> 00:01:57,314
+That would show that one cannot compute e'th roots modulo N
+
+43
+00:01:57,314 --> 00:02:00,101
+faster than factoring the modulus.
+
+44
+00:02:00,101 --> 00:02:02,285
+If we had such a result, it would show that
+
+45
+00:02:02,285 --> 00:02:05,716
+actually breaking RSA, in fact is as hard as factoring.
+
+46
+00:02:05,716 --> 00:02:08,110
+But, unfortunately, this is not really known at the moment.
+
+47
+00:02:08,110 --> 00:02:11,969
+In fact, this is one of the oldest problems in public key crypto.
+
+48
+00:02:11,969 --> 00:02:14,415
+So, just let me give you a concrete example.
+
+49
+00:02:14,415 --> 00:02:18,523
+Suppose, I give you an algorithm that will compute cube roots modulo N.
+
+50
+00:02:19,037 --> 00:02:23,693
+So, for any x in ZN, the algorithm will compute the cube root of x modulo N.
+
+51
+00:02:23,693 --> 00:02:25,971
+My question is, can you show that using
+
+52
+00:02:25,971 --> 00:02:29,066
+such an algorithm you can factor the modulus N?
+
+53
+00:02:29,066 --> 00:02:31,239
+And, even that is not known. What is known,
+
+54
+00:02:31,239 --> 00:02:33,920
+I'll tell you, is for example that for e equals 2,
+
+55
+00:02:34,375 --> 00:02:37,711
+that is if I give you an algorithm for computing square roots modulo N,
+
+56
+00:02:37,711 --> 00:02:40,696
+then in fact, that does imply factoring the modulus.
+
+57
+00:02:40,696 --> 00:02:44,699
+So, computing square roots is in fact as hard as factoring the modulus.
+
+58
+00:02:44,712 --> 00:02:47,779
+Unfortunately, if you think back to the definition of RSA,
+
+59
+00:02:47,779 --> 00:02:52,913
+that required that e times d be 1 modulo phi(N).
+
+60
+00:02:52,913 --> 00:02:58,612
+What that means is, that e necessarily needs to be relatively prime to phi(N).
+
+61
+00:02:58,612 --> 00:03:03,128
+Right, this, what the first equation says is that e is invertible modulo phi(N).
+
+62
+00:03:03,128 --> 00:03:06,125
+But, if e is invertible modulo phi(N), necessarily that means that
+
+63
+00:03:06,125 --> 00:03:09,107
+e must be relatively prime to phi(N).
+
+64
+00:03:09,107 --> 00:03:13,927
+But, phi(N), if you remember, that is equal to p minus 1 times q minus 1.
+
+65
+00:03:13,927 --> 00:03:19,377
+And, since p and q are both large primes,  p - 1 times q - 1 is always even.
+
+66
+00:03:19,377 --> 00:03:25,503
+And, as a result,  the GCD of 2 and phi(N) is equal to 2,
+
+67
+00:03:25,503 --> 00:03:28,221
+because phi(N) is even. And therefore, the public
+
+68
+00:03:28,221 --> 00:03:30,863
+exponent 2 is not relatively prime to phi(N).
+
+69
+00:03:30,863 --> 00:03:33,174
+Which means that, even though we have a reduction
+
+70
+00:03:33,174 --> 00:03:35,263
+from taking square roots to factoring,
+
+71
+00:03:35,263 --> 00:03:38,758
+e equals 2 cannot be used as an RSA exponent.
+
+72
+00:03:38,758 --> 00:03:43,643
+So, really the smallest RSA exponent that is legal is in fact e equals 3.
+
+73
+00:03:43,643 --> 00:03:46,911
+But, for e equal 3, the question of whether computing cube roots
+
+74
+00:03:46,911 --> 00:03:48,976
+is as hard as factoring, is an open problem.
+
+75
+00:03:48,976 --> 00:03:50,978
+It's actually a lot of fun to think about this question.
+
+76
+00:03:50,978 --> 00:03:53,444
+So, I would encourage you to think about it just a little bit.
+
+77
+00:03:53,444 --> 00:03:58,352
+That is, if I give you an efficient algorithm for computing cube roots modulo N,
+
+78
+00:03:58,352 --> 00:04:02,111
+can you use that algorithm to actually factor the modulus N?
+
+79
+00:04:02,111 --> 00:04:05,301
+I will tell you that there is a little bit of evidence to say
+
+80
+00:04:05,301 --> 00:04:09,402
+that a reduction like that,  actually doesn't exist, but it is very, very weak evidence.
+
+81
+00:04:09,402 --> 00:04:11,366
+What this evidence says is  basically, if you
+
+82
+00:04:11,366 --> 00:04:13,500
+give me a reduction of a very particular form.
+
+83
+00:04:13,500 --> 00:04:16,070
+In other words, if your reduction is what's called algebraic,
+
+84
+00:04:16,070 --> 00:04:18,509
+(I am not going to explain what that means here.)
+
+85
+00:04:18,509 --> 00:04:23,087
+That is, if given a cube root oracle, you could actually show me an algorithm
+
+86
+00:04:23,087 --> 00:04:26,055
+that would then factor. That reduction, by itself,
+
+87
+00:04:26,055 --> 00:04:28,554
+would actually imply a factoring algorithm.
+
+88
+00:04:28,554 --> 00:04:31,084
+Okay  so, that would say that if factoring is hard,
+
+89
+00:04:31,084 --> 00:04:33,637
+a reduction actually doesn't  exist.
+
+90
+00:04:33,637 --> 00:04:35,537
+But, as I say this is very weak evidence.
+
+91
+00:04:35,537 --> 00:04:37,617
+Because, who is to say that the reduction needs to be algebraic.
+
+92
+00:04:37,617 --> 00:04:39,725
+Maybe, there are some other types of reductions that
+
+93
+00:04:39,725 --> 00:04:42,857
+we haven't really considered. So, I would
+
+94
+00:04:42,857 --> 00:04:44,339
+encourage you to think a little bit about this
+
+95
+00:04:44,339 --> 00:04:46,235
+question. It's actually quite interesting.
+
+96
+00:04:46,235 --> 00:04:50,087
+How would you use a cube root algorithm to factor the modulus?
+
+97
+00:04:51,308 --> 00:04:54,143
+But as I said, as far as we know, RSA is a one way function.
+
+98
+00:04:54,143 --> 00:05:00,274
+In fact, breaking RSA, computing e'th roots that is, actually requires factoring the modulus.
+
+99
+00:05:00,274 --> 00:05:02,918
+We all believe that's true, and that's the state of the art.
+
+100
+00:05:02,918 --> 00:05:07,637
+But, now there has been a lot of work on trying to improve the performance of RSA.
+
+101
+00:05:07,637 --> 00:05:12,041
+Either, RSA encryption or improve the performance of RSA decryption.
+
+102
+00:05:12,041 --> 00:05:14,901
+And it turns out, there has been a number of false starts in this direction.
+
+103
+00:05:14,901 --> 00:05:18,796
+So I want to show you, this wonderful example as a warning.
+
+104
+00:05:18,796 --> 00:05:23,232
+So basically, this is an example of how not to improve the perfomance of RSA.
+
+105
+00:05:23,232 --> 00:05:26,772
+So, you might think that if I wanted to speed up RSA decryption,
+
+106
+00:05:26,772 --> 00:05:28,578
+remember decryption is done by raising the
+
+107
+00:05:28,578 --> 00:05:30,895
+ciphertext to the power of d. And, you remember
+
+108
+00:05:30,895 --> 00:05:34,265
+that the exponentiation algorithm ran in linear
+
+109
+00:05:34,265 --> 00:05:37,767
+time in the size of d. Linear time in log of d.
+
+110
+00:05:37,767 --> 00:05:39,762
+So, you might think to yourself, well if I wanted
+
+111
+00:05:39,762 --> 00:05:43,522
+to speed up RSA decryption, why don't I just use a small d.
+
+112
+00:05:43,522 --> 00:05:48,265
+I'll say, I'll say a decryption exponent that's on the order of 2 to the 128.
+
+113
+00:05:48,419 --> 00:05:52,350
+So it's clearly big enough so that exhaustive search against d is not possible.
+
+114
+00:05:52,350 --> 00:05:57,418
+But normally, the decryption exponent d would be as big as the modulus, say 2000 bits.
+
+115
+00:05:57,418 --> 00:06:04,669
+By using d that's only 128 bits, I basically speed up RSA decryption by a factor of 20.
+
+116
+00:06:04,669 --> 00:06:07,533
+Right, I went down from 2000 bits to 100 bits.
+
+117
+00:06:07,533 --> 00:06:10,915
+So, exponentiation would run 20 times as fast.
+
+118
+00:06:10,915 --> 00:06:15,440
+It turns out this is a terrible idea. Terrible, terrible idea, in the following sense.
+
+119
+00:06:15,440 --> 00:06:18,638
+There is an attack by Michael Wiener that shows that, in fact,
+
+120
+00:06:18,638 --> 00:06:23,425
+as soon as the private exponent d is less than the fourth root of the modulus.
+
+121
+00:06:23,425 --> 00:06:27,526
+Let's see, if the modulus is around 2048 bits
+
+122
+00:06:27,526 --> 00:06:34,581
+that means that if d is less that 2 to the 512, then RSA is completely, completely insecure.
+
+123
+00:06:34,581 --> 00:06:37,509
+And, this is, it's insecure in the worst possible way.
+
+124
+00:06:37,509 --> 00:06:43,129
+Namely, just given a public key and an e, you can very quickly recover the private key d.
+
+125
+00:06:44,227 --> 00:06:48,493
+Well, so some folks said: well this attack works up to 512 bits.
+
+126
+00:06:48,493 --> 00:06:52,378
+So, why don´t we make the modulus, say, you know 530 bits.
+
+127
+00:06:52,378 --> 00:06:54,234
+Then, this attack actually wouldn't apply.
+
+128
+00:06:54,234 --> 00:06:57,545
+But still, we get to speed up RSA decryption by a factor of 4,
+
+129
+00:06:57,545 --> 00:07:01,997
+because we shrunk the exponent from 2000 bits to, say, 530 bits.
+
+130
+00:07:01,997 --> 00:07:03,978
+Well it turns out, even that is not secure. In fact,
+
+131
+00:07:03,978 --> 00:07:06,243
+there is an extension to Wiener's attack, that's actually much
+
+132
+00:07:06,243 --> 00:07:08,176
+more complicated, that shows that if d
+
+133
+00:07:08,176 --> 00:07:13,233
+is less than N to the 0.292, then also RSA is insecure.
+
+134
+00:07:13,233 --> 00:07:16,674
+And in fact, the conjecture that this is true up to N to the 0.5.
+
+135
+00:07:16,674 --> 00:07:21,975
+So even if d is like N to the 0.4999, RSA should still be insecure,
+
+136
+00:07:21,975 --> 00:07:25,780
+although this is an open problem. It's again, a wonderful open problem,
+
+137
+00:07:25,780 --> 00:07:28,394
+It's been open for like, what is it, 14 years now.
+
+138
+00:07:28,394 --> 00:07:31,556
+And, nobody can progress beyond this 0.292.
+
+139
+00:07:31,556 --> 00:07:34,327
+Somehow, it seems kind of strange, why would 0.292
+
+140
+00:07:34,327 --> 00:07:38,217
+be the right answer and yet no one can go beyond 0.292.
+
+141
+00:07:38,802 --> 00:07:41,671
+So, just to be precise, when I say that RSA is insecure,
+
+142
+00:07:41,671 --> 00:07:45,218
+what I mean is just given the public key N and e,
+
+143
+00:07:45,218 --> 00:07:48,077
+your goal is to recover the secret key d.
+
+144
+00:07:49,102 --> 00:07:52,257
+If you are curious where 0.292 comes from,
+
+145
+00:07:52,257 --> 00:07:56,312
+I'll tell you that what it is, it's basically 1 minus 1 over square root of 2.
+
+146
+00:07:56,312 --> 00:07:58,503
+Now how could this possibly be the right answer to this problem?
+
+147
+00:07:58,503 --> 00:08:01,296
+It's much more natural that the answer is N to the 0.5.
+
+148
+00:08:01,296 --> 00:08:04,340
+But this is still an open problem. Again if you want to think about that,
+
+149
+00:08:04,340 --> 00:08:06,163
+it's kind of a fun problem to work on.
+
+150
+00:08:06,163 --> 00:08:10,101
+So the lesson in this is that one should not enforce any structure on d
+
+151
+00:08:10,101 --> 00:08:12,475
+for improving the performance of RSA, and in fact
+
+152
+00:08:12,475 --> 00:08:15,276
+now there's a slew of results like this that show
+
+153
+00:08:15,276 --> 00:08:19,714
+that basically, any kind of tricks like this to try and improve RSA's performance
+
+154
+00:08:19,714 --> 00:08:24,285
+is going to end up in disaster. So this is not the right way to improve RSA's performance.
+
+155
+00:08:24,285 --> 00:08:27,987
+Initially I wasn't going to cover the details of Wiener's attack.
+
+156
+00:08:27,987 --> 00:08:31,582
+But given the discussions in the class, I think some of you would enjoy seeing the details.
+
+157
+00:08:31,582 --> 00:08:35,229
+All it involves is just manipulating some inequalities.
+
+158
+00:08:35,229 --> 00:08:37,743
+If you're not comfortable with that, feel free to skip over this slide,
+
+159
+00:08:37,743 --> 00:08:40,979
+although I think many of you would actually enjoy seeing the details.
+
+160
+00:08:40,979 --> 00:08:43,365
+So let me remind you in Wiener's attack basically
+
+161
+00:08:43,365 --> 00:08:46,893
+we're given the modulus and the RSA exponent N and e,
+
+162
+00:08:46,893 --> 00:08:50,513
+and our goal is to recover d, the private exponent d,
+
+163
+00:08:50,513 --> 00:08:54,171
+and all we know is that d is basically less than the fourth root of N.
+
+164
+00:08:54,171 --> 00:08:57,711
+In fact, I'm going to assume that d is less than the fourth root of N divided by 3.
+
+165
+00:08:57,711 --> 00:09:02,373
+This 3 doesn't really matter, but the dominating term here is that d is less than the 4th root of N.
+
+166
+00:09:02,373 --> 00:09:05,944
+So let's see how to do it. So first of all, recall that
+
+167
+00:09:05,944 --> 00:09:09,144
+because e and d are RSA public and private exponents,
+
+168
+00:09:09,144 --> 00:09:14,145
+we know that e times d is 1 modulo phi(N). Well what does that mean?
+
+169
+00:09:14,145 --> 00:09:22,248
+That means that there exists some integer k such that e times d is equal to k times phi(N) plus 1.
+
+170
+00:09:22,248 --> 00:09:26,280
+Basically that's what it means for e times d to be 1 modulo phi(N).
+
+171
+00:09:26,280 --> 00:09:29,832
+Basically some integer multiple of phi(N) plus 1.
+
+172
+00:09:29,832 --> 00:09:32,592
+So now let's stare at this equation a little bit.
+
+173
+00:09:32,592 --> 00:09:35,826
+And in fact this equation is the key equation in the attack.
+
+174
+00:09:35,826 --> 00:09:40,352
+And what we're going to do is first of all divide both sides by d times phi(N).
+
+175
+00:09:40,352 --> 00:09:43,703
+And in fact I'm going to move this term here to the left.
+
+176
+00:09:43,703 --> 00:09:47,453
+So after I divide by d times phi(N), what I get is that
+
+177
+00:09:47,453 --> 00:09:58,500
+e divided by phi(N) minus k divided by d is equal to 1 over d times phi(N).
+
+178
+00:09:59,469 --> 00:10:02,902
+Okay, so all I did is I just divided by d times phi(N)
+
+179
+00:10:02,902 --> 00:10:05,850
+and I moved the k times phi(N) term to the left-hand side.
+
+180
+00:10:05,850 --> 00:10:09,119
+Now, just for the heck of it I'm going to add absolute values here.
+
+181
+00:10:09,119 --> 00:10:13,484
+These will become useful in just a minute, but of course they don't change this equality at all.
+
+182
+00:10:13,484 --> 00:10:20,184
+Now, phi(N) of course is almost N; phi(N) is very, very close to N, as we said earlier.
+
+183
+00:10:20,184 --> 00:10:23,371
+And all I'm going to need then for this fraction is just to say that
+
+184
+00:10:23,371 --> 00:10:26,639
+it's less than 1 over square root of N. It's actually much, much smaller
+
+185
+00:10:26,639 --> 00:10:30,571
+than 1 over square root of N, it's actually on the order of 1 over N or even more than that,
+
+186
+00:10:30,571 --> 00:10:35,638
+but for our purposes all we need is that this fraction is less than 1 over square root of N.
+
+187
+00:10:35,638 --> 00:10:37,939
+Now let's stare at this fraction for just a minute.
+
+188
+00:10:37,939 --> 00:10:44,506
+You realize that this fraction on the left here is a fraction that we don't actually know.
+
+189
+00:10:44,506 --> 00:10:49,039
+We know e, but we don't know phi(N), and as a result we don't know e over phi(N).
+
+190
+00:10:49,039 --> 00:10:53,631
+But we have a good approximation to e over phi(N). Namely we know that phi(N)
+
+191
+00:10:53,631 --> 00:10:59,238
+is very close to N. Therefore e over phi(N) is very close to e over N.
+
+192
+00:10:59,238 --> 00:11:03,436
+So we have a good approximation to this left-hand side fraction, namely e over N.
+
+193
+00:11:03,436 --> 00:11:06,028
+What we really want is the right-hand side fraction,
+
+194
+00:11:06,028 --> 00:11:07,649
+because once we get the right-hand side fraction,
+
+195
+00:11:07,649 --> 00:11:12,960
+basically that's going to involve d, and then we'll be able to recover d. Okay, so let's see
+
+196
+00:11:12,960 --> 00:11:19,041
+if we replace e over phi(N) by e over N, let's see what kind of error we're going to get.
+
+197
+00:11:19,041 --> 00:11:22,514
+So to analyze that, what we'll do is first of all remind ourselves
+
+198
+00:11:22,514 --> 00:11:26,204
+that phi(N) is basically N - p - q + 1,
+
+199
+00:11:26,204 --> 00:11:30,804
+which means that N minus phi(N) is going to be less than p + q.
+
+200
+00:11:30,804 --> 00:11:34,752
+Actually I should, to be precise I should really write p + q + 1, but you know,
+
+201
+00:11:34,752 --> 00:11:37,838
+who cares about this 1, it's not, it doesn't really affect anything.
+
+202
+00:11:37,838 --> 00:11:40,238
+So I'm just going to ignore it for simplicity.
+
+203
+00:11:40,238 --> 00:11:45,508
+Okay, so N - phi(N) is less than p + q. Both p and q are roughly half the length of N,
+
+204
+00:11:45,508 --> 00:11:48,918
+so you know, they're both kind of on the order of square root of N,
+
+205
+00:11:48,918 --> 00:11:53,876
+so basically p + q we'll say is less than 3 times square root of N.
+
+206
+00:11:53,876 --> 00:11:56,844
+Okay, so we're going to use this inequality in just a minute.
+
+207
+00:11:56,844 --> 00:12:00,243
+But now we're going to start using the fact that we know something about d,
+
+208
+00:12:00,243 --> 00:12:02,958
+namely that d is small. So if we look at this inequality here,
+
+209
+00:12:02,958 --> 00:12:05,543
+d is less than the fourth root of N divided by 3.
+
+210
+00:12:05,543 --> 00:12:08,596
+It's actually fairly easy to see that if I square both sides
+
+211
+00:12:08,596 --> 00:12:12,118
+and I just manipulate things a little bit, it's [not] difficult to see that
+
+212
+00:12:12,118 --> 00:12:15,510
+this directly implies the following relation,
+
+213
+00:12:15,510 --> 00:12:24,263
+basically 1 over 2 d squared minus 1 over square root of N is greater than 3 over square root of N.
+
+214
+00:12:24,263 --> 00:12:28,542
+As I said, this basically follows by squaring both sides, then taking the
+
+215
+00:12:28,542 --> 00:12:33,334
+inverse of both sides, and then I guess multiplying one side by a half.
+
+216
+00:12:33,334 --> 00:12:37,906
+Okay, so you can easily derive this relation, and we'll need this relation in just a minute.
+
+217
+00:12:37,906 --> 00:12:40,166
+So now let's see, what we'd like to do is bound
+
+218
+00:12:40,166 --> 00:12:45,059
+the difference of e over N and k over d. Well what do we know?
+
+219
+00:12:45,059 --> 00:12:47,872
+By the triangular inequality, we know that this is equal to
+
+220
+00:12:47,872 --> 00:12:52,122
+the distance between e over N and e over phi(N) plus
+
+221
+00:12:52,122 --> 00:12:56,566
+the distance from e over phi(N) to k over d.
+
+222
+00:12:56,566 --> 00:13:01,813
+This is just what's called a triangular inequality; this is just a property of absolute values.
+
+223
+00:13:01,813 --> 00:13:04,705
+Now this absolute value here, we already know how to bound.
+
+224
+00:13:04,705 --> 00:13:07,116
+If you think about it it's basically the bound that we've already derived.
+
+225
+00:13:07,116 --> 00:13:11,977
+So we know that this absolute value here is basically less than 1 over square root of N.
+
+226
+00:13:11,977 --> 00:13:17,737
+Now what do we know about this absolute value here? What is e over N minus e over phi(N)?
+
+227
+00:13:17,737 --> 00:13:20,486
+Well let's do common denominators and see what we get.
+
+228
+00:13:20,486 --> 00:13:25,236
+So the common denominator is going to be N times phi(N),
+
+229
+00:13:25,236 --> 00:13:31,253
+and the numerator in this case is going to be e times phi(N) minus N.
+
+230
+00:13:31,253 --> 00:13:35,760
+Which we know from this expression here is less than 3 times square root of N.
+
+231
+00:13:35,760 --> 00:13:40,842
+So really what this numerator is going to be is e times 3 square root of N.
+
+232
+00:13:40,842 --> 00:13:44,327
+The numerator is going to be less than e times 3 square root of N.
+
+233
+00:13:44,327 --> 00:13:51,246
+So now I know that e is less than phi(N), so I know that e over phi(N) is less than 1.
+
+234
+00:13:51,246 --> 00:13:57,313
+In other words, if I erase e and I erase phi(N) I've only made the fraction larger.
+
+235
+00:13:57,313 --> 00:14:00,016
+Okay, so this initial absolute value is now going to be
+
+236
+00:14:00,016 --> 00:14:03,655
+smaller than 3 square root of N over N, which is simply,
+
+237
+00:14:03,655 --> 00:14:09,237
+3 square root of N over N is simply 3 over square root of N.
+
+238
+00:14:09,237 --> 00:14:11,270
+Okay, but what do we know about 3 over square root of N?
+
+239
+00:14:11,270 --> 00:14:17,706
+We know that it's less than 1 over 2 d squared minus 1 over square root of N.
+
+240
+00:14:17,706 --> 00:14:20,473
+Okay, so that's the end of our derivation.
+
+241
+00:14:20,473 --> 00:14:26,439
+So now we know that the first absolute value is less than 1 over 2 d squared minus square root of N.
+
+242
+00:14:26,439 --> 00:14:29,509
+The second absolute value is less than 1 over square root of N.
+
+243
+00:14:29,509 --> 00:14:34,369
+And therefore their sum is less than 1 over 2 d squared.
+
+244
+00:14:34,369 --> 00:14:36,576
+And this is the expression that I want you to stare at.
+
+245
+00:14:36,576 --> 00:14:42,951
+So here, let me circle it a little bit. So let me circle this part and this part.
+
+246
+00:14:43,582 --> 00:14:46,445
+Now, so let's stare a little bit at this fraction here.
+
+247
+00:14:46,445 --> 00:14:51,444
+And what we see is first of all, as before, now we know the value of e over N,
+
+248
+00:14:51,444 --> 00:14:54,825
+and what we'd like to find out is the value k over d.
+
+249
+00:14:54,825 --> 00:14:56,862
+But what do we know about this fraction k over d?
+
+250
+00:14:56,862 --> 00:15:00,715
+We know somehow that the difference of these two fractions is really small;
+
+251
+00:15:00,715 --> 00:15:05,385
+it's less than 1 over 2 d squared. Now this turns out to happen very infrequently,
+
+252
+00:15:05,385 --> 00:15:10,588
+that k over d approximates e over N so well that
+
+253
+00:15:10,588 --> 00:15:15,307
+the difference between the two is less than the square of the denominator of k over d.
+
+254
+00:15:15,307 --> 00:15:17,324
+It turns out that that can't happen very often.
+
+255
+00:15:17,324 --> 00:15:22,338
+It turns out that there are very few fractions of the form k over d that approximate another fraction
+
+256
+00:15:22,338 --> 00:15:26,422
+so well that their difference is less than 1 over 2 d squared.
+
+257
+00:15:26,422 --> 00:15:30,308
+And in fact the number of such fractions is going to be at most logarithmic in N.
+
+258
+00:15:30,308 --> 00:15:33,953
+So now there's a continued fraction algorithm. It's a very famous fraction
+
+259
+00:15:33,953 --> 00:15:38,877
+that basically what it will do is, from the fraction e over N,
+
+260
+00:15:38,877 --> 00:15:42,977
+it will recover log(N) possible candidates for k over d.
+
+261
+00:15:42,977 --> 00:15:47,148
+So we just try them all one by one until we find the correct k over d.
+
+262
+00:15:47,148 --> 00:15:51,645
+And then we're done. We're done, because we know that,
+
+263
+00:15:51,645 --> 00:15:55,376
+well e times d is 1 mod k, therefore d is relatively prime to k,
+
+264
+00:15:55,376 --> 00:16:00,852
+so if we just represent k over d as a rational fraction, you know, numerator by denominator,
+
+265
+00:16:00,852 --> 00:16:05,271
+the denominator must be d. And so we've just recovered, you know,
+
+266
+00:16:05,271 --> 00:16:10,355
+we've tried all possible log(N) fractions that approximate e over N so well
+
+267
+00:16:10,355 --> 00:16:13,688
+that the difference is less than 1 over 2 d squared.
+
+268
+00:16:13,688 --> 00:16:19,338
+And then we just look at the denominator of all those fractions, and one of those denominators must be d.
+
+269
+00:16:19,338 --> 00:16:22,841
+And then we're done; we've just recovered the private key.
+
+270
+00:16:22,841 --> 00:16:26,341
+So this is a pretty cute attack. And it shows basically how,
+
+271
+00:16:26,341 --> 00:16:31,267
+if the private exponent is small, smaller than the fourth root of N,
+
+272
+00:16:31,267 --> 00:16:35,354
+then we can recover d completely, quite easily. Okay, so I'll stop here.

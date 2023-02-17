@@ -1,0 +1,876 @@
+﻿1
+00:00:00,000 --> 00:00:03,765
+既然我们已经知道分组密码是什么、如何构造，接下来
+Now that we know that block cyphers are we
+know how to construct them, let's see how
+
+2
+00:00:03,765 --> 00:00:07,898
+我们了解一下如何将它应用于安全加密 但在此之前我想简单回顾
+to use them for secure encryption? But
+before that, I wanna briefly remind you of
+
+3
+00:00:07,898 --> 00:00:11,413
+一下一个重要的抽象的概念叫做伪随机函数和
+an important abstraction called a
+pseudo-random function, and a
+
+4
+00:00:11,413 --> 00:00:15,949
+伪随机排列组合 正如我们上节课提到的将N位比特输入
+pseudo-random permutation. So as we said
+in the last module, a block cipher's map,
+
+5
+00:00:15,949 --> 00:00:20,428
+映射到N位比特输出的分组密码流程图 以及举的两个有关数据加密标准和高级加密标准分组密码的例子所示
+N bits of inputs to N bits of outputs. And
+we saw two examples of block ciphers,
+
+6
+00:00:20,598 --> 00:00:24,737
+现在我们根据PRP和PRF的这种思想引出了有关
+triple DES and AES. Now, an important
+abstraction of the concept of a block
+
+7
+00:00:24,737 --> 00:00:28,762
+分组密码的一个重要且抽象的概念 记住，
+cipher, is captured by this idea of a PRP
+and a PRF. And remember that a
+
+8
+00:00:28,762 --> 00:00:33,185
+一个伪随机函数PRF实际上就是一个带有两个输入的函数
+pseudo-random function, a PRF, basically
+is a function that takes two inputs. It
+
+9
+00:00:33,185 --> 00:00:37,470
+即取一个密钥和集合X里的一个元素作为输入，并输出集合Y中的某个元素
+takes a key and an element in some set X.
+And in outputs an element in some set Y
+
+10
+00:00:37,470 --> 00:00:41,390
+现在唯一的要求就是找一个有效的算法评估这个函数
+and for now the only requirement is that
+there's an efficient algorithm to evaluate
+
+11
+00:00:41,390 --> 00:00:45,118
+我们稍后来讨论PRF的安全性
+this function. We're going to talk about
+security for PRFs in just a minute. And
+
+12
+00:00:45,118 --> 00:00:49,811
+这里有一个与PRF很类似的概念——伪随机排列组合，
+then similarly, there's a related concept
+called a pseudo-random permutation, which
+
+13
+00:00:49,811 --> 00:00:54,561
+实际上，这就是PRF的有效评估算法
+is similar to a PRF. In fact, there's also
+an efficient algorithm to evaluate, the
+
+14
+00:00:54,561 --> 00:00:58,739
+但是，这里有一个额外的要求，就是
+pseudo-random permutation. However,
+there's an additional requirement, that
+
+15
+00:00:58,739 --> 00:01:02,918
+也存在一个算法D用于评估检测函数E的逆，所以，PRP
+there's also an algorithm D that will
+invert this function E. So a PRP, is
+
+16
+00:01:02,918 --> 00:01:07,562
+实际就是PRF，但是这个函数要求所有密钥必须是一一映射的
+basically a PRF, but where the function is
+required to be one to one for all keys.
+
+17
+00:01:07,562 --> 00:01:12,204
+这个有效的评估算法是存在的 现在让我们来讨论
+And there is an efficient inversion
+algorithm. So now lets talk about how to
+
+18
+00:01:12,204 --> 00:01:17,550
+如何确定PRF的安全性。我们已经说过PRF的最终目标
+define secure PRF's. So we already said
+that essentially the goal of a PRF is to
+
+19
+00:01:17,550 --> 00:01:23,229
+是看上去要像一个从集合X到Y的随机函数 所以为了更精确地说明它
+look like a random function from the set X
+to Y. So to capture that more precisely we
+
+20
+00:01:23,229 --> 00:01:28,508
+我们定义这样的概念：函数集合【X，Y】是从X到Y所有函数组成的一个集合
+define this notation, funs XY to be the
+set of all functions from the set X, to
+
+21
+00:01:28,508 --> 00:01:34,054
+类似地我们定义S_F是一系列从由PRF定义的从集合X到Y的所有函数，
+the set Y. Similarly, we defined the set S
+sub F to be the set of all functions from
+
+22
+00:01:34,054 --> 00:01:39,458
+换句话说，一旦确定密钥K就
+the set X to Y that are defined by the
+PRF. In other words. Once you fix the key
+
+23
+00:01:39,458 --> 00:01:44,991
+可以得到从集合X到Y的一个函数。在给定了伪随机函数的前提下所有
+K, you obtain a function from the set X to
+the set Y. And the set of all such
+
+24
+00:01:44,991 --> 00:01:50,597
+这些函数的集合就是集合S_F.就像我们
+functions, given a particular PRF, would
+be the set S sub F. So as we said last
+
+25
+00:01:50,597 --> 00:01:56,713
+前面说的函数集合【X，Y】实际就是从X到Y的一个巨大函数集合
+time, funs XY is generally a gigantic set
+of all functions from S to Y. I think I
+
+26
+00:01:56,713 --> 00:02:02,537
+我认为实际上对于AES的规模是2^128的2^128倍，
+mentioned that, in fact, for AES, where X
+and Y are two to the 128, the size of the
+
+27
+00:02:02,537 --> 00:02:08,215
+其中X和Y是2^128比特 显然
+set is two to the 128 times two to the
+128. It's a double exponential, which is
+
+28
+00:02:08,215 --> 00:02:12,788
+这是一个巨大的数字，另一方面，由AES分组密码定义的
+an absolutely enormous number. On the
+other hand, the number of functions
+
+29
+00:02:12,788 --> 00:02:17,110
+函数个数仅仅只有2^128个.即，一个函数对应一个密钥。我们想说的是
+defined by the AES block cipher is just
+two to the hundred and twenty-eight.
+
+30
+00:02:17,110 --> 00:02:21,717
+从如此庞大的集合中随机选择
+Namely, one function from each key. And
+what we would like to say is that a random
+
+31
+00:02:21,717 --> 00:02:25,584
+与从一个小集合中随机选择几乎不可分辨
+choice from this huge set is
+indistinguishable from a random choice
+
+32
+00:02:25,584 --> 00:02:29,906
+我们说的不可分辨意思是
+from the small set. And what do we mean by
+indistinguishable, we mean that an
+
+33
+00:02:29,906 --> 00:02:34,513
+一个攻击者可以和这里的一个随机函数相互作用而不能分辨是否在进行这种交流。
+adversary who can interact with a random
+function in here, can't distinguish that
+
+34
+00:02:34,513 --> 00:02:38,949
+现在让我们给出准确的证明
+interaction from an interaction with a
+random function in here. Now let's find
+
+35
+00:02:38,949 --> 00:02:43,268
+通常，我们定义两个实验，
+out more precisely. So we're gonna, as
+usual, define two experiments. Experiment
+
+36
+00:02:43,268 --> 00:02:47,289
+实验0和实验1.我们的目标是让敌手
+zero and experiment one. And our goal is
+to say that the adversary can't
+
+37
+00:02:47,289 --> 00:02:51,254
+不能分辨出这两个实验。所以，在实验0中，挑战者
+distinguish these two experiments. So in
+experiment zero, the challenger,
+
+38
+00:02:51,254 --> 00:02:55,219
+实际随机选择一个伪随机函数。明白？也就是说
+basically, is gonna choose a random,
+pseudo-random function. Okay? So he's
+
+39
+00:02:55,219 --> 00:02:59,798
+他已经随机固定了密钥K，即定义了这个函数f，这里的f
+gonna fix the key K at random, and that's
+gonna define this function, little f over
+
+40
+00:02:59,798 --> 00:03:03,765
+是经PRF实现的函数之一。
+here, to be one of the functions
+implemented by the PRF. And experiment
+
+41
+00:03:03,765 --> 00:03:08,662
+另一方面实验1中，挑战者从集合X映射到集合Y中的函数选择了一个真正随机的函数
+one, on the other hand, the challenger is
+gonna choose a truly random function from
+
+42
+00:03:08,662 --> 00:03:13,261
+同样，我们把这个真正随机函数成为f
+the set X to the set Y. And again, we're
+gonna call this truly random function
+
+43
+00:03:13,261 --> 00:03:17,979
+无论是实验0还是实验1中
+little f, either way, either experiment
+zero or experiment one, the challenger
+
+44
+00:03:17,979 --> 00:03:23,142
+挑战者以函数f结束的不是选自PRF就是
+ends up with this little function f that's
+either chosen from the PRF, or chosen as a
+
+45
+00:03:23,142 --> 00:03:28,447
+选自从集合X映射到Y中的随机函数。现在对手实际开始
+truly random function from X to Y. Now the
+adversary basically gets to query this
+
+46
+00:03:28,447 --> 00:03:33,882
+对这个f函数产生质疑。所以他开始提交一个质疑数X1并且得到
+function, little f. So he gets to submit a
+query X1 and he obtains the value of f at
+
+47
+00:03:33,882 --> 00:03:39,056
+函数f在X1处的值，之后提交一个质疑数X2，得到在点X2处f的值
+the point X1, then he gets to submit at
+X2, and he obtains the value of f at the
+
+48
+00:03:39,056 --> 00:03:44,351
+一遍又一遍之后，他提交了Q个质疑数。所以他得到了
+point X2. So on and so fourth, he makes Q
+queries. And so he learns the value of the
+
+49
+00:03:44,351 --> 00:03:49,477
+函数f在这Q个点处的值。现在他的目标是确定
+function little f at those Q points. Now
+his goal is to say whether the function
+
+50
+00:03:49,477 --> 00:03:54,603
+这个函数f是不是从函数集合【X,Y】中选出的真正随机的函数，或者是从经PRF简化的函数集合中选出的
+little f is chosen truly at random from
+funs XY, or chosen just from the set of
+
+51
+00:03:54,603 --> 00:03:59,603
+所以他输出一个确定的比特值b
+functions implemented by the PRF. So he
+outputs a certain bit b prime and we'll
+
+52
+00:03:59,603 --> 00:04:04,602
+这个输出是作为实验1或者实验0的输出
+refer to that output as the output of
+experiments, either as experiment zero or
+
+53
+00:04:04,602 --> 00:04:09,365
+。通常我们说PRF是安全的。实际上
+experiment one. As usual we say that the
+PRF is secure. If, in fact, the adversary
+
+54
+00:04:09,365 --> 00:04:13,616
+前提是对手分辨不出来这两个实验。换句话说
+can't distinguish these two experiments.
+In other words, the probability that he
+
+55
+00:04:13,616 --> 00:04:17,974
+他输出1，0的可能性是相同的，和他在实验1中输出1的可能性十分相似
+outputs one, experiments zero is the same,
+pretty much the same as the probability
+
+56
+00:04:17,974 --> 00:04:22,333
+换句话说，这两种可能性的区别
+that he outputs one in experiment one. In
+other words, the difference of these two
+
+57
+00:04:22,333 --> 00:04:26,417
+是可以忽略的。所以这种定义是好的
+probabilities is negligible. So this
+captures nicely, the fact that the
+
+58
+00:04:26,417 --> 00:04:31,080
+事实是对手的确分辨不出出来选自集合X，Y的函数是
+adversary couldn't distinguish a
+pseudo-random function from a truly random
+
+59
+00:04:31,080 --> 00:04:35,682
+伪随机还是真正随机函数。现在，对安全的伪随机组合
+function from the set X to Y. Now, the
+definition for a secure pseudo-random
+
+60
+00:04:35,682 --> 00:04:40,345
+的本质和安全分组密码的定义，是相当类似的。
+permutation, a secure PRP, which is
+basically a secure block cipher, is pretty
+
+61
+00:04:40,345 --> 00:04:45,254
+在实验0中，对手将改变
+much the same. In experiment zero, the
+adversary's gonna change a random instance
+
+62
+00:04:45,254 --> 00:04:50,285
+PRF的一个随机例子，所以他选择了一个随机集合K，并且定义f
+of the PRP. So he's gonna choose a random
+K, and define little f to be the function
+
+63
+00:04:50,285 --> 00:04:55,194
+是在伪随机组合中与小k一致的一个函数
+that corresponds to little k within the
+pseudo-random permutation. In experiment
+
+64
+00:04:55,194 --> 00:05:00,311
+在实验1中对手从集合X到Y中选了一个不是真正随机的函数
+one: the adversary is gonna choose not a
+truly random function from X to Y, but a
+
+65
+00:05:00,311 --> 00:05:05,694
+但是是一个从X到X的真正随机一一映射的函数，明白？现在我们PRP的目标是
+truly random one to one function from X to
+X. Okay? So the goal of our PRP is to look
+
+66
+00:05:05,694 --> 00:05:10,758
+从X到X看起来是一个随机的组合，即从X到它自身的一个随机的一一映射函数
+like a random permutation from X to X.
+Namely, a random one to one function from
+
+67
+00:05:10,758 --> 00:05:15,247
+所以f函数
+the set X to itself. So the little
+functional little f here is again gonna be
+
+68
+00:05:15,247 --> 00:05:19,448
+是一个随机函数。从集合X到它自身，同样，挑战者以这个
+a random function. From the set X to
+itself. And again, the challenger ends up
+
+69
+00:05:19,448 --> 00:05:23,791
+f函数结束的。之后对手开始提交一些质疑数
+with this function, little f. As before,
+the adversary gets to submit queries and
+
+70
+00:05:23,791 --> 00:05:28,124
+并且看这些质疑数对应的结果。之后，他还是
+it gets to see the results of those
+queries. And then he shouldn't be able to
+
+71
+00:05:28,124 --> 00:05:32,707
+不能分辨实验1.和实验0。又一次，给出
+distinguish, again, experiment zero from
+experiment one. So again, given the value
+
+72
+00:05:32,707 --> 00:05:37,464
+对手选择的一些线索点处的对应函数f的值，他依然
+of the function f at cue points chosen by
+the adversary, he can't tell whether the
+
+73
+00:05:37,464 --> 00:05:41,873
+分辨不出函数f来自PRP还是是从X到X
+function f came from a PRP, or
+whether it's a truly random permutation
+
+74
+00:05:41,873 --> 00:05:46,476
+的一个真正随机组合。下来让我们看一个简单的例子。假设集合X
+from X to X. So let's look at a simple
+example. Suppose the set X contains only
+
+75
+00:05:46,476 --> 00:05:50,974
+仅包含两个点，0和1，在这个例子中，组合【X】是容易定义的
+two points, zero and one. In this case,
+Perms[X] is really easy to define.
+
+76
+00:05:50,974 --> 00:05:55,473
+实际上，我们看到的这两个点0，1是存在的。
+Essentially, there are two points, and
+we're looking at, you know, 01. And we're
+
+77
+00:05:55,473 --> 00:06:00,208
+我们会问在集合01中什么是所有的转置函数集合
+asking, what is the set of all invertible
+functions on the set 01. Well, there are
+
+78
+00:06:00,208 --> 00:06:04,706
+这里只有两个这样的函数，一个函数是恒等函数，另一个
+only two such functions. One function is
+the identity function. And the other
+
+79
+00:06:04,706 --> 00:06:09,264
+函数实际是交叉函数，就是这里的函数。
+function is basically the function that
+does crossovers, namely this function
+
+80
+00:06:09,264 --> 00:06:14,028
+他们仅是在01集合中的这两个转置函数。所以实际
+here. These are the only two invertible
+functions in the set 01. So really, Perms[X]
+
+81
+00:06:14,028 --> 00:06:18,557
+在这个例子中组合【X】仅包含两个函数，现在让我们看一下下面的PRP
+only contains two functions, in this
+case. Now, let's look at the following
+
+82
+00:06:18,557 --> 00:06:23,448
+密文空间为01，当然即X为01，
+PRP. The key space is gonna be 01, and of
+course, X is gonna be 01. And let's define
+
+83
+00:06:23,448 --> 00:06:28,348
+我们把PRP定义为X异或K，好的这就得到了我们的PRP并且我的问题是
+the PRP as basically X XOR K. Okay so
+that's our PRP and my question to you is,
+
+84
+00:06:28,348 --> 00:06:33,488
+这是一个安全的PRP吗？换句话说，这个PRP与组合【X】中的一个随机函数是可分辨的么？
+is this a secure PRP. In other words, is
+this PRP indistinguishable from a random
+
+85
+00:06:33,488 --> 00:06:39,211
+我希望每个人的回答是肯定的。因为实际上
+function on Perms[X]? I hope everybody
+said, yes, because essentially, the sets
+
+86
+00:06:39,211 --> 00:06:45,521
+在PRP中实现的函数集合和组合【X】中的函数集合是完全相同的
+of functions implemented in this PRP, is
+identical to the set of functions in Perms[X].
+
+87
+00:06:45,521 --> 00:06:50,550
+所以这里随机密钥的选择和函数的随机选择是相同的
+So a random choice of key here is
+identical to a random choice of function
+
+88
+00:06:50,550 --> 00:06:54,675
+因此，这两种分配，伪随机或者随机是一样的
+over here. And as a result, the two
+distributions, either pseudo-random or
+
+89
+00:06:54,675 --> 00:06:58,743
+所以显然，对手是不可能分辨出这两种分配。
+random, are identical. So clearly, an
+adversary can't distinguish the two
+
+90
+00:06:58,743 --> 00:07:03,212
+现在我们已经讲了一对例子有关安全PRP的三重DES和AES
+distributions. Now, we already said that
+we have a couple of examples of secure
+
+91
+00:07:03,212 --> 00:07:07,853
+现在我想说明的是，如果你想
+PRPs triple DES and AES. And I just wanted
+to mention that, if you want to make
+
+92
+00:07:07,853 --> 00:07:12,322
+理解得更具体些，我们还有一个关于AES的具体的安全假设。
+things very concrete, here's a concrete
+security assumptions about AES. Just to
+
+93
+00:07:12,322 --> 00:07:17,077
+举个例子，所有运行时间为2的80次方的算法对AES的攻击优势的极限是2的-40次方
+give an example, say that all algorithms
+had run in time 2^80 have advantage
+
+94
+00:07:17,077 --> 00:07:22,295
+这是有关AES的一个合理假设
+against AES of utmost 2^-40. This
+is, a reasonable assumption about AES, and
+
+95
+00:07:22,295 --> 00:07:26,674
+并且我仅想说明它的具体性。让我们来看另一个例子
+I just wanted to state it for
+concreteness. So let's look at another
+
+96
+00:07:26,674 --> 00:07:31,376
+从刚才的问题重新考虑PRP，即XX或者K
+example. Consider again the PRP from the
+previous question. Namely XX or K.
+
+97
+00:07:31,376 --> 00:07:36,270
+记住，集合X仅是1比特，即0和1.
+Remember the set X was just one bit,
+namely the value zero and one. And this
+
+98
+00:07:36,270 --> 00:07:40,726
+这次我想问，这个PRP是一个安全的PRF吗？换句话说
+time, we're asking, is this PRP a secure
+PRF? In other words, is this PRP
+
+99
+00:07:40,726 --> 00:07:45,411
+这个PRP与选自X到X的的随机函数是不可分辨的吗？在这个例子中
+indistinguishable from a random function
+from X to X? Now, the set of random
+
+100
+00:07:45,411 --> 00:07:50,282
+从X到X的随机函数集合【X，X】仅包含4个元素
+functions from X to X, Funs[XX] in
+this case, contains only four elements.
+
+101
+00:07:50,282 --> 00:07:54,967
+其中有两个是可逆函数，我们之前了解过的，
+There are the two invertible functions,
+which we already saw in... I believe the
+
+102
+00:07:54,967 --> 00:07:59,589
+一个是恒等函数。另一个是交叉函数
+identity function, and the negation
+function, the function that
+
+103
+00:07:59,589 --> 00:08:04,524
+它把1给0，0给1。但是这里有另外两个函数
+sends zero to one, and one to zero. But
+there are two other functions. Namely, the
+
+104
+00:08:04,524 --> 00:08:10,183
+即，这个函数把所有的值都给0。这个函数把所有值给1.
+function that sends everything to zero.
+And the function that sends everything to
+
+105
+00:08:10,183 --> 00:08:16,498
+这四个函数都属于函数集合【X，X】，现在的问题是
+one. Okay, these are four functions inside
+Funs[XX], and the question is: Is this
+
+106
+00:08:16,498 --> 00:08:22,507
+我们现在看到的这个PRP与从函数集合【X，X】随机选择的是可分辨的吗
+PRP that we just looked at, is it also
+indistinguishable from a random choice
+
+107
+00:08:22,507 --> 00:08:27,542
+我希望大家都能说出来，不，它不安全的原因是
+from Funs[XX]? So I hope everybody said no
+and the reason it's not a secure prf is
+
+108
+00:08:27,542 --> 00:08:31,949
+这仅是一个简单攻击，即，攻击者认为他
+because there's a simple attack, namely
+the attacker supposed to distinguish
+
+109
+00:08:31,949 --> 00:08:36,762
+可以区别出他是与PRP交流还是从函数集合【X，X】中随机选择的一个函数沟通。
+whether he's interacting with this PRP or
+is he interacting with a random function
+
+110
+00:08:36,762 --> 00:08:41,343
+并且这样的分辨是很简单的。我们将
+from Funs[XX]. And the distinguisher
+is very simple. Basically we're gonna
+
+111
+00:08:41,343 --> 00:08:45,923
+计算函数f在x等于0和等于1时的值，这是否矛盾
+query the function at both x equals zero
+and x equals one, and then if we get a
+
+112
+00:08:45,923 --> 00:08:50,736
+换句话说如果f（0）=f（1）确保我们没有用PRP交流
+collision, in other words, if f of zero is
+equal to f of one, then for sure we're not
+
+113
+00:08:50,736 --> 00:08:54,907
+这种情况我们输出1，也就是说
+interacting with a PRP. In which case we
+can just output one. In other words we're
+
+114
+00:08:54,907 --> 00:08:58,967
+我们用一个随机函数来进行交流，否则呢输出0
+interacting with a random function. In
+other words we say zero. So let's look at
+
+115
+00:08:58,967 --> 00:09:03,723
+首先让我们看一下这种分辨器的优点。当他用PRP交流时
+the advantage of this distinguisher. Well
+when it's interacting with a PRP, it'll
+
+116
+00:09:03,723 --> 00:09:08,087
+将永远不会输出1，因为f（0）永远不可能等于f（1），
+never output a one, because f of zero can
+never be equal to f of one. In other
+
+117
+00:09:08,087 --> 00:09:12,621
+即，输出1的可能性是0，但是，当我们用
+words, the probability of outputting one
+is zero. However, when we interact with a
+
+118
+00:09:12,621 --> 00:09:17,324
+函数集合【XX】中一个真正随机的函数交流时，f（0）=f（1）
+truly random function in Funs[XX],
+the probability that f of zero is equal to
+
+119
+00:09:17,324 --> 00:09:21,915
+的可能性是1/2.因为一半的函数满足f（0）=f（1）
+f of one is exactly one-half.  Cause half the
+functions satisfy F of zero's equal to F
+
+120
+00:09:21,915 --> 00:09:26,335
+一半的函数不满足。所以我们输出1的概率是1/2
+of one, and half the functions don't. So
+then, we'll output one with probability
+
+121
+00:09:26,335 --> 00:09:30,472
+所以这种分辨器的优势是1/2，它是不可忽略的
+one-half. So the advantage of this
+distinguisher is one-half, which is non-negligible.
+
+122
+00:09:30,472 --> 00:09:35,274
+因此PRP不是一个安全的PRF。现在
+And as a result, this PRP here
+is not a secure PRF. Now it turns out this
+
+123
+00:09:35,274 --> 00:09:40,226
+我们证明出只有当集合X很小的时候它是正确的，实际有一个
+only true because if set X is very small.
+And in fact there is an important lemma,
+
+124
+00:09:40,226 --> 00:09:44,810
+重要的引理叫做伪随机函数切换引理，是指
+called the PRF Switching Lemma, that
+says that a secure PRP, is in fact a
+
+125
+00:09:44,810 --> 00:09:49,212
+当集合X足够大时，一个安全的PRP实际是一个安全的PRF,
+secure PRF, whenever the set X is
+sufficiently large. And by sufficiently
+
+126
+00:09:49,212 --> 00:09:53,919
+我说的足够大是指AES的输出空间是2^128，所以通过
+large, I mean say the output space of AES
+which is two to the 128th. So by this
+
+127
+00:09:53,919 --> 00:09:58,870
+这个我们马上将详细阐释的引理可知，如果AES是一个安全的PRP
+lemma which will state more precisely in a
+second, AES if it's a secure PRP, it is
+
+128
+00:09:58,870 --> 00:10:03,883
+那么它就是一个安全的PRF。实际这个引理的意思如下
+also a secure PRF. So this lemma basically
+says the following, if you give me a PRP
+
+129
+00:10:03,883 --> 00:10:10,313
+如果我给一个通过集合X的伪随机组合数，对于任何质疑这个PRP的对手
+over the set X Then for any adversary that
+queries the PRP, at at most Q points, so it
+
+130
+00:10:10,313 --> 00:10:15,857
+这个函数至少有q个质疑点。
+makes at most Q queries into the
+challenge function. Then, the difference
+
+131
+00:10:15,857 --> 00:10:20,911
+与一个随机函数相比，它攻击PRP的优势与它分辨PRP和随机组合的
+between its advantage in attacking the PRP
+when compared to a random function, is
+
+132
+00:10:20,911 --> 00:10:25,154
+优势之间的区别是十分接近的，
+very close to its advantage in
+distinguishing the PRP from a random
+
+133
+00:10:25,154 --> 00:10:30,020
+实际这种区别是被数量所限制的，
+permutation. In fact the difference, is
+bounded by this quantity here, and since
+
+134
+00:10:30,020 --> 00:10:34,700
+我们已经说X非常大，这个数量q^2/2X是可忽略的
+we said that X is very large, this
+quantity Q squared over 2X is negligible.
+
+135
+00:10:34,700 --> 00:10:38,876
+好，我们的目的达到了。当X很大时为2^128
+Okay. That's gonna be our goal. So
+essentially, again, when X is large, say
+
+136
+00:10:38,876 --> 00:10:43,630
+Q将是2^32.那是一个对手制造的数量级为十亿的质疑数。
+two to the 128, Q say is going to be two
+to the 32. That's a billion queries that
+
+137
+00:10:43,630 --> 00:10:48,443
+这个比值仍然可忽略。在这个例子里
+the adversary makes. Then, still the ratio
+is going to be negligible. In which case,
+
+138
+00:10:48,443 --> 00:10:52,847
+对手的优势是可以分辨随机函数和PRP
+we say that the adversary's advantage is
+distinguishing the PRP from a random
+
+139
+00:10:52,847 --> 00:10:58,010
+它和它能分辨出PRP与随机组合数的优势十分相似
+function. It's pretty much the same as its
+advantage of distinguishing a PRP from a
+
+140
+00:10:58,010 --> 00:11:02,431
+所以，如果E已经是一个安全的PRP
+random permutation. So, again, it's
+basically, if E is already a secure PRP,
+
+141
+00:11:02,431 --> 00:11:08,844
+那么它就是一个安全的PRF。基于AES我们相信它是一个安全的PRP
+then it's already a secure PRF. So for
+AES, AES, we believe, is a secure PRP.
+
+142
+00:11:08,844 --> 00:11:14,517
+因此，我们可以把AES当做一个安全的PRF.最后总结一下
+And therefore, AES, we can also use it as a
+secure PRF. And so, as a final note, I
+
+143
+00:11:14,517 --> 00:11:16,530
+到现在，你们可能有点忘记了
+just want to mention that, really, from
+now on, you can kinda forget about the
+
+144
+00:11:16,530 --> 00:11:21,312
+AES的内部具体工作和三重DES的相关知识。我们将简单假设
+inner workings of AES and triple DES.
+We're simply gonna assume that both are
+
+145
+00:11:21,312 --> 00:11:26,218
+它们都是安全的PRP，之后我们将看到如何应用它们。但是当我提到PRP
+secure PRPs, and then we're gonna see how
+to use them. But whenever I say PRP, or
+
+146
+00:11:26,218 --> 00:11:30,442
+或者PRF时，你们应该立刻能想到的是AES或者三重DES
+PRF, you should be thinking in your mind,
+basically, AES or triple DES.
+

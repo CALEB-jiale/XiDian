@@ -1,0 +1,614 @@
+1
+00:00:00,000 --> 00:00:03,762
+In this segment we're gonna look at
+another method to achieve chosen plain
+
+2
+00:00:03,762 --> 00:00:08,105
+text security that's actually superior to
+CBC. And this method is called randomized
+
+3
+00:00:08,105 --> 00:00:13,474
+counter mode. Unlike CBC. Randomized
+counter mode uses a secure PRF. It doesn't
+
+4
+00:00:13,474 --> 00:00:18,022
+need a block cypher. It's enough for
+counter mode to just use a PRF because
+
+5
+00:00:18,022 --> 00:00:22,934
+we're never going to be inverting this
+function F. So we're going to let F be the
+
+6
+00:00:22,934 --> 00:00:27,664
+secure PRF and it acts on N byte blocks.
+Again if we use AES, N will be 128. And
+
+7
+00:00:27,664 --> 00:00:32,758
+the way the encryption algorithm works in
+counter mode is it starts off by choosing
+
+8
+00:00:32,758 --> 00:00:37,670
+a random IV, that's 128 bytes random IV in
+the case of AES, and the essentially we
+
+9
+00:00:37,670 --> 00:00:44,002
+start counting. From this random IV, so
+you notice the first encryption is of IV
+
+10
+00:00:44,002 --> 00:00:49,489
+then IV+1 up to IV+L. So we generate this
+random pad. We XOR the result with the
+
+11
+00:00:49,489 --> 00:00:53,432
+message, and that gives us the cipher
+text. And, as usual, you notice that the
+
+12
+00:00:53,432 --> 00:00:57,744
+IV here is included along with the cipher
+text. So that, in fact, the cipher text is
+
+13
+00:00:57,744 --> 00:01:02,082
+a little longer than the original plain
+text. And the point, of course, is that,
+
+14
+00:01:02,267 --> 00:01:07,260
+encryption algorithm chooses a new IV for
+every message. And so even if I encrypt
+
+15
+00:01:07,260 --> 00:01:11,821
+the same message twice, I'm gonna get
+different resulting cipher texts. One
+
+16
+00:01:11,821 --> 00:01:16,198
+thing to notice that this mode is
+completely paralyzable, unlike CBC. CBC
+
+17
+00:01:16,198 --> 00:01:20,863
+was sequential. In other words, you
+couldn't encrypt block #5 until you've
+
+18
+00:01:20,863 --> 00:01:26,183
+encrypted blocks ##1 to 4, so
+hardware companies who might have multiple
+
+19
+00:01:26,183 --> 00:01:31,173
+AES engines working in parallel cannot
+actually use those AES engines when using
+
+20
+00:01:31,173 --> 00:01:36,227
+CBC because CBCs inherently sequential. So
+even though you might have two or three of
+
+21
+00:01:36,227 --> 00:01:40,865
+four AES engines, you could only use one
+of them when doing CBC encryption. With
+
+22
+00:01:40,865 --> 00:01:45,622
+counter mode, everything is completely
+paralyzable. If you have three AES engines
+
+23
+00:01:45,622 --> 00:01:50,557
+encryption basically will work three times
+as fast. So that's the beauty of counter
+
+24
+00:01:50,557 --> 00:01:54,720
+mode. And counter mode also has a
+corresponding nonce based counter mode.
+
+25
+00:01:54,720 --> 00:01:59,306
+Where the IV is not truly random, but
+rather, is just a nonce which could
+
+26
+00:01:59,306 --> 00:02:03,716
+be a counter. And the way you would
+implement nonce based counter mode, is you
+
+27
+00:02:03,716 --> 00:02:08,830
+would take the 128 bits block that used in
+AES. And then you would split it in two.
+
+28
+00:02:08,830 --> 00:02:14,202
+You would use the left 64 bits as the
+nonce, so the counter say would count from
+
+29
+00:02:14,202 --> 00:02:19,501
+zero to 2 to the 64. And then, that will
+be the nonce part of it. And then once you
+
+30
+00:02:19,501 --> 00:02:24,341
+specify the nonce, the lower order, 64
+bits, would be doing the counting inside
+
+31
+00:02:24,341 --> 00:02:28,931
+of the counter modes encryption. Okay, so
+nonce goes on the left, and the
+
+32
+00:02:28,931 --> 00:02:33,580
+counter mode encryption counter goes on
+the right. And it's perfectly fine if this
+
+33
+00:02:33,580 --> 00:02:38,002
+nonce is unpredictable. The only
+restriction is that you encrypt at most
+
+34
+00:02:38,002 --> 00:02:42,708
+2 to the 64 blocks using one particular
+nonce. The danger is that you don't
+
+35
+00:02:42,708 --> 00:02:47,073
+want this counter to reset to zero so
+that, then, you will have two blocks. Say,
+
+36
+00:02:47,073 --> 00:02:51,495
+this guy, this guy, and this guy that are
+encrypted using the same one time pad.
+
+37
+00:02:51,495 --> 00:02:55,623
+Namely this one and this one. So lets
+quickly state the security theorem for a
+
+38
+00:02:55,623 --> 00:02:59,425
+randomized counter mode . By now you should
+be used to these kind of theorems.
+
+39
+00:02:59,425 --> 00:03:03,790
+Basically we are given a secure PRF. What
+we end up with is an encryption scheme.
+
+40
+00:03:03,790 --> 00:03:08,458
+We'll call it E sub CTR, E sub counter
+mode, which is semantically secure under a
+
+41
+00:03:08,458 --> 00:03:12,830
+chosen plain text attack. It encrypts
+messages that are L blocks long, and
+
+42
+00:03:12,830 --> 00:03:17,557
+produces cipher text that are L+1 blocks
+long because the IV has to be included in
+
+43
+00:03:17,557 --> 00:03:22,245
+the cipher text. This is for randomized
+counter mode. And the error bounds
+
+44
+00:03:22,245 --> 00:03:26,674
+are stated over here. It's basically the
+same bounds as in the case of CBC
+
+45
+00:03:26,674 --> 00:03:31,342
+encryption. As usual, we argue that this
+term is negligible because the PRF F is
+
+46
+00:03:31,342 --> 00:03:36,250
+secure and we would like to deduce from
+that, that this term is negligible so that
+
+47
+00:03:36,250 --> 00:03:41,098
+E<u>CTR is secure. Unfortunately we have this
+error term here and so we have to make</u>
+
+48
+00:03:41,098 --> 00:03:45,946
+sure this error term is negligible. And
+for that we have to make sure Q squared L
+
+49
+00:03:45,946 --> 00:03:50,374
+is less than the size of a block. And
+remember, Q is the number of messages
+
+50
+00:03:50,374 --> 00:03:55,467
+encrypted under a particular key. And L is
+the maximum length of those messages. Now
+
+51
+00:03:55,467 --> 00:04:00,740
+interestingly in the case of CBC we have Q
+squared L squared. Has to be less than x.
+
+52
+00:04:00,740 --> 00:04:04,557
+Which is actually worse than we have for
+counter modes. In other words, counter
+
+53
+00:04:04,557 --> 00:04:08,728
+modes can actually be used for more.
+Blocks than CBC could. Lets see a quick
+
+54
+00:04:08,728 --> 00:04:13,545
+example of that. So here is, again, the
+error term for counter-node, and remember
+
+55
+00:04:13,545 --> 00:04:18,177
+Q is again the number of messages
+encrypted with a key, and L is the length
+
+56
+00:04:18,177 --> 00:04:23,056
+of those messages. And as before, just as
+in the case of CBC, suppose we want the
+
+57
+00:04:23,056 --> 00:04:28,059
+adversary's advantage to be at most, one
+over 2 to the 32. That basically requires
+
+58
+00:04:28,059 --> 00:04:33,000
+that this Q-squared, L over X be less than
+1 over 2 to the 32. So for AES what
+
+59
+00:04:33,000 --> 00:04:37,783
+happens is, if you plug in the values X is
+2 to 128, 128 bit blocks. So Q times
+
+60
+00:04:37,783 --> 00:04:42,187
+square root of L should be less than 2
+to the 48. This is basically the bound you
+
+61
+00:04:42,187 --> 00:04:46,485
+get from plugging in 2 to the 128 into
+this bound here. And as a result, you can
+
+62
+00:04:46,485 --> 00:04:51,123
+see if you're encrypting messages that are
+each, 2 to the 32 blocks. Then after 2
+
+63
+00:04:51,123 --> 00:04:55,435
+to the 32 such messages you have to
+replace your secret key otherwise
+
+64
+00:04:55,435 --> 00:05:00,424
+randomized counter mode is no longer CPA
+secure. So this means we could encrypt a
+
+65
+00:05:00,424 --> 00:05:05,413
+total of 2 to the 64 AES blocks using a
+single secret key. Remember, for CBC the
+
+66
+00:05:05,413 --> 00:05:10,402
+corresponding value was 2 to the 48
+blocks so in fact because counter mode has
+
+67
+00:05:10,402 --> 00:05:15,453
+a better security parameterization in fact
+we can use the same key to encrypt more
+
+68
+00:05:15,453 --> 00:05:19,860
+blocks with counter mode than we could
+with CBC. So I wanted to do a quick
+
+69
+00:05:19,860 --> 00:05:24,378
+comparison of counter mode and CBC. And
+argue that in every single aspect, counter
+
+70
+00:05:24,378 --> 00:05:28,338
+mode is superior to CBC. And that's
+actually why most modern encryption
+
+71
+00:05:28,338 --> 00:05:32,800
+schemes actually are starting to migrate
+to counter mode, and abandoned CBC. Even
+
+72
+00:05:32,800 --> 00:05:37,030
+though CBC is still quite widely used. So
+let's look at the comparison. First of
+
+73
+00:05:37,030 --> 00:05:41,250
+all, recall that CBC actually had to use a
+block cypher because if you look at the
+
+74
+00:05:41,250 --> 00:05:45,522
+decryption circuit, the decryption circuit
+actually ran the block cypher in reverse.
+
+75
+00:05:45,522 --> 00:05:49,537
+It was actually using the decryption
+capabilities of the block cypher. Whereas
+
+76
+00:05:49,537 --> 00:05:53,243
+in counter mode, we only use a PRF. We
+never ever, ever use the decryption
+
+77
+00:05:53,243 --> 00:05:57,257
+capabilities of the block cypher. We only
+use it in the forward direction, only
+
+78
+00:05:57,257 --> 00:06:01,478
+encrypt with it. Because of this, counter
+mode is actually more general and you can
+
+79
+00:06:01,478 --> 00:06:05,390
+use primitives like Salsa, for example,
+Salsa20, if you remember, as a PRF.
+
+80
+00:06:05,390 --> 00:06:09,688
+But is not a PRP. So counter mode can
+Salsa but CBC cannot. And in essence,
+
+81
+00:06:09,688 --> 00:06:14,045
+counter mode is more general than CBC.
+Counter mode, as we said, is actually
+
+82
+00:06:14,045 --> 00:06:18,991
+parallel, whereas CBC is a very sequential
+process. We said that counter mode is more
+
+83
+00:06:18,991 --> 00:06:23,467
+secure. The security bounds, the error
+terms are better for counter mode than
+
+84
+00:06:23,467 --> 00:06:28,001
+they are for CBC. And as a result, you can
+use a key to encrypt more blocks in
+
+85
+00:06:28,001 --> 00:06:32,829
+counter mode than you could with CBC. The
+other issue is, remember in CBC we talked
+
+86
+00:06:32,829 --> 00:06:37,657
+about the dummy padding block. If you had
+a message that's a multiple of the block
+
+87
+00:06:37,657 --> 00:06:42,993
+length. In CBC we said that we had to add
+a dummy block whereas in counter mode this
+
+88
+00:06:42,993 --> 00:06:47,403
+wasn't necessary. Although, I did want
+to mention that there is a variation of
+
+89
+00:06:47,403 --> 00:06:51,782
+CBC called CBC with cipher text tiling, that
+actually avoids the dummy block issue. So
+
+90
+00:06:51,782 --> 00:06:55,739
+for standardized CBC, we actually need a
+dummy block. But in fact there is a
+
+91
+00:06:55,739 --> 00:06:59,854
+modification to CBC that doesn't need a
+dummy block. Just like counter mode.
+
+92
+00:06:59,854 --> 00:07:04,021
+Finally, suppose you're encrypting just a
+stream of one byte messages, and using
+
+93
+00:07:04,021 --> 00:07:08,136
+nonce encryption with an implicit
+nonce. So, the nonce is not
+
+94
+00:07:08,136 --> 00:07:12,723
+included in the cipher text. In this case.
+Every single one byte message would have
+
+95
+00:07:12,723 --> 00:07:17,511
+to be expanded into a sixteen byte block
+and then encrypted, and the result would
+
+96
+00:07:17,511 --> 00:07:22,121
+be a sixteen byte block. So if you have,
+like, a stream of 100 one byte messages,
+
+97
+00:07:22,121 --> 00:07:26,850
+each one separately would have to become a
+sixteen byte block. And you'll end up.
+
+98
+00:07:26,850 --> 00:07:31,916
+With a stream of 116 byte cipher texts. So
+you get a 16x expansion on the length of
+
+99
+00:07:31,916 --> 00:07:36,556
+the cipher text, compared to the length of
+the plain text. In counter mode, of
+
+100
+00:07:36,556 --> 00:07:41,257
+course, this is not a problem. You would
+just encrypt each one byte message by
+
+101
+00:07:41,257 --> 00:07:46,253
+XORing with the first bytes of the stream
+that's generated in the counter mode. So
+
+102
+00:07:46,253 --> 00:07:50,868
+every cipher text would just be one byte,
+just like the corresponding plain text.
+
+103
+00:07:50,868 --> 00:07:55,657
+And so no expansion at all, using counter
+mode. So you see that essentially, every
+
+104
+00:07:55,657 --> 00:08:00,100
+single aspect counter mode dominates CBC.
+And that's why it's actually the
+
+105
+00:08:00,100 --> 00:08:05,179
+recommended mode to be using today. Okay,
+so this concludes our discussion of chosen
+
+106
+00:08:05,179 --> 00:08:09,465
+plaintext security. I wanted to just
+quickly summarize and remind you that
+
+107
+00:08:09,465 --> 00:08:14,329
+we're going to be using these PRP and PRF
+abstractions of block ciphers.
+
+108
+00:08:14,329 --> 00:08:18,673
+This is actually the correct way of
+thinking of block ciphers and so we'll
+
+109
+00:08:18,673 --> 00:08:22,900
+always think of them as either
+pseudorandom permutations or pseudorandom
+
+110
+00:08:22,900 --> 00:08:27,192
+functions. And then I wanted to remind you
+again that, so far, we saw two notions of
+
+111
+00:08:27,192 --> 00:08:31,163
+security. Both only provide security
+against eavesdropping. They don't provide
+
+112
+00:08:31,163 --> 00:08:35,392
+security against tampering with the cipher
+text. One was used when the key is only
+
+113
+00:08:35,392 --> 00:08:39,414
+used to encrypt a single message. The
+other one was used when the key was used
+
+114
+00:08:39,414 --> 00:08:43,539
+to encrypt multiple messages. And as we
+said, because neither one is designed to
+
+115
+00:08:43,539 --> 00:08:47,588
+defend against tampering, neither one
+provides data integrity. And we're going
+
+116
+00:08:47,588 --> 00:08:51,689
+to see this as a real problem. And as a
+result, in fact, I'm going to say in the
+
+117
+00:08:51,689 --> 00:08:55,686
+next segment that these modes actually
+should never, ever be used. You should
+
+118
+00:08:55,686 --> 00:08:59,998
+only be using these modes in addition to
+an integrity mechanism, which is our next
+
+119
+00:08:59,998 --> 00:09:03,731
+topic. Okay, so, so far we've seen
+basically for using a, the key once, you
+
+120
+00:09:03,731 --> 00:09:07,714
+can use stream ciphers or you can use
+deterministic counter mode. If you're
+
+121
+00:09:07,714 --> 00:09:12,397
+gonna use the key many times you could use
+randomize CBC or randomize counter mode
+
+122
+00:09:12,397 --> 00:09:16,918
+and we're gonna talk about how to provide
+integrity and confidentiality. Once we
+
+123
+00:09:16,918 --> 00:09:20,013
+cover the topic of integrity, which is our
+next module.

@@ -1,0 +1,380 @@
+In this segment we are gonna look at
+another form of encryption called
+tweakable encryption. I'm gonna motivate
+tweakable encryption using disk encryption
+as an application and we'll see disk
+encryption as yet another application for
+deterministic encryption. So the disk
+encryption problem is that we wanna
+encrypt sectors on disk. Say each sector
+is four kilobytes long and the problem is
+that there is no space to expand. In other
+words if the sector size is four kilobytes
+the cipher text size also has to be
+exactly four kilobyte because there is
+nowhere to write the extra bits if the
+cipher text was bigger than the plaintext.
+And so our goal is basically to build a
+non expanding encryption where the cipher
+text size is identical exactly equal to
+the plaintext size. So what does it mean
+that encryption can't expand? Well,
+technically we were saying, basically the
+message space is equal to the cipher text
+space. So the message space will be four
+kilobyte messages and the cipher text
+space would be also four kilobyte
+messages. In this case clearly we have to
+use deterministic encryption because if
+encryption was randomized there will be no
+place to store the randomness. And similarly
+we have no room for integrity, because we can't
+expand the cipher text and add any
+integrity bits. So the most we can achieve
+is deterministic CPA security and that's
+going to be our goal. Now it turns out
+there's a really simple lemma to
+prove, that basically says if you give me
+a deterministically CPA secure cipher
+where the message space is equal to the
+cipher text space, so no expansion, then in
+fact the cipher is a PRP. So, really all
+we're saying here is if we want no
+expansion at all our only option for
+encrypting is what we called construction
+number two in the previous segment. Namely
+we have to encrypt using a PRP. So, let's
+look at how we might encrypt using a
+PRP. Well, we take our disk, and we break
+it into sectors. And now, if we encrypted
+every sector using a PRP under the same
+key, we kind of run into our standard
+problem with deterministic encryption.
+Namely, if sector one and sector three
+happen to have the same plain text, then
+the encrypted sector one would be equal to
+the encrypted sector three and the
+attacker would learn that the
+corresponding plain texts are the same.
+Now this actually is a real problem for
+example, if your, if some of your sectors
+are empty you know they are all set to
+zero then in fact the encrypted sectors
+would be identical and as a result the
+attacked would know exactly which sectors
+on your disk are empty and which sectors
+are not. So this is actually quite
+problematic and the question is, can we do
+any better? And so the answer is yes, and
+the first idea that comes to mind is well,
+why don't we use a different key for every
+sector? So you can see sector number one
+gets encrypted with key one, sector number
+two gets encrypted with key two and so on
+and so forth. So now even if the content
+of sector number one is equal to sector
+number three the cipher text of sector one
+and sector three will be different because
+they are encrypted under different keys.
+So this actually avoids the leakage that
+we talked about before although I do want
+to point out that there is still a little
+bit of leakage with this mode. For example
+if the user happened to change one bit in
+sector one and then that sector gets
+encrypted into a different cipher text. So
+this will be garbled all completely,
+because this is a pseudo random
+permutation, the sector will be-- even if
+one bit of the plain text changes, the
+sector will be just mapped to a completely
+new random output. However, if the user
+then undoes the change, and reverts back
+to the original sector, then the encrypted
+sector will revert back to its original
+state, and the attacker can tell that a
+change was made and then reverted. So,
+there's still a little bit of 
+information leakage. But that type of
+information leakage, there's really
+nothing we can do without really
+sacrificing performance. So, we're just
+going to ignore that and deem that
+acceptable. So the next question is now
+you realize our disks are actually getting
+pretty big and there are lots of sectors.
+So this would mean that we are generating
+lots and lots of keys here, but of course
+we don't have to store all these keys, we
+can simply generate these keys using a
+pseudo random function. So, the way this
+would work is we would have a master key
+which we would call K. And then the sector
+number which I'm gonna denote by T is
+gonna be encrypted using the master key.
+And the result of that encryption would be
+the particular sector key, which I'll
+denote by K sub T. Now the reason this is
+secured is again because the PRF is
+indistinguishable from our random
+function, which means that basically if we
+apply a random function to these sector
+numbers, one, two, three, four, up to L,
+they basically get mapped to completely
+random elements in the key space and as a
+result we are encrypting every sector
+using a new random independent key. So
+this is a fine construction, however
+again, for every sector we would have to
+apply this PRF. And so the natural
+question is, can we do even better? And it
+turns out we can. And this introduces this
+concept of a tweakable block cipher where
+really what we want is basically to have
+one master key. And we want this one
+master key to derive many, many,
+many PRPs. So we said one way to do that
+is simply encrypt the key K using the PRP
+number. But as we'll see, there's a more
+efficient way to do that. Now this PRP
+number is actually what's called a tweak,
+and that introduces this concept of
+tweakable, a tweakable block cipher. So in
+a tweakable block cipher, the encryption
+and decryption algorithm basically, as
+usual, take a key as input, they take a
+tweak as input. This capital T is what's
+called the tweak space. And of course they
+take the data as input and they output
+data in the set X. The property is such that for
+every tweak in a tweak space in a random
+key. Basically if we fix the key and the
+tweak, then we end up with an invertible
+function, a one to one function on the
+set X. And because the key is random with
+the, the function is in fact
+indistinguishable from random. In other
+words, for every setting of the tweak, we
+basically get a PRP, an independent PRP
+from X to X. And as I said, the
+application for this is now we're going to
+use the sector number as the tweak, and as
+a result, every sector is going to get its
+own independent PRP. So let me very, very
+quickly just define more precisely what is
+a secure tweakable block cipher. So as we
+said there's a tweak space. There's a key,
+a tweak space and an [inaudible] space X.
+And as usual, we define our two
+experiments. Here in experiment one what's
+gonna happen is we are gonna choose a
+truly random set of permutations. So not
+just one permutation we're gonna choose as
+many permutations as there are tweaks. So
+you notice this is why we raise this to the
+size of the tweak space. If the size of
+the tweak space is five, this says we are
+choosing five random permutations on the
+set X. And in the other case, basically,
+we're just gonna, you know, choose a
+random key, and we're gonna define our set
+of permutations as the ones defined by
+the, by tweaks in the tweak space. And
+then the adversary basically gets to
+submit a tweak and an X. And he gets to
+see the value of the permutation defined
+by the tweak T1, evaluated at the point
+X1. And he gets to see this again and
+again. And again, he gets to see the value
+of the permutation defined by the tweak
+T2, evaluated at the point X2, and so on
+and so forth. And then his goal is to say
+whether he interacted with truly random
+permutations, or pseudo random
+permutations. And if he can't do it, we
+say that this tweakable block cipher is
+secure. So the difference from a regular
+block cipher, is, in a regular block
+cipher, you only get to interact with one
+permutation. And then your goal is to tell
+whether you're interacting with a
+pseudorandom permutation or a truly random
+permutation. Here you get to interact with
+T random permutations. And again your goal
+is to tell whether the T random
+permutations are truly random or
+pseudorandom. So as usual if you can't
+distinguish, if the adversary behaves the
+same in both experiments, we say that this
+PRP is a secure tweakable PRP. Okay. Very
+good. So let's look at some examples. So
+we already looked at, at the trivial
+example. In the trivial example, what we do,
+we just, we're gonna assume that the key
+space is equal to the input space. So this
+PRP really acts on, you know, X times X to
+X. So think of AES for example, where
+the key space is 128 bits, the data space
+is 128 bits and of course the output is
+128 bits and then the way that we defined a
+tweakable block cipher again there is a
+key, a tweak and data as input is
+basically we encrypt the tweak using our
+master key and then we encrypt the data
+using the resulting random key. Now
+you realize that if we wanted to encrypt n
+blocks with this tweakable block cipher,
+this would require 2n evaluations of
+the block cipher: n evaluations to encrypt
+the given tweaks, and then n more evaluations 
+to encrypt the actual given data.
+So, I want to show you a nice example, 
+that shows that we can actually do better.
+This is called the XTS construction. 
+It's actually originally based on
+a mode called XEX due to Phil Rogaway.
+And it works as follows. So suppose you
+give me a, a regular block cipher that
+operates on n-bit blocks. So not a
+tweakable block cipher, just a regular
+block cipher. We're gonna define a
+tweakable block cipher. So again, this
+tweakable block cipher is gonna take two
+keys as input. The tweak space, for
+convenience, which you're gonna see in
+just a minute, we're gonna assume this
+tweak space is made up of, of two values,
+T and I. T is going to be some, you know, some
+tweak value which we'll see in a minute, and I is
+going to be some index. And then X is
+going to be an n-bit string which we're
+going to apply the tweakable block cipher
+to. So, the way XTS works is as follows.
+The first thing we're going to do is we're
+going to encrypt the left half of the
+tweak, namely T, using the key K2 and we're
+going to call the result N. So now what
+we're gonna do is we're gonna XOR the
+message m with some padding function
+applied to this value N that we just
+derived, at the index I. And this padding
+function is extremely fast. We can pretty
+much ignore it in the running time. The
+next thing we do is we're gonna encrypt
+using the key k2. And then we're going
+to XOR again, using the same pad. So
+we're going to XOR again using the pad
+of N applied to I. And the result is going
+to be the cipher text, which we'll denote
+by C. Okay, so again as I said, the
+function P is some very, very simple
+function. It's just some multiplication in
+a finite field which I'm not going to
+explain here. Very, very fast so the
+running time is dominated by the running
+time of the block cipher E and that's it. That's
+XTS. And the nice thing about this construction
+is now if we wanted to encrypt n plus one
+blocks, all we do is we compute the value
+N once. And then for the indices one, two,
+three, four basically we just need to
+evaluate the PRP E once per block. So we
+would need to encrypt n blocks using the
+tweaks T,1, T,2, T,3, T,4 and so on. We
+would just need n plus one evaluations of
+the block cipher E. So it's twice
+as fast as the trivial construction.
+So I want you to stare for just a minute
+at this XTS construction. So my question
+to you is, is it really necessary to
+encrypt the tweak before using it?
+That is, that is the following construction
+a secure tweakable PRP. So you can see
+in this construction, this tweak is used
+directly as input to the padding function
+for the XOR and my question to you is 
+if we did that, would that be a
+secure tweakable PRP? And let me 
+remind you again that, this is the key,
+this is the tweak and this is the data.
+I hope everybody said that this is the correct answer.
+Basically, if we set the data to
+be P(t, 1), then when we XOR it with the
+corresponding tweak, which is also P(t,1)
+we're gonna get here, zero. And so
+what's gonna get encrypted is actually
+zero, so whatever that comes out to be.
+Let's say that some value, C0. And
+then the actual output is just gonna be C0
+XOR P(t,1). Now when we do the same
+thing with P(t, 2), we're gonna get c0
+XOR P(t, 2). And when we XOR these two
+things together, we just get P(t, 1) XOR P(t, 2).
+So the fact that this is true means
+that an attacker can simply query the
+challenger at this tweak and this data,
+this tweak and that data. And then just
+compute the XOR of the two responses, and
+compare to the XOR of the appropriate
+padding values. And if the equality holds,
+we're interacting with a pseudorandom
+function; otherwise we're interacting with
+a, with a truly random function. So this
+would allow the attacker to defeat this
+construction with advantage one. So just
+to summarize the way XTS is used for disk
+encryption. What we do is we look at
+sector number T, and we break it into
+blocks, sixteen byte blocks. And then
+block number one gets encrypted with a
+tweak, T1. Block number two gets encrypted
+with a tweak, T2, and so on and so forth.
+And so every block gets its own PRP. And
+the whole sector, as a result, is
+encrypted, using, you know, a collection
+of PRPs. Now you notice, this is a block
+level PRP. It's not a sector level PRP.
+So, in fact, it's not true that each
+sector gets encrypted with its own PRP.
+It's just each block gets encrypted with
+its own PRP. The distinction between a
+sector and a block is some, somewhat
+artificial, and this XTS mode actually
+provides you know, deterministic CPA
+encryption at the block level, at the
+16-byte level. That's the goal. And this
+mode actually is fairly popular in disk
+encryption products. I just wrote a couple
+of examples here that actually support
+XTS. So I wanted you to know that this is
+in fact how disk encryption is commonly
+done in practice. So, to summarize,
+tweakable encryption is a useful concept
+to know when you need many independent
+PRPs all derived from a single key. One
+important thing to remember is, in fact,
+the trivial construction is not the most
+efficient. There are constructions like
+XTS are actually more efficient, where you
+can kind of reuse encryptions from one
+tweak to get many encryptions for many
+different tweaks. And so those are the
+better ways to use them. Both the trivial
+construction and the XTS construction are
+what are called narrow block constructions.
+Namely they provide a tweakable block
+ciphers for a sixteen byte block. But as we
+said, we looked the, at the EME
+construction in the last segment, which
+provided a PRP for larger, much larger
+blocks and in fact EME is a tweakable
+mode of operation. So, if you need PRPs for larger
+blocks or tweakable PRPs for larger
+blocks then you would just use EME. But you
+notice there, in EME, you had to apply the
+block cipher twice per input block, and
+as a result it's twice as slow as
+XTS, and is not very often used. So that's
+what I wanted to say about tweakable
+encryption. And in the next segment we'll
+talk about format preserving encryption.

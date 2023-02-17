@@ -1,0 +1,410 @@
+Now that we understand chosen plaintext
+security, let's build encryption schemes
+that are chosen plaintext secure. And the
+first such encryption scheme is going to
+be called cipher bock chaining. So here
+is how cipher block chaining works.
+Cipher block chaining is a way of using a
+block cipher to get chosen plaintext
+security. In particular, we are going to
+look at a mode called cipher block chaining
+with a random IV. CBC stands for cipher
+block chaning. So suppose we have a block
+cipher, so EB is a block cipher. So now
+let's define CBC to be the following
+encryption scheme. So the encryption
+algorithm when it's asked to encrypt a
+message m, the first thing it's going to do
+is it's going to choose a random IV that's
+exactly one block of the block
+cipher. So IV is one cypher block.
+So in the case of AES the IV
+would be 16 bytes. And then we're
+gonna run through the algorithm here, the
+IV basically that we chose is gonna be XORed
+to the first plain text
+block. And then the result is gonna be
+encrypted using the block cipher and
+output of the first block of the ciphertext.
+And now comes the chaining part
+where we actually use the first block of
+the ciphertext to kind of mask the second
+block of the plaintext. So we XOR
+the two together and the encryption of
+that becomes the second ciphertext block.
+And so on, and so on, and so forth. So
+this is cIpher block chaining, you can
+see that each cIpher block is chained and
+XORed into the next plaintext
+block, and the final ciphertext is going to
+be essentially the IV, the initial IV
+that we chose along with all the ciphertext blocks. I should say that IV stands
+for Initialization Vector. And we're going to
+be seeing that term used quite a bit,
+every time we need to pick something at
+random at the beginning of the encryption
+scheme typically we'll call that an IV
+for initialization vector. So you notice
+that the cIphertext is a little bit
+longer than the plain text because we had
+to include this IV in the cIphertexts
+which basically captures the randomness
+that was used during encryption. So the
+first question is how do we decrypt the
+results of CBC encryption, and so
+let me remind you again that if when we
+encrypt the first message block we
+XOR it with the IV, encrypt the
+result and that becomes the first ciphertext
+block. So let me ask you how would
+you decrypt that? So given the first
+ciphertext block, how would you recover
+the original first plaintext block? So
+decryption is actually very similar to
+encryption, here I wrote down the
+decryption circuit, you can see basically
+it's almost the same thing except the XOR
+is on the bottom, instead of on the top, and
+again you realize that essentially we
+chopped off the IV as part of the
+decryption process and we only output the
+original message back, the IV is dropped
+by the decryption algorithm. Okay, so the
+following theorem is going to show that in
+fact CBC mode encryption with a random IV
+is in fact semantically secure under a
+chosen plaintext attack, and so let's
+take that more precisely, basically if we
+start with a PRP, in other words, our
+block cipher E, that is defined over a
+space X, then we are gonna to end up with
+a encryption algorithm Ecbc that takes
+messages of length L and outputs
+ciphertexts of length L+1. And then
+suppose we have an adversary that makes q
+chosen plaintext queries. Then we can
+state the following security fact, that
+for every such adversary that's attacking
+Ecbc, to exist an adversary that's
+attacking the PRP, the block cipher, with
+the following relation between the two
+algorithms, in other words, the advantage
+of algorithm A against the encryption scheme
+is less than the advantage of algorithm B
+against the original PRP plus some noise
+term. So let me interpret this theorem for
+you as usual, so what this means is that
+essentially since E is a secure PRP this
+quantity here is negligible, and our goal
+is to say that adversary A's advantage is
+also negligible. However, here we are
+prevented from saying that because we got
+this extra error term. This is often
+called an error term and to argue that CBC
+is secure we have to make sure that the
+error term is also negligible. Because if
+both of these terms on the right are
+negligible, there sum is negligible and
+therefore the advantage of A against Ecbc
+would also be negligible. So this says
+that in fact for Ecbc to be secure it has better
+be the case that q squared L squared Is
+much, much, much smaller than the value X,
+so let me remind you what q and L are, so
+L is simply the length of the messages
+that we're encrypting. Okay, so L could be
+like say a 1000, which means that we are
+encrypting messages that are at most 1000
+AES blocks. q is the number of ciphertexts
+that the adversary gets to see under the
+CPA attack, but in real life what q is, is
+basically the number of times that we have
+used the key K to encrypt messages, in other
+words if we use a particular AES key to
+encrypt 100 messages, Q would be 100.
+It is because the adversary would then see
+at most 100 messages encrypted under this key K. Okay
+so lets see what this means in the real
+world. So here I've rewrote the error
+balance from the theorem. And just to remind
+you to use the messages encrypted with K
+and L with the lengths of the messages and so
+suppose we want the adversary's advantage
+to be less than one over two to the thirty
+two. This means that the error term had
+better be less than one over two to the
+thirty two. Okay, so let's look at AES and see
+what this mean. For AES, AES of course uses
+128 bit blocks, so X is going to be two
+to the 128, the
+size of X is going to be 2 to the
+128, and if you
+plug this into the expression you see that
+basically the product q times L had
+better be less than two to the forty eight.
+This means that after we use a particular
+key to encrypt 2 to the 48 AES
+blocks we have to change the key. Okay, so
+essentially CBC stops being secure after
+the key is used to encrypt 2 to the 48  different AES blocks.
+So its
+kinda nice that the security theorem tells
+you exactly how long the key can be used
+and then how frequently, essentially, you have to
+replace the key. Now interestingly if you
+apply the same analogy to the 3DES it
+actually has a much shorter block, maybe
+only 64 bits, you see the key has to be
+changed much more frequently, maybe after every
+65 thousand DES blocks, essentially you need to generate a new key. So
+this is one of the reasons why AES has a
+larger block size so that in fact modes
+like CBC would be more secure and one can
+use the keys for a longer period of time, before having
+to replace it. What this means is having
+to replace two to the sixteen blocks,
+each block of course is 8 bytes, so
+after you encrypt about half a megabyte of
+data you would have to change the DES key
+which is actually quite low. And you
+notice with AES you can encrypt quite a
+bit more data before you have to change the
+key. So I want to warn you about a very
+common mistake that people have made when
+using CBC with a random IV. That is that
+the minute that the attacker can predict
+the IV that you're going to be using for
+encrypting a particular message decipher
+this Ecbc is no longer CPA secure. So when
+using CBC with a random IV like we've
+just shown It's crucial that the IV is not
+predictable. But lets see an attack. So
+suppose it so happens that given a
+particular encryption in a message that
+attacker can actually predict that IV that
+will be used for the next message. Well
+let's show that in fact the resulting
+system is not CPA secure. So the first thing the
+adversary is going to do is, he is going
+to ask for the encryption of a one block
+message. In particular that one block is
+going to be zero. So what the adversary
+gets back is the encryption of one
+block, which namely is the encryption of
+the message namely zero, XOR the IV. Okay
+and of course the adversary also gets the
+IV. Okay so now the adversary by
+assumption can predict the IV that's gonna
+be used for the next encryption. Okay so
+let's say that IV is called, well IV. So
+next the adversary is going to issue his
+semantic security challenge and the
+message m0 is going to be the predicted IV
+XOR IV1 which was used in the encryption
+of c1. And the, the message of m1 is just
+going to be some other message, it doesn't
+really matter what it is. So now let's see
+what happens when the adversary receives
+the result of the semantic security
+challenge. Well, he is going to get the
+encryption of m0 or m1. So when the
+adversary receives the encryption of m0,
+tell me what is the actual plain text
+that is encrypted in the ciphertext c?
+Well so the answer is that what is
+actually encrypted is the message which is
+IV XOR IV1 XOR the IV that's used to
+encrypt that message which happens to be
+IV and this of course is IV1. So when the
+adversary receives the encryption of m0,
+he is actually receiving the block cipher
+encryption of IV1. And lo and behold,
+you'll notice that he already has that
+value from his chosen plaintext query.
+And then, when he is receiving the
+encryption of message m1, he just received
+a normal CBC encryption of the message m1.
+So you realize that now he has a simple
+way of breaking the scheme, namely what
+he'll do is he'll say, he's gonna ask, "Is the second
+block of the ciphertext c equal to the
+value that I received in my CPA query?" If
+so I'll say that I received the encryption
+of m0, otherwise I'll say that I received
+the encryption of m1. So really his test
+is c1 he refers to the second block
+of c and c11 refers to the second block of
+c1, if the two are equal he says zero,
+otherwise he says one. So the advantage of
+this adversary is going to be 1 and as a
+result, he completely breaks CPA security
+of this CBC encryption. So the lesson here
+is, if the IV is predictable then, in
+fact, there is no CPA security and
+unfortunately, this is actually a very
+common mistake in practice. In particular
+even in SSL protocol and in TLS 1.1, it turns
+out that IV for record number I is in fact
+the last ciphertext block of record I-1. That means that exactly given
+the encryption of record I-1, the
+adversary knows exactly what IV is going
+to be used as record number I. Very
+recently, just last summer, this was
+actually converted into a pretty
+devastating attack on SSL. We'll describe
+that attack once we talk about SSL in more
+detail, but for now I wanted to make sure
+you understand than when you use CBC encryption,
+its absolutely crucial that the IV be random.
+Okay, so now I going to show you the nonce based version of CBC encryption
+So in this mode the IV is replaced by non random but unique nonce
+for example the numbers 1,2,3,4,5, could all be used as a nonce, and now, the appeal of this mode
+is that if the recipient actually knows
+what the nonce is supposed to be
+then there's no reason to include the nonce
+in the ciphertext, in which case, the ciphertext
+is exactly the same length as the plaintext,
+unlike CBC with the random IV,
+where we had to expand the ciphertext to include the IV, here, if the nonce is already known to the recipient,
+there's no reason to include it in the ciphertext, and
+the ciphertext is exactly the same length as the plaintext.
+So it's perfectly fine to use a non-random but unique nonce. However, it's absolutely crucial to know that,
+if you do this, there's one more step that you have
+to do before you use the nonce in the CBC chain.
+In particular, in this mode now we're going to
+be using two independent keys, k and k1.
+The key k is, as before, going to be used to
+encrypt the individual message blocks,
+However, this key k1 is going to be used to
+encrypt the non-random but unique nonce,
+so that the output is going to be a random IV,
+which is then used in the CBC chain.
+So this extra step here, encrypting the nonce
+with the key k1, is absolutely crucial.
+Without it, CBC mode encryption would not be secure.
+However it if is going to be a counter you
+need to do one more step. Before actually
+encryption CBC and in particular you have
+to actually encrypt the notes to obtain
+the IV that will actually be used for
+encryption. The notes on CBC is similar to
+a random IV, the difference is that the
+notes is first encrypted and the results
+is that the IV is used in the CBC
+encryption Now the beauty of this mode is
+that the Nance doesn't necessarily have to
+be included in the cipher text. It only
+needs to be in there if its unknowns are
+the decrypter but it if the decrypter
+happens to already know the value of the
+counter by some other means then in fact
+the cipher text is only as big as the
+plain text. There's no extra value
+transmitted in the cipher text. And again,
+I warn that when you're using non spaced
+encryption, it's absolutely crucial that
+the key common Nance spare is only used
+for one message so for every message,
+either the Nance has changed or the key
+has changed. Okay, so here emphasize the
+fact that you need to do this extra
+encryption step before actual using the
+Nance. This is very common mistake that
+actually forgotten in practice and for
+example in TLS, this was not done and as a
+result there was a significant attack
+against CBC encryption in TLS. Remember
+the reason that this is so important to
+know is that in fact many crypto APIs are
+set up to almost deliberately mislead the
+user to using CBC incorrectly. So let's
+look to see how CBC implemented inside of
+open SSL. So here are the arguments of the
+function. Basically this is the plain
+text, this is the place where the cipher
+text will get written to. This is the
+length of the plain text. This is a, a Yes
+key Finally there is an argument here that
+says whether you are crypting or
+decrypting. And the most important
+parameter that I wanted to point out here
+is the actual IV and unfortunately, the
+user is asked to supply this IV and the
+function uses the IV directly in the CBC
+encryption mechanism. It doesn't encrypt
+the IV before using it and as a result, if
+you ever call this function using a non
+random IV, the resulting encryption system
+won't be CPA secure. Okay, so it's very
+important to know that when calling
+functions like this. Cbc encryption or
+open SSL either supply a truly random IV
+or if you want the IV to be a counter than
+you have to encrypt a counter using AAS
+before you actually call a CBC encrypt and
+you have to that yourself. So again, it's
+very important that the programmer knows
+that it needs to be done otherwise the CBC
+encryption is insecure. One last
+technicality about CBC is what to do when
+the message is not a multiple of the block
+cipher block length? That is what do we do
+if the last message block is shorter than
+the block length of AES, for example? So
+the last message block is less than
+sixteen bytes. And the answer is if we add
+a pad to the last block so it becomes as
+long as sixteen bytes, as long as the AES
+block size. And this pad, of course, if
+going to be removed during encryption. So
+here is a typical path, this is the path
+that is used in TLS. Basically a pad with
+N bytes then essentially what you do is
+you write the number N, N times. So for
+example if you pad with five bytes, you
+pad with the string 555555. So five bytes
+where each byte is the value five. And the
+key thing about this pad is basically when
+the decrypter receives the message, what
+he does is he looks at the last byte of
+the last block. So suppose that value is
+five, then he simply removes the last five
+bytes of the message. Now the question is
+what do we do if in fact the message is a
+multiple of sixteen bytes so in fact no
+pad is needed? If we don't pad at all,
+well that's a problem because the
+decrypter is going to look at the very
+last byte of the last block which is not
+part of the actual message and he's going
+to remove that many bytes from the plain
+text. So that actually would be a problem.
+So the solution is, if in fact there is no
+pad that's needed, nevertheless we still
+have to add a dummy block. And since we
+add the dummy block this would be a block
+that's basically contains sixteen bytes
+each one containing the number sixteen.
+Okay, so we add essentially sixteen dummy
+blocks. The decrypter, that when he's
+decrypting, he looks at the last byte of
+the last block, he sees that the value is
+sixteen, therefore he removes the entire
+block. And whatever's left is the actual
+plain text. So it's a bit unfortunate that
+in fact if you're encrypting short
+messages with CBC and the messages happen
+to be, say, 32 bytes, so they are a
+multiple of sixteen bytes, then you have
+to add one more block and make all these
+ciphertexts be 48 bytes just to
+accommodate the CBC padding. I should
+mention there's a variant of CBC called
+CBC with ciphertext stealing that actually
+avoids this problem, but I'm not gonna
+describe that here. If you're interested
+you can look that up online. Okay, so
+that's the end of our discussion of CBC
+and in the next segment we'll see how to
+use counter modes to encrypt multiple
+messages using a single key.

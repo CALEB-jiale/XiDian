@@ -1,0 +1,762 @@
+1
+00:00:00,192 --> 00:00:04,510
+To conclude this module I want to say a few words about how RSA is used in practice.
+
+2
+00:00:06,033 --> 00:00:08,690
+So first of all, if you want to speed up RSA encryption,
+
+3
+00:00:08,690 --> 00:00:13,236
+it's perfectly fine to use a small encryption exponent e.
+
+4
+00:00:13,236 --> 00:00:17,178
+So rather than using a random e one can use a small value of e
+
+5
+00:00:17,178 --> 00:00:20,944
+and in fact the minimum value that's possible is e=3.
+
+6
+00:00:20,944 --> 00:00:24,446
+So it's not difficult to see that the smallest possible value for e
+
+7
+00:00:24,446 --> 00:00:27,608
+is in fact e=3. And let's see why.
+
+8
+00:00:27,608 --> 00:00:33,327
+Well e=1 is a bad idea because that's not particularly hard to invert with e=1.
+
+9
+00:00:33,327 --> 00:00:38,217
+e=2 is not a valid RSA exponent because remember in the definition of RSA,
+
+10
+00:00:38,217 --> 00:00:45,602
+e had to be relatively prime to phi(N). phi(N), if you remember, is (p-1) times (q-1),
+
+11
+00:00:45,602 --> 00:00:48,484
+which is an even number. If p and q are odd primes,
+
+12
+00:00:48,484 --> 00:00:53,292
+(p-1) times (q-1) is an even number, but if e is even, if e is equal to two,
+
+13
+00:00:53,292 --> 00:00:58,832
+it's not going to be relatively prime to phi(N). So e=2 is not valid either.
+
+14
+00:00:58,832 --> 00:01:02,007
+And then e=3 is the first minimum value that can be used,
+
+15
+00:01:02,007 --> 00:01:06,904
+and then we just have to make sure that in fact, p is
+equal to two mod three,
+
+16
+00:01:06,904 --> 00:01:13,016
+and q is equal to 2 mod 3 so that (p-1) times (q-1) is not divisible by 3.
+
+17
+00:01:13,847 --> 00:01:16,545
+So in fact this is a fine public exponent to use,
+
+18
+00:01:16,545 --> 00:01:21,931
+however the recommended value is 2 to the 16  plus 1. So 65537.
+
+19
+00:01:21,931 --> 00:01:24,848
+It's a good idea to use this recommended value of e.
+
+20
+00:01:24,848 --> 00:01:29,601
+To compute x^3 mod N, you would basically need three multiplications.
+
+21
+00:01:29,601 --> 00:01:36,987
+To compute x^65537 mod N using repeated squaring, you would need 17 multiplications.
+
+22
+00:01:36,987 --> 00:01:41,111
+Basically what you would do is you would repeatedly square 16 times
+
+23
+00:01:41,111 --> 00:01:44,100
+and then you would multiply by x one more time.
+
+24
+00:01:44,100 --> 00:01:47,732
+Ok? So just with 17 multiplications you can do this exponentiation,
+
+25
+00:01:47,732 --> 00:01:50,867
+so this is still much, much faster than using a random e,
+
+26
+00:01:50,867 --> 00:01:53,735
+which would require something like 2000 multiplications.
+
+27
+00:01:53,735 --> 00:01:57,125
+So this leads us into what's called the asymmetry of RSA,
+
+28
+00:01:57,125 --> 00:02:01,773
+where in fact encryption is quite fast: encryption only requires 17 multiplications.
+
+29
+00:02:01,773 --> 00:02:04,107
+However decryption is much, much, much slower;
+
+30
+00:02:04,107 --> 00:02:07,452
+it requires something on the order of 2,000 multiplications.
+
+31
+00:02:08,898 --> 00:02:14,007
+I should point out that there is a standard trick for slightly speeding up RSA decryption.
+
+32
+00:02:14,007 --> 00:02:18,676
+This is called RSA-CRT; this stands for RSA with Chinese remaindering.
+
+33
+00:02:18,676 --> 00:02:22,775
+It's a method for speeding up RSA decryption by about a factor of four,
+
+34
+00:02:22,775 --> 00:02:26,514
+but nevertheless it's still gonna be much, much, much slower than encryption.
+
+35
+00:02:26,514 --> 00:02:31,484
+The ratio of encryption to decryption on RSA is roughly a factor of ten to thirty,
+
+36
+00:02:31,484 --> 00:02:36,793
+so encryption could be up to like thirty times faster than decryption, depending on the size of your modulus.
+
+37
+00:02:37,531 --> 00:02:42,173
+Interestingly, this is a special property of RSA where encryption is so much faster than decryption.
+
+38
+00:02:42,173 --> 00:02:47,108
+And other public key systems--for example, in the
+next module we're gonna look at ElGamal encryption--
+
+39
+00:02:47,108 --> 00:02:52,056
+don't have this property where both encryption and decryption take roughly the same amount of time.
+
+40
+00:02:54,518 --> 00:02:57,730
+We've already discussed key lengths for RSA before.
+
+41
+00:02:57,730 --> 00:03:02,583
+So I just wanted to flash these numbers to remind you that if you're using a 128-bit AES key,
+
+42
+00:03:02,583 --> 00:03:05,334
+really, you should be using a 3,000-bit modulus.
+
+43
+00:03:05,334 --> 00:03:08,799
+Although everybody just uses a 2,048 bit modulus.
+
+44
+00:03:08,799 --> 00:03:15,433
+And if you're really using a long AES key, like a 256 bit AES key, the RSA modulus gets to be quite big.
+
+45
+00:03:17,802 --> 00:03:20,882
+Now, I wanted to mention a number of implementation attacks on RSA.
+
+46
+00:03:20,882 --> 00:03:23,648
+These are attacks that have been demonstrated against particular,
+
+47
+00:03:23,648 --> 00:03:28,715
+mathematically correct implementations of RSA. However, these implementations were vulnerable
+
+48
+00:03:28,715 --> 00:03:34,068
+to certain side channel attacks that make the implementation completely insecure.
+
+49
+00:03:34,068 --> 00:03:37,799
+So the first example of this is due to Paul Kocher back in '97.
+
+50
+00:03:37,799 --> 00:03:42,479
+He showed a timing attack where all you do is you measure the time for an RSA decryption.
+
+51
+00:03:42,479 --> 00:03:47,799
+And simply by measuring the time, you can actually expose the secret exponent d.
+
+52
+00:03:47,799 --> 00:03:52,168
+And so, this says that if you are going to implement an RSA decryption,
+
+53
+00:03:52,168 --> 00:03:55,736
+you had better make sure that the decryption time is independent of the arguments.
+
+54
+00:03:57,659 --> 00:04:01,593
+Another attack also by Paul Kocher two years later showed that
+
+55
+00:04:01,593 --> 00:04:04,166
+if you have a smart card that's implementing RSA decryption
+
+56
+00:04:04,166 --> 00:04:08,304
+you can actually measure the power consumption of the card while it's doing RSA decryption
+
+57
+00:04:08,304 --> 00:04:13,302
+and then simply by looking at the peaks and troughs you can literally read off the bits of d
+
+58
+00:04:13,302 --> 00:04:18,486
+one bit at a time as the smart card is running through the repeated squaring algorithm.
+
+59
+00:04:18,486 --> 00:04:23,040
+So using a power analysis attack it's actually fairly easy to get the secret bits
+
+60
+00:04:23,040 --> 00:04:28,038
+of the secret key unless the smart card defends against power analysis attacks.
+
+61
+00:04:28,038 --> 00:04:32,922
+And finally another attack called a fault attack shows that the RSA is very vulnerable to
+
+62
+00:04:32,922 --> 00:04:38,042
+decryption errors and in particular, if for some reason an error occurs during an RSA decryption,
+
+63
+00:04:38,042 --> 00:04:42,345
+one error is actually completely enough to reveal the secret key.
+
+64
+00:04:42,345 --> 00:04:47,098
+So this attack is actually fairly significant. It's just, one error completely reveals your secret key.
+
+65
+00:04:47,098 --> 00:04:51,811
+And as a result, many cryptolibraries will actually check the result of the RSA decryption
+
+66
+00:04:51,811 --> 00:04:55,451
+before returning it to the caller. And the way you would check it is,
+
+67
+00:04:55,451 --> 00:04:59,802
+you would take the output of this exponentiation, and simply raise it to the power of e,
+
+68
+00:04:59,802 --> 00:05:03,750
+and check that you actually get back c modulo N.
+
+69
+00:05:04,488 --> 00:05:07,466
+And if so, you know that your decryption was done correctly.
+
+70
+00:05:07,466 --> 00:05:11,706
+Now the reason you can do this is because again, e is much smaller than d,
+
+71
+00:05:11,706 --> 00:05:16,267
+therefore checking takes much less time than actually raising something to the power of d.
+
+72
+00:05:16,267 --> 00:05:21,156
+Nevertheless, you know, even though checking is ten times faster than the actual decryption,
+
+73
+00:05:21,156 --> 00:05:25,724
+this still introduces a 10% slowdown. And so sometimes this is actually turned off.
+
+74
+00:05:25,724 --> 00:05:30,505
+But nevertheless, it's actually a good idea to check that your RSA output is correctly computed.
+
+75
+00:05:30,505 --> 00:05:35,990
+And so all these attacks kind of again make the point that if you just implement RSA naively
+
+76
+00:05:35,990 --> 00:05:38,642
+it would be mathematically correct, it would work,
+
+77
+00:05:38,642 --> 00:05:41,948
+however there would be all these potential attacks on the implementation
+
+78
+00:05:41,948 --> 00:05:44,830
+and as a result you should never implement RSA yourself.
+
+79
+00:05:44,830 --> 00:05:49,910
+Always, always use standard libraries and just use the implementation available there.
+
+80
+00:05:51,125 --> 00:05:54,564
+So to be concrete, I wanted to show you an example of one of these attacks.
+
+81
+00:05:54,564 --> 00:05:58,080
+And in particular I'll show you the fault attacks on RSA.
+
+82
+00:05:58,080 --> 00:06:01,779
+And again, this will be a fault attack on what's called RSA with Chinese remaindering.
+
+83
+00:06:01,779 --> 00:06:07,182
+So in fact, as I said at the beginning of the segment, RSA decryption is often implemented as follows:
+
+84
+00:06:07,182 --> 00:06:14,416
+What you do is, you decrypt the cipher text c modulo p, then you decrypt the cipher text c modulo q.
+
+85
+00:06:14,416 --> 00:06:18,184
+And then you combine the two to actually get the decryption modulo N.
+
+86
+00:06:18,184 --> 00:06:21,306
+And this combination is done using what's called a Chinese remainder theorem.
+
+87
+00:06:21,306 --> 00:06:25,035
+Which I'm not going to explain here but it's not too difficult to see how that works.
+
+88
+00:06:25,035 --> 00:06:28,895
+Basically, once you have the result of the decryption mod p and the decryption mod q
+
+89
+00:06:28,895 --> 00:06:31,210
+you can combine it to get the decryption mod N.
+
+90
+00:06:31,210 --> 00:06:34,022
+And it turns out this gives about a factor of four speed up
+
+91
+00:06:34,022 --> 00:06:38,612
+over the naive implementation of directly doing the exponential modulo N.
+
+92
+00:06:39,535 --> 00:06:41,962
+Okay. So, let's see why this is vulnerable to faults.
+
+93
+00:06:41,962 --> 00:06:48,783
+Suppose it so happens that when your decryption library is computing the decryption modulo q,
+
+94
+00:06:48,783 --> 00:06:51,631
+for some reason the processor makes an error.
+
+95
+00:06:51,631 --> 00:06:57,403
+And, actually, what it gets is not the correct xq. It gets an incorrect xq,
+
+96
+00:06:57,403 --> 00:07:01,817
+so let's call this xq hat. However when it computed the decryption modulo p,
+
+97
+00:07:01,817 --> 00:07:05,549
+you know, no error occurred. So these errors are fairly infrequent.
+
+98
+00:07:05,549 --> 00:07:09,952
+And so let's just assume that an error occurred modulo one prime
+
+99
+00:07:09,952 --> 00:07:13,706
+but it did not occur modulo the other prime.
+
+100
+00:07:13,706 --> 00:07:18,407
+Well, if that's the case our computation is correct modulo p and incorrect modulo q.
+
+101
+00:07:18,407 --> 00:07:22,608
+That says when we combine the two results we're actually going to get an output,
+
+102
+00:07:22,608 --> 00:07:27,044
+I'll call it x prime, such that the output is correct modulo p.
+
+103
+00:07:27,044 --> 00:07:31,507
+So, x prime is really equal c to the d mod p but is incorrect modulo q.
+
+104
+00:07:31,507 --> 00:07:37,040
+If we raised both these equations to the power of e, what we obtain is the following two relations.
+
+105
+00:07:37,040 --> 00:07:39,462
+Well, let's see. This guy we raise it to power of e.
+
+106
+00:07:39,462 --> 00:07:43,237
+What happens is the left hand side becomes x prime to the e.
+
+107
+00:07:43,237 --> 00:07:45,801
+The right hand side, here, it's c to the d.
+
+108
+00:07:45,801 --> 00:07:50,194
+If I raise c to the d to the power of e--e and d, remember are inverses of one another--
+
+109
+00:07:50,194 --> 00:07:56,177
+And as a result, if I raise c to the d to the power of e, both exponents cancel out and I simply get c back.
+
+110
+00:07:56,177 --> 00:08:00,912
+So I know that x prime to the e is equal to c. But modulo q, there was a mistake.
+
+111
+00:08:00,912 --> 00:08:04,400
+So x prime to the e is not equal to c modulo q.
+
+112
+00:08:04,400 --> 00:08:08,711
+So therefore, if I look at this difference, x prime to the e minus c.
+
+113
+00:08:08,711 --> 00:08:13,392
+We know that it's zero modulo p, and it's not zero modulo q.
+
+114
+00:08:13,392 --> 00:08:17,108
+So now if we compute the GCD of this value with N, what do we get?
+
+115
+00:08:19,370 --> 00:08:24,975
+Well, as I said, this is zero mod p, but it's not equal to zero mod q.
+
+116
+00:08:24,975 --> 00:08:30,839
+Which means that this quantity here is divisible by p, but is not divisible by q.
+
+117
+00:08:30,839 --> 00:08:35,333
+So therefore when I compute the GCD, what I'll get is simply p.
+
+118
+00:08:35,333 --> 00:08:41,102
+And again, this is because p divides this quantity here when q does not divide this quantity.
+
+119
+00:08:42,471 --> 00:08:45,262
+So now basically what I have just obtained is the factorization of N.
+
+120
+00:08:45,262 --> 00:08:48,946
+Once I have the factorization of N I can compute phi(N)
+
+121
+00:08:48,946 --> 00:08:55,623
+and then given phi(N) I can actually compute myself the decryption exponent from the public key.
+
+122
+00:08:55,623 --> 00:08:58,276
+So now I have just recovered the secret key from the public key
+
+123
+00:08:58,276 --> 00:09:02,634
+from a single mistake that happened during decryption. So this is why typically
+
+124
+00:09:02,634 --> 00:09:05,637
+when you do RSA decryption it's a good idea to check the results
+
+125
+00:09:05,637 --> 00:09:09,728
+especially when you use Chinese remaindering to speed up RSA decryption.
+
+126
+00:09:10,866 --> 00:09:14,040
+The last attack I want to talk about is a very recent observation
+
+127
+00:09:14,040 --> 00:09:17,169
+that was observed by Heninger et al and Lenstra et al
+
+128
+00:09:17,169 --> 00:09:22,571
+that shows that RSA key generation can be problematic when it's done with bad entropy.
+
+129
+00:09:22,571 --> 00:09:27,968
+So here's how things go wrong. So the way open SSL generates RSA keys is as follows.
+
+130
+00:09:27,968 --> 00:09:32,440
+Well, it starts by basically seeding the pseudo random number generator.
+
+131
+00:09:32,440 --> 00:09:38,090
+And then it uses random bits from a pseudo random number generator to generate the first prime p.
+
+132
+00:09:38,090 --> 00:09:41,642
+Then it will go ahead and seed the random number generator some more,
+
+133
+00:09:41,642 --> 00:09:45,784
+and will generate bits from the pseudo random number generator to generate q.
+
+134
+00:09:45,784 --> 00:09:48,745
+And finally, it will output the product of p and q.
+
+135
+00:09:48,745 --> 00:09:53,680
+Okay so the two steps, where we see the seed the pseudo random number generator.
+
+136
+00:09:53,680 --> 00:09:57,652
+Now suppose that this is implemented on a router or a firewall of some sort,
+
+137
+00:09:57,652 --> 00:10:02,299
+and suppose that the key generation happens right after the firewall starts up.
+
+138
+00:10:02,299 --> 00:10:06,250
+So the firewall boots up. At the time of the boot, there's not a lot of entropy
+
+139
+00:10:06,250 --> 00:10:09,901
+in the pseudo random number generator, and as a result
+
+140
+00:10:09,901 --> 00:10:14,613
+the firewall is likely to generate a prime p that comes from a very low entropy pool.
+
+141
+00:10:14,613 --> 00:10:19,004
+Which means that this p is gonna be one of a small number of possibilities.
+
+142
+00:10:19,004 --> 00:10:23,774
+However, after we've generated p, generating the prime actually takes a little bit of time,
+
+143
+00:10:23,774 --> 00:10:28,142
+a few microseconds. And so, by then the firewall will have generated more entropy
+
+144
+00:10:28,142 --> 00:10:31,670
+and so after we add more entropy to the entropy pool,
+
+145
+00:10:31,670 --> 00:10:38,672
+the prime q say is generated from a much larger entropy pool and is therefore unique to this firewall.
+
+146
+00:10:38,672 --> 00:10:44,811
+Now the problem is that many different firewalls if they generate an RSA key
+
+147
+00:10:44,811 --> 00:10:51,247
+in this way many of them will actually end up using the same prime p but a different prime q.
+
+148
+00:10:51,247 --> 00:10:57,812
+So what this says is that if we look at two RSA moduli from two different firewalls, N1 and N2.
+
+149
+00:10:57,812 --> 00:11:04,116
+If we compute the GCD of N1 and N2, well both of them had different q's but the same p.
+
+150
+00:11:04,116 --> 00:11:08,648
+So if we compute the GCD, actually we will end up with a factorization of N,
+
+151
+00:11:08,648 --> 00:11:14,482
+of both N1 and N2 and then we can actually figure out the private key both for N1 and for N2.
+
+152
+00:11:14,482 --> 00:11:16,706
+So this has actually been observed in practice.
+
+153
+00:11:16,706 --> 00:11:19,792
+Both of these groups, what they did is they scanned the web
+
+154
+00:11:19,792 --> 00:11:24,821
+and recovered all of the public keys out there that are used on various web servers.
+
+155
+00:11:24,821 --> 00:11:29,069
+They then ran a massive GCD, using some arithmetic tricks
+
+156
+00:11:29,069 --> 00:11:34,551
+they were able to compute this massive GCD of all pairs of public keys N1 and N2.
+
+157
+00:11:34,551 --> 00:11:39,826
+And lo and behold, they actually realized that a fair number of these keys have a common factor.
+
+158
+00:11:39,826 --> 00:11:42,472
+So they were actually able to factor these moduli.
+
+159
+00:11:42,472 --> 00:11:48,578
+So in the experiment, they were actually able to factor about .4% of all public SSL keys.
+
+160
+00:11:48,578 --> 00:11:54,247
+This is an amazing fact, that, in fact, so many web server public keys out there
+
+161
+00:11:54,247 --> 00:11:59,367
+are vulnerable just because they happened to generate the RSA key using low entropy.
+
+162
+00:11:59,367 --> 00:12:02,434
+So they have a common factor with somebody
+else's factor
+
+163
+00:12:02,434 --> 00:12:05,987
+and GCDing the two together gives you the factorization.
+
+164
+00:12:05,987 --> 00:12:09,200
+So, the lesson from all this is when you generate keys,
+
+165
+00:12:09,200 --> 00:12:13,535
+no matter whether they are RSA keys or ElGamal keys or symmetric keys,
+
+166
+00:12:13,535 --> 00:12:17,985
+it's crucial that the number--, that your generator is properly seeded.
+
+167
+00:12:17,985 --> 00:12:23,019
+So don't generate keys immediately after start up. You have to kind of make sure
+
+168
+00:12:23,019 --> 00:12:27,155
+the seeding of the generator has had enough time to actually generate enough entropy.
+
+169
+00:12:27,155 --> 00:12:30,838
+And only then you can start generating keys. So this is a really nice example
+
+170
+00:12:30,838 --> 00:12:35,707
+of how a, a bad random number generator can mess up your RSA public keys.
+
+171
+00:12:36,692 --> 00:12:40,316
+Okay so this is the end of our discussion of public encryption from RSA.
+
+172
+00:12:40,316 --> 00:12:44,535
+I wanted to mention a few further readings if you want to read more about this.
+
+173
+00:12:44,535 --> 00:12:48,033
+So there's a nice paper by Victor Shoup that talks about why
+
+174
+00:12:48,033 --> 00:12:51,318
+chosen cipher text security is so important in the public key settings.
+
+175
+00:12:51,318 --> 00:12:56,737
+So if the Bleichenbacher attack wasn't convincing enough, there are many other attacks like this
+
+176
+00:12:56,737 --> 00:13:00,172
+that are possible if you don't use a chosen cipher-text secure system.
+
+177
+00:13:00,172 --> 00:13:03,105
+So if you want to learn more about chosen cipher-text security,
+
+178
+00:13:03,105 --> 00:13:05,689
+please look at Victor Shoup's paper.
+
+179
+00:13:05,689 --> 00:13:11,439
+There's a survey that I guess I wrote a couple years ago, that looks at many different attacks
+
+180
+00:13:11,439 --> 00:13:14,772
+on the RSA system. I guess I wrote this when RSA was twenty,
+
+181
+00:13:14,772 --> 00:13:19,257
+I actually need to update this to 30 years of attack on the RSA cryptosystem.
+
+182
+00:13:19,257 --> 00:13:23,124
+There've been some developments in the last decade, but for now this is actually a decent survey
+
+183
+00:13:23,124 --> 00:13:26,760
+to look at and read about more attacks on RSA.
+
+184
+00:13:26,760 --> 00:13:31,800
+The OAEP results that I mentioned are referenced here, OAEP reconsidered.
+
+185
+00:13:31,800 --> 00:13:36,306
+And finally, if you're interested in key length analysis of RSA and other public key systems,
+
+186
+00:13:36,306 --> 00:13:40,555
+there's a nice paper by Arjen Lenstra that discusses how you should choose
+
+187
+00:13:40,555 --> 00:13:44,377
+key lengths for your public key systems, and even for your symmetric key systems.
+
+188
+00:13:44,377 --> 00:13:47,739
+Okay, so those are the four references. I hope you have time to look through them.
+
+189
+00:13:47,739 --> 00:13:50,596
+And I will stop here. And, in the next module we're going to look at
+
+190
+00:13:50,596 --> 00:13:54,596
+another family of public key encryption systems, this time based on discrete log.

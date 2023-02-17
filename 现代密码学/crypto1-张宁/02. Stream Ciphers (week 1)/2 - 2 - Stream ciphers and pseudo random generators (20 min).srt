@@ -1,0 +1,1223 @@
+1
+00:00:00,000 --> 00:00:04,524
+Now that we know about the one-time pad,
+let's talk about making the one-time pad
+
+2
+00:00:04,524 --> 00:00:08,881
+more practical using something called the
+stream cypher. But before we do that,
+
+3
+00:00:08,881 --> 00:00:13,573
+let's do a quick review of where we were.
+So let me just remind you that a cypher is
+
+4
+00:00:13,573 --> 00:00:18,209
+defined over a triple of sets called a key
+space, a message space, and a cypher text
+
+5
+00:00:18,209 --> 00:00:22,398
+bare space. And a cypher is a pair of
+efficient algorithms called E and D; E
+
+6
+00:00:22,398 --> 00:00:27,086
+stands for encryption and D stands for
+decryption. And the only property. That we
+
+7
+00:00:27,086 --> 00:00:32,294
+need to satisfy is that decryption is the
+opposite of encryption. In other words if
+
+8
+00:00:32,294 --> 00:00:36,954
+I encrypt a message M using a particular
+key. And I de-crypt using the same key. I
+
+9
+00:00:36,954 --> 00:00:41,272
+get back the original message. Last time
+we looked at a couple of weak cyphers like
+
+10
+00:00:41,272 --> 00:00:45,591
+the substitution cypher and the vigonaire
+cypher. We showed that all of them can be
+
+11
+00:00:45,591 --> 00:00:49,650
+easily broken so you should never ever,
+ever use those cyphers. Those were just
+
+12
+00:00:49,650 --> 00:00:53,604
+for historical reference. And then we
+looked at our first exam.ple of a good
+
+13
+00:00:53,604 --> 00:00:57,819
+cypher, namely the one-time pad. So let me
+just remind you how the one-time pad is
+
+14
+00:00:57,819 --> 00:01:01,877
+defined. Basically the message space is
+the set of all bit end bit strings. The
+
+15
+00:01:01,877 --> 00:01:05,892
+cypher text is a set of all bit end bit
+strings. And similarly, the key. Is the
+
+16
+00:01:05,892 --> 00:01:10,310
+set of all N bit strings and the way we
+encrypt is by a simple exor to encrypt the
+
+17
+00:01:10,310 --> 00:01:14,467
+message we just exor the message in the
+key that gives us the cypher text. And
+
+18
+00:01:14,467 --> 00:01:18,990
+then to decrypt a cypher text, we just do
+this x over again and it's easier to show
+
+19
+00:01:18,990 --> 00:01:23,240
+by properties of x over that in fact
+decryption is the opposite of encryption.
+
+20
+00:01:23,240 --> 00:01:27,380
+And then we talked about this lemma, in
+fact, we proved it, that says that the
+
+21
+00:01:27,380 --> 00:01:31,794
+one-time pad has perfect secrecy, which
+means that if you're just an eavesdropper
+
+22
+00:01:31,794 --> 00:01:35,935
+and you just get to see a single cypher
+text, you're not going to be able to
+
+23
+00:01:35,935 --> 00:01:40,332
+deduce any information about the encrypted
+plain text. Unfortunately. We also said
+
+24
+00:01:40,332 --> 00:01:44,648
+that Shannon proved this lema, we called
+it the bad news lema, that basically says
+
+25
+00:01:44,648 --> 00:01:48,751
+that any cypher that has perfect secrecy
+must have really long keys. In other
+
+26
+00:01:48,751 --> 00:01:53,067
+words, the key length must be at least as
+long as the length of the message, which
+
+27
+00:01:53,067 --> 00:01:57,490
+means that the cypher is not particularly
+useful. Because if two parties have a way
+
+28
+00:01:57,490 --> 00:02:01,753
+to agree on really long keys that are as
+long as the message, they, in some sense,
+
+29
+00:02:01,753 --> 00:02:05,931
+might as well use that mechanism to
+already transmit the message itself. So in
+
+30
+00:02:05,931 --> 00:02:10,538
+this lecture we're going to take the idea
+of the one time pad and try to make it
+
+31
+00:02:10,538 --> 00:02:15,031
+into a practical encryption scheme. So
+this is called what's called a stream
+
+32
+00:02:15,031 --> 00:02:20,999
+cypher. So the idea in this dream cypher
+is rather than using a totally random key,
+
+33
+00:02:20,999 --> 00:02:26,346
+we're actually going to use a
+pseudo-random key. And to explain how that
+
+34
+00:02:26,346 --> 00:02:31,544
+works, I need to define what is a
+pseudo-random generator, PRG. So a PRG,
+
+35
+00:02:31,544 --> 00:02:37,337
+really, all it is, is just a function,
+I'll call it g for generator, that takes a
+
+36
+00:02:37,337 --> 00:02:43,277
+seed, so I'm going to use zero one to the
+s to denote all strings of length s, so
+
+37
+00:02:43,277 --> 00:02:48,729
+this we'll call the seed space. So he
+takes an s bit seed and maps it to a much
+
+38
+00:02:48,729 --> 00:02:53,978
+larger string which will denote by zero
+one to the n. And the property is that n
+
+39
+00:02:53,978 --> 00:02:59,161
+must be much larger than s. So in other
+words, we take a seed that might be only
+
+40
+00:02:59,161 --> 00:03:04,345
+128 bits and we expand it into a much,
+much larger output string that could be
+
+41
+00:03:04,345 --> 00:03:08,806
+gigabytes long. That's what this
+pseudo-random generator does. And of
+
+42
+00:03:08,806 --> 00:03:14,055
+course, the goal is that first of all, the
+generator is efficiently computable, so
+
+43
+00:03:14,055 --> 00:03:19,248
+the function g. There should be some sort
+of an efficient algorithm that computes
+
+44
+00:03:19,248 --> 00:03:24,066
+it. So, efficiently computable by a
+deterministic algorithm. It's important to
+
+45
+00:03:24,066 --> 00:03:29,250
+understand that the function g itself has
+no more randomness, in it, it's a totally
+
+46
+00:03:29,250 --> 00:03:33,946
+deterministic. The only thing that's
+random here is the random seed, that's
+
+47
+00:03:33,946 --> 00:03:38,703
+given as input to the function g. And the
+other property, of course, is that the
+
+48
+00:03:38,703 --> 00:03:43,388
+output. Should look random and the
+question is what does it mean to look
+
+49
+00:03:43,388 --> 00:03:48,694
+random, and that's something we'll define
+later on in the lecture. Okay so suppose
+
+50
+00:03:48,694 --> 00:03:53,869
+we have such a generator, how do we use
+that, to build a stream cipher? We the
+
+51
+00:03:53,869 --> 00:03:59,503
+idea is that we're gonna use the seed, as
+our key, so our short seed is gonna be our
+
+52
+00:03:59,503 --> 00:04:04,679
+secret key. And then we're gonna use the
+generator to basically expand the seed
+
+53
+00:04:04,679 --> 00:04:09,723
+into a much, much larger random looking
+sequence, or pseudo random sequence, as
+
+54
+00:04:09,723 --> 00:04:14,657
+it's known, so this would be G of K. And then
+we are going to X over it just like in the
+
+55
+00:04:14,657 --> 00:04:19,185
+one time pad we're going to X over it the
+student random sequence with the message
+
+56
+00:04:19,185 --> 00:04:24,185
+and that's going to give us the cypher
+text. Or if we want to write this in math,
+
+57
+00:04:24,185 --> 00:04:30,139
+we'll write C equals the encryption of the
+message M with a key K, which is simply
+
+58
+00:04:30,139 --> 00:04:35,619
+defined as M XOR G of K. And then when we
+want to decrypt, basically we do exactly
+
+59
+00:04:35,619 --> 00:04:41,234
+the same thing. It's basically the cypher
+text XOR G of K, just like in the one-time
+
+60
+00:04:41,234 --> 00:04:46,782
+pad except then instead of XOR-ing with K,
+we XOR with the output of the generator
+
+61
+00:04:46,782 --> 00:04:52,148
+applied to K. So the first question to ask
+is why is it secure? So, basically you
+
+62
+00:04:52,148 --> 00:04:56,651
+now, we only have one notion of security
+so far, which we called perfect secrecy.
+
+63
+00:04:56,651 --> 00:05:01,552
+And so let's just quickly ask can a stream
+cipher have perfect secrecy. Remember in
+
+64
+00:05:01,552 --> 00:05:06,132
+the stream cipher the key is much, much
+shorter than the message. And so, never
+
+65
+00:05:06,132 --> 00:05:12,392
+the less, can it have perfect secrecy. So
+I hope everybody said the answer is, no.
+
+66
+00:05:12,392 --> 00:05:17,198
+The key is much shorter than the message.
+And we said that in a, in a perfectly
+
+67
+00:05:17,198 --> 00:05:21,819
+secure cypher, the key must be as long as
+the mesage. And therefore, it's not
+
+68
+00:05:21,819 --> 00:05:26,317
+possible that a, that a stream cypher
+actually has perfect secrecy. So the
+
+69
+00:05:26,317 --> 00:05:30,774
+question is, then, well, why is it secure?
+First of all we would need a different
+
+70
+00:05:30,774 --> 00:05:34,410
+definition of security to argue that
+Stream Safe is, is secure and in
+
+71
+00:05:34,410 --> 00:05:38,783
+particular, the security property is going
+to depend on the specific generator that
+
+72
+00:05:38,783 --> 00:05:42,681
+we used. So in fact the definition of
+privacy that we'll need to argue the
+
+73
+00:05:42,681 --> 00:05:47,054
+security of Stream Cipher is we'll see in
+the next lecture, but for now let me show
+
+74
+00:05:47,054 --> 00:05:51,614
+you one particular property. That a
+generator must have a minimum property
+
+75
+00:05:51,614 --> 00:05:56,510
+needed for security. This property is
+called unpredictability. So let's we
+
+76
+00:05:56,510 --> 00:06:01,807
+suppose for one second that in fact a
+stream cycle is predictable. So, what does
+
+77
+00:06:01,807 --> 00:06:07,172
+that mean? Both the PRG is predictable.
+What that means is essentially that there
+
+78
+00:06:07,172 --> 00:06:13,691
+is some pi. Such that if I give you the
+first I bits of the outputs. This notation
+
+79
+00:06:13,691 --> 00:06:18,920
+Bar one to I means look at the first
+I-bits of the output of the function.
+
+80
+00:06:18,920 --> 00:06:23,733
+Okay, so I give you the first I bits of
+the stream. There is some sort of an
+
+81
+00:06:23,733 --> 00:06:28,995
+algorithm, there's an efficient algorithm
+that will compute the rest of the string.
+
+82
+00:06:28,995 --> 00:06:34,193
+Okay, so given the first I bits, you can
+compute the remainder of the bits. I claim
+
+83
+00:06:34,193 --> 00:06:39,392
+that if this is the case, then the stream
+cypher would not be secure. So let's see
+
+84
+00:06:39,392 --> 00:06:44,205
+why. Suppose an attacker actually
+intercepts a particular cypher text, let's
+
+85
+00:06:44,205 --> 00:06:49,511
+call it c. If this is the case, then in
+fact, we have a problem. Because suppose
+
+86
+00:06:49,511 --> 00:06:55,514
+that just by some prior knowledge, the
+attacker actually knows that the initial
+
+87
+00:06:55,514 --> 00:07:01,298
+part of the message happens to be some
+known value. For example, we know that in
+
+88
+00:07:01,298 --> 00:07:07,448
+the mail protocol, smtp, the standard mail
+call used in the internet, you know that
+
+89
+00:07:07,448 --> 00:07:12,860
+every message starts with a word from
+colon. Well, that would be a prefix that
+
+90
+00:07:12,860 --> 00:07:18,169
+the adversary knows. That the site, that
+the message must begin with from a colon.
+
+91
+00:07:18,169 --> 00:07:23,677
+What it could do is it could [inaudible]
+the cipher text with the words from colon,
+
+92
+00:07:23,677 --> 00:07:29,053
+with the little prefix of the message that
+it actually knows. And what that would
+
+93
+00:07:29,053 --> 00:07:33,951
+give it is a prefix of. Of the pseudo
+random sequence. And I would learn as a
+
+94
+00:07:33,951 --> 00:07:39,103
+result of this, it would learn a prefix of
+the pseudo random sequence but then we
+
+95
+00:07:39,103 --> 00:07:44,191
+know that once it has a prefix of the
+pseudo random sequence it can predict the
+
+96
+00:07:44,191 --> 00:07:49,280
+remainder of the pseudo random sequence
+and that would allow it to then predict
+
+97
+00:07:49,280 --> 00:07:54,559
+the rest of the message end. Okay, so for
+example if the pseudo random generator was
+
+98
+00:07:54,559 --> 00:07:59,132
+predictable given five bits of the pad.
+Then every email encrypted using the
+
+99
+00:07:59,132 --> 00:08:03,203
+stream cypher would be decryptable
+because, again, the attacker knows the
+
+100
+00:08:03,203 --> 00:08:07,556
+prefix of the message from which he
+deduces the prefix of the pad, which then
+
+101
+00:08:07,556 --> 00:08:12,023
+allows him to compute the rest of the pad,
+which then allows him to recover the
+
+102
+00:08:12,023 --> 00:08:16,433
+entire plain text. Okay, so this is an
+example that shows that in fact if a PRG
+
+103
+00:08:16,433 --> 00:08:21,485
+is predictable then already there are
+security problems. Because a small prefix
+
+104
+00:08:21,485 --> 00:08:27,288
+would reveal the entire message. As it
+turns out, even if I could predict just
+
+105
+00:08:27,288 --> 00:08:33,163
+one bit of the outputs. Even if given, you
+know, the first I bits, I can predict the
+
+106
+00:08:33,163 --> 00:08:38,764
+next bits, the I plus first bits. Already,
+this is a problem. Because that would say
+
+107
+00:08:38,764 --> 00:08:43,252
+that given again, the first couple of
+letters in a message can predict, can
+
+108
+00:08:43,252 --> 00:08:48,163
+decrypt essentially, and recover the next
+bit of the message, or the next layer of
+
+109
+00:08:48,163 --> 00:08:52,347
+the message, and so on. So this
+predictability property shows that, you
+
+110
+00:08:52,347 --> 00:08:57,259
+know, if we use a PRG that's going to be
+used in a stream cypher, it had better be
+
+111
+00:08:57,259 --> 00:09:02,363
+unpredictable. So what does it mean that a
+PRG is unpredictable? So let's define more
+
+112
+00:09:02,363 --> 00:09:07,129
+precisely what it means for a PRG to be
+unpredictable. Well first we'll define
+
+113
+00:09:07,129 --> 00:09:11,833
+more precisely what it means for a PRG to
+be predictable. So we say that G is
+
+114
+00:09:11,833 --> 00:09:18,111
+predictable, if there exists an efficient
+algorithm. Let's call it A and there is
+
+115
+00:09:18,111 --> 00:09:24,932
+some position. There's a position I
+between one and N minus one such that if
+
+116
+00:09:24,932 --> 00:09:31,587
+we look at the probability over a random
+key. Probability if I generate a random
+
+117
+00:09:31,587 --> 00:09:36,791
+key. You remember, this notation means
+choose a random key from the set k. So
+
+118
+00:09:36,791 --> 00:09:42,212
+this arrow with r just means choose a
+random key from the set k. Basically, if I
+
+119
+00:09:42,212 --> 00:09:47,632
+give this algorithm the prefix of the
+output, if I give it the first I bytes of
+
+120
+00:09:47,632 --> 00:09:53,190
+the output, the probability that it's able
+to predict the next bit of the outputs,
+
+121
+00:09:53,190 --> 00:10:00,890
+this probability is greater than half plus
+epislon. For some non-negotiable. For some
+
+122
+00:10:00,890 --> 00:10:07,389
+non-negligible. >> [inaudible]. >> A non
+[inaudible], for example, would be
+
+123
+00:10:07,389 --> 00:10:11,322
+epsilon, which is great than one over two
+to the 30. One over a billion, for
+
+124
+00:10:11,322 --> 00:10:15,415
+example, we would consider it not
+negligible. So these terms, negligible and
+
+125
+00:10:15,415 --> 00:10:19,508
+non negligible will come back at the end
+of the lecture, and define them more
+
+126
+00:10:19,508 --> 00:10:24,260
+precisely. But for now, let's just, stick
+with the intuitive notion of what non
+
+127
+00:10:24,260 --> 00:10:28,684
+negligible means. And so this is what it
+means, for an algorithm, for a generator
+
+128
+00:10:28,684 --> 00:10:33,332
+to be, predictable. Basically, there is
+some algorithm that is able to predict the
+
+129
+00:10:33,332 --> 00:10:37,813
+I plus first bits, even the mutual prefix,
+okay? And then we say that an algorithm,
+
+130
+00:10:37,813 --> 00:10:42,013
+that a P or G is unpredictable. If in
+fact, well, if it's doesn't satisfy the
+
+131
+00:10:42,013 --> 00:10:46,269
+property that we just defined. In other
+words, it is not predictable. But what
+
+132
+00:10:46,269 --> 00:10:50,861
+does it mean, more precisely for it not to
+be predictable. It means that, in fact,
+
+133
+00:10:50,861 --> 00:10:55,246
+for all positions, for all i there is
+no efficient adversary no efficient
+
+134
+00:10:55,246 --> 00:10:59,881
+algorithm A that can predict the i + 1
+bit with non negligible probability.
+
+135
+00:10:59,881 --> 00:11:04,642
+Excellent. Okay and this has to be true
+for all I. So no matter which prefix I
+
+136
+00:11:04,642 --> 00:11:08,920
+give you, you're not gonna be able to
+predict the next bit that follows the
+
+137
+00:11:08,920 --> 00:11:13,267
+prefix. Okay, so let's look at some
+examples. Here is a silly, silly example.
+
+138
+00:11:13,267 --> 00:11:17,632
+Suppose I give you a generator, and I ask
+you, is it predictable? Well, this
+
+139
+00:11:17,632 --> 00:11:22,476
+generator happens to have the property,
+that if I XOR all the bits of the
+
+140
+00:11:22,476 --> 00:11:27,317
+outputs, I always happen to get one. Okay,
+so I x over all the bits. Bit number one,
+
+141
+00:11:27,317 --> 00:11:31,895
+x over bit number two, x over bit number
+three. If I x over all those bits, I
+
+142
+00:11:31,895 --> 00:11:36,657
+happen to get one. The question is, is
+that a predictable generator? And again, I
+
+143
+00:11:36,657 --> 00:11:41,113
+hope everybody answered yes, that
+essentially given the first n minus one
+
+144
+00:11:41,113 --> 00:11:45,997
+bits of the outputs, I can predict the nth
+bit because it would just be the bits
+
+145
+00:11:45,997 --> 00:11:50,819
+that's needed to make the x over all the
+bits be one. In other words, I give you
+
+146
+00:11:50,819 --> 00:11:55,825
+all but one of the bits of the generator,
+you can actually predict the last bit of
+
+147
+00:11:55,825 --> 00:12:00,230
+the generator. Now that we've seen that
+PRGs have to be unpredictable, I just want
+
+148
+00:12:00,230 --> 00:12:04,469
+to mention a couple of weak PRGs that
+should never ever be used for crypto. This
+
+149
+00:12:04,469 --> 00:12:08,762
+is a very common mistake and I just want
+to make sure none of you guys make this
+
+150
+00:12:08,762 --> 00:12:12,895
+mistake. So a very common PRG that should
+actually never be used for crypto is
+
+151
+00:12:12,895 --> 00:12:17,347
+called a linear congruential generator. So
+let me explain what a linear congruential
+
+152
+00:12:17,347 --> 00:12:22,773
+generator is. Basically it has parameters.
+It has three parameters. I'll call them A,
+
+153
+00:12:22,773 --> 00:12:28,910
+B and P. A and B are just integers and P
+is a prime. And the generator is defined
+
+154
+00:12:28,910 --> 00:12:35,341
+as follows, essentially I'll say R zero is
+the seed of the generator. And then the
+
+155
+00:12:35,341 --> 00:12:42,883
+way you generate randomness is basically
+you [inaudible] run through the following
+
+156
+00:12:42,883 --> 00:12:49,971
+steps. You compute a times r of I minus
+one plus b modular p. Then you output a
+
+157
+00:12:49,971 --> 00:12:58,053
+few bits of the current states, output few
+bits of our i. Then, of course, you
+
+158
+00:12:58,053 --> 00:13:02,782
+increment I and you iterate this again and
+again and again. Okay? So you can see how
+
+159
+00:13:02,782 --> 00:13:07,341
+this generator proceeds. It starts with a
+particular seed. At every step there is
+
+160
+00:13:07,341 --> 00:13:11,934
+this leaner transformation that's being
+applied to the seed. And then you output a
+
+161
+00:13:11,934 --> 00:13:16,258
+few bits of the current state and then you
+do that again and again and again and
+
+162
+00:13:16,258 --> 00:13:20,476
+again. Unfortunately even though this
+generator has good statistical properties
+
+163
+00:13:20,476 --> 00:13:24,960
+in the sense that, for example, the number
+of zeroes it outputs is likely going to be
+
+164
+00:13:24,960 --> 00:13:29,231
+similar to the number of ones and so on;
+it has, you can actually argue all sorts
+
+165
+00:13:29,231 --> 00:13:33,662
+of nice statistical properties about this,
+nevertheless it is a very easy generator
+
+166
+00:13:33,662 --> 00:13:37,925
+to predict. And in fact should never ever
+be used. In fact, just given a few
+
+167
+00:13:37,925 --> 00:13:42,592
+outputs, a few output samples, it's easy
+to predict the remainder of the sequence.
+
+168
+00:13:42,592 --> 00:13:47,143
+And as a result, this generator should
+never ever be used. Another example is a
+
+169
+00:13:47,143 --> 00:13:51,810
+random number generator that is very
+closely related to the linear congruential
+
+170
+00:13:51,810 --> 00:13:56,244
+generator. This is a random number
+generator implemented in glibc, very
+
+171
+00:13:56,244 --> 00:14:01,437
+common library. That you can see. I just
+wrote down the definition here. You can
+
+172
+00:14:01,437 --> 00:14:07,056
+see that is basically outputs a few bits
+at every ideration and it just does this
+
+173
+00:14:07,056 --> 00:14:12,470
+simple linear transformation at every
+step. Again, this is a very easy generator
+
+174
+00:14:12,470 --> 00:14:17,952
+to predict and should never ever be used
+for crypto. And so the lesson I want to
+
+175
+00:14:17,952 --> 00:14:23,179
+emphasize here is never ever use the
+built-in glibc function random. For crypto,
+
+176
+00:14:23,179 --> 00:14:27,718
+because it doesn't reduce,
+cryptographic randomness, in the sense
+
+177
+00:14:27,718 --> 00:14:32,749
+that it is easy to predict. And, in fact,
+systems like Kerberos version four have
+
+178
+00:14:32,749 --> 00:14:37,717
+used random and, have been bitten by that.
+So, please don't make that mistake
+
+179
+00:14:37,717 --> 00:14:42,643
+yourself. We will talk about how to do
+secure random number generation actually in
+
+180
+00:14:42,643 --> 00:14:47,765
+the next lecture. Before we conclude this
+lecture I just want to give a little bit
+
+181
+00:14:47,765 --> 00:14:52,513
+more detail about these concepts of
+negligible and non-negligible values, so
+
+182
+00:14:52,513 --> 00:14:57,449
+different communities in crypto actually
+define these concepts differently, for
+
+183
+00:14:57,449 --> 00:15:02,879
+practitioners basically these the term
+negligible and non-negligible,
+
+184
+00:15:02,879 --> 00:15:06,991
+are just, particular scalers that are used in the
+definition. So, for example, a
+
+185
+00:15:06,991 --> 00:15:11,623
+practitioner would say, that if a value is
+more than one over, one over a billion,
+
+186
+00:15:11,623 --> 00:15:16,082
+one over two to the 30, we say that the
+value is non-negligible. The reason is,
+
+187
+00:15:16,082 --> 00:15:20,831
+the reason that's so, is, because if you
+happen to use a key, for example, for, for
+
+188
+00:15:20,831 --> 00:15:25,522
+encrypting a gigabyte of data, a gigabyte
+of data is about two to the 30 or maybe
+
+189
+00:15:25,522 --> 00:15:30,198
+even two to the 32 bytes. Then an event
+that happens with the probability one over
+
+190
+00:15:30,198 --> 00:15:34,672
+two to the thirty will likely happen after
+about a gigabyte of data. So since a
+
+191
+00:15:34,672 --> 00:15:39,090
+gigabyte of data is within reason for a
+particular key, this event is likely to
+
+192
+00:15:39,090 --> 00:15:43,338
+happen. Therefore one over two to the
+thirty is non-negligible. On the other
+
+193
+00:15:43,338 --> 00:15:47,732
+hand, we'll say that one over two to the
+eighty. Which is much, much, much smaller
+
+194
+00:15:47,732 --> 00:15:51,794
+is an event, an event that happens with
+this probability is an event that's
+
+195
+00:15:51,794 --> 00:15:56,451
+actually not going to happen over the life
+of the key. And therefore we'll say that
+
+196
+00:15:56,451 --> 00:16:00,559
+that's a negligible event. As it turns
+out, these practical definitions of
+
+197
+00:16:00,559 --> 00:16:05,212
+negligible and non-negligible are quite
+problematic and we'll see examples of why
+
+198
+00:16:05,212 --> 00:16:09,290
+they're problematic later on. So in fact
+in the more rigerous theory of
+
+199
+00:16:09,290 --> 00:16:14,058
+cryptography, the definition of negligible
+and non-negligible are somewhat different.
+
+200
+00:16:14,058 --> 00:16:18,251
+And in fact, when we talk about the
+probability of an event, we don't talk
+
+201
+00:16:18,251 --> 00:16:23,019
+about these probabilities as scalers, but
+rather we talk about them as functions of
+
+202
+00:16:23,019 --> 00:16:27,270
+a security parameter. So let me explain
+what that means. So these functions,
+
+203
+00:16:27,450 --> 00:16:32,447
+essentially, are functions that map, that
+outputs, positive real values. So, are non
+
+204
+00:16:32,447 --> 00:16:37,384
+negative real values that are supposedly
+probabilities. But they're functions that
+
+205
+00:16:37,384 --> 00:16:41,960
+act on non negative integers, okay? So,
+what does it mean for a function to be
+
+206
+00:16:41,960 --> 00:16:46,836
+non-negligible? What it means is that the
+function is bigger than some polynomial
+
+207
+00:16:46,836 --> 00:16:51,171
+infinitely often. In other words, for
+many, for infinitely many values, the
+
+208
+00:16:51,171 --> 00:16:55,867
+function is bigger than some, one over
+polynomial, okay? So I wrote the exact
+
+209
+00:16:55,867 --> 00:17:01,130
+definition here, and we'll see an example,
+in just a minute. Okay? So if something is
+
+210
+00:17:01,130 --> 00:17:06,100
+bigger, is often bigger than one of that
+polynomial, we'll say that it's non-negligible.
+
+211
+00:17:06,100 --> 00:17:11,070
+However, if something is
+smaller than all polynomials, then we'll
+
+212
+00:17:11,070 --> 00:17:15,908
+say that it's negligible. So, what this
+says here, basically, for any degree
+
+213
+00:17:15,908 --> 00:17:20,838
+polynomial, for all d, there exists some
+lower bound lambda-d such as, for all
+
+214
+00:17:20,838 --> 00:17:25,162
+lambda bigger than this lambda-d, the
+function is smaller than one over the
+
+215
+00:17:25,162 --> 00:17:29,716
+polynomial. So all this says is that the
+function is negligible if it's less than
+
+216
+00:17:29,716 --> 00:17:33,924
+all polynomial fractions. In other words, is
+less than one over lambda-d for
+
+217
+00:17:33,924 --> 00:17:38,135
+sufficiently large lambda. So let's look
+at some examples. And we'll see
+
+218
+00:17:38,135 --> 00:17:43,085
+applications of these negligible and
+non-negligible concepts later on. But I
+
+219
+00:17:43,085 --> 00:17:47,689
+just want to make, wanted to make it clear
+that this is how you would rigorously find
+
+220
+00:17:47,689 --> 00:17:52,185
+these concepts. Basically either smaller
+than one over poly or bigger than one over
+
+221
+00:17:52,185 --> 00:17:56,410
+poly, one would be negligible, the
+other would be non-negligible. Let's look
+
+222
+00:17:58,522 --> 00:18:00,635
+at some examples. So, for example, a
+function that drops exponentially in
+
+223
+00:18:00,635 --> 00:18:05,456
+lambda clearly would be negligible because
+for any constant d there is a sufficiently
+
+224
+00:18:05,456 --> 00:18:09,952
+large, large lambda. Such as one over two
+to the lambda is less than one over lambda
+
+225
+00:18:09,952 --> 00:18:15,405
+to the d. Okay. So this is clearly less
+than all polynomials. Over the function,
+
+226
+00:18:15,405 --> 00:18:20,894
+say, one over lambda to a thousand, right.
+This is a function that grows very, very,
+
+227
+00:18:20,894 --> 00:18:25,217
+very slowly. It barely ever moves.
+Nevertheless, this function is
+
+228
+00:18:25,217 --> 00:18:30,432
+non-negligible because if I set d to be
+10,000, then clearly this function is
+
+229
+00:18:30,432 --> 00:18:36,127
+bigger than one over lambda to the 10,000.
+And so this function is bigger than some
+
+230
+00:18:36,127 --> 00:18:41,238
+polynomial fraction. And lets look at a
+confusing example, just to be tricky. What
+
+231
+00:18:41,238 --> 00:18:45,925
+do you think? Suppose I have a function that for
+an odd lambda it happens to be exponentially small,
+
+232
+00:18:45,925 --> 00:18:50,375
+for even lambda, it happens to be
+polynomially small. Is this a negligible or
+
+233
+00:18:50,375 --> 00:18:55,350
+non-negligible function? Well, by our
+definition this would a non-negligible
+
+234
+00:18:55,350 --> 00:19:00,747
+function. And the intuition is, if a
+function happens to be only polynomially
+
+235
+00:19:00,747 --> 00:19:05,815
+small, very often, that actually means
+that this event, you know, an event
+
+236
+00:19:05,815 --> 00:19:10,680
+that happens with this probability, is
+already too large to be used in a real
+
+237
+00:19:10,680 --> 00:19:15,420
+cryptosystem. Okay, so, the main points to
+remember here, are that these terms,
+
+238
+00:19:15,420 --> 00:19:19,559
+basically, correspond to less than
+polynomial or more than polynomial, but
+
+239
+00:19:19,559 --> 00:19:23,862
+throughout the course, we'll mostly use
+negligible to mean less than, than an
+
+240
+00:19:23,862 --> 00:19:28,328
+exponential. And non-negligible to mean,
+less than one over polynomial. So now we
+
+241
+00:19:28,328 --> 00:19:32,848
+saw the core idea for converting the one
+time pad into a practical cipher. And I
+
+242
+00:19:32,848 --> 00:19:36,933
+mean, the stream cipher. And then, in the
+next lecture, we're gonna see how to
+
+243
+00:19:36,933 --> 00:19:41,236
+actually argue that the stream cipher is
+actually secure. That's gonna require a
+
+244
+00:19:41,236 --> 00:19:45,757
+new definition of security, since perfect
+secrecy is not good enough here, and we
+
+245
+00:19:45,757 --> 00:19:47,500
+will see that in the next lecture.

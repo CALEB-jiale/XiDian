@@ -1,0 +1,1974 @@
+﻿1
+00:00:00,350 --> 00:00:02,601
+In this module, we're going to look at some hard problems
+
+2
+00:00:00,350 --> 00:00:02,601
+在这个模块，我们来看看一些
+
+3
+00:00:02,601 --> 00:00:04,919
+that come up in the context of modular arithmetic.
+
+4
+00:00:02,601 --> 00:00:04,919
+在模运算下提出来的困难问题
+
+5
+00:00:04,919 --> 00:00:08,867
+These problems are going to be the basis of the cryptosystems that we build next week.
+
+6
+00:00:04,919 --> 00:00:08,867
+这些问题是下周我们建立密码系统的基础
+
+7
+00:00:08,867 --> 00:00:12,867
+So first I'd like to mention that there are many easy problems in modular arithmetic.
+
+8
+00:00:08,867 --> 00:00:12,867
+因此我们首先来讲讲模运算下的简单问题
+
+9
+00:00:12,867 --> 00:00:17,301
+For example, if you give me an integer N, and you give me an  element x in ZN,
+
+10
+00:00:12,867 --> 00:00:17,301
+举个例子 你给我一个整数N 和一个属于Zn的元素x
+
+11
+00:00:17,301 --> 00:00:21,368
+finding the inverse of x is actually very easy using the Euclidean algorithm.
+
+12
+00:00:17,301 --> 00:00:21,368
+则使用欧几里得算法很容易找到x的逆
+
+13
+00:00:21,368 --> 00:00:25,234
+Similarly, if you give me a prime p, and you give me some polynomial f,
+
+14
+00:00:21,368 --> 00:00:25,234
+类似地，如果给出一个素数p和多项式f
+
+15
+00:00:25,234 --> 00:00:31,150
+then finding an element in Zp that's a root of this polynomial is also relatively easy,
+
+16
+00:00:25,234 --> 00:00:31,150
+那么找到使多项式f(x)=0的根是非常容易的,这个根是属于Zp的元素
+
+17
+00:00:31,150 --> 00:00:37,334
+and in fact there's an efficient algorithm that can do it in linear time in the degree of the polynomial.
+
+18
+00:00:31,150 --> 00:00:37,334
+其实有一个高效算法能够使用多项式阶的线性时间完成计算deg(f)的阶
+
+19
+00:00:37,334 --> 00:00:41,900
+So at least for low-degree polynomials, finding roots of these polynomials modulo primes
+
+20
+00:00:37,334 --> 00:00:41,900
+因此，至少在低阶多项式，求这些多项式模素数的根
+
+21
+00:00:41,900 --> 00:00:44,518
+is actually quite easy.
+
+22
+00:00:41,900 --> 00:00:44,518
+是很简单的
+
+23
+00:00:44,518 --> 00:00:48,051
+However many problems in modular arithmetic are actually quite difficult,
+
+24
+00:00:44,518 --> 00:00:48,051
+然而，许多模运算问题实际上非常困难
+
+25
+00:00:48,051 --> 00:00:54,501
+and as I said, these difficult, these difficult problems form the basis of many public-key cryptosystems.
+
+26
+00:00:48,051 --> 00:00:54,501
+正如我所说，这些困难问题构成了许多公钥密码体制的基础。
+
+27
+00:00:54,501 --> 00:00:58,135
+So let's look at some classic hard problems modulo primes.
+
+28
+00:00:54,501 --> 00:00:58,135
+让我们来看看一些模素数的经典困难问题
+
+29
+00:00:58,135 --> 00:01:02,867
+So fix some large prime p, so think of p as some 600-digit prime,
+
+30
+00:00:58,135 --> 00:01:02,867
+选定一个大素数p，假设p为大约600位数的素数，
+
+31
+00:01:02,867 --> 00:01:05,988
+and let's fix some element g in (Zp)<i>.</i>
+
+32
+00:01:02,867 --> 00:01:05,988
+确定g为集合Zp的一个元素
+
+33
+00:01:05,988 --> 00:01:10,258
+And let's assume that the order of this element g happens to be a number q.
+
+34
+00:01:05,988 --> 00:01:10,258
+假设这个元素g的阶刚好是数字q
+
+35
+00:01:10,258 --> 00:01:16,656
+Now, consider the exponentiation function that simply maps a number x to the element g^x.
+
+36
+00:01:10,258 --> 00:01:16,656
+现在，考虑幂函数，它就是将x映射为g^x
+
+37
+00:01:16,656 --> 00:01:21,473
+We showed in the last segment that this function is easy to compute
+
+38
+00:01:16,656 --> 00:01:21,473
+我们将在最后一部分说明这个函数是很容易计算的
+
+39
+00:01:21,473 --> 00:01:26,789
+using the repeated squaring algorithm, so in fact computing g^x can be done quite efficiently,
+
+40
+00:01:21,473 --> 00:01:26,789
+通过使用重复平方算法，实际上计算g^x是很高效的
+
+41
+00:01:26,789 --> 00:01:29,257
+but now let's look at the inverse question.
+
+42
+00:01:26,789 --> 00:01:29,257
+但是现在我们来看求逆的问题
+
+43
+00:01:29,257 --> 00:01:35,590
+So the inverse problem is basically, given g^x, now I want you to find its logarithm,
+
+44
+00:01:29,257 --> 00:01:35,590
+求逆问题，基本上是，给定g^x的值,需要你找到它的对数ı
+
+45
+00:01:35,590 --> 00:01:43,957
+namely the value x. As I said, over the reals, over the real numbers, given g to the x, find x is exactly the definition of
+
+46
+00:01:35,590 --> 00:01:43,957
+就是求x的值。正如我所说的，在实数域，给定g^x的值来求x正是对数函数的定义
+
+47
+00:01:43,957 --> 00:01:48,973
+the logarithm function, but here I ask you to find the logarithm modulo a prime p.
+
+48
+00:01:43,957 --> 00:01:48,973
+但在这里我需要你求出这个对数模素数p的值
+
+49
+00:01:48,973 --> 00:01:53,029
+So this problem is called the discrete logarithm problem, Dlog,
+
+50
+00:01:48,973 --> 00:01:53,029
+因此这个问题被称为离散对数问题-Dlog
+
+51
+00:01:53,029 --> 00:02:00,338
+and I'll say that the discrete logarithm of g to the x base g is basically the exponent x.
+
+52
+00:01:53,029 --> 00:02:00,338
+我要说离散对数g^x的基数是g,指数是x
+
+53
+00:02:00,338 --> 00:02:08,090
+So the discrete logarithm of g to the x is x, so our goal is to output some exponent x in 0 to q-2
+
+54
+00:02:00,338 --> 00:02:08,090
+所以g^x的离散对数为x,我们的目标是要输出一些在0到（q-2)间
+
+55
+00:02:08,090 --> 00:02:12,071
+that happens to be the logarithm of g to the x.
+
+56
+00:02:08,090 --> 00:02:12,071
+刚好为g^x的对数的指数
+
+57
+00:02:12,071 --> 00:02:17,973
+So let's look at an example. Suppose we look at the integers modulo 11,
+
+58
+00:02:12,071 --> 00:02:17,973
+让我们来看一个例子。假设整数模素数11
+
+59
+00:02:17,973 --> 00:02:23,039
+and here I wrote down the discrete log function in Za^,a^,base 2.
+
+60
+00:02:17,973 --> 00:02:23,039
+在这里我写下在Za，a下的离散对数，基数为2
+
+61
+00:02:23,039 --> 00:02:25,856
+So let's look at how this function behaves.
+
+62
+00:02:23,039 --> 00:02:25,856
+让我们来看看这个函数如何工作
+
+63
+00:02:25,856 --> 00:02:31,106
+So first of all, the discrete logarithm of 1 is 0, because 2 to the 0 is equal to 1.
+
+64
+00:02:25,856 --> 00:02:31,106
+首先，1的离散对数是0，因为2^0=1
+
+65
+00:02:31,106 --> 00:02:39,039
+Similarly the discrete logarithm of 2 is 1, because 2 to the 1 is equal to 2.
+
+66
+00:02:31,106 --> 00:02:39,039
+类似地，2的离散对数是1，因为2^1=2
+
+67
+00:02:39,039 --> 00:02:44,223
+The discrete logarithm of 4 is 2, because 2 squared is equal to 4.
+
+68
+00:02:39,039 --> 00:02:44,223
+4的离散对数是2，因为2^2=4
+
+69
+00:02:44,223 --> 00:02:48,141
+The discrete logarithm of 8 is 3, because 2 cubed is equal to 8.
+
+70
+00:02:44,223 --> 00:02:48,141
+8的离散对数是3，因为2^3=8
+
+71
+00:02:48,141 --> 00:02:52,989
+And so on and so forth. So here I wrote down the discrete logarithm values for you,
+
+72
+00:02:48,141 --> 00:02:52,989
+如此一直计算下去。在这里我已经为你们写下这些离散对数的值
+
+73
+00:02:52,989 --> 00:02:57,540
+and let me ask you a puzzle: what's the discrete logarithm of 5 modulo 11?
+
+74
+00:02:52,989 --> 00:02:57,540
+让我来问一个难题：什么是5模11的离散对数？
+
+75
+00:02:57,540 --> 00:03:01,890
+See if you can calculate it yourself.
+
+76
+00:02:57,540 --> 00:03:01,890
+看看你能不能自己计算出来
+
+77
+00:03:01,890 --> 00:03:10,590
+And so the answer is 4, because 2 to the 4 is equal to 16, and 16 is equal to 5 modulo 11.
+
+78
+00:03:01,890 --> 00:03:10,590
+答案是4，因为2^4=16,16模11等于5
+
+79
+00:03:10,590 --> 00:03:15,897
+OK, so this says that the discrete logarithm base 2 of 5 is this number 4.
+
+80
+00:03:10,590 --> 00:03:15,897
+这就是说，基底为2、模11结果为5的离散对数是4
+
+81
+00:03:15,897 --> 00:03:21,621
+Now I can tell you that the discrete logarithm function in general is actually quite difficult to compute.
+
+82
+00:03:15,897 --> 00:03:21,621
+但是大多的离散对数函数实际上是非常难以计算的
+
+83
+00:03:21,621 --> 00:03:24,757
+Of course for small primes, it's quite easy. You can just make a table
+
+84
+00:03:21,621 --> 00:03:24,757
+当然，对于小素数来说很简单。你可以制作一个表
+
+85
+00:03:24,757 --> 00:03:29,789
+and you can read off the discrete log values. But if the prime p happens to be a large number,
+
+86
+00:03:24,757 --> 00:03:29,789
+然后就可以看到离散对数的值。但是当素数p是一个很大的数时
+
+87
+00:03:29,789 --> 00:03:34,206
+say a 2000-bit number, then in fact computing the discrete log is quite difficult
+
+88
+00:03:29,789 --> 00:03:34,206
+假设p有2000位数，这时计算离散对数实际上相当困难
+
+89
+00:03:34,206 --> 00:03:37,300
+and we don't have good algorithms to do it.
+
+90
+00:03:34,206 --> 00:03:37,300
+而且我们没有好的算法来计算
+
+91
+00:03:37,300 --> 00:03:40,257
+So let's define the discrete log problem more generically.
+
+92
+00:03:37,300 --> 00:03:40,257
+因此，让我们定义一个更加普遍的离散对数问题
+
+93
+00:03:40,257 --> 00:03:46,312
+Instead of just focusing on the group (Zp), let's abstract and look at a generic group G.
+
+94
+00:03:40,257 --> 00:03:46,312
+与其专注于群(Zp)，不如抽象地来看一个普通群G
+
+95
+00:03:46,312 --> 00:03:49,196
+So we have a finite cyclic group with the generator g.
+
+96
+00:03:46,312 --> 00:03:49,196
+现在我们有一个有限循环群及它的生成元g
+
+97
+00:03:49,196 --> 00:03:54,214
+All that means is that this group just consists of all the powers of g.
+
+98
+00:03:49,196 --> 00:03:54,214
+这意味着这个群是由g的0到(q-1)次幂构成
+
+99
+00:03:54,214 --> 00:03:59,246
+So we take all the powers up to the order, in this case the order of G happens to be q,
+
+100
+00:03:54,214 --> 00:03:59,246
+因此我们采用g的所有次幂直到阶数，在这种情况下G的阶恰好是q
+
+101
+00:03:59,246 --> 00:04:07,279
+so we take all the powers of g, and those powers actually make up the group capital-G.
+
+102
+00:03:59,246 --> 00:04:07,279
+所以我们采用g的所有次幂，这些幂实际上组成了主群G
+
+103
+00:04:07,279 --> 00:04:11,347
+Now we're going to say that the discrete log problem is hard in the group G
+
+104
+00:04:07,279 --> 00:04:11,347
+现在我们来讲在群G中求离散函数是困难的
+
+105
+00:04:11,347 --> 00:04:15,547
+if in fact no efficient algorithm can compute the discrete log function.
+
+106
+00:04:11,347 --> 00:04:15,547
+因为实际上没有有效算法来计算离散对数函数
+
+107
+00:04:15,547 --> 00:04:19,130
+So what do we mean by that? What we mean is if you choose a random element g
+
+108
+00:04:15,547 --> 00:04:19,130
+那么我们的意思是什么呢 就是说如果你选择了一个随机元素g
+
+109
+00:04:19,130 --> 00:04:23,659
+in the group capital-G, and you choose a random exponent x,
+
+110
+00:04:19,130 --> 00:04:23,659
+从主群G中选择 然后再选择一个指数x
+
+111
+00:04:23,659 --> 00:04:28,550
+if I give the algorithm g and g to the x,of course I also have to give it a description of the group,
+
+112
+00:04:23,659 --> 00:04:28,550
+如果我给出了算法g和g的x次方 当然我也要给出这个群的描述
+
+113
+00:04:28,550 --> 00:04:32,749
+so I gave it the description of the group G, and the order of the group,
+
+114
+00:04:28,550 --> 00:04:32,749
+所以我给出了群G的描述以及这个群的阶
+
+115
+00:04:32,749 --> 00:04:35,485
+but the primary elements are g and g to the x
+
+116
+00:04:32,749 --> 00:04:35,485
+不过最原始的元素是g及g的x次方
+
+117
+00:04:35,485 --> 00:04:40,667
+the probability that the algorithm will actually compute the discrete log is negligible.
+
+118
+00:04:35,485 --> 00:04:40,667
+可以计算出离散对数的可能性是非常微小的
+
+119
+00:04:40,667 --> 00:04:44,299
+Ok, so if this is true for all efficient algorithms,
+
+120
+00:04:40,667 --> 00:04:44,299
+好吧 如果所有的有效算法都是这样
+
+121
+00:04:44,299 --> 00:04:49,035
+then we say that the discrete log problem is hard in this group capital-G.
+
+122
+00:04:44,299 --> 00:04:49,035
+我们就可以说在主群G中离散对数问题是困难的
+
+123
+00:04:49,035 --> 00:04:54,068
+And again, the reason we say that is because no efficient algorithm is able
+
+124
+00:04:49,035 --> 00:04:54,068
+原因就是 没有一个有效的算法
+
+125
+00:04:54,068 --> 00:04:58,036
+to compute discrete log with non-negligible probability.
+
+126
+00:04:54,068 --> 00:04:58,036
+能够以不可忽略的概率来真正有效的计算出离散对数。
+
+127
+00:04:58,036 --> 00:05:01,217
+So as I mentioned, we have a couple of candidate examples
+
+128
+00:04:58,036 --> 00:05:01,217
+正如我所说 我们有千千万的例子可以说明
+
+129
+00:05:01,217 --> 00:05:03,535
+for groups where discrete log is hard.
+
+130
+00:05:01,217 --> 00:05:03,535
+求群中的离散对数是很难的
+
+131
+00:05:03,535 --> 00:05:07,368
+The canonical example is (Zp)<i>, this is actually the example that Diffie and Hellman</i>
+
+132
+00:05:03,535 --> 00:05:07,368
+最具权威的例子就是Zp，其实也就是
+
+133
+00:05:07,368 --> 00:05:12,600
+came up with in 1974, but it turns out there are other candidate groups
+
+134
+00:05:07,368 --> 00:05:12,600
+Diffie和Hellman在1974年提出的 它证明了
+
+135
+00:05:12,600 --> 00:05:16,423
+where the discrete log problem happens to be hard, and I think I already mentioned
+
+136
+00:05:12,600 --> 00:05:16,423
+其他群里离散对数问题是困难的 但是我想说就是
+
+137
+00:05:16,423 --> 00:05:19,319
+that one candidate is what's called the elliptic curve group,
+
+138
+00:05:16,423 --> 00:05:19,319
+一个叫做椭圆曲线群的候补群
+
+139
+00:05:19,319 --> 00:05:23,751
+or rather, the set of points on an elliptic curve. I'm not going to define that here,
+
+140
+00:05:19,319 --> 00:05:23,751
+或者说一个椭圆曲线上的一个点集 我现在并不打算定义这个
+
+141
+00:05:23,751 --> 00:05:27,568
+but as I said, if you'd like me to talk about elliptic curve cryptography, I can do that actually
+
+142
+00:05:23,751 --> 00:05:27,568
+但我想说 如果你对我所说的椭圆曲线密码感兴趣的话
+
+143
+00:05:27,568 --> 00:05:31,634
+in the very last week of the class.
+
+144
+00:05:27,568 --> 00:05:31,634
+我会在最后一周的课上讲一下
+
+145
+00:05:31,634 --> 00:05:35,868
+So these are two groups where the discrete log problem is in fact believed to be hard,
+
+146
+00:05:31,634 --> 00:05:35,868
+所以现在有两个群被认为求离散对数问题是困难的
+
+147
+00:05:35,868 --> 00:05:40,917
+but it so happens that the discrete log problem actually is harder, as far as we know,
+
+148
+00:05:35,868 --> 00:05:40,917
+但如我们所知的 一个在椭圆曲线上的离散对数问题比在Zp上的
+
+149
+00:05:40,917 --> 00:05:46,235
+on elliptic curves than it is on (Zp)<i>. In other words, if you give me equal-sized problems</i>
+
+150
+00:05:40,917 --> 00:05:46,235
+更加难求 换句话说 如果你给我两个难度相当的问题
+
+151
+00:05:46,235 --> 00:05:50,186
+one set in the group (Zp)<i>, and one set in an elliptic curve group,</i>
+
+152
+00:05:46,235 --> 00:05:50,186
+一个在群Zp中 一个在椭圆曲线群中
+
+153
+00:05:50,186 --> 00:05:53,517
+the problem set in the elliptic curve group is going to be much harder
+
+154
+00:05:50,186 --> 00:05:53,517
+椭圆曲线群中的离散对数问题要比在群Zp中的离散对数问题更难
+
+155
+00:05:53,517 --> 00:05:58,417
+than the problem in (Zp)<i>, again assuming these two problems are of the same size.</i>
+
+156
+00:05:53,517 --> 00:05:58,417
+又假设两个问题难度是一样的
+
+157
+00:05:58,417 --> 00:06:04,202
+And because the elliptic curve problem, the discrete log elliptic curve problem is harder than in (Zp)<i>,</i>
+
+158
+00:05:58,417 --> 00:06:04,202
+由于求椭圆曲线问题中的离散对数问题更加困难
+
+159
+00:06:04,202 --> 00:06:08,267
+this means that we can use smaller parameters when using elliptic curves
+
+160
+00:06:04,202 --> 00:06:08,267
+这就意味着当我们在选取椭圆曲线参数时要使用比Zp更小的参数
+
+161
+00:06:08,267 --> 00:06:12,451
+than we can for (Zp)<i>, and as a result, the resulting systems with elliptic curves</i>
+
+162
+00:06:08,267 --> 00:06:12,451
+结果就是 用椭圆曲线产生的系统
+
+163
+00:06:12,451 --> 00:06:15,702
+are going to be more efficient, because the parameters are smaller,
+
+164
+00:06:12,451 --> 00:06:15,702
+会更加高效 因为参数更小
+
+165
+00:06:15,702 --> 00:06:22,867
+and yet the attacker's job is as hard as for a much larger prime in (Zp)<i>.</i>
+
+166
+00:06:15,702 --> 00:06:22,867
+等价于攻击者用相同的工作量 来攻击一个比所选素数大得多的Zp问题
+
+167
+00:06:22,867 --> 00:06:26,355
+So to make that concrete, I'll tell you that in (Zp)<i>, there's what's called</i>
+
+168
+00:06:22,867 --> 00:06:26,355
+具体地说 当离散对数问题在Zp中时 我们把它叫做
+
+169
+00:06:26,355 --> 00:06:30,703
+a sub-exponential algorithm for discrete log. So I think I already mentioned this,
+
+170
+00:06:26,355 --> 00:06:30,703
+亚指数算法 我想我已经提到过
+
+171
+00:06:30,703 --> 00:06:38,720
+if you have an n-bit prime, this algorithm will run in roughly cube root of n time.
+
+172
+00:06:30,703 --> 00:06:38,720
+如果你有一个n比特的素数 这个算法会运行n的立方根次
+
+173
+00:06:38,720 --> 00:06:42,375
+In fact there are many other terms in the exact running time of this algorithm,
+
+174
+00:06:38,720 --> 00:06:42,375
+事实上在这个算法运行的时候有许多术语
+
+175
+00:06:42,375 --> 00:06:46,272
+but the dominant term is cube root of the number of bits in the prime,
+
+176
+00:06:42,375 --> 00:06:46,272
+最权威的术语是就是这个素数二进制长度的立方根
+
+177
+00:06:46,272 --> 00:06:49,254
+so cube root of n. And because of this algorithm, you see that
+
+178
+00:06:46,272 --> 00:06:49,254
+就是n的立方根 并且根据这个算法 你可以看到
+
+179
+00:06:49,254 --> 00:06:52,538
+if we want the discrete log problem to be hard,
+
+180
+00:06:49,254 --> 00:06:52,538
+如果你想要离散对数问题变得困难
+
+181
+00:06:52,538 --> 00:06:55,377
+as hard as it is to break a corresponding symmetric key,
+
+182
+00:06:52,538 --> 00:06:55,377
+像要破解对称密钥一样困难的话
+
+183
+00:06:55,377 --> 00:06:59,953
+we have to use relatively large moduli p.
+
+184
+00:06:55,377 --> 00:06:59,953
+我们就得选一个相对较大的模数p
+
+185
+00:06:59,953 --> 00:07:03,987
+Now in contrast, if you look at an elliptic curve group, the numbers look much better,
+
+186
+00:06:59,953 --> 00:07:03,987
+现在对比下 如果你看到一个椭圆曲线群 数字看起来不大
+
+187
+00:07:03,987 --> 00:07:08,421
+and in fact on an elliptic curve group, the best algorithm for discrete log that we have
+
+188
+00:07:03,987 --> 00:07:08,421
+并且事实上在椭圆曲线群上 最好的求解离散对数算法我们需要
+
+189
+00:07:08,421 --> 00:07:11,984
+runs in time e to the n over 2. So this is what we would call
+
+190
+00:07:08,421 --> 00:07:11,984
+运算e的n/2次方次 所以这就是我们称之为的
+
+191
+00:07:11,984 --> 00:07:16,269
+a proper exponential-time algorithm, because for a problem of size n,
+
+192
+00:07:11,984 --> 00:07:16,269
+一个合适的指数次幂算法 由于n的大小问题
+
+193
+00:07:16,269 --> 00:07:21,620
+the running time is roughly e to the n. It's an exponential in n, not an exponential in cube root of n.
+
+194
+00:07:16,269 --> 00:07:21,620
+需要运行e的n次方次　指数是n 而不是n的立方根
+
+195
+00:07:21,620 --> 00:07:25,819
+And because the problem is so much harder, again the best algorithm we have
+
+196
+00:07:21,620 --> 00:07:25,819
+而且由于这个问题更难 最好的算法是
+
+197
+00:07:25,819 --> 00:07:29,601
+actually takes exponential time, you notice that in elliptic curves we can use
+
+198
+00:07:25,819 --> 00:07:29,601
+我们也要算指数次 你会注意到在椭圆曲线中即使我们用了
+
+199
+00:07:29,601 --> 00:07:33,301
+much smaller parameters and still remain secure.
+
+200
+00:07:29,601 --> 00:07:33,301
+更小的参数依旧可以保证安全性
+
+201
+00:07:33,301 --> 00:07:38,920
+By the way, the reason the elliptic curve size is exactly twice the symmetric key size
+
+202
+00:07:33,301 --> 00:07:38,920
+顺便说一下 椭圆曲线是对称密钥大小的两倍的原因
+
+203
+00:07:38,920 --> 00:07:42,303
+is exactly because of this factor of 2 in the exponent here.
+
+204
+00:07:38,920 --> 00:07:42,303
+是因为指数中有2的原因
+
+205
+00:07:42,303 --> 00:07:48,385
+So we have to double the size of the elliptic curve for the problem to actually take e to the n time.
+
+206
+00:07:42,303 --> 00:07:48,385
+那么 我们得把椭圆曲线问题中e的n次方的大小翻倍
+
+207
+00:07:48,385 --> 00:07:52,734
+And actually I made a small typo here in that this is actually supposed to be 2 to the n/2.
+
+208
+00:07:48,385 --> 00:07:52,734
+事实上我这里有一个小的错误 这应该是2的n/2次方
+
+209
+00:07:52,734 --> 00:07:56,101
+But the exact base of the logarithm doesn't really matter.
+
+210
+00:07:52,734 --> 00:07:56,101
+不过基于算法这并无关紧要
+
+211
+00:07:56,101 --> 00:07:59,368
+So I think I mentioned before that because the parameters are smaller with elliptic curves
+
+212
+00:07:56,101 --> 00:07:59,368
+然后我想说的是由于椭圆曲线的参数比Zp中的
+
+213
+00:07:59,368 --> 00:08:04,635
+than they are with (Zp)<i>, there's a slow transition from doing crypto modulo p</i>
+
+214
+00:07:59,368 --> 00:08:04,635
+更加小 所以在椭圆曲线中 模数p的
+
+215
+00:08:04,635 --> 00:08:08,471
+to doing crypto over elliptic curves.
+
+216
+00:08:04,635 --> 00:08:08,471
+加密运算是很慢的
+
+217
+00:08:08,471 --> 00:08:11,818
+And again I'll mention that if you want me to describe elliptic curves in more detail,
+
+218
+00:08:08,471 --> 00:08:11,818
+我再说一下 如果你想让我描述下椭圆曲线的更多细节
+
+219
+00:08:11,818 --> 00:08:14,867
+I can do that at the last week of the class.
+
+220
+00:08:11,818 --> 00:08:14,867
+我会在最后一节课讲
+
+221
+00:08:14,867 --> 00:08:17,702
+So now that we understand what the discrete log problem is,
+
+222
+00:08:14,867 --> 00:08:17,702
+现在让我们来理解什么是离散对数问题
+
+223
+00:08:17,702 --> 00:08:20,836
+let me give you a direct application of the hardness of discrete log.
+
+224
+00:08:17,702 --> 00:08:20,836
+我来给你一个离散对数难度的一个直观的例子
+
+225
+00:08:20,836 --> 00:08:25,386
+An in particular, let's build a collision-resistant hash function from the discrete log problem.
+
+226
+00:08:20,836 --> 00:08:25,386
+特别地，我们从离散对数问题中构建一个抗碰撞HASH函数
+
+227
+00:08:25,386 --> 00:08:29,434
+So let's choose some group capital-G where the discrete log problem is hard.
+
+228
+00:08:25,386 --> 00:08:29,434
+我们选择一些包含离散对数问题的群G
+
+229
+00:08:29,434 --> 00:08:34,408
+So if you like, you can think of capital G as the group (Zp)<i>, and let's assume</i>
+
+230
+00:08:29,434 --> 00:08:34,408
+只要你愿意 你可以把群G想象成群Zp
+
+231
+00:08:34,408 --> 00:08:41,452
+that the group capital G has prime order q. So q is some prime number that happens to be the order of G,
+
+232
+00:08:34,408 --> 00:08:41,452
+然后我们假设G有素数阶q 那么q是正好等于G的阶的素数
+
+233
+00:08:41,452 --> 00:08:45,368
+the number of elements in the group capital G.
+
+234
+00:08:41,452 --> 00:08:45,368
+G中的元素的个数
+
+235
+00:08:45,368 --> 00:08:50,267
+Now to define our hash function, what we'll do is we'll choose two elements in the group capital G,
+
+236
+00:08:45,368 --> 00:08:50,267
+现在我们定义HASH函数 我们选两个G中的元素
+
+237
+00:08:50,267 --> 00:08:54,651
+and let's call them g and h, and then we'll define the hash function as follows:
+
+238
+00:08:50,267 --> 00:08:54,651
+并且称它们为g和h 然后我们这样定义HASH函数
+
+239
+00:08:54,651 --> 00:09:02,420
+The hash function on input x and y will output an element in G defined as g to the x times h to the y.
+
+240
+00:08:54,651 --> 00:09:02,420
+HASH函数就是输入一个x和y，然后用g的x次方乘h的y次方
+
+241
+00:09:02,420 --> 00:09:08,103
+That's it. Ok. A very very simple hash function, and if you recall, we even talked about this hash function
+
+242
+00:09:02,420 --> 00:09:08,103
+这是一个非常简单的HASH函数 如果你能想起来的话 我们见过这个函数
+
+243
+00:09:08,103 --> 00:09:11,523
+when we talked about compression functions before.
+
+244
+00:09:08,103 --> 00:09:11,523
+当时我们在讲压缩函数
+
+245
+00:09:11,523 --> 00:09:15,351
+I want to show you that this function capital-H is in fact collision-resistant
+
+246
+00:09:11,523 --> 00:09:15,351
+我想说的是这个函数H实际是一个抗碰撞函数
+
+247
+00:09:15,351 --> 00:09:22,568
+in the sense that finding a collision for capital H is as hard as computing discrete log in the group capital G.
+
+248
+00:09:15,351 --> 00:09:22,568
+就某种意义上而言 找到一个H的碰撞就跟计算G中的离散对数一样难
+
+249
+00:09:22,568 --> 00:09:25,802
+Ok. So in particular, if you can find a collision for capital H,
+
+250
+00:09:22,568 --> 00:09:25,802
+那么 如果你找到了一个H的碰撞
+
+251
+00:09:25,802 --> 00:09:30,951
+you can compute the discrete log of h base g.
+
+252
+00:09:25,802 --> 00:09:30,951
+你就可以计算以g为底 h的离散对数
+
+253
+00:09:30,951 --> 00:09:34,320
+And since we said the discrete log in the group capital G is hard,
+
+254
+00:09:30,951 --> 00:09:34,320
+并且我们说过 如果要计算群G中的离散对数是困难的
+
+255
+00:09:34,320 --> 00:09:36,906
+computing the discrete log should be difficult, and therefore
+
+256
+00:09:34,320 --> 00:09:36,906
+应当是非常困难的 因此
+
+257
+00:09:36,906 --> 00:09:39,774
+finding collisions for capital H is going to be difficult.
+
+258
+00:09:36,906 --> 00:09:39,774
+找到H的碰撞也是很困难的
+
+259
+00:09:39,774 --> 00:09:44,918
+Ok. So let's see how we do this. It's actually a very cute proof. What we'll do is, We'll do the following.
+
+260
+00:09:39,774 --> 00:09:44,918
+我们来看一下 事实上这有一个很巧妙的证明 我们这么做：
+
+261
+00:09:44,918 --> 00:09:47,985
+Suppose we are given a collision on the function capital H.
+
+262
+00:09:44,918 --> 00:09:47,985
+假设我们有一个函数H的碰撞
+
+263
+00:09:47,985 --> 00:09:55,585
+So we're given two distinct pairs, (x0, y0) and (x1, y1), that happen to collide on the function capital H.
+
+264
+00:09:47,985 --> 00:09:55,585
+并且我们有两对不同的(x0,y0) (x1,y1) 它们正好是H函数的碰撞
+
+265
+00:09:55,585 --> 00:09:58,702
+What does it mean that they collide on the function capital H. What it means is that
+
+266
+00:09:55,585 --> 00:09:58,702
+这就意味着它们碰撞了函数H 那就是说
+
+267
+00:09:58,702 --> 00:10:04,621
+if I evaluate the function capital H at (x0, y0) and (x1, y1), I'll get a collision.
+
+268
+00:09:58,702 --> 00:10:04,621
+如果我要求函数H在（x0,y0)和（x1,y1）处的值 就会发生碰撞
+
+269
+00:10:04,621 --> 00:10:08,836
+Namely I'll get an equality. Well, so now I can just do a little bit of manipulation,
+
+270
+00:10:04,621 --> 00:10:08,836
+就是说我会得到一个等式 所以我可以做一些修改
+
+271
+00:10:08,836 --> 00:10:11,835
+and you see that this means I just move all the g's to one side
+
+272
+00:10:08,836 --> 00:10:11,835
+你可以看到我只是把g移动到一边
+
+273
+00:10:11,835 --> 00:10:14,169
+and all the h's to the other side, so this means that
+
+274
+00:10:11,835 --> 00:10:14,169
+然后把h移动到另一边 这就意味着
+
+275
+00:10:14,169 --> 00:10:21,035
+g to the (x0 - x1) is equal to h to the (y1 - y0), this is just simple manipulation.
+
+276
+00:10:14,169 --> 00:10:21,035
+g的（x0-x1）次方是等于h的（y0-y1）次方的 这只是一个简单的变动
+
+277
+00:10:21,035 --> 00:10:29,469
+Now I can raise both sides to the power of 1/(y1 - y0). In other words I am taking the (y1 - y0)th root
+
+278
+00:10:21,035 --> 00:10:29,469
+现在我再把两边的幂都乘以1/（y1-y0） 就是说我把两边都
+
+279
+00:10:29,469 --> 00:10:34,001
+of both sides. So one side will become simply h,
+
+280
+00:10:29,469 --> 00:10:34,001
+开（y0-y1）次方根 一边就会变成h
+
+281
+00:10:34,001 --> 00:10:42,268
+and the other side will become g to the power of this fraction, (x0 - x1) divided by (y1 - y0).
+
+282
+00:10:34,001 --> 00:10:42,268
+另一边就会变成g的（x0-x1）/(y0-y1)次方
+
+283
+00:10:42,268 --> 00:10:47,518
+But now look at what we just got. Basically we expressed h as g to some known power.
+
+284
+00:10:42,268 --> 00:10:47,518
+现在来看下我们得到了什么 我们得到一个用g来表达h的表达式
+
+285
+00:10:47,518 --> 00:10:52,003
+Basically all we did is just division, and boom, we're done. We've just expressed h
+
+286
+00:10:47,518 --> 00:10:52,003
+基本上我们只是做了一些除法就完了
+
+287
+00:10:52,003 --> 00:10:58,934
+as g to some known power. So we've computed the discrete log of h, base g.
+
+288
+00:10:52,003 --> 00:10:58,934
+我们用g的幂次表示了h 这样我们得到一个离散对数h的表达式
+
+289
+00:10:58,934 --> 00:11:01,819
+So you might be wondering, what does this division in the exponent mean?
+
+290
+00:10:58,934 --> 00:11:01,819
+那么你可能想要知道在指数上这个除法有什么意义
+
+291
+00:11:01,819 --> 00:11:06,304
+What does it mean to divide by (y1 - y0) in the exponent?
+
+292
+00:11:01,819 --> 00:11:06,304
+指数中除以（y1-y0）有什么意义
+
+293
+00:11:06,304 --> 00:11:13,903
+Well what it means is basically we compute the inverse of y1 - y0 modulo q,
+
+294
+00:11:06,304 --> 00:11:13,903
+这意味着我们计算了y1-y0模q的值的逆
+
+295
+00:11:13,903 --> 00:11:19,436
+and then we multiply the result by x0 - x1. And that gives us the exponent in the clear,
+
+296
+00:11:13,903 --> 00:11:19,436
+然后我们用x0-x1来乘以结果 然后就得出了这个指数
+
+297
+00:11:19,436 --> 00:11:25,187
+and so we've just learned the discrete log of h base g.
+
+298
+00:11:19,436 --> 00:11:25,187
+并且我们得到了这个基于g的离散对数h
+
+299
+00:11:25,187 --> 00:11:31,103
+So this also shows you why we wanted q to be prime: because we need to make sure that y1 - y0
+
+300
+00:11:25,187 --> 00:11:31,103
+这里会告诉你为什么我们会需要一个素数q 因为我们需要确保
+
+301
+00:11:31,103 --> 00:11:36,036
+is always invertible. So in fact we know that when we work modulo prime,
+
+302
+00:11:31,103 --> 00:11:36,036
+y1-y0是可逆的 事实上 当我们模一个素数时
+
+303
+00:11:36,036 --> 00:11:39,336
+everything is invertible except for zero.
+
+304
+00:11:36,036 --> 00:11:39,336
+所有的数除了0都是可逆的
+
+305
+00:11:39,336 --> 00:11:45,803
+So that actually raises a subtle point, what happens if y1 - y0 actually happens to be equal to zero?
+
+306
+00:11:39,336 --> 00:11:45,803
+那么这有一个很特殊的点 如果y1-y0恰好等于0呢
+
+307
+00:11:45,803 --> 00:11:48,585
+If that's the case, then we are not going to be able to get the discrete log, because
+
+308
+00:11:45,803 --> 00:11:48,585
+如果发生这种情况 我们就无法得到这个离散对数了
+
+309
+00:11:48,585 --> 00:11:52,707
+we won't be able to divide by zero.
+
+310
+00:11:48,585 --> 00:11:52,707
+因为我们不能把0作为分母
+
+311
+00:11:52,707 --> 00:11:56,420
+But if you think about this for a minute, you realize, well, let's see here.
+
+312
+00:11:52,707 --> 00:11:56,420
+不过如果你再想一下
+
+313
+00:11:56,420 --> 00:12:03,770
+If y1 - y0 equals 0, that means that y1 is equal to y0.
+
+314
+00:11:56,420 --> 00:12:03,770
+如果y1-y0等于0 那就意味着y1=y0
+
+315
+00:12:03,770 --> 00:12:08,570
+But if y1 is equal to y0, just look at this equation here, that means that
+
+316
+00:12:03,770 --> 00:12:08,570
+你再看下等式 但是如果y1=y0
+
+317
+00:12:08,570 --> 00:12:13,759
+well, that necessarily means that x0 is also equal to x1.
+
+318
+00:12:08,570 --> 00:12:13,759
+就意味着x0=x1
+
+319
+00:12:13,759 --> 00:12:17,669
+This takes you a minute to convince yourself, if y0 is equal to y1,
+
+320
+00:12:13,759 --> 00:12:17,669
+这需要花费你一分钟来证明下 如果y0=y1
+
+321
+00:12:17,669 --> 00:12:24,002
+basically these two terms simply cancel out, and then we get that x0 is equal to x1.
+
+322
+00:12:17,669 --> 00:12:24,002
+那么这两个项就会抵消 我们可以得到x0=x1
+
+323
+00:12:24,002 --> 00:12:29,402
+But then if x0 is equal to x1, and y0 is equal to y1, what you gave me is not a collision.
+
+324
+00:12:24,002 --> 00:12:29,402
+但是如果x0=x1 y0=y1的话 那么我们得到的就不是一个碰撞
+
+325
+00:12:29,402 --> 00:12:34,585
+You simply gave me the same pair twice. So that's cheating, so that's not considered a collision,
+
+326
+00:12:29,402 --> 00:12:34,585
+我们只是得到了相同的一对两次 所以 这并不是碰撞
+
+327
+00:12:34,585 --> 00:12:39,587
+and therefore, you know, I don't need to find a discrete log. But if you give me a collision,
+
+328
+00:12:34,585 --> 00:12:39,587
+并且我就不需要找到一个碰撞了 但是如果你给了我一个碰撞的话
+
+329
+00:12:39,587 --> 00:12:43,435
+necessarily y0 is not going to be equal to y1, and then as a result
+
+330
+00:12:39,587 --> 00:12:43,435
+那么y0必然不等于y1 并且我就会得到一个
+
+331
+00:12:43,435 --> 00:12:46,102
+I'm going to get the discrete log of g base h.
+
+332
+00:12:43,435 --> 00:12:46,102
+基于h的离散对数g
+
+333
+00:12:46,102 --> 00:12:50,220
+And as we said, since the discrete log is believed to be hard in the group capital G,
+
+334
+00:12:46,102 --> 00:12:50,220
+正如我们所说 因为离散对数问题在群大G中是困难的
+
+335
+00:12:50,220 --> 00:12:56,002
+this means that this very very simple function capital H must be collision resistant.
+
+336
+00:12:50,220 --> 00:12:56,002
+这就意味着H这个简单的函数是抗碰撞的
+
+337
+00:12:56,002 --> 00:13:04,240
+So this is a very elegant example of a reduction from finding collisions to computing discrete log.
+
+338
+00:12:56,002 --> 00:13:04,240
+这是一个关于减少离散对数计算中发生碰撞的次数的非常简单的例子
+
+339
+00:13:04,240 --> 00:13:06,721
+I should tell you by the way that this function is not really used.
+
+340
+00:13:04,240 --> 00:13:06,721
+不过这个函数事实上并没有被使用
+
+341
+00:13:06,721 --> 00:13:10,073
+Even though this function has a nice proof of collision resistance,
+
+342
+00:13:06,721 --> 00:13:10,073
+即使这个函数被证明是抗碰撞的
+
+343
+00:13:10,073 --> 00:13:13,961
+it's not really used because it's relatively slow. Essentially, on every hash
+
+344
+00:13:10,073 --> 00:13:13,961
+它也不会被使用因为它实在是太慢了
+
+345
+00:13:13,961 --> 00:13:20,355
+you have to compute two exponentiations, and that's much much much slower than, say, functions like SHA-256
+
+346
+00:13:13,961 --> 00:13:20,355
+本质上来说 在每个HASH函数上你都需要计算两个幂 这比起函数SHA-256或者其他
+
+347
+00:13:20,355 --> 00:13:26,004
+and other kind of ad hoc collision-resistant hash functions.
+
+348
+00:13:20,355 --> 00:13:26,004
+的随意抗碰撞HASH函数来说 是非常非常慢的
+
+349
+00:13:26,004 --> 00:13:30,189
+OK. So that's what I wanted to say about intractable problems modulo primes.
+
+350
+00:13:26,004 --> 00:13:30,189
+那就是我想说的关于模素数的难解问题
+
+351
+00:13:30,189 --> 00:13:33,511
+Now let's look at some intractable problems modulo composites.
+
+352
+00:13:30,189 --> 00:13:33,511
+现在让我们来看一些模合数的分解问题的困难性
+
+353
+00:13:33,511 --> 00:13:42,024
+So here we're gonna say ahh, again let's look at, say, 1024-bit numbers, and let's define the set Z-sub-2 n.
+
+354
+00:13:33,511 --> 00:13:42,024
+我们看下一个1024位的数 我们定义下集合Z2(n)
+
+355
+00:13:42,024 --> 00:13:47,075
+This is going to be the set of all integers that happen to be a product of two primes
+
+356
+00:13:42,024 --> 00:13:47,075
+这是一个集合 其中所有的整数都由两个素数相乘得到的
+
+357
+00:13:47,075 --> 00:13:51,392
+where those two primes are n-bit primes.
+
+358
+00:13:47,075 --> 00:13:51,392
+这两个素数是n比特的素数
+
+359
+00:13:51,392 --> 00:13:55,984
+Ok. So the 2 here corresponds to the fact that the numbers in this set
+
+360
+00:13:51,392 --> 00:13:55,984
+这个2的意思就是集合中的数字
+
+361
+00:13:55,984 --> 00:14:00,659
+basically have 2 prime factors, and those two prime factors are roughly the same size.
+
+362
+00:13:55,984 --> 00:14:00,659
+有两个素数因子 并且这两个素数因子位数相同
+
+363
+00:14:00,659 --> 00:14:02,875
+They're both n-bit primes.
+
+364
+00:14:00,659 --> 00:14:02,875
+他们都是n比特的素数
+
+365
+00:14:02,875 --> 00:14:06,292
+So there are two classic intractable problems in this set.
+
+366
+00:14:02,875 --> 00:14:06,292
+有两个经典的难解难题在这个集合中
+
+367
+00:14:06,292 --> 00:14:12,242
+The first problem is if I choose a random integer in the set Z(2)(n), the problem is, factor it.
+
+368
+00:14:06,292 --> 00:14:12,242
+第一个难题就是 如果我在集合Z(2)(n)中随机选择一个整数 求它的因子
+
+369
+00:14:12,242 --> 00:14:15,326
+And already this is quite a difficult problem for 1024 bits.
+
+370
+00:14:12,242 --> 00:14:15,326
+在1024位上这是一个非常难的难题
+
+371
+00:14:15,326 --> 00:14:18,992
+尽管到现在还没有办法被解出来 但这个量级的数字
+
+372
+00:14:18,992 --> 00:14:25,042
+will be factored soon, and so the recommended value these days is actually to use 2048-bit numbers.
+
+373
+00:14:18,992 --> 00:14:25,042
+已经很快就可以被分解因子 所以现在我们一般都使用2048比特的数字
+
+374
+00:14:25,042 --> 00:14:30,308
+That's still beyond our reach, and those are numbers that we still cannot factor.
+
+375
+00:14:25,042 --> 00:14:30,308
+这远远超出了我们的能力范围 而这些数字我们现在无法分解
+
+376
+00:14:30,308 --> 00:14:36,151
+Another example of an intractable problem modulo composites is if I give you some polynomial
+
+377
+00:14:30,308 --> 00:14:36,151
+另外一个难解的模合数问题是 如果你有一个非线性多项式
+
+378
+00:14:36,151 --> 00:14:41,076
+that's nonlinear, if the degree is bigger than 1, and I give you some random composite
+
+379
+00:14:36,151 --> 00:14:41,076
+并且大于1阶 然后你从Z(2)(n)中随机选择合数
+
+380
+00:14:41,076 --> 00:14:44,544
+in the set Z(2)(n), your goal is to find a root of this polynomial,
+
+381
+00:14:41,076 --> 00:14:44,544
+然后你的目标就是找到这个多项式的根
+
+382
+00:14:44,544 --> 00:14:47,542
+find an x that happens to be a root of this polynomial.
+
+383
+00:14:44,544 --> 00:14:47,542
+找到一个x正好是这个多项式的根
+
+384
+00:14:47,542 --> 00:14:50,411
+And again, we don't know how to do that; of course if the degree is equal to 1,
+
+385
+00:14:47,542 --> 00:14:50,411
+同样我们不知道如何做 当然如果阶等于1的话
+
+386
+00:14:50,411 --> 00:14:54,379
+that just amounts to solving linear equations, and we already know that, that's easy.
+
+387
+00:14:50,411 --> 00:14:54,379
+就相当于解决一个线性问题了
+
+388
+00:14:54,379 --> 00:14:58,729
+But the minute the degree becomes nonlinear, we don't know how to solve this modulo N
+
+389
+00:14:54,379 --> 00:14:58,729
+但是如果阶不是线性的话 我们就不知道怎么求模N了
+
+390
+00:14:58,729 --> 00:15:04,895
+without actually first factoring the modulus, and then computing roots.
+
+391
+00:14:58,729 --> 00:15:04,895
+如果没有首先分解模 然后才会是求根
+
+392
+00:15:04,895 --> 00:15:08,495
+So there are some systems, for example RSA, that depend on the hardness
+
+393
+00:15:04,895 --> 00:15:08,495
+有一些系统 例如RSA 都是依赖于这个
+
+394
+00:15:08,495 --> 00:15:14,694
+of this particular problem for specific polynomials, which we're going to see next week.
+
+395
+00:15:08,495 --> 00:15:14,694
+特殊的多项式难题建立的 我们下周会讲到这里
+
+396
+00:15:14,694 --> 00:15:18,312
+And just as an example, I should mention that for example taking square roots
+
+397
+00:15:14,694 --> 00:15:18,312
+在这个例子中 我想提醒下 对这个Z(2)(n)中的随机合数使用
+
+398
+00:15:18,312 --> 00:15:24,961
+or cube roots modulo a random composite in Z(2)(n) is believed to be difficult.
+
+399
+00:15:18,312 --> 00:15:24,961
+平方根或者立方根都是很难求解的
+
+400
+00:15:24,961 --> 00:15:27,413
+So there's actually quite a bit known about the factoring problem.
+
+401
+00:15:24,961 --> 00:15:27,413
+这里有一个广为人知的分解问题
+
+402
+00:15:27,413 --> 00:15:31,329
+It's actually a very old problem. Already the Greeks were interested in factoring,
+
+403
+00:15:27,413 --> 00:15:31,329
+这也是一个非常老的问题 虽然希腊人对因式分解很感兴趣
+
+404
+00:15:31,329 --> 00:15:34,961
+but Gauss actually has a wonderful, wonderful quote that talks about
+
+405
+00:15:31,329 --> 00:15:34,961
+但高斯有一个非常非常厉害的举证
+
+406
+00:15:34,961 --> 00:15:38,295
+the problem of factoring and the problem of primality testing.
+
+407
+00:15:34,961 --> 00:15:38,295
+关于这个因式分解问题和这个素性测试问题
+
+408
+00:15:38,295 --> 00:15:42,233
+So in his famous dissertation from 1805, he writes:
+
+409
+00:15:38,295 --> 00:15:42,233
+在他1805年的论文里 这么写道
+
+410
+00:15:42,233 --> 00:15:45,228
+"The problem of distinguishing prime numbers from composite numbers"
+
+411
+00:15:42,233 --> 00:15:45,228
+从合数中区分素数的问题
+
+412
+00:15:45,228 --> 00:15:48,062
+(this is what's called primality testing)
+
+413
+00:15:45,228 --> 00:15:48,062
+（这个叫做素性测试）
+
+414
+00:15:48,062 --> 00:15:51,361
+"and the problem of resolving the latter" (namely composites)
+
+415
+00:15:48,062 --> 00:15:51,361
+和后者的分解问题（即合数）
+
+416
+00:15:51,361 --> 00:15:57,461
+"into their prime factors is known to be one of the most important and useful in arithmetic."
+
+417
+00:15:51,361 --> 00:15:57,461
+将他们分解为两个素数因子 在算术中会是非常重要的问题
+
+418
+00:15:57,461 --> 00:16:01,408
+So he had the foresight to realize that these are extremely interesting problems.
+
+419
+00:15:57,461 --> 00:16:01,408
+他当时就预见了这些难题是很有趣的
+
+420
+00:16:01,408 --> 00:16:05,424
+These are computer science problems essentially. How do we test if a number is prime?
+
+421
+00:16:01,408 --> 00:16:05,424
+本质上 这些事计算机科学的难题 怎么样检测一个数是不是素数？
+
+422
+00:16:05,424 --> 00:16:09,856
+How do we factor a number if it's not a prime, if it's a composite?
+
+423
+00:16:05,424 --> 00:16:09,856
+如果是合数的话怎么样进行因子分解
+
+424
+00:16:09,856 --> 00:16:13,925
+And already Gauss realized that these are extremely extremely important and interesting problems,
+
+425
+00:16:09,856 --> 00:16:13,925
+高斯已经察觉到了这些是非常非常重要和有趣的问题
+
+426
+00:16:13,925 --> 00:16:19,208
+and now, these days, these problems are actually used on the Web all over the place.
+
+427
+00:16:13,925 --> 00:16:19,208
+并且现在 这些难题被应用到了网络上的任何一个角落
+
+428
+00:16:19,208 --> 00:16:24,175
+So let's see. So, in fact, testing if a number is prime has been completely solved;
+
+429
+00:16:19,208 --> 00:16:24,175
+我们来看下 事实上 检查一个数是否是素数已经被完全解决了
+
+430
+00:16:24,175 --> 00:16:29,024
+we now know completely how to do it, using, efficiently using a randomized algorithm,
+
+431
+00:16:24,175 --> 00:16:29,024
+如今我们已经可以通过使用一个随机化算法完全解决它
+
+432
+00:16:29,024 --> 00:16:31,793
+and we even know how to do it using a deterministic algorithm.
+
+433
+00:16:29,024 --> 00:16:31,793
+甚至我们知道用一个确定化算法来求得
+
+434
+00:16:31,793 --> 00:16:35,675
+Factoring numbers, factoring composites into their prime factors,
+
+435
+00:16:31,793 --> 00:16:35,675
+因数分解 就是把合数分解成它的素数因子
+
+436
+00:16:35,675 --> 00:16:39,542
+is still believed to be a difficult problem. I would encourage you actually to think about it.
+
+437
+00:16:35,675 --> 00:16:39,542
+现在仍然是一个难题 我也会鼓励你们去思考这个问题
+
+438
+00:16:39,542 --> 00:16:42,875
+It's a wonderful problem to think about. If any of you can solve it,
+
+439
+00:16:39,542 --> 00:16:42,875
+这是一个非常值得探究的问题 如果你们中有人能解决它
+
+440
+00:16:42,875 --> 00:16:47,208
+if any of you can come up with an algorithm to factor composites into prime factors,
+
+441
+00:16:42,875 --> 00:16:47,208
+如果你们可以提出一个算法来解决合数的因数分解问题
+
+442
+00:16:47,208 --> 00:16:51,724
+again, as I said, it's instant fame in the crypto world, and it would have tremendous impact
+
+443
+00:16:47,208 --> 00:16:51,724
+这会立马在密码学领域里闻名的 这将会是一个惊人的成果
+
+444
+00:16:51,724 --> 00:16:56,657
+on security of the Web in general. So it's a fun problem to think about.
+
+445
+00:16:51,724 --> 00:16:56,657
+在网络安全领域中 所以这是一个非常值得思考的问题
+
+446
+00:16:56,657 --> 00:16:59,342
+Let me tell you what's known about the problem of factoring.
+
+447
+00:16:56,657 --> 00:16:59,342
+我来告诉你们一些关于因式分解的问题
+
+448
+00:16:59,342 --> 00:17:02,624
+So the best algorithm that we have is called the number field sieve.
+
+449
+00:16:59,342 --> 00:17:02,624
+我们现有的最好的算法就是数域筛法
+
+450
+00:17:02,624 --> 00:17:07,764
+Again, its running time is one of these exponentials, but a cube root of an exponential,
+
+451
+00:17:02,624 --> 00:17:07,764
+它的运行时间是指数的立方根级
+
+452
+00:17:07,764 --> 00:17:13,042
+which is why the composite has to be quite large for the problem to be difficult.
+
+453
+00:17:07,764 --> 00:17:13,042
+这就是为什么合数要非常大的而难以求解
+
+454
+00:17:13,042 --> 00:17:18,657
+Although the current world record is really just factoring a 768-bit number.
+
+455
+00:17:13,042 --> 00:17:18,657
+尽管目前的世界纪录是可以分解768位的数字
+
+456
+00:17:18,657 --> 00:17:24,008
+This is called the RSA-768 number, it's a challenge number that was recently factored.
+
+457
+00:17:18,657 --> 00:17:24,008
+我们把它叫做RSA-768数字 这是一个我们最近已经可以分解的数字
+
+458
+00:17:24,008 --> 00:17:28,842
+The number is about 200 digits, and already factoring this number took an enormous amount of work.
+
+459
+00:17:24,008 --> 00:17:28,842
+这个数字大概有两百位 分解这个数字需要非常巨大的工作量
+
+460
+00:17:28,842 --> 00:17:34,265
+It took about two years on hundreds of machines, and finally they were able to factor this number.
+
+461
+00:17:28,842 --> 00:17:34,265
+用一百台机器花费了两年时间 最终他们分解了这个数字
+
+462
+00:17:34,265 --> 00:17:39,214
+And the estimate is that actually factoring a 1024-bit number is about 1000 times harder
+
+463
+00:17:34,265 --> 00:17:39,214
+并且估计分解一个1024位的数字的难度是分解RSA-768难度的一千倍
+
+464
+00:17:39,214 --> 00:17:45,102
+than factoring RSA-768, so instead of 2 years, it would take two thousand years
+
+465
+00:17:39,214 --> 00:17:45,102
+所以说 需要花费2000年的世界才能求出
+
+466
+00:17:45,102 --> 00:17:50,064
+but of course computers are getting faster, we have more cores at our disposal,
+
+467
+00:17:45,102 --> 00:17:50,064
+不过计算机也是在变得越来越快 我们有越来越多的核在处理器中
+
+468
+00:17:50,064 --> 00:17:55,332
+we have more computers, and so this factor of 1000, assuming Moore's Law and so on,
+
+469
+00:17:50,064 --> 00:17:55,332
+我们有更多的计算机 所以根据摩尔定理
+
+470
+00:17:55,332 --> 00:17:59,039
+really just means a decadea^€¡±you know, computers get faster by about a factor of
+
+471
+00:17:55,332 --> 00:17:59,039
+我们大概需要十年吧 计算机就可以
+
+472
+00:17:59,039 --> 00:18:02,308
+1000 every decade, so it's very likely that within the next decade,
+
+473
+00:17:59,039 --> 00:18:02,308
+计算上千位的因子 很可能在下一个十年之内
+
+474
+00:18:02,308 --> 00:18:07,475
+we'll see a factorization of a 1024-bit number, which would be the end of 1024 bits
+
+475
+00:18:02,308 --> 00:18:07,475
+我们就可以看到1024位数字分解出的因数 这将会是1024位数字
+
+476
+00:18:07,475 --> 00:18:11,630
+being used for public-key cryptography.
+
+477
+00:18:07,475 --> 00:18:11,630
+作为公钥密码的终结
+
+478
+00:18:11,630 --> 00:18:16,026
+So that's the state of the art in the factoring world, and this concludes this module.
+
+479
+00:18:11,630 --> 00:18:16,026
+那么这就是因式分解世界的艺术 我们这个模块就以此结束
+
+480
+00:18:16,026 --> 00:18:19,392
+I'll mention that if you want to read more about any of the topics that we discussed,
+
+481
+00:18:16,026 --> 00:18:19,392
+我想说 如果你想要知道更多关于今天我们讨论的东西
+
+482
+00:18:19,392 --> 00:18:23,474
+there is a good book on the Internet, it's a free book that you can download,
+
+483
+00:18:19,392 --> 00:18:23,474
+网上有一个本非常好的书提供免费下载
+
+484
+00:18:23,474 --> 00:18:27,109
+written by Victor Shoup, and in particular, the topics that we discussed
+
+485
+00:18:23,474 --> 00:18:27,109
+作者是Victor Shoup 我们讨论的主题就在
+
+486
+00:18:27,109 --> 00:18:30,375
+are covered in chapters 1 to 4, 11, and 12.
+
+487
+00:18:27,109 --> 00:18:30,375
+1-4 11 12章
+
+488
+00:18:30,375 --> 00:18:33,557
+So I would encourage you to take a look at that, and hopefully that will help
+
+489
+00:18:30,375 --> 00:18:33,557
+我希望你们可以去看一看 希望可以对你们
+
+490
+00:18:33,557 --> 00:18:35,993
+with understanding the material.
+
+491
+00:18:33,557 --> 00:18:35,993
+理解这些东西起到帮助
+
+492
+00:18:35,993 --> 00:18:39,000
+下一周 我们将开始用我们学过的这些概念构建密码系统
+
+493
+00:18:35,993 --> 00:18:39,000
+Next week, we'll start building cryptosystems using the topics we just learned about.
+
+
+

@@ -1,0 +1,155 @@
+//成绩查询页面初始化
+init(){
+                this.form.sno=localStorage.getItem('sno');
+                this.form.sname=localStorage.getItem('sname');
+                this.$http.post(main.url+"/sc/list",
+                    {'sno': localStorage.getItem('sno')},
+                    {
+                        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                        emulateJSON: true
+                    }).then(
+                    success=>{
+                        this.data=success.data;
+                        this.$http.post(main.url+"/sc/sum",
+                            {'sno': localStorage.getItem('sno')},
+                            {
+                                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                                emulateJSON: true
+                            }).then(
+                            success=>{
+                                this.form.sum=success.data.sum;
+                                this.$http.post(main.url+"/sc/average",
+                                    {'sno': localStorage.getItem('sno')},
+                                    {
+                                        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                                        emulateJSON: true
+                                    }).then(
+                                    success=>{
+                                        this.form.average=success.data.average;
+                                        this.$http.post(main.url+"/sc/average1",
+                                            {'sno': localStorage.getItem('sno')},
+                                            {
+                                                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                                                emulateJSON: true
+                                            }).then(
+                                            success=>{
+                                                this.form.average1=success.data.average1;
+                                            }
+                                        );
+                                    }
+                                );
+                            }
+                        );
+                    }
+                );
+            }
+
+
+//增的例子
+addnew(form){ //添加成绩信息
+                if(this.form.grade==="")
+                    this.$message({type: 'error', message: '成绩不能为空！'});
+                else if(this.form.cno==="")
+                    this.$message({type: 'error', message: '课程号不能为空！'});
+                else if(this.form.exam==="")
+                    this.$message({type: 'error', message: '考试次数不能为空！'});
+                else{
+                    this.$http.post(main.url+"/sc/add",
+                        {
+                            'sno': localStorage.getItem('sno'),
+                            'cno': this.form.cno,
+                            'exam': this.form.exam,
+                            'grade': this.form.grade
+                        },
+                        {
+                            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                            emulateJSON: true
+                        }).then(
+                        success => {
+                            this.$message({type: 'success', message: '添加成功'});
+                            this.form = {
+                                sno: '',
+                                cno:'',
+                                exam:'',
+                                grade:''
+                            };
+                            this.init();
+                        }
+                    );
+                    this.dialogFormVisibleed1 = false;
+                }
+            }
+
+
+//删的例子
+del_stu(row){ //删除成绩
+                this.$confirm('请确认是否要删除该成绩！', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$http.post(main.url+"/sc/del",
+                        {'id': row.id,},
+                        {
+                            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                            emulateJSON: true
+                        }).then(
+                        success=> {
+                            this.$message({type: 'success', message: '已删除'});
+                            this.init();
+                        }
+                    );
+                }).catch(() => {
+                    this.$message({type: 'info', message: '已取消'});
+                });
+            }
+
+
+//改的例子
+submit(form){ //修改，提交
+                this.$http.post(main.url+"/student/update",
+                    {
+                        'id': this.form.id,
+                        'sname': this.form.sname,
+                        'school': this.form.school,
+                        'major': this.form.major,
+                        'sclass': this.form.sclass,
+                        'date': this.form.date
+                    },
+                    {
+                        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                        emulateJSON: true
+                    }).then(
+                    success=> {
+                        this.$message({type: 'success', message: '修改成功'});
+                        this.form={
+                            id: '',
+                            sname: '',
+                            school:'',
+                            major:'',
+                            sclass:'',
+                            date:''
+                        };
+                        this.dialogFormVisibleed = false;
+                        this.init();
+                    }
+                )
+            }
+
+
+//查的例子
+loc_sno_submit(){ //通过学号查询学生信息，按钮按下后
+                this.$http.post(main.url+"/student/loc_sno",
+                    {
+                        'sno': this.form.sno
+                    },
+                    {
+                        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                        emulateJSON: true
+                    }).then(
+                    success=>{
+                        this.data=success.data;
+                    }
+                )
+                this.dialogFormVisibleed2=false;
+            }

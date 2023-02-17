@@ -1,0 +1,798 @@
+1
+00:00:00,000 --> 00:00:03,752
+In this segment, I want to tell you about
+another form of encryption, called format
+
+2
+00:00:03,752 --> 00:00:07,322
+preserving encryption. This is again
+something that comes up in practice quite
+
+3
+00:00:07,322 --> 00:00:10,617
+often, especially when it comes to
+encrypting credit card numbers. And, so,
+
+4
+00:00:10,617 --> 00:00:14,244
+let's see how it works. Remember that a
+typical credit card number is sixteen
+
+5
+00:00:14,244 --> 00:00:18,978
+digits, broken into four blocks of four
+digits each. You've probably heard before
+
+6
+00:00:18,978 --> 00:00:23,416
+that the first six digits are what's
+called the BIN number, which represent the
+
+7
+00:00:23,416 --> 00:00:28,124
+issuer ID. For example, all credit cards
+issued by VISA always start with the digit
+
+8
+00:00:28,124 --> 00:00:34,114
+four; all credit cards issued by
+MasterCard start with digits 51 to 55, and
+
+9
+00:00:34,114 --> 00:00:38,808
+so on and so forth. The next nine digits
+are actually the account number that is
+
+10
+00:00:38,808 --> 00:00:43,275
+specific to the, to the particular
+customer and the last digit is a check sum
+
+11
+00:00:43,275 --> 00:00:48,031
+that's computed from the previous fifteen
+digits. So there are about 20,000 BIN
+
+12
+00:00:48,031 --> 00:00:52,846
+numbers and so if you do the calculation
+it turns out there are about 2 to the 42
+
+13
+00:00:52,846 --> 00:00:56,733
+possible credit card numbers which
+corresponds to about 42 bits of
+
+14
+00:00:56,733 --> 00:01:01,489
+information that you need to encode if you
+want to represent a credit card number
+
+15
+00:01:01,489 --> 00:01:05,999
+compactly. Now the problem is this.
+Suppose we wanted to encrypt credit card
+
+16
+00:01:05,999 --> 00:01:10,713
+numbers, so that when the user swipes the
+credit card number at the point of sale
+
+17
+00:01:10,713 --> 00:01:14,640
+terminal, namely at the, you know,
+the merchant's cash register. The cash
+
+18
+00:01:14,640 --> 00:01:18,670
+register, this is called a point of sale
+terminal, goes ahead and encrypts the
+
+19
+00:01:18,670 --> 00:01:22,751
+credit card number using a key k and
+it's encrypted all the way until it goes
+
+20
+00:01:22,751 --> 00:01:27,036
+to the acquiring bank or maybe even beyond
+that, maybe even all the way when it goes
+
+21
+00:01:27,036 --> 00:01:31,117
+to Visa. Now, the problem is that these
+credit card numbers actually pass through
+
+22
+00:01:31,117 --> 00:01:35,300
+many, many, many processing points. All of
+them expect to get basically something
+
+23
+00:01:35,300 --> 00:01:39,683
+that looks like a credit card number as a
+result. So if we simply wanted to encrypt
+
+24
+00:01:39,683 --> 00:01:43,893
+something at the end point, at one end
+point, and decrypt it at the other end
+
+25
+00:01:43,893 --> 00:01:48,087
+point, it's actually not that easy because
+if all we did was encrypt it using AES,
+
+26
+00:01:48,087 --> 00:01:52,748
+even if we just used deterministic AES,
+the output of the encrypted credit card
+
+27
+00:01:52,748 --> 00:01:57,164
+number would be 128 bit block. Sixteen
+bytes that would be, that would need to be
+
+28
+00:01:57,164 --> 00:02:01,691
+sent from one system to the next, until it
+reaches its destination. But each one of
+
+29
+00:02:01,691 --> 00:02:06,107
+these processors, then, would have to be
+changed, because they're all expecting to
+
+30
+00:02:06,107 --> 00:02:10,192
+get credit card numbers. And so the
+question is, can we encrypt at the cash
+
+31
+00:02:10,192 --> 00:02:14,388
+register, such that the resulting
+encryption itself looks like a credit card
+
+32
+00:02:14,388 --> 00:02:18,528
+number. And as a result, none of these
+intermediate systems would have to be
+
+33
+00:02:18,528 --> 00:02:22,937
+changed. Only the endpoints would have to
+be changed. And in doing so we would
+
+34
+00:02:22,937 --> 00:02:27,399
+actually obtain end-to-end encryption
+without actually having to change a lot of
+
+35
+00:02:27,399 --> 00:02:31,973
+software along the way. So the question
+then is, again, can we have this mechanism
+
+36
+00:02:31,973 --> 00:02:36,546
+called format preserving encryption, where
+encrypting a credit card itself produces
+
+37
+00:02:36,546 --> 00:02:40,881
+something that looks like a credit card?
+So that's our goal. The encrypted credit
+
+38
+00:02:40,881 --> 00:02:44,719
+card number should look like a regular
+valid credit card number. So this is the
+
+39
+00:02:44,719 --> 00:02:48,768
+goal of format preserving encryption. More
+abstractly what it is we're trying to do,
+
+40
+00:02:48,768 --> 00:02:54,055
+is basically build a pseudo random
+permutation on the set zero to S minus one
+
+41
+00:02:54,055 --> 00:02:59,105
+for any given S. So for the set of credit
+card numbers, S would be roughly, you
+
+42
+00:02:59,105 --> 00:03:03,966
+know, two to the 42. In fact, it's gonna
+be, not exactly two to the 42. It's gonna
+
+43
+00:03:03,966 --> 00:03:08,415
+be some funny numbers that's around two to
+the 42. And our goal is to build a PRP
+
+44
+00:03:08,415 --> 00:03:14,326
+that acts exactly on the interval, zero to
+S minus one. And what we're given as input
+
+45
+00:03:14,326 --> 00:03:20,369
+is some PRF, say, something like AES, that
+acts on much larger blocks, say, acts on
+
+46
+00:03:20,369 --> 00:03:24,384
+sixteen byte blocks. So we're trying to,
+in some sense, shrink the domain of the
+
+47
+00:03:24,384 --> 00:03:29,576
+PRF to make it fit the data that we're
+given. And the question is basically how
+
+48
+00:03:29,576 --> 00:03:33,639
+to do that. Well, once we have such a
+construction we can easily use it to
+
+49
+00:03:33,639 --> 00:03:37,610
+encrypt credit card numbers. What we would
+do is we would take the, a given credit
+
+50
+00:03:37,610 --> 00:03:41,937
+card number. We would encode it such that
+now it's represented as a number between
+
+51
+00:03:41,937 --> 00:03:47,312
+zero and the total number of credit card
+numbers. Then we would apply our PRP so we
+
+52
+00:03:47,312 --> 00:03:51,815
+would encrypt this credit card number, you
+know, using construction number two from
+
+53
+00:03:51,815 --> 00:03:56,428
+the deterministic encryption segment. And
+then we would map the final number back to
+
+54
+00:03:56,428 --> 00:04:00,656
+be a regular, to look like val--, regular,
+valid credit card number and then send
+
+55
+00:04:00,656 --> 00:04:05,083
+this along the way. So this is, this
+is again non expanding encryption. The
+
+56
+00:04:05,083 --> 00:04:09,442
+best we can do, as we said before is to
+encrypt using a PRP except again the
+
+57
+00:04:09,442 --> 00:04:14,145
+technical challenge is we need a PRP that
+acts on this particular funny looking set
+
+58
+00:04:14,145 --> 00:04:19,811
+from zero to S-1 for this prespecified
+value of S. So my goal is to show you how
+
+59
+00:04:19,811 --> 00:04:23,379
+to construct this and once we see how to
+do it, you will also know how to encrypt
+
+60
+00:04:23,379 --> 00:04:27,738
+credit card number so that the resulting
+cipher text is itself a credit card
+
+61
+00:04:27,738 --> 00:04:33,176
+number. So the construction works in two
+steps. The first thing we do is we shrink
+
+62
+00:04:33,176 --> 00:04:38,552
+our PRF from the set {0,1} to the n, say
+{0,1} to the 128 in the case of AES,
+
+63
+00:04:38,552 --> 00:04:43,965
+to {0,1} to the t where t is the
+closest power of two to the value S.
+
+64
+00:04:44,580 --> 00:04:50,035
+So say S is some crazy number around two to
+the 41. T would basically be then 42
+
+65
+00:04:50,035 --> 00:04:55,338
+because that's the closest power of two
+that's just above the value S. So the
+
+66
+00:04:55,338 --> 00:04:59,396
+construction is basically gonna use the
+Luby-Rackoff construction. What we need
+
+67
+00:04:59,396 --> 00:05:05,157
+is a PRF F prime that acts on blocks of
+size t over two. So imagine for example
+
+68
+00:05:05,157 --> 00:05:10,103
+in the credit card case, t would be 42
+because two to the 42 we said is the
+
+69
+00:05:10,301 --> 00:05:15,132
+closest power of two that's bigger than,
+than, than S. S is the number of credit,
+
+70
+00:05:15,132 --> 00:05:20,387
+total number of credit cards. Then we would
+need a PRF now that acts on 21-bit
+
+71
+00:05:20,387 --> 00:05:25,828
+inputs. So one way to do that is simply to
+take the AES block cipher, treat it as a
+
+72
+00:05:25,828 --> 00:05:30,437
+PRF on 128-bit inputs, and then simply
+truncate the output to the least
+
+73
+00:05:30,437 --> 00:05:35,238
+significant 21 bits. Okay, so we were
+given a 21 bit value. We would append
+
+74
+00:05:35,238 --> 00:05:40,359
+zeros to it so that we get 128 bits as a
+result. We would apply AES to that and
+
+75
+00:05:40,359 --> 00:05:45,016
+then we would truncate back to 21 bits.
+Now I should tell you that that's actually
+
+76
+00:05:45,016 --> 00:05:48,722
+a simple way to do it but it's actually
+not the best way to do it. There are
+
+77
+00:05:48,722 --> 00:05:54,181
+actually better ways to truncate a PRF on
+n bits to a PRF on t over two bits.
+
+78
+00:05:54,181 --> 00:05:58,454
+But for our pur--, for the purposes of this
+segment, the truncation method I just said
+
+79
+00:05:58,626 --> 00:06:03,113
+is good enough. So let's just use that
+particular method. Okay, so now, we've
+
+80
+00:06:03,113 --> 00:06:09,279
+converted our AES block cipher into a PRF
+on t over two bits, say, on 21 bits. But
+
+81
+00:06:09,279 --> 00:06:14,108
+what we really want is a PRP. And so what
+we'll do is we'll plug our new PRF, F prime,
+
+82
+00:06:14,108 --> 00:06:17,937
+directly into the Luby-Rackoff
+construction. If you remember, this is
+
+83
+00:06:17,937 --> 00:06:22,489
+basically a Feistel construction. We saw
+this when we talked about DES. It's a,
+
+84
+00:06:22,489 --> 00:06:27,009
+Luby-Rackoff used three rounds, and we
+know that this converts a secure PRF into
+
+85
+00:06:27,009 --> 00:06:31,961
+a secure PRP on twice the block size. In
+other words, we started from a secure PRF
+
+86
+00:06:31,961 --> 00:06:36,973
+on 21 bits, and that will give us, and
+Luby-Rackoff will give us a secure PRF on
+
+87
+00:06:36,973 --> 00:06:41,424
+42 bits, which is what we wanted. Now, I
+should tell you that the error parameters
+
+88
+00:06:41,424 --> 00:06:45,531
+in the Luby-Rackoff construction are not as
+good as they could be. And, in fact, a
+
+89
+00:06:45,531 --> 00:06:49,689
+better thing to do is to use seven rounds
+of Feistel. So in other words, we'll do
+
+90
+00:06:49,689 --> 00:06:54,782
+this seven times; every time we'll use a
+different key. So you notice, here, we're
+
+91
+00:06:54,782 --> 00:06:59,318
+only using three keys. We should be using,
+we should be doing this seven times using
+
+92
+00:06:59,318 --> 00:07:03,839
+seven different keys. And then there's a
+nice result, due to Patarin, that
+
+93
+00:07:03,839 --> 00:07:06,998
+shows that the seven-round construction
+basically has as good an error
+
+94
+00:07:06,998 --> 00:07:11,312
+terms as possible. So the error terms in
+the security theorem will basically be two
+
+95
+00:07:11,312 --> 00:07:15,978
+to the T. Okay. So now we have a pseudo
+random permutation that operates on close
+
+96
+00:07:15,978 --> 00:07:21,529
+power of two to the value of S. But that's
+not good enough. We actually want to get a
+
+97
+00:07:21,529 --> 00:07:26,701
+pseudo random permutation on the set zero
+to S minus one. So step two will take us
+
+98
+00:07:26,701 --> 00:07:30,772
+down from {0,1} to the T, to the actual
+set zero to the S minus one that we're
+
+99
+00:07:30,772 --> 00:07:35,135
+interested in. And this construction is,
+again, really, really cute, so let me show
+
+100
+00:07:35,135 --> 00:07:39,073
+you how it works. So, again, we're given
+this PRP that operates on a power of two.
+
+101
+00:07:39,073 --> 00:07:44,360
+And we wanna go down to a PRP that
+operates on something slightly smaller.
+
+102
+00:07:44,360 --> 00:07:49,239
+Okay, so here's on the construction works.
+Basically we're given input X in the set
+
+103
+00:07:49,239 --> 00:07:53,149
+zero to S minus one that we want. And what
+we're going to do is we're going to
+
+104
+00:07:53,149 --> 00:07:57,436
+iterate the following procedure again
+and again. So first of all we map X into
+
+105
+00:07:57,436 --> 00:08:02,477
+this temporary variable Y. And now we're
+just gonna encrypt the input X and put the
+
+106
+00:08:02,477 --> 00:08:07,213
+result into Y. If Y is inside of our
+target set, we stop and we output Y. If
+
+107
+00:08:07,213 --> 00:08:12,460
+not we iterate this again and again and
+again and again and again until finally Y
+
+108
+00:08:12,460 --> 00:08:16,696
+falls into our target set and then we
+output that value. So in a picture, let me
+
+109
+00:08:16,696 --> 00:08:22,513
+explain how this works. So we start from a
+point in our target set. And now, now we
+
+110
+00:08:22,513 --> 00:08:27,272
+apply the, the function E and we might be
+mapped into this point outside our target
+
+111
+00:08:27,272 --> 00:08:30,871
+set, so we're not gonna stop. So now we
+apply the function E again and we might
+
+112
+00:08:30,871 --> 00:08:35,050
+be mapped into this point and now we apply
+the function E again and now all of a
+
+113
+00:08:35,050 --> 00:08:39,118
+sudden we map into this point, and then we
+stop, and that's our output. Okay, so
+
+114
+00:08:39,118 --> 00:08:44,199
+that's how we map points between from zero
+to S minus one, to other points in the
+
+115
+00:08:44,199 --> 00:08:48,490
+zero to S minus one. It should be pretty
+clear that this is invertible. To invert,
+
+116
+00:08:48,490 --> 00:08:52,466
+all I'll do is I'll just decrypt and walk,
+kind of, in the opposite direction. So
+
+117
+00:08:52,466 --> 00:08:56,342
+I'll decrypt, and then decrypt, and then
+decrypt, until finally, I fall into the
+
+118
+00:08:56,342 --> 00:09:00,419
+set, zero to S minus one. And that gives
+me the inverse of the point that I wanted
+
+119
+00:09:00,419 --> 00:09:04,625
+to. So this is, in fact, a PRP. The
+question is whether it's a secure PRP, and
+
+120
+00:09:04,625 --> 00:09:08,738
+we'll see that in just a minute. But before 
+that, let me ask you, how many iterations
+
+121
+00:09:08,738 --> 00:09:13,317
+do you expect that we're gonna need? And 
+I wanna remind you again, before I ask you
+
+122
+00:09:13,317 --> 00:09:19,635
+that question, that, in fact, S is less than 
+two to the T, but is more than two to the T-1.
+
+123
+00:09:19,635 --> 00:09:25,092
+So in particular S is greater than two to 
+the T over two. And my question to you
+
+124
+00:09:25,092 --> 00:09:29,661
+now is how many iterations are we gonna 
+need, on average, until this process converges?
+
+125
+00:09:32,907 --> 00:09:35,075
+So the answer is we're going to need two iterations,
+
+126
+00:09:35,075 --> 00:09:38,984
+so really just a small
+constant number of iterations. And so this
+
+127
+00:09:38,984 --> 00:09:43,159
+will give us a very, very efficient
+mechanism that will move us down from
+
+128
+00:09:43,159 --> 00:09:48,567
+{0,1} to the T to zero to the S-1. So now
+when we talk about security, it turns out
+
+129
+00:09:48,567 --> 00:09:53,210
+this step here is tight. In other words,
+there is really no additional security
+
+130
+00:09:53,210 --> 00:09:59,250
+cost to going down from two to the T to
+zero to S-1. And the reason that's true,
+
+131
+00:09:59,250 --> 00:10:02,734
+it's actually again a very cute theorem
+to prove, but I, I won't do it here. Maybe
+
+132
+00:10:02,734 --> 00:10:07,621
+I'll leave it as an exercise for you guys
+to argue. Which says that if you give me
+
+133
+00:10:07,621 --> 00:10:11,921
+any two sets Y and X, where Y is contained
+inside of X, then applying the
+
+134
+00:10:11,921 --> 00:10:16,520
+transformation that we just saw to a
+random permutation from X to X actually
+
+135
+00:10:16,520 --> 00:10:21,340
+gives a random permutation from Y to Y. So
+this means that if we started with a truly
+
+136
+00:10:21,340 --> 00:10:25,578
+random permutation on X, you'll end up
+with a truly random permutation on Y. And
+
+137
+00:10:25,578 --> 00:10:29,445
+since, well, the permutation we're
+starting with is indistinguishable from
+
+138
+00:10:29,445 --> 00:10:33,366
+random on X, we'll end up with a
+permutation that's indistinguishable from
+
+139
+00:10:33,366 --> 00:10:37,763
+random on Y. Okay, so this is a very tight
+construction and as I said, the first step
+
+140
+00:10:37,763 --> 00:10:42,001
+actually is basically, the analysis is the
+same as the Luby-Rackoff analysis. In
+
+141
+00:10:42,001 --> 00:10:46,187
+fact, it's better to use as I said, the
+Patarin analysis using seven rounds. So
+
+142
+00:10:46,187 --> 00:10:50,425
+actually here, there's a bit of cost in
+security. But, overall, we get a
+
+143
+00:10:50,425 --> 00:10:55,558
+construction that is a secure PRP for
+actually, not such good security
+
+144
+00:10:55,558 --> 00:10:59,992
+parameters, but nevertheless, this is a
+good secure PRP that we can construct that
+
+145
+00:10:59,992 --> 00:11:04,644
+actually will operate on the range zero to
+S minus one. This in turn will allow us to
+
+146
+00:11:04,644 --> 00:11:08,968
+encrypt credit card numbers such that the
+cipher text looks like a credit card
+
+147
+00:11:08,968 --> 00:11:13,183
+number. And again, I want to emphasize
+that there's no integrity here. The best
+
+148
+00:11:13,183 --> 00:11:17,124
+we can achieve here is just 
+deterministic CPA security. No cipher text
+
+149
+00:11:17,124 --> 00:11:21,251
+integrity, and no randomness at all. Okay.
+So this concludes this module. And as
+
+150
+00:11:21,251 --> 00:11:25,620
+usual I want to point to a few reading
+materials that you can take a look at if
+
+151
+00:11:25,620 --> 00:11:29,990
+you're interested in learning more about
+anything that we discussed in this module.
+
+152
+00:11:29,990 --> 00:11:34,255
+So first of all, the HKDF construction
+that we talked about for key derivation is
+
+153
+00:11:34,255 --> 00:11:38,950
+described in a paper from 2010 by Hugo
+Krawczyk. Deterministic encryption, The
+
+154
+00:11:38,950 --> 00:11:44,477
+SIV mode that we described is discussed in
+this paper over here. The EME mode that we
+
+155
+00:11:44,477 --> 00:11:49,628
+described that allows us to build a, a
+wider block pseudo random permutation is
+
+156
+00:11:49,628 --> 00:11:54,402
+described in this paper here by Halevi and
+Rogaway. Tweakable block ciphers that
+
+157
+00:11:54,402 --> 00:11:59,239
+actually led to the XDS mode of operation
+that's used for disk encryption is
+
+158
+00:11:59,239 --> 00:12:04,704
+described in this paper here. And finally,
+a format preserving encryption is described
+
+159
+00:12:04,704 --> 00:12:09,718
+in this last paper that I point to over
+here. Okay so this concludes this module.
+
+160
+00:12:09,718 --> 00:12:13,831
+And in the next module we gonna start
+looking at how to do key exchange.

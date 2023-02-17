@@ -1,0 +1,500 @@
+In this segment, we're gonna look at the
+Diffie-Hellman protocol, which is our
+first practical key exchange mechanism. So
+let me remind you of the settings. Our
+friends here, Alice and Bob, have never
+met and yet they wanna exchange a shared
+secret key that they can then use to
+communicate securely with one another.
+In this segment and the next, we're only
+gonna be looking at eavesdropping
+security. In other words, we only care
+about eavesdroppers. The attackers are
+actually not allowed to tamper with data
+in the network. They're not allowed to
+inject packets. They're not allowed to
+change packets in any way. All they do is
+to just eavesdrop on the traffic. And at
+the end of the protocol, the key exchange
+protocol our friends Alice and Bob should
+have a shared secret key but the attacker
+namely the eavesdropper has no idea what
+that key's gonna be. In the previous
+segment we looked at a key segment called
+Merkle puzzles. That's just using block
+ciphers or hash functions. And I showed
+you that there that basically the attacker
+has a quadratic gap compared to the
+participants. In other words if the
+participants spent time proportional to N
+the attacker can break the protocol in
+time proportional to N squared. And as a
+result that protocol is to insecure to be
+considered practical. In this segment we
+are going to ask whether we can do the
+same thing but now we'd like to achieve an
+exponential gap between the attacker's
+work Ended up in the participant's work.
+In other words, Alice and Bob might do
+work proportional to N, but to break the
+protocol the attacker is gonna have to do
+work proportional to some exponential in
+N. So now there's an exponential gap
+between the participants work and the
+attacker's work. So as I said in the
+previous segment we can't achieve this
+exponential gap from blog ciphers like AES
+or SHA-256. We have to use hard problems
+that have more structure than just those
+symmetric primitives. And so instead what
+we're gonna do is use a little bit of algebra.
+In this segment I'm gonna
+describe the Diffie-Hellman protocol very
+concretely and somewhat informally. When
+we're gonna come back to Diffie-Hellman next week
+and we're gonna describe the protocol more
+abstractly and we're gonna do a much more
+rigorous security analysis of this
+protocol. Okay, so how does Diffie-Hellman
+work? What we're gonna do is, first of
+all, we're gonna fix some large prime
+which I'm gonna call p. Actually p I'll
+usually use to denote primes. And you
+should be thinking of really gigantic
+primes. Like, primes that are made up of
+600 digits are so. And just for those of
+you who like to think in binary, a 600
+digit prime roughly corresponds to about
+2000 bits. So just writing down the prime
+takes about two kilo bits of data. And
+then we're also gonna fix an integer g
+that happens to live in the range one to
+p. So these values p and g are parameters
+of the Diffie-Hellman protocol. They are
+chosen once and they're fixed forever. Now
+the protocol works as follow. So here's
+our friends Alice and Bob. So what Alice's
+going to do is she's gonna starts off by
+choosing some random number a in the range 1 to p-1
+And then she is gonna compute
+the number g to the power of a modulo p.
+Okay, so she computes this exponention,
+and reduces the result modular the prime p.
+And we're actually going to see how to
+compute this efficiently the next module,
+so for now just believe me that this
+computation can be done efficiently.
+Now, let's call capital A the result of this
+value. So, what Alice will do is she will
+send capital A over to Bob. Now Bob is
+going to do the same thing. He's going to
+choose a random number b in the range 1
+to p-1. He's going to compute g to
+the b module of p and let's call this
+number B and he's going to send this
+number B over to Alice. So Alice sends A
+to Bob. Bob sends B. To Alice. And now
+they claim that they can generate a shared
+secret key. So what's a shared secret key?
+Well, it's defined as. Let's call it
+K<u>AB. And it's basically defined as the</u>
+value g to the power of a times b. Now the
+amazing observation of Diffie-Hellman had
+back in 1976 is that in fact both parties
+can compute this value g to the ab.
+So let's see, Alice can compute this value
+because she can take her value B that she
+received from Bob. She can take this value
+B, raise it to the power of a and, let's
+see, what she'll get is g to the b to the
+power of b. And by the rules of
+exponentiation, g to the power of b to the
+power of a is equal to g to the ab. Bob
+turns out, can do something similar, so
+his goal is to compute g to the a to the b,
+which again, is g to the ab, so both
+Alice and Bob will have computed K<u>AB, and</u>
+let me ask you, how does Bob actually
+compute this quantity g to the ab?
+Well so all he does is he takes the value A that
+he received from Alice and he raises it to
+his own secret b and that gives him the
+shared secret g to the ab. So you can see
+now that both parties even though they
+seemingly computed different values. In
+fact they both end up with the same value
+namely g ab module p. I should mention by
+the way that Martie Hellman and Wig
+Diffiie came up with this protocol back in
+1976. Martie Hellman was a professor here
+at Stanford and Wig Diffie was his
+graduate student. They came up with this
+protocol and this protocol really changed
+the world. In that it introduced this new
+age in cryptography. Where now it's not just
+about developing block ciphers but it's
+actually about designing algebraic
+protocols that have properties like the
+one we see here. So you notice that what
+makes this protocol works is basically
+properties of exponentiation. Namely that,
+g to the b to the power of a is the same
+as g to the a to the power of b, okay?
+These are just properties of
+exponentiations. Now when I describe a
+protocol like the one I just showed you.
+The real question that should be in your
+mind is not why the protocol works. In
+other words, it's very easy to verify
+that, in fact, both Alice and Bob end up
+with the same secret key. The bigger
+question is why is this protocol secure?
+In other words, why is it that an
+eavesdropper cannot figure out the same
+shared key due to the AB that both Alice
+and Bob computed by themselves? So let's
+analyze this a little bit, then, like I
+said, we're gonna do a much more in-depth
+analysis next week. But, let's, for now,
+just see intuitively why this protocol is
+gonna be secure. Well, what does the
+eavesdropper see? Well, he sees the prime
+and the generator. These are just fixed
+forever and everybody knows who they are.
+He also sees the value that Alice sent to
+Bob, namely this capital A. And he sees
+the value that Bob sent to Alice, namely
+this capital B. And the question is, can
+the, can the eavesdropper compute g to the
+ab just given these four values? So more
+generally, what we can do is we can define
+this Diffie-Hellman function. So we'll say
+that the Diffie-Hellman function is defined
+based on some value g. And the question is
+given g to the a, and g to the b. Can you
+compute g to the ab? And what we're
+asking is how hard is it to compute this
+function module over very large prime p.
+Remember p was something like 600 digits.
+So the real question we need to answer is
+how hard is this, is this Diffie-Hellman
+function? So let me show you what's known
+about this. So suppose the prime happens
+to be n bits long. Okay, so in our case
+say n is 2,000 bits. It turns out the best
+known algorithm for computing the
+Diffie–Hellman function. Is actually a
+more general algorithm that computes the
+discrete log function, which we're gonna
+talk about next week. But for now, let's
+just say that this algorithm computes a
+Diffie-Hellman function. The algorithm is
+called a general number field sieve. I'm
+not gonna describe how it works, although
+if you'd want to hear how it works, let me
+know, and that could be one of the special
+topics that we cover at the end of the
+course. But the interesting thing is that
+it's running time is exponential in
+roughly the cube root of n. In other
+words, the running time is roughly e to
+the power of o of cube root of n. So in
+fact the exact expression for the running
+time, of this algorithm is much more
+complicated than this. I'm deliberately
+simplifying it here just to kind of get
+the point across. The point that I want to
+emphasize is that in fact, this is not
+quite an exponential time algorithm.
+Exponential would be e to the power of n.
+This is sometimes called a sub-exponential
+algorithm because the exponent is really
+just proportional to the cube root of n,
+as opposed to linear n. What this says is
+that even though this problem is quite
+difficult, it's not really an exponential
+time problem. The running time in the
+exponent is gonna be just proportional to
+the cube root of n. So let's look at some
+examples. Suppose I happen to be looking
+at a modulus that happens to be about a
+thousand bits long. What this algorithm
+says is that we can solve the
+Diffie-Hellman problem in time that's
+approximately e to the qube root of 1,024.
+Now this is not really correct, in fact
+there are more constants in the exponent.
+But again, just to get, the point across,
+we can say that the running time would be
+roughly e to the qube root of 1,024; which
+is actually very small, roughly e to the 10.
+So the simple example shows you that
+if you have a sub-exponential algorithm,
+you see that even if the problem is quite
+large, like 1,000 bits. Because of the
+cube root effect the exponent actually is not
+that big overall. Now to be honest I'm
+actually lying here. General number field
+sieve actually have many other
+constants in the exponents so in fact this
+is not going to be ten at all. It's
+actually going to be something like 80.
+Because of various constants in the
+exponents. But nevertheless but you see
+the problem is much harder than say 2 to
+the 1000. Even though describing it takes
+1,000 bits, solving it does not take time
+to the 1,000. So here I roll down the
+table that kind of shows you the rough
+difficulty of breaking down the
+Diffie-Hellman protocol compared to the
+difficulty of breaking down a cipher with
+a appropriate number of bits. For example,
+if your cipher has 80 bit keys. That would
+be roughly comparable to using 1,000 bit
+modules. In other words breaking a cipher
+with 80 bit keys takes time roughly 2 to the 80
+which means that
+breaking if you have Diffie-Hellman function with a 1,000
+bit module will take time 2 to the 80.
+If your cipher uses 128 bit keys like AES, you should be
+really using a 3,000 bit modulus,
+even though nobody really does this. In reality
+people would use 2,000 bit modulus. And
+then if your key is very large, like if
+we're using a 256 bit AES key, then in
+fact your modulus needs to be very, very
+large. Again, you, you can really see the
+cube root effect here. We doubled the size
+of our key and because of the cube root
+effect, what that means is we have to
+increase the size of, of our modulus by a
+factor of two cubed, namely a factor of
+eight, which is where this 15,000 comes from.
+from. And again I should mention there's
+not exactly a factor of eight because of
+the extra constants in the exponent. So
+this is a nice table that shows you that
+if you're gonna be using Diffie-Hellman to
+exchange, a session key. And that session
+key is gonna be used for a block cipher
+with a certain key size, this table shows
+you what modular size you need to use so
+that the security of the key exchange
+protocol is comparable to the security of
+the block cipher you're gonna be using after.
+Now this last row should
+really be disturbing to you. I should tell
+you that working with such a large modulus
+is very problematic. This is actually
+gonna be quite slow, and so the question
+is whether there is anything better that
+we can do? And it turns out there is. In
+fact the way I describe the Diffie-Hellman
+function is I describe it at the way
+Diffie and Hellman described it in 1976
+using arithmetic module of primes. The
+problem with arithmetic modular primes is
+that the Diffie-Hellman function is hard
+to compute, but it's not as hard as you'd
+like. There's this cube root effect that
+makes it a little easier than what you'd
+really like. And so the question is can we
+run the Diffie-Hellman protocol in other
+settings. And it turns out the answer is
+yes. In fact we can literally translate
+the Diffie-Hellman protocol from an
+arithmetic model of primes to a different
+type of algebraic object and solving the
+Diffie-Hellman problem on that other
+algebraic object is much, much harder.
+This other algebraic object is what's
+called an elliptic curve. And as I said,
+computing the Diffie-Hellman function on
+these elliptic curves is much harder than
+computing the Diffie-Hellman modulo primes.
+Because the problem is so much harder, now
+we can use much smaller objects in
+particular, you know we'd be using primes
+that are only a 160 bits or 80 bit keys or
+only 512 bits for 256 bit keys. So because
+these module don't grow as
+fast on elliptic curves, there's generally
+a slow transition away from using module
+arithmetic, to using elliptic curves. I'm
+not going to describe elliptic curves
+right now for you, but if this is
+something you'd like to learn about I can
+do that at the very last week of the
+course, when we discuss more advanced
+topics. But in fact when we come back to
+Diffie-Hellman next week I'm gonna describe it
+more abstractly so that it really doesn't
+matter which algebraic structure you use
+whether you use arithmetic model of primes
+or whether you use a elliptic curve we
+can kinda abstract that whole issue away
+and then use the Diffie-Hellman concept a for
+key exchange and for other things as well.
+And as I said we'll see that more
+abstractly next week. So as usual I wanna
+show that this beautiful protocol that I
+just showed you, the Diffie-Hellman protocol,
+is as is, is actually completely insecure
+against an active attack. Namely, it's
+completely insecure against what's called
+the man in the middle attack. We need to
+do something more than this protocol to
+make is secure against man in the middle.
+And again we're gonna come back to Diffie
+Hellman and make it secure against man in
+the middle next week. Okay. So let's see
+why the protocol that I just showed you is
+insecure against active attacks. Well
+suppose we have this man in the middle
+that's trying to eavesdrop on the
+conversation between Alice and Bob. Well
+so, the protocol starts with Alice sending
+g to the a over to Bob. Well, so the man
+in the middle is gonna intercept that and
+he's gonna take the message that Alice
+sent and he's gonna replace it with his
+own message. So it's called A', And
+let's write that is g to the a'.
+Okay? So the man in the middle chooses his
+own a' and what he sends to Bob is
+actually g to the a'. Now poor Bob
+doesn't know that the man in the middle
+actually did anything to this traffic, all
+he sees is he got the value A'. As
+far as he knows, that value came from
+Alice. So what is he gonna do in response?
+Well, he's gonna send back his value B out
+which is g to the b back to Alice. Well
+again the man in the middle is gonna
+intercept this B. He's gonna generate his
+own b' and what he actually sends
+back to Alice is B' which is g to the b'.
+Okay, now what happens? Well
+Alice is gonna compute her part of the
+secret key and she's gonna get g to the ab'. Bob is gonna compute his part of
+the secret key and he's gonna get g to the
+b times a'. Okay, these now you
+notice these are not the same keys. In the
+man in the middle because he knows both A'
+and B' he can compute both g to
+the ab' and g to ba'. Yeah it's
+not difficult to see the man in the middle
+knows both values. And as a result, now he
+can basically play this man in the middle
+and when Alice sends an encrypted message
+to Bob the man in the middle can simply
+decrypt this message because he knows the
+secret key that Alice encrypted message
+with, re-encrypt it using Bob's key. And
+then send the message on over to Bob. And
+this way Alice sent the message, Bob
+received the message. Bob thinks the
+message is secure. But in fact that
+message went through the man in the
+middle. The man in the middle decrypted
+it, re-encrypted it for Bob. At the same
+time he was able to completely read it,
+modify it if he wants to, and so on. So,
+the protocol becomes completely insecure
+give n a man in the middle. And so as I
+said we're gonna have to enhance the
+protocol somehow to defend against men in
+the middle but it turns out that it's
+actually not that difficult to enhance and
+prevent man in the middle attacks.
+And we're gonna come back to that and see that
+in a week or two. The last think I want to
+do is show you an interesting property of
+the Diffie-Hellman protocol. In fact, I
+want to show you that this protocol can be
+viewed as a non-interactive protocol. So,
+what do I mean by that? So Imagine we have
+a whole bunch of users, you know, millions
+of users. Let's call them Alice, Bob,
+Charlie, David and so on and so forth.
+Each one of them is going to choose a
+random, secret value, and then on their
+Facebook profiles, they're gonna write
+down, their contribution to the
+Diffie-Hellman protocol. Alright so
+everybody just writes down you know g to
+the a, g to the b, g to the c and so on.
+Now the interesting thing about this is,
+if say Alice and Charlie wanna set up a
+shared key they don't need to communicate
+at all. Basically Alice would go and read
+Charlie's public profile. Charlie would go
+and read Alice's public profile. And now,
+boom, they immediately have a secret key.
+Namely, now, Alice knows, g to the c and
+a. Charlie knows g to the a and с. And as
+a result, both of them can compute п to
+the ac. So, in some sense, once they've
+posted their contributions to the
+Diffie-Hellman protocol to their public
+profiles, they don't need to communicate
+with each other at all to set up a shared key.
+They immediately have a shared key
+and now they can start communicating
+securely through Facebook or not with one
+another. And notice that this is true for
+any Facebook user. So as soon as I read
+somebody's public profile, I immediately
+have a shared key with them without ever
+communicating with them. This property is
+sometimes called a non-interactive
+property of the Diffie-Hellman. So now, let
+me show you an open problem. And this is
+an open problem that's been open for ages
+and ages and ages. So it'd be really cool
+if one of you can actually solve it. The
+question is, can we do this for more than
+two parties? In other words, say we have
+four parties. All of them post their
+values to their Facebook profiles. And now
+we'd like to make it that just by reading
+Facebook profiles, all of them can set up
+a shared secret key. In other words, Alice
+is, what she'll, she'll do is she'll only
+read the public profiles of, the three
+friends, Bob, Charlie and David. And
+already she can compute a shared key with
+them. And similarly David is just gonna
+read the public profile of Charlie. Bob
+and Alice. And already he has a shared key
+with all four of them. Okay, so the
+question is whether we can kind of setup
+non-interactively these, these shared keys
+for groups that are larger than just two
+people. So as I said, for n equals two,
+this is just a Diffie-Hellman protocol. In
+other words, if just two parties want to
+set up a shared key without communicating
+with one another, that's just
+Diffie-Hellman. It turns out, for N equals
+three, we also know how to do it, there's
+a known protocol, it's called protocol due
+to Joux. It already uses very, very fancy
+mathematics, much more complicated
+mathematics than what I just showed you.
+And for N equals four, or five, or
+anything above this, above four, this
+problem is completely open. Nearly the
+case where four people post something to
+the public profiles and then everybody
+else reads the public profile and then
+they have a joint shared key, this is
+something we don't know how to do even for
+four people. And this is a problem that's
+been open for ages and ages, it's kind of
+a fun problem to think about and so see if
+you can solve it, if you will, it's
+instant fame in the crypto world. Okay, so
+I'll stop here, and we'll continue with
+another key exchange mechanism in the next segment.

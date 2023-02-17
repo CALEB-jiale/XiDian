@@ -1,0 +1,246 @@
+In this segment we're gonna look at
+another method to achieve chosen plain
+text security that's actually superior to
+CBC. And this method is called randomized
+counter mode. Unlike CBC. Randomized
+counter mode uses a secure PRF. It doesn't
+need a block cypher. It's enough for
+counter mode to just use a PRF because
+we're never going to be inverting this
+function F. So we're going to let F be the
+secure PRF and it acts on N byte blocks.
+Again if we use AES, N will be 128. And
+the way the encryption algorithm works in
+counter mode is it starts off by choosing
+a random IV, that's 128 bytes random IV in
+the case of AES, and the essentially we
+start counting. From this random IV, so
+you notice the first encryption is of IV
+then IV+1 up to IV+L. So we generate this
+random pad. We XOR the result with the
+message, and that gives us the cipher
+text. And, as usual, you notice that the
+IV here is included along with the cipher
+text. So that, in fact, the cipher text is
+a little longer than the original plain
+text. And the point, of course, is that,
+encryption algorithm chooses a new IV for
+every message. And so even if I encrypt
+the same message twice, I'm gonna get
+different resulting cipher texts. One
+thing to notice that this mode is
+completely paralyzable, unlike CBC. CBC
+was sequential. In other words, you
+couldn't encrypt block #5 until you've
+encrypted blocks ##1 to 4, so
+hardware companies who might have multiple
+AES engines working in parallel cannot
+actually use those AES engines when using
+CBC because CBCs inherently sequential. So
+even though you might have two or three of
+four AES engines, you could only use one
+of them when doing CBC encryption. With
+counter mode, everything is completely
+paralyzable. If you have three AES engines
+encryption basically will work three times
+as fast. So that's the beauty of counter
+mode. And counter mode also has a
+corresponding nonce based counter mode.
+Where the IV is not truly random, but
+rather, is just a nonce which could
+be a counter. And the way you would
+implement nonce based counter mode, is you
+would take the 128 bits block that used in
+AES. And then you would split it in two.
+You would use the left 64 bits as the
+nonce, so the counter say would count from
+zero to 2 to the 64. And then, that will
+be the nonce part of it. And then once you
+specify the nonce, the lower order, 64
+bits, would be doing the counting inside
+of the counter modes encryption. Okay, so
+nonce goes on the left, and the
+counter mode encryption counter goes on
+the right. And it's perfectly fine if this
+nonce is unpredictable. The only
+restriction is that you encrypt at most
+2 to the 64 blocks using one particular
+nonce. The danger is that you don't
+want this counter to reset to zero so
+that, then, you will have two blocks. Say,
+this guy, this guy, and this guy that are
+encrypted using the same one time pad.
+Namely this one and this one. So lets
+quickly state the security theorem for a
+randomized counter mode . By now you should
+be used to these kind of theorems.
+Basically we are given a secure PRF. What
+we end up with is an encryption scheme.
+We'll call it E sub CTR, E sub counter
+mode, which is semantically secure under a
+chosen plain text attack. It encrypts
+messages that are L blocks long, and
+produces cipher text that are L+1 blocks
+long because the IV has to be included in
+the cipher text. This is for randomized
+counter mode. And the error bounds
+are stated over here. It's basically the
+same bounds as in the case of CBC
+encryption. As usual, we argue that this
+term is negligible because the PRF F is
+secure and we would like to deduce from
+that, that this term is negligible so that
+E<u>CTR is secure. Unfortunately we have this
+error term here and so we have to make</u>
+sure this error term is negligible. And
+for that we have to make sure Q squared L
+is less than the size of a block. And
+remember, Q is the number of messages
+encrypted under a particular key. And L is
+the maximum length of those messages. Now
+interestingly in the case of CBC we have Q
+squared L squared. Has to be less than x.
+Which is actually worse than we have for
+counter modes. In other words, counter
+modes can actually be used for more.
+Blocks than CBC could. Lets see a quick
+example of that. So here is, again, the
+error term for counter-node, and remember
+Q is again the number of messages
+encrypted with a key, and L is the length
+of those messages. And as before, just as
+in the case of CBC, suppose we want the
+adversary's advantage to be at most, one
+over 2 to the 32. That basically requires
+that this Q-squared, L over X be less than
+1 over 2 to the 32. So for AES what
+happens is, if you plug in the values X is
+2 to 128, 128 bit blocks. So Q times
+square root of L should be less than 2
+to the 48. This is basically the bound you
+get from plugging in 2 to the 128 into
+this bound here. And as a result, you can
+see if you're encrypting messages that are
+each, 2 to the 32 blocks. Then after 2
+to the 32 such messages you have to
+replace your secret key otherwise
+randomized counter mode is no longer CPA
+secure. So this means we could encrypt a
+total of 2 to the 64 AES blocks using a
+single secret key. Remember, for CBC the
+corresponding value was 2 to the 48
+blocks so in fact because counter mode has
+a better security parameterization in fact
+we can use the same key to encrypt more
+blocks with counter mode than we could
+with CBC. So I wanted to do a quick
+comparison of counter mode and CBC. And
+argue that in every single aspect, counter
+mode is superior to CBC. And that's
+actually why most modern encryption
+schemes actually are starting to migrate
+to counter mode, and abandoned CBC. Even
+though CBC is still quite widely used. So
+let's look at the comparison. First of
+all, recall that CBC actually had to use a
+block cypher because if you look at the
+decryption circuit, the decryption circuit
+actually ran the block cypher in reverse.
+It was actually using the decryption
+capabilities of the block cypher. Whereas
+in counter mode, we only use a PRF. We
+never ever, ever use the decryption
+capabilities of the block cypher. We only
+use it in the forward direction, only
+encrypt with it. Because of this, counter
+mode is actually more general and you can
+use primitives like Salsa, for example,
+Salsa20, if you remember, as a PRF.
+But is not a PRP. So counter mode can
+Salsa but CBC cannot. And in essence,
+counter mode is more general than CBC.
+Counter mode, as we said, is actually
+parallel, whereas CBC is a very sequential
+process. We said that counter mode is more
+secure. The security bounds, the error
+terms are better for counter mode than
+they are for CBC. And as a result, you can
+use a key to encrypt more blocks in
+counter mode than you could with CBC. The
+other issue is, remember in CBC we talked
+about the dummy padding block. If you had
+a message that's a multiple of the block
+length. In CBC we said that we had to add
+a dummy block whereas in counter mode this
+wasn't necessary. Although, I did want
+to mention that there is a variation of
+CBC called CBC with cipher text tiling, that
+actually avoids the dummy block issue. So
+for standardized CBC, we actually need a
+dummy block. But in fact there is a
+modification to CBC that doesn't need a
+dummy block. Just like counter mode.
+Finally, suppose you're encrypting just a
+stream of one byte messages, and using
+nonce encryption with an implicit
+nonce. So, the nonce is not
+included in the cipher text. In this case.
+Every single one byte message would have
+to be expanded into a sixteen byte block
+and then encrypted, and the result would
+be a sixteen byte block. So if you have,
+like, a stream of 100 one byte messages,
+each one separately would have to become a
+sixteen byte block. And you'll end up.
+With a stream of 116 byte cipher texts. So
+you get a 16x expansion on the length of
+the cipher text, compared to the length of
+the plain text. In counter mode, of
+course, this is not a problem. You would
+just encrypt each one byte message by
+XORing with the first bytes of the stream
+that's generated in the counter mode. So
+every cipher text would just be one byte,
+just like the corresponding plain text.
+And so no expansion at all, using counter
+mode. So you see that essentially, every
+single aspect counter mode dominates CBC.
+And that's why it's actually the
+recommended mode to be using today. Okay,
+so this concludes our discussion of chosen
+plaintext security. I wanted to just
+quickly summarize and remind you that
+we're going to be using these PRP and PRF
+abstractions of block ciphers.
+This is actually the correct way of
+thinking of block ciphers and so we'll
+always think of them as either
+pseudorandom permutations or pseudorandom
+functions. And then I wanted to remind you
+again that, so far, we saw two notions of
+security. Both only provide security
+against eavesdropping. They don't provide
+security against tampering with the cipher
+text. One was used when the key is only
+used to encrypt a single message. The
+other one was used when the key was used
+to encrypt multiple messages. And as we
+said, because neither one is designed to
+defend against tampering, neither one
+provides data integrity. And we're going
+to see this as a real problem. And as a
+result, in fact, I'm going to say in the
+next segment that these modes actually
+should never, ever be used. You should
+only be using these modes in addition to
+an integrity mechanism, which is our next
+topic. Okay, so, so far we've seen
+basically for using a, the key once, you
+can use stream ciphers or you can use
+deterministic counter mode. If you're
+gonna use the key many times you could use
+randomize CBC or randomize counter mode
+and we're gonna talk about how to provide
+integrity and confidentiality. Once we
+cover the topic of integrity, which is our
+next module.

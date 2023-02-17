@@ -1,0 +1,411 @@
+There is an immense literature on attacking block ciphers.
+In this segment, I just want to give you a taste for
+what these attacks look like.
+And I hope I'll convince you that you should never
+ever design your own block cipher,
+and just stick to the standards like Triple DES
+and AES.
+The first set of attacks that I want to talk about
+are attacks on the
+implementation of the block cipher.
+As an example, imagine you have a smart card that's implementing a block cipher.
+So the smart card, for example, could be used for
+credit card payments. It might have a
+secret key inside of it to authenticate
+your credit card payments as you stick the
+card into a payment terminal, say. So now,
+if an attacker obtains your smart card,
+what he could do is he could actually take
+the smart card to a lab, and then run the
+card, and measure very precisely how much
+time the card took to do encryption and
+decryption. Now, if the amount of time
+that the implementation took to do
+encryption depends on bits of the secret
+key, then by measuring the time, the
+attacker will learn something about your
+secret key and in fact, he might be able
+to completely extract your secret key. And
+there are many examples of implementations
+that simply by measuring the time very
+precisely for many operations of
+encryption algorithms, you can completely
+extract the secret key. Another example is,
+rather than just measuring the time, you
+can actually measure the power consumption
+of the card as it's operating. So,
+literally, you can connect it to a device
+that will measure the current that the
+card is drawing and then graph the
+currents very, very precisely. Now, these
+cards are not very fast, and as a result,
+you can actually measure the exact amount
+of power consumed at every clock cycle as
+the card was executing. When you do that,
+you actually get graphs of this form.
+So this is an example of a smart card
+operating, while it's doing the
+DES computation. So you can see
+very clearly, here's when it was doing
+the initial permutation. Here's when it's
+doing the final permutation. And then,
+here, you can count. There are actually
+sixteen hills and troughs
+corresponding to the sixteen rounds. And
+essentially when you zoom in on a graph
+like this, you can basically read the key
+bits off one by one, just by looking at
+how much power the card consumed as it was
+doing the different operations. It turns out
+that, even cards that take steps to mask
+this type of information, are still
+vulnerable. There's an attack called differential power analysis, where
+basically, you measure the power consumed
+by the card over many, many, many, runs of
+the encryption algorithm. And as long as
+there's any even small dependence between
+the amount of current consumed and the
+bits of the secret key, basically that
+dependence will show up after enough runs of the encryption algorithm. And as a
+result you'll be able to completely
+extract the secret key. Okay, so these
+attacks were actually discovered by Paul
+Kocher and his colleagues up at
+Cryptography Research and there's actually
+a fairly large industry devoted to just
+defending against these power attacks. As
+far as timing attacks are concerned,
+I want to mention that these are real.
+They're not just about smart cards.
+For example, you can imagine a multicore
+processor where the encryption algorithm
+is running on one core and the attacker
+code happens to be running on another
+core. Now these cores actually share the
+same cache. And as a result, an attacker
+can actually measure or can actually look
+at the exact cache misses that the
+encryption algorithm incurred. It turns
+out that by looking at cache misses, you
+can completely figure out the secret key
+used by the algorithms. So, one core can
+essentially extract information from the
+other core, just by looking at cache misses.
+So implementing these block ciphers is actually quite subtle
+because you have to make sure that the
+side channel attacks don't leak
+information about your secret key. Another
+type of attack that's been discussed in
+the literature is what's called a fault
+attack. So here, basically, if you're
+attacking a smart card, you can actually
+cause the smart card to malfunction,
+perhaps by overclocking it, perhaps by
+warming it up. Essentially, you can cause
+the processor to, malfunction, and output
+erroneous data. It turns out that, if,
+during encryption, there are errors in the
+last round of the encryption process, the
+resulting ciphertexts that are produced are
+enough to actually expose the secret key K.
+That's quite an interesting result that
+in fact if you have any errors, if you ever
+output a wrong result, that actually could
+completely compromise your secret key.
+So, of course, the defense against this means
+that before you output the result of your
+algorithm, you should check to make sure
+that the correct result was computed.
+Now of course that's nontrivial, because how do
+you know that the error didn't happen
+in your checking algorithm. But there are
+known ways around that. So basically you
+can actually compute something three or
+four times, take the majority over all those
+results, and be assured that the output
+really is correct as long as not too many
+faults occurred inside of your computation. These are attacks on the implementation.
+I hope these examples can assure you that not only should you not
+invent your own block ciphers, you should
+never even implement these crypto
+primitives yourself. Because A, you have
+to make sure there are no side channel
+attachments on your implementation and B,
+you have to make sure that the
+implementation is secure against fault
+attacks. Okay so, instead you should just
+use standard libraries like the ones
+available in OpenSSL and many other
+libraries out there. So don't implement
+these primitives yourself, just use
+existing libraries. All right, so now I want
+to turn to kind of more sophisticated
+attacks on block ciphers and I'll particularly
+talk about how these attacks apply to DES.
+Okay so these attacks were discovered by
+Biham and Shamir back in 1989, and I'll
+particularly describe a version of the
+attack discovered by Matsui in 1993.
+So the goal here is basically given many,
+many input-output pairs, can we actually
+recover the key better than exhaustive
+search? So anything that runs better than
+exhaustive search already counts as an
+attack on the block cipher. Okay, so the
+example I want to give you is what's called
+linear cryptanalysis. And here imagine it
+so happens that, you know, c is the
+encryption of m using key k, and
+suppose it so happens that if I look at
+random key and a random message, somehow
+there's a dependence between the message,
+ciphertext, and the key bits. In
+particular, if I XOR a subset of
+the message bits, so this is just a
+subset of the message bits, if I XOR that with a certain subset of the ciphertext
+bits. —So these two the attacker
+sees. The attacker has the message and the
+attacker has the ciphertext. And then you
+compare that to an XOR of a subset of
+the key bits. Now if the two were
+completely independent which is what you'd
+like, you definitely don't want your
+message and your ciphertext to somehow
+predict your key bits, if the two are
+like, completely independent, then this
+equality will hold with probability
+exactly one-half. But suppose it so
+happens that there's a bias and this
+probability holds with probability half
+plus epsilon for some small epsilon. It so
+happens that, in fact, for DES, there is
+such a relation. The relation holds
+specifically because of a bug in the design
+of the fifth S-box. It turns out the fifth
+S-box happens to be too close to a linear
+function. And that linear function,
+basically, as it propagates through the
+entire DES circuit, generates a relation
+of this type. You notice, this is
+basically a linear relation that's being
+computed here. So, this small tiny, tiny
+linearity in the fifth S-box generates
+this relation over the entire circuit,
+where the epsilon is tiny. Epsilon is one
+over 2^21, and I wrote down what
+that is. So the bias is really, really,
+really small. But nevertheless, there is a
+bias using these particular subsets of bits. Now, I'm not going to show you how to
+derive this relation, or I'm not going to show you even what it is. I'll just tell you
+how to use a relation like this once you find it. Okay. So here's our relation
+that we have. And the question is how to
+use it. So with a little bit of statistics
+you can actually use an equation like this
+to determine some of the key bits. And
+here's you do it. Suppose you were given one over epsilon squared message-ciphertext pairs.
+And these have to be
+independently random messages and the
+corresponding ciphertexts. What you would
+do is you would use the formula above. In
+fact you would use the left-hand side of
+the formula above to compute this relation
+between the message and ciphertext for
+all the pairs you were given. Now what do
+you know? You know that for half plus
+epsilon of these values, you know that
+these things will be equal to an
+XOR of the key bits. So if you
+take majority over all the values you've
+computed, it turns out it's not so
+difficult to see that in fact you'll get
+the correct prediction for the XOR of the
+key bits with a probability of 97.7%. In
+other words, if this relation happens to
+be correct more than half the time, then
+the majority will be right. And because
+there's a bias, there's an epsilon bias, the probability that you will be correct
+more than half the time is, in fact,
+97.7%. In which case, the majority, in
+fact, will give you the correct XOR of the
+key bits. Okay? So this is kinda cool.
+Within one over epsilon squared time, you
+can figure out an XOR of a bunch of key
+bits. So now, let's apply this to DES.
+So, for DES, we have epsilon, which is one
+over 2^21. Which means that if you give me
+2^42 input-output pairs, I can
+figure out an XOR of the key bits. And now,
+it turns out, I'm not gonna exactly show
+you how, roughly speaking, using this
+method, you don't just get one key bit. In
+fact, you get two key bits. You can kind
+of use this relation. One's going in a
+forward direction and one's going in a
+backwards direction. So that gives you two
+XORs of bits of the secret key. Okay, so
+that's two bits of information about the
+secret key. And then it turns out you can
+get twelve more bits, because,
+essentially, you can figure out what the
+inputs are to the fifth S-box. Okay, so,
+I'm not going to exactly show you how. But it
+turns out you can get twelve more bits,
+which is a total of fourteen bits overall.
+So now, using this method, you've
+recovered fourteen bits of the secret key.
+And of course, it took you time 2^42.
+Okay, so then, what do you do?
+Well, so the rest of it is easy. Now what
+you're going to do is you're going to do
+exhaustive search on the remaining bits.
+Well how many remaining bits are there?
+Well, there are 42 remaining bits, so
+the exhaustive search will take you time 2^42. So what's the total attack time?
+Well, the first step of the algorithm
+to determine the fourteen bits took 2^42 time,
+and the remaining brute force
+search also took 2^42 time.
+So overall, the attack took two to the 43
+time. Okay? So now, this is much better
+than exhaustive search. Within two to the
+43 time, we broke DES. But of course, this
+required two to the 42 random input-output
+pairs whereas exhaustive search only
+required three pairs. Okay, so this is a
+fairly large number of input-output
+pairs that are needed, but given such a
+large number, you can actually recover the
+key faster than exhaustive search. Okay,
+so what's the lesson in all this?
+The lesson is, firstly, any tiny bit of
+linearity, basically, in this— in the
+fifth S-box, which was not designed as
+well as the other S-boxes, basically led
+to an attack on the algorithm. Okay. A tiny
+beat of linearity already introduced this
+linear attack. And I want to emphasize
+again that this is not the sort of thing
+you would think of when you design a cipher. And so again, the conclusion here is,
+there are very subtle attacks on block
+ciphers, ones which you will not be able to
+find yourself. And so just stick to the
+standards. Don't ever, ever, ever, ever
+design your block cipher. Okay, so that's
+all I want to say about sophisticated
+attacks. Now let's move on to the last
+type of attack that I want to mention, which
+I'll call quantum attacks, which are
+again— these are generic attacks on
+all block ciphers. So let me explain what
+I mean by this.
+So first of all, let's look at a generic problem, a generic search problem. Suppose I have a function
+on some large domain X, that happens to be
+two outputs, either zero or one.
+And it so happens that this function is mostly
+zero. And there's, like, maybe one input
+where the function happens to evaluate to
+one. And your goal is basically, you know,
+find me the inputs where the function
+happens to be one. Maybe there's only one
+such input. But your goal is to find it.
+Well, so on a classical computer, what can
+you do? The function is given to you. It's
+given to you as a black box. So the best
+you can do is just try all possible
+inputs. So this is gonna take time which
+in linear in the size of the domain. Now,
+it turns out there's an absolutely magical
+result that says that if you build a
+computer that's based on quantum physics
+as opposed to classical physics, you can
+solve this problem faster. So let me
+explain what I mean by this. So first of
+all in the 70s and 80s it was observed, I
+think it was actually Richard Feynman who observed this initially, that said
+that it turns out to be very difficult to
+simulate quantum experiments on a
+classical computer. So Feynman said, if
+that's the case, maybe these quantum
+experiments are computing things that a
+classical computer can't compute.
+So they're somehow able to compute very
+quickly things that are very difficult to
+do classically. And that turned out to be
+correct. And in fact, the example I want
+to show you is one of these amazing things that in fact, if you could build a
+quantum computer that's using quantum
+physics, then it's, in fact, you can solve
+this search problem not in time X but in
+time square root of X. So somehow, even
+though the computer doesn't know anything
+about the function F, it's treating it as
+a black box, nevertheless, it's able to
+find a point where the function is one, in
+time square root of X. I'm not going to explain this here, but, at the end of the
+class, we're gonna have an advanced topics
+lecture. And if you'd like me to explain
+how this algorithm works, I can explain it
+in that advanced topics lecture.
+It's actually quite interesting, and, in fact,
+quantum computers have quite an impact on
+crypto. And again, as I said, I can
+explain this in the very last lecture.
+All right. So what does this have to do with
+breaking block cyphers? So far it's just a
+generic search problem. Well, oh actually
+I should say before I show you the
+application, I should mention that, well,
+you might be wondering, well, can someone
+build a quantum computer. And this is
+still completely unknown. At this point,
+nobody really knows if we can build
+large enough quantum computers to actually
+take advantage of this beautiful algorithm
+due to Grover. Alright, so what does this
+have to do with block ciphers? Well, so
+suppose I give you a message-ciphertext pair.
+Just one or just a few. We can
+define a function as follows. It's a
+function on K, it's a function on, the key
+space. And the function will basically
+output one if it so happens that the
+encryption of m with k maps to c, and it
+will output zero otherwise. Now we argue
+that basically this is exactly the type of
+function that's one at one point in the
+key space and that's it. So by Grover's
+algorithm, we can actually find the secret
+key in time square root of K.
+So what does that mean? For DES, this would
+totally destroy DES. This would say
+that in time 2^28, you could
+find a key. 2^28 is about 200 million.
+So 200 million steps which is, you know, just takes a millisecond on a modern computer.
+This would totally destroy DES. But even AES with 128-bit keys,
+you would be able to find the secret
+key in time, roughly 2^64.
+And 2^64 is these days, considered
+insecure. That's within the realm of
+exhaustive search. And so, basically, if
+somebody was able to build a quantum
+computer, we would then say that AES-128
+is no longer secure. Instead, if somebody,
+you know, if tomorrow, you open up the
+newspaper, and you read an article that
+says, you know, so-and-so built a
+quantum computer, the conclusion, the
+consequence of all that is that you should
+immediately move to block ciphers that use
+256 bits, because then the running time
+of Grover's algorithm is 2^128,
+which is more time than we consider
+feasible, and the, basically there are
+example ciphers with 256 bits, for
+example, AES-256. This is one of the
+reasons why AES was designed with 256
+bits in mind. But to be honest, this is
+not the only reason. There are other reasons why you want it to have larger key sizes.
+Okay, so this is, as I said, just a taste of the different attacks on block ciphers,
+and I'm gonna leave it at that. If we decide on quantum for the last
+topic of the course, then we'll recover
+that in the very last lecture.

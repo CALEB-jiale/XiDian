@@ -1,0 +1,437 @@
+Over the years many natural cryptographic
+constructions were found to be insecure.
+In response, modern cryptography was
+developed as a rigorous science where
+constructions are always accompanied by a
+proof of security. The language used to
+describe security relies on discreet
+probability. In this segment and the next,
+I'll give a brief overview of discreet
+probability, and I point to this Wiki
+books article over here for a longer
+introduction. Discrete probability is
+always defined over a universe which I'll
+denote by u and this universe in our case
+is always going to be a finite set. In
+fact very commonly our universe is going
+to be simply the set of all n bit strings
+which here is denoted by zero one to the
+n. So for example the set zero one squared
+is the set of all two bit strings which
+happens to be the string zero, zero, zero
+one, One, zero, and one, one. So there are
+four elements in this set, and more
+generally in the set zero one to the N,
+there are two to the N elements. Now a
+probability distribution over this
+universe U is simply a function which I'll
+denote by P, and this function, what it
+does, is it assigns to every element in
+the universe a number between zero and
+one. And this number is what I'll call the
+weight or the probability of that
+particular element in the universe. Now
+there's only one requirement on this
+function P, and that is that the sum of
+all the weights, sum up to one. That is,
+if I sum the probability of all elements X
+in the universe, what I end up with is the
+number one. So let's look at a very simple
+example looking back to our 2-bit
+universe. So 0001, ten and eleven And you
+can consider the following probability
+distribution Which, for example, assigns
+to the element 00, the probability one
+half. The elements 01, we assign the
+probability 1/8th, to ten we assign the
+probability one quarter and to eleven we
+assign the probability 1/8th. Okay we can
+see that if we sum up these numbers in
+fact we get one which means that this
+probability P is in fact the probability
+distributio N. Now what these number mean
+is that if I sample from this probability
+distribution I'll get the string 00 with
+probability one half I'll get the string
+01 with probability 1/8th and so on and so
+forth. So now that we understand what a
+probability distribution is, let's look at
+two classic examples of probability
+distributions. The first one is what's
+called the uniform distribution. The
+uniform distribution assigns to every
+element in the universe, exactly the same
+weight. I'm gonna use U between two bars
+to denote the size of the universe U. That
+is the number of elements in the universe,
+and since we want the sum of all the
+weights to sum out to one, and we want all
+these weights to be equal, what this means
+is that for every element X in the
+universe, we assign a probability of one
+over U. So in particular if we look at our
+example, the uniform distribution and the
+set of two [inaudible] strings, would
+simply assign one-quarter the weight,
+one-quarter to each one of these strings
+And clearly that, the sum of all the
+weights sums up to one. Well again, what
+this means is that if I sample at random
+from this distribution, I'll get a uniform
+sample across all our 2-bit strings So all
+of these 4-bit strings are equally likely
+to be sampled by this distribution.
+Another distribution that's very common is
+what's called a point distribution at the
+point X0 And what this point distribution
+does is basically it puts all the weight
+on a single point, namely X0. So here we
+assign to the point X0 all the weight, one
+And then to all other points in the
+universe, we assign the weight zero And by
+the way, I want to point out that this,
+inverted, A here should be read as, for
+all. So all this says is, that for all X
+that are not equal to X zero, the
+probability of that X is zero. So again
+going back to our example a point
+distribution for example, that would put
+all its mass on the string 1-0, would
+assign probability one to the string 1-0
+and zero to all other strings. So now if I
+sample from this distribution pretty much
+I'm always guaranteed to always sample the
+string 1-0 and never sample any of the
+other strings. So now we know what a
+distribution is, and I just want to make
+one last point, and that is that because
+this universe U is always gonna be a
+finite set up for us, we can actually
+write down the weights that the
+distribution assigns to every element in
+U, and represent the entire distribution
+as a vector. So, here for example, if you
+look at the universe of an all 3-bit
+strings, we can literally write down the
+ways that the distribution assigns to the
+string 000, then the way that distribution
+assigns to the string 001 And so on, and
+so forth. We you can see that we can write
+this as a vector, in this case it will be
+a vector of dimension eight, there will
+be, there are eight strings of 3-bits as a
+result basically the entire distribution
+is captured by this vector of eight real
+numbers, in the range of all zero to one.
+The next thing I wanna do is define the
+concept of an event. So consider a subset
+A of our universe And I, I'll define the
+probability of the subsets to be simply
+the sum of the weights of all the elements
+in the set A. In other words, I'm summing
+over all X and A, the weights of these
+elements X in the set A, Now because the
+sum over the entire universe of all
+weights needs to be one. This means that
+if we sum, well if you look at the
+probability of the entire universe,
+basically we get one. And if we look at
+the probability of a subset of the
+universe, we're gonna get some number in
+the interval zero to one And we say that
+the probability of this set A, is the sum
+which is a number between zero and one.
+And I'll tell you that a subset A of the
+universe is called an event. And the
+probability of the set A is called the
+probability of that event. So let's look
+at a simple example. So suppose we look at
+the universe u, which consists of all
+8-bit strings, right? So the size of this
+universe u is 256 because there are 256
+8-bit strings. Essentially we're looking
+at all byte values, all 256 possible byte
+values. Now let's define the following
+event. Basically the event is gonna
+contain all bytes so all [inaudible]
+extremes in the universe such that the two
+least significant bits of the byte happens
+to be eleven So for example, if we look at
+01011010 that's an element in the universe
+that's not in the set A, but if we choose
+a zero to a one. Then that's an element of
+the universe which gives in our set A. And
+now let's look at the uniform distribution
+over the universe U and let me ask you
+what is the probability of the, of the
+event A? So what is the probability that
+when we choose a random byte, the two
+least significant bits of that byte
+happens to be one, one? Well the answer is
+one-fourth, and the reason that's true is
+because it's not too difficult to convince
+yourself that of the 256 eight bit
+strings, exactly 64 of them, one quarter
+of them, end in one, one. And the
+probability of each string is, we're
+looking at the uniform distribution or
+probability of each string is exactly one
+over the size of the universe, mainly one
+over 256. And the product of these, you
+know, 64 elements, each one has weight one
+over 256 is exactly one-fourth, which is
+the probability of the event A that we're
+looking at. So a very simple bound on the
+probability of events is called the union
+bound. So imagine we have two events a1
+and a2. So these are both subsets of some
+universe U Snd we wanna know what is the
+probability that either A1 occurs, or A2
+occurs In other words, what is the
+probability of the union of these two
+events? This little U here denotes the
+union of the two sets. So the union bound
+tells us that the probability that either
+A1 occurs or A2 occurs is basically less
+than the sum of the two probabilities. And
+that's actually quite easy to see. So
+simply look at this picture here, you can
+see that when we look at, at the sum of
+the two probabilities, we're basically
+summing the probability of all the
+elements in A1, all the elements in A2 And
+you realized, we kind of double-summed
+these elements in the intersec tion. They
+get summed twice here on the right hand
+side And as a result, the sum of the two
+probabilities is going to be larger or
+larger than or equal to, the actual
+probability of the union of A1 and A2. So
+that's the classic union bound And in fact
+I'll tell you that if the two events are
+disjoint, in other words they're
+intersection is empty, in that case if we
+look at the sum, at the probability that
+either A-1 or A02 happens, that's exactly
+equal to the sum of the two probabilities.
+Okay? So we'll use these facts here and
+there throughout the course. So just to be
+clear, the inequality holds always But
+when the two events are disjoint, then in
+fact we get an equality over here. So
+let's look at a simple example. Suppose
+our, event A1 is the set of all n-bit
+stings that happen to end in 1-1 And
+suppose A2 is the set of all n-bit strings
+that happen to begin with 1-1. Okay, so N
+thinks of it as H or some large number and
+I'm asking that what is the probability
+that either a one happens or a two
+happens, In other words if I sample
+uniformly from the universe U, what is the
+probability that either the least
+significant bits are one, one or the most
+significant digits are one, one. Well as
+we said that's basically the probability
+of the union of A1 and A2. We know that
+the probability of each one of these
+events is one-quarter by what we just did
+previous slide And therefore by the union
+[inaudible] the probability of the
+[inaudible]. Is, you know, a quarter of
+the probability of A1, plus the
+probability of A2, which is a quarter plus
+a quarter. And we just proved that the
+probability of seeing 1-1 in the most
+significant bit, or 1-1 least significant
+bit, is less than one-half. So that's a
+simple example of how we might go about
+using the Union Bound to bound the
+probability that one of two events might
+happen. The next concept we need to
+define, is what's called a random
+variable. Now, random variables are fairly
+intuitive objects. But unfortunately the
+formal definition of a random variable can
+be a little c onfusing. So what I'll do
+is, I'll give an example, and hopefully
+that will be clear enough. So formally, a
+random variable denoted say, by X. Is a
+function, from the universe into some set
+V And we say that this set V is where the
+random variable takes its values. So let's
+look at a particular example. So suppose
+we have a random variable x And this
+random variable maps into the set 01. So
+the values of this random variable are
+going to be either zero or one. So, one
+bit, basically. Now, this random variable
+maps our universe, which is the center of
+all end bit binary strings, 01 to the end
+And how does it do it? Well, given a
+particular sample in the universe, a
+particular end-bit string y. What the
+random variable will do is simply output
+the least significant bit of y And that's
+it. That's the whole random variable. So,
+now let me ask you. Suppose we look at a
+uniform distribution on the set zero one
+to the end. Let me ask you what is the
+probability that this random variable
+output zero and what is the probability
+that a random variable outputs one? Well
+you can see that the answers are half and
+half. Well let's just lead them through
+why that's the case. So here we have a
+picture showing the universe and the
+possible alpha space. And so in this case
+the variable can output a zero or a one.
+When there is a variable output zero,
+there is a variable output zero when the
+sample in the universe happens to be, to
+have its least inefficient [inaudible] bid
+be set to zero. In variable one, output
+one When the sample in the universe
+happens to have its least significant bit
+set to one. Well, if choose strings
+uniformly at random, the probability that
+we choose a string that has its least
+significant bits set to zero is exactly
+one half Which the random variable output
+zero with a probability of exactly
+one-half. Similarly, if we choose a random
+end-bit string, the probability that the
+least significant bit is equal to one is
+also one-half. And so we say that the
+random variable output's one, also with
+exactly proba bility of one-half. Now,
+more generally, if we have a random
+variable taking values in a certain set v,
+then this random variable actually induces
+a distribution on this set v. And here, I
+just wrote a, kind of a, in symbols, what
+this distribution means But it's actually
+very easy to explain. Essentially, what it
+says is that the variable outputs v
+Basically, with the same probability that
+if we sample a random element in the
+universe, and, and then we apply the
+function x. We ask, how likely is it that
+the output is actually=to v? So formally
+we say that the probability that X outputs
+V, is the same as the probability of the
+event That when we sample a random element
+in the universe, we fall into the pre
+image of V under the function X And again,
+if this wasn't clear, it's not that
+important. All you need to know is that a
+random variable takes values in a
+particular set V, and in, induces a
+distribution on that set V. Now there's a
+particularly important random variable
+called a uniform random variable. And it's
+basically defined as you would expect. So
+let's say that U is some fine [inaudible]
+set For example the set of all N bit
+binary strings, and we're gonna denote a
+random variable R that's basically
+sample's uniformly from the set U by this
+little funny arrow with a little R on top
+of it. In this, again the notes that the
+random variable R is literally a uniform
+random variable sampled over the set U. So
+in symbols what's this means is that for
+all elements A in the universe, the
+probability that R is equal to A is simply
+R one over U. And if you want to stick to
+the formal definition of a, of a uniform
+variable, it's not actually that important
+But I would just say that formally the
+uniform random variable is an identity
+function namely R [inaudible] is equal to
+X for all X in the universe So just to see
+that this is clear, let me ask you a
+simple puzzle. Suppose we have a uniform
+random variable over 2-bit strings, so
+over the set, 01, ten, one and now, let's
+define a new random variable X to basicall
+y sum the first and second bits of R. That
+is, X simply is the sum of R1 and R2, the
+first and second bits of R, treating those
+bits as integers. So, for example, if, r
+happens to be 00, then x will be zero+0,
+which is zero. So let me ask you, what is
+the probability that x is = to two? So
+it's not difficult to see that the answer
+is exactly, one-fourth because, basically
+the only way that x is equal to two is if
+r happens to be 1,1 but the probability
+that r is equal to 1,1 is basically
+one-fourth because r is uniform over the
+set of all two bit stings. The last
+concept I want to define in this segment
+is what's called a randomized algorithm.
+So I'm sure you're all familiar with
+deterministic algorithms. These are
+algorithms that basically take a
+particular, input data, as input, and they
+always produce the same output, say Y. So
+if we run the algorithm a hundred times on
+the same input, we'll always get the same
+output. So you can think of a
+deterministic algorithm as a function that
+given a particular input data, M, will
+always produce exactly the same output, A
+of M. A randomized algorithm is a little
+different, in that, as before, it takes
+the [inaudible] and as input, but it also
+has an implicit argument called R, where
+this R is sampled anew every time the
+algorithm is run. And in particular this R
+is sampled uniformly at random from the
+set of all N-bit strings, for some
+arbitrary end. Now what happens is every
+time we run the algorithm on a particular
+input M we're gonna get a different output
+because a different R is generated every
+time. So the first time we run the
+algorithm we get one output. The second
+time we run the algorithm a new R is
+generated and we get a different output.
+The third time we run the algorithm a new
+R is generated and we get a third output
+and so on. So really the way to think
+about a randomized algorithm is it's
+actually defining a random variable.
+Right? So given a particular input
+message, M, it's defining a random
+variable which is, defining a distribution
+over the set of a [laugh] possible outputs
+of this algorithm, given the input, M. So
+the thing to remember is that the output
+of a randomized algorithm changes every
+time you run it And in fact, the algorithm
+defines a distribution and the set of all
+possible outputs. So let's look at a
+particular example. So suppose we have a
+randomized algorithm that takes as input a
+message M And of course it also takes an
+implicate input which is this random
+string that is used to randomize its
+operation. So now what the algorithm will
+do is simply will encrypt the message M
+using the random string as input. So this
+basically defines a random variable. This
+random variable takes values that are
+encryptions of the message M And really
+what this random, random variable is it's
+a distribution over the set of all
+possible encryptions of the message M
+under a uniform key. So the main point to
+remember is that even though the inputs to
+a randomized algorithm might always be the
+same every time you run the randomized
+algorithm you're gonna get a different
+output. Okay So, that concludes this
+segment, and we'll see a bit more discrete
+probability in the next segment.

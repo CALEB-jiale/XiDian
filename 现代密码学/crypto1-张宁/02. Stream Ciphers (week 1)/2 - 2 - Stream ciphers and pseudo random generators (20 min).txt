@@ -1,0 +1,489 @@
+Now that we know about the one-time pad,
+let's talk about making the one-time pad
+more practical using something called the
+stream cypher. But before we do that,
+let's do a quick review of where we were.
+So let me just remind you that a cypher is
+defined over a triple of sets called a key
+space, a message space, and a cypher text
+bare space. And a cypher is a pair of
+efficient algorithms called E and D; E
+stands for encryption and D stands for
+decryption. And the only property. That we
+need to satisfy is that decryption is the
+opposite of encryption. In other words if
+I encrypt a message M using a particular
+key. And I de-crypt using the same key. I
+get back the original message. Last time
+we looked at a couple of weak cyphers like
+the substitution cypher and the vigonaire
+cypher. We showed that all of them can be
+easily broken so you should never ever,
+ever use those cyphers. Those were just
+for historical reference. And then we
+looked at our first exam.ple of a good
+cypher, namely the one-time pad. So let me
+just remind you how the one-time pad is
+defined. Basically the message space is
+the set of all bit end bit strings. The
+cypher text is a set of all bit end bit
+strings. And similarly, the key. Is the
+set of all N bit strings and the way we
+encrypt is by a simple exor to encrypt the
+message we just exor the message in the
+key that gives us the cypher text. And
+then to decrypt a cypher text, we just do
+this x over again and it's easier to show
+by properties of x over that in fact
+decryption is the opposite of encryption.
+And then we talked about this lemma, in
+fact, we proved it, that says that the
+one-time pad has perfect secrecy, which
+means that if you're just an eavesdropper
+and you just get to see a single cypher
+text, you're not going to be able to
+deduce any information about the encrypted
+plain text. Unfortunately. We also said
+that Shannon proved this lema, we called
+it the bad news lema, that basically says
+that any cypher that has perfect secrecy
+must have really long keys. In other
+words, the key length must be at least as
+long as the length of the message, which
+means that the cypher is not particularly
+useful. Because if two parties have a way
+to agree on really long keys that are as
+long as the message, they, in some sense,
+might as well use that mechanism to
+already transmit the message itself. So in
+this lecture we're going to take the idea
+of the one time pad and try to make it
+into a practical encryption scheme. So
+this is called what's called a stream
+cypher. So the idea in this dream cypher
+is rather than using a totally random key,
+we're actually going to use a
+pseudo-random key. And to explain how that
+works, I need to define what is a
+pseudo-random generator, PRG. So a PRG,
+really, all it is, is just a function,
+I'll call it g for generator, that takes a
+seed, so I'm going to use zero one to the
+s to denote all strings of length s, so
+this we'll call the seed space. So he
+takes an s bit seed and maps it to a much
+larger string which will denote by zero
+one to the n. And the property is that n
+must be much larger than s. So in other
+words, we take a seed that might be only
+128 bits and we expand it into a much,
+much larger output string that could be
+gigabytes long. That's what this
+pseudo-random generator does. And of
+course, the goal is that first of all, the
+generator is efficiently computable, so
+the function g. There should be some sort
+of an efficient algorithm that computes
+it. So, efficiently computable by a
+deterministic algorithm. It's important to
+understand that the function g itself has
+no more randomness, in it, it's a totally
+deterministic. The only thing that's
+random here is the random seed, that's
+given as input to the function g. And the
+other property, of course, is that the
+output. Should look random and the
+question is what does it mean to look
+random, and that's something we'll define
+later on in the lecture. Okay so suppose
+we have such a generator, how do we use
+that, to build a stream cipher? We the
+idea is that we're gonna use the seed, as
+our key, so our short seed is gonna be our
+secret key. And then we're gonna use the
+generator to basically expand the seed
+into a much, much larger random looking
+sequence, or pseudo random sequence, as
+it's known, so this would be G of K. And then
+we are going to X over it just like in the
+one time pad we're going to X over it the
+student random sequence with the message
+and that's going to give us the cypher
+text. Or if we want to write this in math,
+we'll write C equals the encryption of the
+message M with a key K, which is simply
+defined as M XOR G of K. And then when we
+want to decrypt, basically we do exactly
+the same thing. It's basically the cypher
+text XOR G of K, just like in the one-time
+pad except then instead of XOR-ing with K,
+we XOR with the output of the generator
+applied to K. So the first question to ask
+is why is it secure? So, basically you
+now, we only have one notion of security
+so far, which we called perfect secrecy.
+And so let's just quickly ask can a stream
+cipher have perfect secrecy. Remember in
+the stream cipher the key is much, much
+shorter than the message. And so, never
+the less, can it have perfect secrecy. So
+I hope everybody said the answer is, no.
+The key is much shorter than the message.
+And we said that in a, in a perfectly
+secure cypher, the key must be as long as
+the mesage. And therefore, it's not
+possible that a, that a stream cypher
+actually has perfect secrecy. So the
+question is, then, well, why is it secure?
+First of all we would need a different
+definition of security to argue that
+Stream Safe is, is secure and in
+particular, the security property is going
+to depend on the specific generator that
+we used. So in fact the definition of
+privacy that we'll need to argue the
+security of Stream Cipher is we'll see in
+the next lecture, but for now let me show
+you one particular property. That a
+generator must have a minimum property
+needed for security. This property is
+called unpredictability. So let's we
+suppose for one second that in fact a
+stream cycle is predictable. So, what does
+that mean? Both the PRG is predictable.
+What that means is essentially that there
+is some pi. Such that if I give you the
+first I bits of the outputs. This notation
+Bar one to I means look at the first
+I-bits of the output of the function.
+Okay, so I give you the first I bits of
+the stream. There is some sort of an
+algorithm, there's an efficient algorithm
+that will compute the rest of the string.
+Okay, so given the first I bits, you can
+compute the remainder of the bits. I claim
+that if this is the case, then the stream
+cypher would not be secure. So let's see
+why. Suppose an attacker actually
+intercepts a particular cypher text, let's
+call it c. If this is the case, then in
+fact, we have a problem. Because suppose
+that just by some prior knowledge, the
+attacker actually knows that the initial
+part of the message happens to be some
+known value. For example, we know that in
+the mail protocol, smtp, the standard mail
+call used in the internet, you know that
+every message starts with a word from
+colon. Well, that would be a prefix that
+the adversary knows. That the site, that
+the message must begin with from a colon.
+What it could do is it could [inaudible]
+the cipher text with the words from colon,
+with the little prefix of the message that
+it actually knows. And what that would
+give it is a prefix of. Of the pseudo
+random sequence. And I would learn as a
+result of this, it would learn a prefix of
+the pseudo random sequence but then we
+know that once it has a prefix of the
+pseudo random sequence it can predict the
+remainder of the pseudo random sequence
+and that would allow it to then predict
+the rest of the message end. Okay, so for
+example if the pseudo random generator was
+predictable given five bits of the pad.
+Then every email encrypted using the
+stream cypher would be decryptable
+because, again, the attacker knows the
+prefix of the message from which he
+deduces the prefix of the pad, which then
+allows him to compute the rest of the pad,
+which then allows him to recover the
+entire plain text. Okay, so this is an
+example that shows that in fact if a PRG
+is predictable then already there are
+security problems. Because a small prefix
+would reveal the entire message. As it
+turns out, even if I could predict just
+one bit of the outputs. Even if given, you
+know, the first I bits, I can predict the
+next bits, the I plus first bits. Already,
+this is a problem. Because that would say
+that given again, the first couple of
+letters in a message can predict, can
+decrypt essentially, and recover the next
+bit of the message, or the next layer of
+the message, and so on. So this
+predictability property shows that, you
+know, if we use a PRG that's going to be
+used in a stream cypher, it had better be
+unpredictable. So what does it mean that a
+PRG is unpredictable? So let's define more
+precisely what it means for a PRG to be
+unpredictable. Well first we'll define
+more precisely what it means for a PRG to
+be predictable. So we say that G is
+predictable, if there exists an efficient
+algorithm. Let's call it A and there is
+some position. There's a position I
+between one and N minus one such that if
+we look at the probability over a random
+key. Probability if I generate a random
+key. You remember, this notation means
+choose a random key from the set k. So
+this arrow with r just means choose a
+random key from the set k. Basically, if I
+give this algorithm the prefix of the
+output, if I give it the first I bytes of
+the output, the probability that it's able
+to predict the next bit of the outputs,
+this probability is greater than half plus
+epislon. For some non-negotiable. For some
+non-negligible. >> [inaudible]. >> A non
+[inaudible], for example, would be
+epsilon, which is great than one over two
+to the 30. One over a billion, for
+example, we would consider it not
+negligible. So these terms, negligible and
+non negligible will come back at the end
+of the lecture, and define them more
+precisely. But for now, let's just, stick
+with the intuitive notion of what non
+negligible means. And so this is what it
+means, for an algorithm, for a generator
+to be, predictable. Basically, there is
+some algorithm that is able to predict the
+I plus first bits, even the mutual prefix,
+okay? And then we say that an algorithm,
+that a P or G is unpredictable. If in
+fact, well, if it's doesn't satisfy the
+property that we just defined. In other
+words, it is not predictable. But what
+does it mean, more precisely for it not to
+be predictable. It means that, in fact,
+for all positions, for all i there is
+no efficient adversary no efficient
+algorithm A that can predict the i + 1
+bit with non negligible probability.
+Excellent. Okay and this has to be true
+for all I. So no matter which prefix I
+give you, you're not gonna be able to
+predict the next bit that follows the
+prefix. Okay, so let's look at some
+examples. Here is a silly, silly example.
+Suppose I give you a generator, and I ask
+you, is it predictable? Well, this
+generator happens to have the property,
+that if I XOR all the bits of the
+outputs, I always happen to get one. Okay,
+so I x over all the bits. Bit number one,
+x over bit number two, x over bit number
+three. If I x over all those bits, I
+happen to get one. The question is, is
+that a predictable generator? And again, I
+hope everybody answered yes, that
+essentially given the first n minus one
+bits of the outputs, I can predict the nth
+bit because it would just be the bits
+that's needed to make the x over all the
+bits be one. In other words, I give you
+all but one of the bits of the generator,
+you can actually predict the last bit of
+the generator. Now that we've seen that
+PRGs have to be unpredictable, I just want
+to mention a couple of weak PRGs that
+should never ever be used for crypto. This
+is a very common mistake and I just want
+to make sure none of you guys make this
+mistake. So a very common PRG that should
+actually never be used for crypto is
+called a linear congruential generator. So
+let me explain what a linear congruential
+generator is. Basically it has parameters.
+It has three parameters. I'll call them A,
+B and P. A and B are just integers and P
+is a prime. And the generator is defined
+as follows, essentially I'll say R zero is
+the seed of the generator. And then the
+way you generate randomness is basically
+you [inaudible] run through the following
+steps. You compute a times r of I minus
+one plus b modular p. Then you output a
+few bits of the current states, output few
+bits of our i. Then, of course, you
+increment I and you iterate this again and
+again and again. Okay? So you can see how
+this generator proceeds. It starts with a
+particular seed. At every step there is
+this leaner transformation that's being
+applied to the seed. And then you output a
+few bits of the current state and then you
+do that again and again and again and
+again. Unfortunately even though this
+generator has good statistical properties
+in the sense that, for example, the number
+of zeroes it outputs is likely going to be
+similar to the number of ones and so on;
+it has, you can actually argue all sorts
+of nice statistical properties about this,
+nevertheless it is a very easy generator
+to predict. And in fact should never ever
+be used. In fact, just given a few
+outputs, a few output samples, it's easy
+to predict the remainder of the sequence.
+And as a result, this generator should
+never ever be used. Another example is a
+random number generator that is very
+closely related to the linear congruential
+generator. This is a random number
+generator implemented in glibc, very
+common library. That you can see. I just
+wrote down the definition here. You can
+see that is basically outputs a few bits
+at every ideration and it just does this
+simple linear transformation at every
+step. Again, this is a very easy generator
+to predict and should never ever be used
+for crypto. And so the lesson I want to
+emphasize here is never ever use the
+built-in glibc function random. For crypto,
+because it doesn't reduce,
+cryptographic randomness, in the sense
+that it is easy to predict. And, in fact,
+systems like Kerberos version four have
+used random and, have been bitten by that.
+So, please don't make that mistake
+yourself. We will talk about how to do
+secure random number generation actually in
+the next lecture. Before we conclude this
+lecture I just want to give a little bit
+more detail about these concepts of
+negligible and non-negligible values, so
+different communities in crypto actually
+define these concepts differently, for
+practitioners basically these the term
+negligible and non-negligible,
+are just, particular scalers that are used in the
+definition. So, for example, a
+practitioner would say, that if a value is
+more than one over, one over a billion,
+one over two to the 30, we say that the
+value is non-negligible. The reason is,
+the reason that's so, is, because if you
+happen to use a key, for example, for, for
+encrypting a gigabyte of data, a gigabyte
+of data is about two to the 30 or maybe
+even two to the 32 bytes. Then an event
+that happens with the probability one over
+two to the thirty will likely happen after
+about a gigabyte of data. So since a
+gigabyte of data is within reason for a
+particular key, this event is likely to
+happen. Therefore one over two to the
+thirty is non-negligible. On the other
+hand, we'll say that one over two to the
+eighty. Which is much, much, much smaller
+is an event, an event that happens with
+this probability is an event that's
+actually not going to happen over the life
+of the key. And therefore we'll say that
+that's a negligible event. As it turns
+out, these practical definitions of
+negligible and non-negligible are quite
+problematic and we'll see examples of why
+they're problematic later on. So in fact
+in the more rigerous theory of
+cryptography, the definition of negligible
+and non-negligible are somewhat different.
+And in fact, when we talk about the
+probability of an event, we don't talk
+about these probabilities as scalers, but
+rather we talk about them as functions of
+a security parameter. So let me explain
+what that means. So these functions,
+essentially, are functions that map, that
+outputs, positive real values. So, are non
+negative real values that are supposedly
+probabilities. But they're functions that
+act on non negative integers, okay? So,
+what does it mean for a function to be
+non-negligible? What it means is that the
+function is bigger than some polynomial
+infinitely often. In other words, for
+many, for infinitely many values, the
+function is bigger than some, one over
+polynomial, okay? So I wrote the exact
+definition here, and we'll see an example,
+in just a minute. Okay? So if something is
+bigger, is often bigger than one of that
+polynomial, we'll say that it's non-negligible.
+However, if something is
+smaller than all polynomials, then we'll
+say that it's negligible. So, what this
+says here, basically, for any degree
+polynomial, for all d, there exists some
+lower bound lambda-d such as, for all
+lambda bigger than this lambda-d, the
+function is smaller than one over the
+polynomial. So all this says is that the
+function is negligible if it's less than
+all polynomial fractions. In other words, is
+less than one over lambda-d for
+sufficiently large lambda. So let's look
+at some examples. And we'll see
+applications of these negligible and
+non-negligible concepts later on. But I
+just want to make, wanted to make it clear
+that this is how you would rigorously find
+these concepts. Basically either smaller
+than one over poly or bigger than one over
+poly, one would be negligible, the
+other would be non-negligible. Let's look
+at some examples. So, for example, a
+function that drops exponentially in
+lambda clearly would be negligible because
+for any constant d there is a sufficiently
+large, large lambda. Such as one over two
+to the lambda is less than one over lambda
+to the d. Okay. So this is clearly less
+than all polynomials. Over the function,
+say, one over lambda to a thousand, right.
+This is a function that grows very, very,
+very slowly. It barely ever moves.
+Nevertheless, this function is
+non-negligible because if I set d to be
+10,000, then clearly this function is
+bigger than one over lambda to the 10,000.
+And so this function is bigger than some
+polynomial fraction. And lets look at a
+confusing example, just to be tricky. What
+do you think? Suppose I have a function that for
+an odd lambda it happens to be exponentially small,
+for even lambda, it happens to be
+polynomially small. Is this a negligible or
+non-negligible function? Well, by our
+definition this would a non-negligible
+function. And the intuition is, if a
+function happens to be only polynomially
+small, very often, that actually means
+that this event, you know, an event
+that happens with this probability, is
+already too large to be used in a real
+cryptosystem. Okay, so, the main points to
+remember here, are that these terms,
+basically, correspond to less than
+polynomial or more than polynomial, but
+throughout the course, we'll mostly use
+negligible to mean less than, than an
+exponential. And non-negligible to mean,
+less than one over polynomial. So now we
+saw the core idea for converting the one
+time pad into a practical cipher. And I
+mean, the stream cipher. And then, in the
+next lecture, we're gonna see how to
+actually argue that the stream cipher is
+actually secure. That's gonna require a
+new definition of security, since perfect
+secrecy is not good enough here, and we
+will see that in the next lecture.

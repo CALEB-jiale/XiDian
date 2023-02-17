@@ -1,0 +1,336 @@
+Now that we're done with message
+integrity, we're gonna back and talk about
+encryption, and we're gonna show how to
+construct encryption schemes that provide
+much stronger security guarantees than
+what we had before. But first let's do a
+recap of where we are. So in previous
+segments, we talked about confidentiality,
+in particular how to encrypt messages such
+that we achieve semantic security against
+what's called a chosen plaintext attack.
+Now I kept mentioning again and again that
+security against chosen plaintext attacks
+only provides security against
+eavesdropping. In other words, this only
+provides security against adversaries that
+listen to network traffic. But don't
+actually change any packets, or don't
+inject their own packets, and so on. In
+this module, our goal is actually to
+design encryption schemes that are secure
+against adversaries that can tamper with
+traffic by blocking certain packets, and
+injecting other packets and so on. And
+then we also looked at how to provide
+message integrity where the message itself
+is not confidential. We just want to make
+sure that the message is not modified
+while it's en route. And so we talked
+about message authentication codes, MAC
+algorithms that provide existential
+unforgeability against a chosen message
+attack. In other words, even though the
+attacker is able to obtain the MACs on
+arbitrary messages of his choice, he can't
+build MACs for any other messages. And we
+looked at a number of MAC constructions,
+in particular CBC MAC, HMAC, a Parallel mac
+construction. And a fast MAC construction
+called a Carter-Wegman MAC. In this
+module, we're going to show how to combine
+these confidentiality and integrity
+mechanisms to obtain encryption schemes
+that are secure against a much, much
+stronger adversary, namely an adversary that
+can tamper with traffic while it's in the
+network, inject its own packets, block
+certain packets, and so on. And our goal
+is basically to insure that even against
+such powerful adversaries, we maintain
+confidentiality. In other words, the
+adversary can't learn what the plain text
+is and the adversary can't even modify the
+cipher text. And cause the recipient to
+think a different plain text was actually
+sent. So before we do that I want to give
+you a few examples of adversaries that can
+tamper with traffic. And as a result
+completely break security of CPA secure
+encryption. This will show you that,
+actually, with that providing integrity,
+confidentiality can also be destroyed. In
+other words, the two must go together,
+integrity and confidentiality, if we're
+going to achieve security against active
+adversaries. So let's look at an example
+from the word of networking. In
+particular, let's look at TCP/IP. I'm gonna
+use a highly simplified version of TCP/IP
+just so we can quickly focus on the attack
+and not get bogged down by the details. So
+here we have two machines communicating
+with one another. A user sits at one
+machine, and the other machine is a
+server. Now, the server, of course, has a
+TCP/IP stack that's receiving packets. And
+then, based on the destination field in
+those packets, it forwards the packets to
+the appropriate place. So here we have,
+for example, two processes listening to
+these packets. A web server, say, over
+here, and another user, we'll call him
+Bob, over here. The web server listens on
+port 80, and here, this user Bob, listens
+on port 25. Now, when a packet comes in,
+the TCP/IP stack looks at the destination
+port. In this case, it would be
+destination 80, and as a result, the stack
+forwards the packets over to the web
+server. If the destination port said port
+25, the TCP/IP stack would forward the
+packet over to Bob, who's listening on
+port 25. Now, a fairly well known security
+protocol called IPsec, encrypts these IP
+packets between the sender and the
+recipient. So here, the sender and the
+recipients basically have a shared key.
+And when the sender sends IP packets,
+those IP packets are encrypted using the
+secret key K. Now when a packet arrives at
+the destination, and I mean it arrives at
+the server, the TCP/IP stack will go ahead
+and decrypt the packet, and then look at
+the destination port and send it to the
+appropriate place decrypted. You notice
+the data here is decrypted. So in this
+case it would send it to the webserver
+because the destination port is port 80.
+If the destination port happens to be port
+25, the TCP/IP stack will decrypt the
+packet, look at the destination port, and
+send the data in the clear to the process
+who's listening on port 25. So now I wanna
+show you that without integrity, in this
+setup, we can't possibly achieve any form
+of confidentiality and let's see why. So
+imagine the attacker intercepts a certain
+packet that's intended for the web server.
+In other words, it's an encrypted packet
+intended for port 80. Remember that the
+attacker can actually receive the
+decryption of any packets that's intended
+for port 25 because the TCP stack will
+happily decrypt packets for port 25 and
+send them over to Bob who's listening over
+here. So what Bob is going to do, Bob here
+is the attacker, what he's going to do is
+he's gonna intercept this packet en route,
+prevent the packet from reaching the
+server as is, and instead, he's going to
+modify the packet. So now the destination
+port is going to read like port 25. This
+is done on the cipher text and we're going
+to see how to do that in just a minute.
+When this packet now arrives at the
+server, the destination port says 25, the
+server will decrypt the packet, see that
+the destination is 25 and forward the data
+over to Bob. So now Bob was simply by
+changing the destination ports, Bob was
+able to read data that was not intended
+for himself, but rather was intended for
+the web server. So, if the data is
+encrypted using a CBC encryption with a
+random IV, remember this is a CPA secure
+scheme. Never the less if that's the case,
+I'm gonna show you that it's trivial for
+the attacker to change the decipher text.
+So that now he can obtain new cipher text
+where the destination port is 25 instead
+of 80. The only thing that's gonna change
+is just the IV field. In fact, everything
+else is gonna remain the same. So, let's
+see how to do it. So here, just to remind
+yourself, that, in fact, what the attacker
+captured is a CBC encrypted packet. Where
+he knows that the destination port is port
+80, but he doesn't know what the data is.
+The attacker has no clue what the data is
+but he does know that his packet is
+intended for the web server. His goal is
+to build a new encrypted packet where now
+the destination port is port 25. So the
+way he's gonna do is as we said is just by
+changing the IV, and let me remind you that
+the way you decrypt CBC encrypted data is
+essentially the first plain text block is
+simply decryption of the first cipher
+text block XORed with IV. And we
+know that in the original packet this is
+gonna read dest equals 80. Cuz in the
+original packet the destination port is
+port 80. So now my question to you is how
+will the attacker have changed the IV so
+now the destination port will read dest
+equals 25. So it's pretty easy to see that
+if the attacker simply takes the original
+IV, XORs it with here, there are a bunch
+of zeros over here, and a bunch of zeros
+over here. He's XORs it with the zeros,
+and then 80 XORs with zeros, and then 25,
+in the appropriate place. Namely, in the
+port's bytes in the encrypted packets. Then
+it's easy to see that when this new IV prime
+is sent along with the original
+cipher text, when the attacker decrypts,
+you can see that the original cipher text
+would decrypt to port 80, but now the new
+IV will cancel out this 80, this 80 here
+cancels out the 80 that would be obtained
+in the original plain text and then by
+XORing with 25, essentially the
+destination now becomes 25. So this is a
+nice example, where with the simple change
+to the IV field, the attacker was able to
+divert the packet. So that now, after
+decryption, the packet goes to the
+attacker, instead of the actual web
+server. And as a result now the attacker
+can read the plaintext data, that was
+intended for the server. So this nice
+example shows that without integrity it's
+simply impossible for a CPA secure
+encryption to provide confidentiality,
+when the attacker can modify packets
+en route. CPA secure encryption only
+provides confidentiality if the attacker is
+only eavesdropping on data, but can't
+actually modify a cipher text en route.
+Where, as you see, if you can modify
+cipher text, a simple modification,
+completely reveals the plaintext. I want
+to show you another tampering attack that
+only requires network access to traffic.
+It doesn't actually require the attacker
+to be present on the decryption machine.
+So let's look at an example where there's
+a remote terminal application, where every
+time the user hits a keystroke, basically
+an encrypted keystroke is sent over to the
+server, and let's pretend that the
+encrypted keystroke is encrypted using
+counter mode. So here you have the
+TCP/IP packet. D here corresponds to the
+one byte keystroke. And as we said, it's
+encrypted using counter mode, and as you
+probably know every TCP/IP packet actually
+contains a checksum. This is a sixteen bit
+checksum that's just used to detect
+transmission errors. So, the server, if it
+receives a packet that has the wrong
+checksum, it simply drops it on the floor
+and ignores it. Now the TCP header
+including the checksum in the keystroke,
+all are encrypted using counter mode. Now
+the attacker wants to learn what the
+keystroke was, and let me show you what he
+can do. The attacker is gonna intercept
+this packet and he's not actually gonna
+modify it, he's gonna send it over to the
+server. But he's gonna record the packet.
+Later on he's gonna modify the packet and
+send a modified packet over to the server.
+What he's going to do is he's gonna XOR
+the encrypted checksum field with a
+value T and he's going to XOR the
+encrypted data field with a value S. And
+he's going to do this for lots and lots of
+T and S. Now remember, a property
+of counter mode is that if you XOR the
+cipher text with T after decryption, the
+result in plain text is also XOR with T.
+Similarly, if You XOR the encrypted data with s after decryption.
+the resulting decrypted data will also be
+encrypted with s. Now, the server's gonna
+decrypt this modified packet. And the
+resulting packet is gonna have the
+check sum XORed with t, and the data XORed with s. Now what happens if the
+modified check sum is correct for this
+modified packet, the server will send an
+ACK back. If the modified check sum
+is incorrect for this modified packet, the
+server will just drop the packet on the
+floor and do nothing. So the attacker can
+simply observe, look for an ACK packet or
+not, and in doing so, he learns whether
+this particular XOR of T and XOR of S
+pairs corresponds to a valid checksum or not.
+Now the attacker's going to do
+this for lots and lots of T's and S's.
+And you notice what he learns is if I
+modify the data by XORing it with this
+particular value S, that changes the
+checksum by a particular value T. And
+he learns this for lots and lots of T and
+S pairs. So it turns out for certain
+checksums, by looking at a sequence of
+equations of this type. You can actually
+figure out what the value D is. I should
+point out that for the TCP checksums on this,
+actually, might not be true, But
+certainly, they're easy checksums for
+which this is actually absolutely true. So
+again by looking at a lot of equations of
+this type the attacker can recover D. And
+this is a really nice example of what's
+called a chosen cipher text attack. The
+attacker basically submitted cipher text
+of his choice that was derived from that
+cipher text that he wanted to decrypt. And
+then by looking at how the server
+responded he was able to learn something
+about the resulting plaint text. And by
+repeating this for many different values
+of T and S he was actually eventually able to
+recover what the actual full plain text is.
+So in this segment we are gonna look
+at many more examples of attacks of this
+type. These are called active attacks,
+where the attackers actually modify
+traffic in route. And I hope that these
+two simple example convinces you that all
+you provide is CPA security other words
+security against eavesdropping. You can't
+even guarantee secrecy against an active
+attacker. Not only does your cipher text
+not have integrity, in other words the
+recipients might obtain a message
+different from the one sent by the sender.
+But you don't even have confidentiality.
+And I showed you two examples where
+without integrity the attacker can simply
+decrypt the packet by using the recipient
+as an oracle for decrypting certain parts
+of the data. And so the lesson that I'm
+gonna repeat again and again and again
+throughout this module is that if your
+message needs integrity but no
+confidentiality, just use a MAC. But if
+your message needs integrity and
+confidentiality, you have to use what's
+called an authenticated encryption mode,
+which is precisely the topic of this
+module. So the next thing we're gonna do
+is define what authenticated encryption
+means. And we're gonna build authenticated
+encryption systems. But the point I want
+you to remember is that the CPA security
+modes we discussed before should never
+actually be used to encrypt data by
+themselves. So CBC with a random IV is a
+building block towards authenticated
+encryption, but should never be used on
+its own. Okay. So we're gonna define
+authenticated encryption in the next
+segment.

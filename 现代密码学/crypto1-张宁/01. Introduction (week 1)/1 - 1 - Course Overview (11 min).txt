@@ -1,0 +1,146 @@
+Hello, my name is Dan Boneh, and I'd like to welcome you to my course on cryptography
+that I'll be teaching at Stanford University this quarter. This quarter, I'm experimenting
+with recording the lectures and having the students watch the lectures online.
+In fact, anyone is welcome to watch the lectures, and join the course.
+This is an experiment, so we'll see how it goes. My goals for this
+course are basically to teach you how cryptographic primitives work.
+But more importantly I'd like to teach you how to use cryptographic primitives correctly
+and reason about the security of your constructions. We will see various
+abstractions of cryptographic primitives, and we'll do some security proofs.
+My goal is that by the end of the course you'll be able to reason about the security of cryptographic
+constructions and be able to break ones that are not secure.
+Now I'd like to say a few words on how I would like you to take the class. First of all,
+I'm a big believer in taking notes as you listen to the lectures. So I would really
+encourage you to summarize and take notes in your own words of the material that's being presented.
+Also I should mention that on the videos, I'm able to go much faster
+than I would go in a normal classroom. And so I would encourage you to
+periodically pause the video and think about the material that's being covered
+and not move forward until the material is clear in your mind. Also from time to time,
+the video will pause and pop-up questions will come up.
+These are intended to kinda help you along with the material, and I would really encourage you to answer
+those questions by yourselves rather than skip them. Usually the questions
+are about the material that has just been covered, and so it shouldn't be too difficult to answer
+the questions. So I would really encourage you to do them rather than skip them.
+Now, by now I'm sure everybody taking the class knows that cryptography is used
+everywhere computers are. It's a very common tool that's used to protect data.
+For example, web traffic is protected using a protocol called HTTPS.
+Wireless traffic, for example, Wi-Fi traffic is protected using the, WPA2
+protocol, that's part of 801.11i. Cell phone traffic is protected
+using an encryption mechanism in GSM. Bluetooth
+traffic is protected using cryptography,
+and so on. We're gonna see how these various systems work. In fact, we're gonna
+cover SSL, and in fact, even 802.11i in quite a bit of detail. And you'll see how
+these system work in practice. Cryptography is also used for protecting files
+that are stored on disc by encrypting them. So if the disc is stolen,
+the files are not compromised. It's also used for content protection. For example
+when you buy DVDs and Blu-Ray disks, the movies on these disks are encrypted, in
+particular DVD uses a system called CSS, the Content Scrambling System, CSS, and
+Blu-Ray uses a system called AACS. We'll talk about how CSS and AACS work.
+It turns out that CSS is a fairly easy system to break.
+And we'll talk about how, we'll do some cryptanalysis and actually show how to break encryption that's used in CSS.
+Cryptography is also used for user authentication and in many, many, many
+other applications that we'll talk about in the next segments.  Now I wanna go back
+to secure communication, and talk about the case where, here, we have a laptop
+trying to communicate with a web server. This is a good time to also introduce our friends,
+Alice and Bob, who are gonna be with us throughout the quarter. Essentially Alice
+is trying to communicate securely with Bob. Here Alice is on the laptop and Bob
+is on the server. The protocol that's used to do that is called HTTPS, but in fact,
+the actual protocol is called SSL. Sometimes it's called TLS.
+And the goals of these protocols is to basically make sure that as this data travels across the
+network, an attacker first of all can't eavesdrop on this data. Second of all, an
+attacker can't modify the data while it's in the network. So no eavesdropping and no tampering.
+Now as I said the protocol that's used to secure web traffic called TLS
+actually consists of two parts. The first part is called the handshake protocol
+where Alice and Bob talk with one another and at the end of the handshake
+handshake basically a shared secret key appears between the two of them. So both
+Alice and Bob know this secret key, but an attacker looking at the conversation has
+no idea what the key K is. Now, the way you established your secret key, the way
+you do the handshake, is using public key cryptography techniques, which we're gonna talk
+about in the second part of the course. Now once Alice and Bob have the shared key,
+you can use this key to communicate securely by properly
+encrypting data between them. And in fact this is gonna be the first part of the course,
+which is essentially once the two sides have a shared secret key, how do they use
+that secret key to encrypt and protect data that goes back and forth between them?
+Now, as I said, another application of cryptography is to protect
+files on disk. So, here you have a file that happens to be encrypted, so that even
+if the disk is stolen, an attacker can't actually read the contents in the file.
+And, if an attacker tries to modify the data on disk, the data in the file while
+it's on disk, when Alice tries to decrypt this file, that will be detected, and
+she'll then basically ignore the contents of the file. So we have both confidentiality
+confidentiality and integrity for files stored on disk. Now I want to make a minor philosophical
+point, that in fact storing encrypted files on disk is very much the same
+as protecting communication between Alice and Bob. In particular, when you
+store files on disk, it's basically Alice who stores the file today wants to read
+the file tomorrow. So rather than communicating between two parties Alice and Bob,
+in the case of a stored disk encryption, it's Alice today who is
+communicating with Alice tomorrow. But really the two scenarios, secure
+communications, and secure files, are kind of philosophically the same. Now, the
+building block for securing traffic is what's called symmetric encryption
+systems. And we're gonna talk, in the first half of the course extensively about
+symmetric encryption systems. So in a symmetric encryption system, basically, the two parties,
+Alice and Bob, share a secret key k, which the attacker does not
+know. Only they know the secret key k. Now, they're gonna use a cipher which
+consists of these two algorithms, E and D. E is called an encryption algorithm and D
+is called the decryption algorithm. The encryption algorithm takes the message and
+the key as inputs, and produces a corresponding ciphertext. And the
+decryption algorithm does the opposite. It takes the ciphertext as input along with the key
+key and produces the corresponding message. Now, a very important point that
+I would like to stress. I'm only gonna say this once now and never again, but it is an
+extremely important point. And that is: that the algorithms E and D, the actual
+encryption algorithms are publicly known. Adversary knows exactly how they work. The
+only thing that's kept secret is the secret key k. Other than that
+everything else is completely public and it's really important to realize that you
+should only use algorithms that are public because those algorithms have been
+peer-reviewed by a very large community of hundreds of people for many, many, many years,
+and these algorithms only begin to be used once this community has shown that
+they cannot be broken, essentially. So in fact, if somebody comes to you and says, hey, I have a proprietary
+cipher that you might want to use, the answer usually should be that
+you stick to standards, to standard algorithms, and not use a proprietary
+cipher. In fact, there are many examples of proprietary ciphers that, as soon as
+they were reverse engineered, they were easily broken by simple analysis.
+Now, even in the simple cases of symmetric encryption which we're gonna discuss
+in the first half of the course, there are actually two cases that we're gonna discuss in turn.
+The first, is when every key is only used to encrypt a
+single message, we call these one time keys. Okay. So for example, when you
+encrypt email messages, it's very common that every single email is encrypted using
+a different symmetric key. Yeah? Different symmetric cipher key. Because the key is
+used to encrypt only one message there are actually fairly efficient and simple ways of
+encrypting messages using these one time keys and we'll discuss those actually
+in the next module. Now there are many cases in fact where keys
+need to be used to encrypt multiple messages. We call these many time keys.
+For example, when you encrypt files in a file system the same key is used
+to encrypt many many, different files. And it turns out if the key is now going to be used to encrypt
+multiple messages we need a little bit of more machinery to make sure that the
+encryption system is secure. In fact after we talk about the one-time keys, we
+will move over and talk about encryption modes that are specifically designed for
+many-time keys. And we'll see that there are a couple more steps that need to be taken to
+ensure security in those cases. Okay, the last point I wanna make
+is that there are a couple of important things to remember about cryptography. First of all,
+cryptography, of course, is a fantastic tool for protecting information in computer systems.
+However, it's also very important that cryptography has its limitations.
+First of all, cryptography is really not the solution to all security problems.
+For example, if you have software bugs then very often cryptography is not
+going to be able to help you. Similarly, if you're worried about social engineering attacks,
+where the attacker tries to fool the user into taking actions
+that are going to hurt the user, then cryptography is very often actually not
+going to help you. So it's very important that although it's a fabulous tool, it's not the
+solution to all security problems. Now another very important point is that cryptography
+essentially becomes useless if it's implemented incorrectly. So, for example,
+there are a number of systems that work perfectly fine. And we'll see examples of those
+systems, that, in fact, allow Alice and Bob to communicate. And,
+in fact, messages that Alice sent to Bob, Bob can receive and decrypt. However,
+because cryptography is implemented incorrectly, the systems are completely insecure.
+Actually I should say that I like to mention an old encryption standard
+called WEP this is used for encrypting Wi-Fi traffic. WEP contains many
+mistakes in it and often when I wanna show you how not to do things in cryptography
+I will point to how things were done in WEP as an example. So for me, it's very fortunate to have an example,
+a protocol I can point to for how not to do things. And finally, a very
+important point that I'd like you to remember is that cryptography is not
+something you should try to invent and design yourself. As I said, there are
+standards in cryptography, standard cryptographic primitives which we're gonna discuss
+at length during this course. And primarily you're supposed to use
+these standard cryptographic primitives, and not invent things, these primitives,
+yourself. The standards have all gone through, many years of
+review by hundreds of people, and that's not something that's going to happen to an ad hoc  design.
+And, as I said, over the years there are many examples of
+ad hoc designs that were immediately broken as soon as they were analyzed.

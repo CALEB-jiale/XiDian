@@ -1,0 +1,1320 @@
+1
+00:00:00,000 --> 00:00:03,843
+在这个小节,我想告诉你另一个密钥交换方法基于
+
+2
+00:00:00,000 --> 00:00:03,843
+In this module I wanna show you another
+approach to key exchange based on the
+
+3
+00:00:03,843 --> 00:00:07,714
+公钥加密的概念 我要再一次提醒你们的那个系统 我们
+
+4
+00:00:03,843 --> 00:00:07,714
+concept of public key encryption. So again
+just to remind you of the system, we
+
+5
+00:00:07,714 --> 00:00:11,916
+一如既往 我们的好朋友爱丽丝和鲍勃 他们彼此交换密钥K
+
+6
+00:00:07,714 --> 00:00:11,916
+have our friends Alice and Bob as usual,
+and they're both to exchange a secret key
+
+7
+00:00:11,916 --> 00:00:15,402
+窃听者可以看到他们发送给对方的消息 但是
+
+8
+00:00:11,916 --> 00:00:15,402
+K. The eavesdropper gets to see the
+messages they send to one another, but
+
+9
+00:00:15,402 --> 00:00:19,270
+尽管他不知道关于密钥K的任何信息
+
+10
+00:00:15,402 --> 00:00:19,270
+even though he shouldn't learn anything
+about the key K that, that they exchanged.
+
+11
+00:00:19,270 --> 00:00:22,900
+和往常一样 在这个小节 我们来看窃听安全性
+
+12
+00:00:19,270 --> 00:00:22,900
+And as usual in this module we're only
+going to be looking at eavesdropping
+
+13
+00:00:22,900 --> 00:00:26,725
+这里我们不允许攻击者篡改数据或其他
+
+14
+00:00:22,900 --> 00:00:26,725
+security. That is we don't allow the
+attacker to tamper with data or to mount
+
+15
+00:00:26,725 --> 00:00:30,719
+任何形式的主动攻击 所以仅仅提醒你们 这个小节的开头我们
+
+16
+00:00:26,725 --> 00:00:30,719
+any other form of active attack. So, just
+to remind you, earlier in this module we
+
+17
+00:00:30,719 --> 00:00:34,514
+来看一个基于通用分组密码的低效率的机制 在之前的部分
+
+18
+00:00:30,719 --> 00:00:34,514
+saw an inefficient mechanism based on
+generic block ciphers. In the previous
+
+19
+00:00:34,514 --> 00:00:38,009
+我们学习了Diffie-Hellman密钥交换机制
+
+20
+00:00:34,514 --> 00:00:38,009
+segment we saw the Diffie-Hellman key
+exchange mechanism which has an
+
+21
+00:00:38,009 --> 00:00:42,153
+这是一个参与者与攻击者所要做的工作有指数差距的机制
+
+22
+00:00:38,009 --> 00:00:42,153
+exponential gap between the work that the
+participants have to do versus the work
+
+23
+00:00:42,153 --> 00:00:46,198
+事实上这个Diffie-Hellman协议
+
+24
+00:00:42,153 --> 00:00:46,198
+that the attacker has to do. And in fact
+this Diffie-Hellman protocol is used all
+
+25
+00:00:46,198 --> 00:00:49,992
+在网页上用的很频繁 这节课我要给你们讲一种
+
+26
+00:00:46,198 --> 00:00:49,992
+over the web very frequently. In this
+segment I want to show you, a different
+
+27
+00:00:49,992 --> 00:00:54,309
+基于公开密钥加密的不同的方法 那什么是公开加密？ 就像
+
+28
+00:00:49,992 --> 00:00:54,309
+approach based on public key encryption.
+So, what is public encryption? So just as
+
+29
+00:00:54,309 --> 00:00:58,891
+在对称加密的情况下 这是对称加密的加密算法
+
+30
+00:00:54,309 --> 00:00:58,891
+in the case of symmetric encryption
+there's an encryption algorithm and a
+
+31
+00:00:58,891 --> 00:01:03,415
+和解密算法 然而这里的加密算法给定了一个密钥
+
+32
+00:00:58,891 --> 00:01:03,415
+decryption algorithm. However, here the
+encryption algorithm is given one key,
+
+33
+00:01:03,415 --> 00:01:07,764
+就是我们所谓的公开密钥 我们称它为鲍勃的
+
+34
+00:01:03,415 --> 00:01:07,764
+which we're going to call a public key.
+Let's call this the public key that
+
+35
+00:01:07,764 --> 00:01:12,172
+公钥 解密算法给定了另外的密钥
+
+36
+00:01:07,764 --> 00:01:12,172
+belongs to Bob. And the decryption algorithm is given a different key, we'll
+
+37
+00:01:12,172 --> 00:01:16,696
+我们称之为私钥 它也是鲍勃的 这两个密钥有时
+
+38
+00:01:12,172 --> 00:01:16,696
+call it a secret key. That also belongs to
+Bob. So these two keys are sometimes
+
+39
+00:01:16,696 --> 00:01:24,144
+被合称为密钥对 密钥对的一半是公钥 另一半是
+
+40
+00:01:16,696 --> 00:01:24,144
+called a key pair. One half of the pair is
+the public key and the other half of the
+
+41
+00:01:24,144 --> 00:01:28,752
+私钥 现在你们的加密方式跟往常一样 一个消息
+
+42
+00:01:24,144 --> 00:01:28,752
+pair is the secret key. Now the way you
+encrypt this as usual, a message would
+
+43
+00:01:28,752 --> 00:01:33,187
+进来 加密算法会生成一个密文 这是
+
+44
+00:01:28,752 --> 00:01:33,187
+come in, the encryption algorithm would
+generate a cipher text, that is the
+
+45
+00:01:33,187 --> 00:01:38,026
+用公钥加密的消息 当这个密文
+
+46
+00:01:33,187 --> 00:01:38,026
+encryption of this message using the given
+public key. And then when the cipher text
+
+47
+00:01:38,026 --> 00:01:42,864
+被送到解密算法那里 解密算法会输出
+
+48
+00:01:38,026 --> 00:01:42,864
+is given to the decryption algorithm, the
+decryption algorithm basically outputs the
+
+49
+00:01:42,864 --> 00:01:47,645
+相应的消息 如我所说 PK是公钥 SK是
+
+50
+00:01:42,864 --> 00:01:47,645
+corresponding message. So, as I said, PK
+is called the public key and SK is called
+
+51
+00:01:47,645 --> 00:01:52,308
+私钥 更准确地说 什么是公开加密  公开加密
+
+52
+00:01:47,645 --> 00:01:52,308
+the secret key. So more precisely, what is
+public encryption? Well, public encryption
+
+53
+00:01:52,308 --> 00:01:56,957
+通常由三个算法组成 G E和D 算法G是被称为
+
+54
+00:01:52,308 --> 00:01:56,957
+is actually made up of three algorithms,
+G, E, and D. Algorithm G is what's called
+
+55
+00:01:56,957 --> 00:02:01,492
+密钥生成算法 当你运行算法G的时候 它会输出两个密钥
+
+56
+00:01:56,957 --> 00:02:01,492
+a key generation algorithm. When you run
+algorithm G, it will output two keys, the
+
+57
+00:02:01,492 --> 00:02:05,744
+公钥和私钥 加密算法的消息中
+
+58
+00:02:01,492 --> 00:02:05,744
+public key and the secret key. The
+encryption algorithm basically, given the
+
+59
+00:02:05,744 --> 00:02:10,053
+给出公钥 就会输出相应的密文
+
+60
+00:02:05,744 --> 00:02:10,053
+public key in the message, will output the
+corresponding cipher text. And the
+
+61
+00:02:10,053 --> 00:02:14,418
+解密算法的密文中给出私钥 就会
+
+62
+00:02:10,053 --> 00:02:14,418
+decryption algorithm, given the secret key
+in the cipher text, will output the
+
+63
+00:02:14,418 --> 00:02:19,332
+输出原文 如果发生错误 它将停止输出 像往常一样
+
+64
+00:02:14,418 --> 00:02:19,332
+message or it will output bottom if an
+error occurred. And as usual we have the
+
+65
+00:02:19,332 --> 00:02:24,269
+和我们通常的一致性属性说 对于任何密钥生成算法
+
+66
+00:02:19,332 --> 00:02:24,269
+usual consistency properties that say that
+for any public key and secret key that
+
+67
+00:02:24,269 --> 00:02:29,148
+输出的公钥和私钥 如果我们使用的公钥加密消息
+
+68
+00:02:24,269 --> 00:02:29,148
+could have been output by the key generation
+algorithm if we encrypt the message using
+
+69
+00:02:29,148 --> 00:02:33,794
+然后使用私钥解密 我们就能够得到
+
+70
+00:02:29,148 --> 00:02:33,794
+the public key and then decrypt using the
+secret key we should get the original
+
+71
+00:02:33,794 --> 00:02:38,313
+原始消息 现在 这意味着公钥系统是安全的？
+
+72
+00:02:33,794 --> 00:02:38,313
+message back. Now, what does it mean for a
+public key system to be secure? Well, we
+
+73
+00:02:38,313 --> 00:02:42,975
+我们用之前使用过的语义安全的概念 除了这个游戏
+
+74
+00:02:38,313 --> 00:02:42,975
+use the same concept of semantic security
+that we used before, except the game is now
+
+75
+00:02:42,975 --> 00:02:47,300
+现在有点难 我来解释一下 我们该如何定义语义
+
+76
+00:02:42,975 --> 00:02:47,300
+a little bit different. So let me
+explain, how we define semantic security
+
+77
+00:02:47,300 --> 00:02:51,737
+公钥系统的安全 这里 挑战者会运行这个密钥 生成
+
+78
+00:02:47,300 --> 00:02:51,737
+for a public key system. So here, the
+challenger is gonna run the key generation
+
+79
+00:02:51,737 --> 00:02:56,287
+算法生成一个公钥和一个私钥对 他要把这个
+
+80
+00:02:51,737 --> 00:02:56,287
+algorithm to generate a public key and a
+secret key pair, and he's gonna give the
+
+81
+00:02:56,287 --> 00:03:00,242
+公钥给对手 挑战者自己保留私钥
+
+82
+00:02:56,287 --> 00:03:00,242
+public key to the adversary. The
+challenger keeps the secret key to
+
+83
+00:03:00,242 --> 00:03:05,373
+对手要做的是 他会像之前一样输出两个等长的消息M0和
+
+84
+00:03:00,242 --> 00:03:05,373
+himself. What the adversary will do is he
+will output two equal length messages M0 and
+
+85
+00:03:05,373 --> 00:03:10,321
+M1 然后这个挑战者会给他M0和M1的密文
+
+86
+00:03:05,373 --> 00:03:10,321
+M1 as before and then the challenger will
+give him the encryption of M0 or M1. As
+
+87
+00:03:10,321 --> 00:03:15,147
+像往常一样 我们定义两个试验：试验0和试验1 试验0中
+
+88
+00:03:10,321 --> 00:03:15,147
+usual we define two experiments: experiment
+zero and experiment one. In experiment
+
+89
+00:03:15,147 --> 00:03:20,279
+对手已知M0的密文 试验1中对手
+
+90
+00:03:15,147 --> 00:03:20,279
+zero the adversary is given the encryption
+of M0. In experiment one the adversary is
+
+91
+00:03:20,279 --> 00:03:24,860
+已知M1的密文 然后对手的目标是猜测
+
+92
+00:03:20,279 --> 00:03:24,860
+given the encryption of M1 and then the
+adversary's goal is to guess which
+
+93
+00:03:24,860 --> 00:03:29,381
+他已知的是哪个密文 是M0的密文还是
+
+94
+00:03:24,860 --> 00:03:29,381
+encryption he was given. Was he given the
+encryption of M0 or was he given
+
+95
+00:03:29,381 --> 00:03:34,945
+M1的密文呢 我们指的是他猜测输出是试验0
+
+96
+00:03:29,381 --> 00:03:34,945
+encryption of M1. And we refer to his
+guess as the output of experiment zero or
+
+97
+00:03:34,945 --> 00:03:40,119
+还是试验1 有一件事我要强调 对于公共
+
+98
+00:03:34,945 --> 00:03:40,119
+experiment one. One thing I want to
+emphasize is that in the case of public
+
+99
+00:03:40,119 --> 00:03:44,590
+加密 没必要给攻击者太多选择明文加密
+
+100
+00:03:40,119 --> 00:03:44,590
+encryption there's no need to give the
+attacker the ability to mount a chosen
+
+101
+00:03:44,590 --> 00:03:49,083
+攻击的能力 为什么呢？在一个对称密钥系统中
+
+102
+00:03:44,590 --> 00:03:49,083
+plaintext attack. Why is that? Well in
+the case of a symmetric key system, the
+
+103
+00:03:49,083 --> 00:03:53,813
+攻击者必须先请求他所选择的消息的密文 在对称
+
+104
+00:03:49,083 --> 00:03:53,813
+attacker had to request the encryption of
+messages of his choice. In the case of a
+
+105
+00:03:53,813 --> 00:03:58,081
+密钥系统中 攻击者拥有公钥 因此他可以自己
+
+106
+00:03:53,813 --> 00:03:58,081
+public key system, the attacker has the
+public key and therefore he can by
+
+107
+00:03:58,081 --> 00:04:02,350
+为自己加密任何他想要的消息 他不需要
+
+108
+00:03:58,081 --> 00:04:02,350
+himself, encrypt for himself any message
+that he wants. He doesn't need the
+
+109
+00:04:02,350 --> 00:04:07,022
+挑战者帮助去产生他所选择的消息的密文 因此
+
+110
+00:04:02,350 --> 00:04:07,022
+challenger's help to create encryptions of
+messages of his choice. And as a result,
+
+111
+00:04:07,022 --> 00:04:11,348
+在公钥系统中 选择密文攻击是固有的 我们没有理由
+
+112
+00:04:07,022 --> 00:04:11,348
+in a public key system, a chosen
+plaintext attack is inherent. There's no
+
+113
+00:04:11,348 --> 00:04:16,035
+给攻击者额外的力量去增加这一个选择密文攻击
+
+114
+00:04:11,348 --> 00:04:16,035
+reason to give the attacker extra power to
+mount a chosen plaintexts attack. And
+
+115
+00:04:16,035 --> 00:04:20,513
+这就是我们我们从不讨论选择明文查询的上下文中
+
+116
+00:04:16,035 --> 00:04:20,513
+that's why we never discussed chosen
+plaintext queries in the context of
+
+117
+00:04:20,513 --> 00:04:25,210
+定义的语义查询公钥系统的安全的原因 我们定义的
+
+118
+00:04:20,513 --> 00:04:25,210
+defining semantic security for public key
+systems. Now that we defined the game
+
+119
+00:04:25,210 --> 00:04:29,539
+那个游戏 我们会说,一个公钥系统GED基本上
+
+120
+00:04:25,210 --> 00:04:29,539
+we're going to say that a public key system
+GED is semantically secure if
+
+121
+00:04:29,539 --> 00:04:34,093
+是语义安全 如果攻击者无法区分试验0和试验1
+
+122
+00:04:29,539 --> 00:04:34,093
+basically the attacker cannot distinguish
+experiment zero from experiment one. In
+
+123
+00:04:34,093 --> 00:04:38,534
+换句话说 对手在试验0输出1的概率和
+
+124
+00:04:34,093 --> 00:04:38,534
+other words, the adversary's probability
+of outputting one in experiment zero is
+
+125
+00:04:38,534 --> 00:04:42,920
+他在试验1输出1的概率相同
+
+126
+00:04:38,534 --> 00:04:42,920
+about the same as his probability of
+outputting one in experiment one. So again,
+
+127
+00:04:42,920 --> 00:04:47,024
+所以 攻击者不能确定他是已知M0的密文
+
+128
+00:04:42,920 --> 00:04:47,024
+the attacker can't tell whether he was
+given the encryption of M0 or the
+
+129
+00:04:47,024 --> 00:04:51,694
+还是M1的密文 现在我们理解了什么是公钥加密
+
+130
+00:04:47,024 --> 00:04:51,694
+encryption of M1. Now that we understand
+what a public key encryption is let's see
+
+131
+00:04:51,694 --> 00:04:56,151
+我们来看如何使用它来建立一个共享的秘密 这是我们的朋友爱丽丝和
+
+132
+00:04:51,694 --> 00:04:56,151
+how to use it to establish a shared
+secret. See here are our friends Alice and
+
+133
+00:04:56,151 --> 00:05:00,666
+鲍勃 爱丽丝将开始通过密钥生成算法给自己
+
+134
+00:04:56,151 --> 00:05:00,666
+Bob. Alice will start off by generating a
+random public key secret key pair for
+
+135
+00:05:00,666 --> 00:05:04,952
+生成一个随机的公钥密钥对 她要把公钥PK
+
+136
+00:05:00,666 --> 00:05:04,952
+herself using the key generation
+algorithm. And then she's going to send to
+
+137
+00:05:04,952 --> 00:05:09,523
+发送给鲍勃 她还说 嗨 这个消息是来自爱丽丝的 鲍勃
+
+138
+00:05:04,952 --> 00:05:09,523
+bob the public key PK. And she also says,
+hey this message is from Alice. What Bob
+
+139
+00:05:09,523 --> 00:05:14,324
+要做的是 他会产生一个128比特的随机数值X 并把这些发送给爱丽丝
+
+140
+00:05:09,523 --> 00:05:14,324
+will do is he will generate a random 128
+bit value X and he will send back to Alice
+
+141
+00:05:14,324 --> 00:05:19,124
+说 嗨这个消息来自鲍勃 而且他会返回X在爱丽丝的
+
+142
+00:05:14,324 --> 00:05:19,124
+saying hey this message is from Bob and he
+will send back the encryption of X under
+
+143
+00:05:19,124 --> 00:05:23,674
+公钥加密下的值 爱丽丝会收到这个密文 她会用自己的
+
+144
+00:05:19,124 --> 00:05:23,674
+Alice's public key. Alice will receive
+this cipher text, she will decrypt it
+
+145
+00:05:23,674 --> 00:05:28,686
+私钥解密 她会得到X的值 现在X的值
+
+146
+00:05:23,674 --> 00:05:28,686
+using her secret key and that will give
+her the value X and now this value X can
+
+147
+00:05:28,686 --> 00:05:34,339
+可以被当做他们之间的共享秘密 我要强调的是
+
+148
+00:05:28,686 --> 00:05:34,339
+be used basically as a shared secret
+between the two of them. I wanna emphasize
+
+149
+00:05:34,339 --> 00:05:38,966
+这个协议跟我们在上节课中看到的Diffie-Hellman协议
+
+150
+00:05:34,339 --> 00:05:38,966
+that this protocol is very different from
+the Diffie-Hellman protocol that we saw in
+
+151
+00:05:38,966 --> 00:05:43,375
+很不一样 这里 当事人必须轮流发送 在某种意义上
+
+152
+00:05:38,966 --> 00:05:43,375
+the last segment in the sense that here
+the parties have to take turns, In the
+
+153
+00:05:43,375 --> 00:05:47,730
+鲍勃不能发送消息 直到他从爱丽丝接收消息
+
+154
+00:05:43,375 --> 00:05:47,730
+sense that Bob cannot send his message
+until he receives the message from Alice.
+
+155
+00:05:47,730 --> 00:05:52,316
+换句话说 鲍勃不能用爱丽丝的公钥加密X直到他从爱丽丝那里收到公钥
+
+156
+00:05:47,730 --> 00:05:52,316
+In other words, Bob cannot encrypt X to
+Alice's public key until he receives the
+
+157
+00:05:52,316 --> 00:05:56,272
+然而在Diffie-Hellman协议中 这两个参与者可以
+
+158
+00:05:52,316 --> 00:05:56,272
+public key from Alice. In the
+Diffie-Hellman protocol however the two
+
+159
+00:05:56,272 --> 00:06:00,802
+随心所欲的发送消息 完全没有顺序限制
+
+160
+00:05:56,272 --> 00:06:00,802
+parties could send their messages at
+arbitrary times and there was no ordering
+
+161
+00:06:00,802 --> 00:06:04,808
+这样就有了一个很好的例子关于Diffie-Hellman的应用
+
+162
+00:06:00,802 --> 00:06:04,808
+enforced on those messages. As a result we
+had this nice application of
+
+163
+00:06:04,808 --> 00:06:08,887
+例如 每个人都可以在FACEBOOK上上传他们的消息
+
+164
+00:06:04,808 --> 00:06:08,887
+Diffie-Hellman, where, everybody could
+post their messages to Facebook, for
+
+165
+00:06:08,887 --> 00:06:13,190
+我们简单来看下FACEBOOK 任何一对都会有一个共有的密钥
+
+166
+00:06:08,887 --> 00:06:13,190
+example. And then just by looking at
+Facebook profiles, any pair would already
+
+167
+00:06:13,190 --> 00:06:17,492
+而不需要任何附加的联系
+
+168
+00:06:13,190 --> 00:06:17,492
+have a shared key, without any need for
+additional communication. Here, this is
+
+169
+00:06:17,492 --> 00:06:21,963
+这里 并不是非常正确 即使每个人都可以把他们的密钥发送给FACEBOOK
+
+170
+00:06:17,492 --> 00:06:21,963
+not quite true, even if everybody posts
+their public key to Facebook, there would
+
+171
+00:06:21,963 --> 00:06:26,380
+他们也仍旧需要发送一条信息在密钥生成之前。
+
+172
+00:06:21,963 --> 00:06:26,380
+still be a need to send this message
+before a shared key can be established. So
+
+173
+00:06:26,380 --> 00:06:30,997
+现在 我们理解了这个协议 那么第一个问题来了 为什么这个协议是安全的
+
+174
+00:06:26,380 --> 00:06:30,997
+now that we understand protocol the first
+question we need to ask is why is this
+
+175
+00:06:30,997 --> 00:06:35,556
+通常我们会仅仅看它的窃听安全性
+
+176
+00:06:30,997 --> 00:06:35,556
+protocol secure. And as usual we're only
+gonna look at eavesdropping security. So
+
+177
+00:06:35,556 --> 00:06:40,173
+针对这个协议 攻击者会先观察公钥以及用公钥加密的X的密文
+
+178
+00:06:35,556 --> 00:06:40,173
+in this protocol the attacker gets to see
+the public key and the encryption of X
+
+179
+00:06:40,173 --> 00:06:44,960
+然后 他就会要来求出X的值
+
+180
+00:06:40,173 --> 00:06:44,960
+under the public key and what he wants to
+get is basically this value X. Now we know
+
+181
+00:06:44,960 --> 00:06:49,748
+现在我们就知道了公钥系统是语义上安全的
+
+182
+00:06:44,960 --> 00:06:49,748
+that the system the public key system that
+we used is semantically secure, what that
+
+183
+00:06:49,748 --> 00:06:54,151
+这就意味着攻击者不能从随机序列中区分出X
+
+184
+00:06:49,748 --> 00:06:54,151
+means is that the attacker cannot
+distinguish the encryption of X, From the
+
+185
+00:06:54,151 --> 00:06:59,164
+换句话说 仅仅给出X的密文
+
+186
+00:06:54,151 --> 00:06:59,164
+encryption of something random. In other
+words, just given encryption of X, the
+
+187
+00:06:59,164 --> 00:07:04,164
+攻击者是不能得知他得到的是X的明文 还是M中一段随机码
+
+188
+00:06:59,164 --> 00:07:04,164
+attacker can't tell whether the plain text
+is X or just some random junk that was
+
+189
+00:07:04,164 --> 00:07:08,920
+正因为这样 我们可以说 通过观察这个协议中的消息
+
+190
+00:07:04,164 --> 00:07:08,920
+chosen from M, And because of that, that
+basically says that just by looking at
+
+191
+00:07:09,103 --> 00:07:13,980
+攻击者不能从M的随机元素中区分出X的值
+
+192
+00:07:09,103 --> 00:07:13,980
+messages in this protocol, the value of X
+is indistinguishable in the attacker's
+
+193
+00:07:13,980 --> 00:07:18,797
+结果就是 X可以被这两个参与者作为会话密钥
+
+194
+00:07:13,980 --> 00:07:18,797
+view from a random element in M and as a
+result, X can be used as a session key
+
+195
+00:07:18,797 --> 00:07:23,370
+仅仅通过一个随机值 攻击者是不能
+
+196
+00:07:18,797 --> 00:07:23,370
+between the two parties. It's just a
+random value which the attacker cannot
+
+197
+00:07:23,370 --> 00:07:28,014
+猜测到M中的所有其他可能值的
+
+198
+00:07:23,370 --> 00:07:28,014
+actually guess other than by trying all
+possible values in M. Then I should say
+
+199
+00:07:28,014 --> 00:07:32,483
+那么 我可以说 从语义安全上来说 这两个分布是不可区分的
+
+200
+00:07:28,014 --> 00:07:32,483
+that showing that these two distributions
+are distinguishable follows directly from
+
+201
+00:07:32,483 --> 00:07:36,234
+事实上 这有一个简单的练习
+
+202
+00:07:32,483 --> 00:07:36,234
+semantic security and in fact it's a
+simple exercise to show that if the
+
+203
+00:07:36,234 --> 00:07:39,984
+假如攻击者可以区分这两个分布
+
+204
+00:07:36,234 --> 00:07:39,984
+attacker could distinguish this
+distribution from that distribution then
+
+205
+00:07:39,984 --> 00:07:44,218
+那他同样可以打破语义安全性 通常来说
+
+206
+00:07:39,984 --> 00:07:44,218
+the attacker could also break semantic
+security. And as usual even though this
+
+207
+00:07:44,218 --> 00:07:48,816
+即使这个协议面对窃听是安全的 那它针对中间人攻击也是不安全的
+
+208
+00:07:44,218 --> 00:07:48,816
+protocol is secure against eavesdropping,
+it's completely insecure against the
+
+209
+00:07:48,816 --> 00:07:53,488
+好吧 我们来看个中间人攻击的例子
+
+210
+00:07:48,816 --> 00:07:53,488
+man-in-the-middle attack. So let's see a
+simple man in the middle attack. Well so
+
+211
+00:07:53,488 --> 00:07:58,257
+爱丽丝生成了她自己的公钥密钥对
+
+212
+00:07:53,488 --> 00:07:58,257
+here we have Alice generating her public
+key secret key pair. At the same time the
+
+213
+00:07:58,257 --> 00:08:02,561
+同时中间人也生成他的公钥密钥对
+
+214
+00:07:58,257 --> 00:08:02,561
+man in the middle is also going to
+generate his own public key secret key
+
+215
+00:08:02,561 --> 00:08:07,156
+当爱丽丝把她的公钥发送给鲍勃时 中间人截获了公钥
+
+216
+00:08:02,561 --> 00:08:07,156
+pair. And now when Alice sends her public
+key over to Bob, The man in the middle
+
+217
+00:08:07,156 --> 00:08:11,808
+然后他用一条消息来替代爱丽丝的公钥
+
+218
+00:08:07,156 --> 00:08:11,808
+will intercept that and instead he'll say
+yeah this is a message from Alice, but
+
+219
+00:08:11,808 --> 00:08:16,169
+但是因为爱丽丝的公钥是最初的 所以鲍勃收到这条消息
+
+220
+00:08:11,808 --> 00:08:16,169
+Alice's public key is p K prime. So now
+Bob receives this message, he thinks he
+
+221
+00:08:16,169 --> 00:08:20,461
+他会认为这是一条来自爱丽丝的消息 并且他会选择一个随机数X
+
+222
+00:08:16,169 --> 00:08:20,461
+got a message from Alice, what he'll send
+back is, well he's going to choose his
+
+223
+00:08:20,461 --> 00:08:24,535
+然后会把最初的PK加密过的X发送回爱丽丝
+
+224
+00:08:20,461 --> 00:08:24,535
+random X, and he'll send back the
+encryption of X under PK prime. The man in
+
+225
+00:08:24,535 --> 00:08:28,882
+中间人将会截获这条消息 并且他会用别的东西替换它
+
+226
+00:08:24,535 --> 00:08:28,882
+the middle is going to intercept this
+message, and he's going to replace it with
+
+227
+00:08:28,882 --> 00:08:33,065
+他的目标是确保密钥被成功替换掉
+
+228
+00:08:28,882 --> 00:08:33,065
+something else. So, his goal is to make
+sure that the key exchange succeeds, in
+
+229
+00:08:33,065 --> 00:08:37,412
+换句话说爱丽丝人认为她收到了一条来自鲍勃的消息
+
+230
+00:08:33,065 --> 00:08:37,412
+other words Alice thinks that she got a
+message from Bob, and yet the man in the
+
+231
+00:08:37,412 --> 00:08:41,541
+并且中间人也会准确地知道他们所交换的秘密是什么
+
+232
+00:08:37,412 --> 00:08:41,541
+middle should know exactly what the
+exchanged secret is. So what should the man in
+
+233
+00:08:41,541 --> 00:08:47,211
+那么这种情况下 中间人应该给爱丽丝发送什么呢 我们先称之为密文C
+
+234
+00:08:41,541 --> 00:08:47,211
+the middle send to Alice in this case? So
+yeah let's call the cipher text C. What
+
+235
+00:08:47,211 --> 00:08:51,783
+中间人会用他自己的密钥来解密密文C
+
+236
+00:08:47,211 --> 00:08:51,783
+the man in the middle will do is he will
+decrypt the cipher text C using his own
+
+237
+00:08:51,783 --> 00:08:56,356
+这样就会将X暴露在中间人面前 然后
+
+238
+00:08:51,783 --> 00:08:56,356
+secret key that will reveal X to the man
+in the middle. And then he's going to go
+
+239
+00:08:56,356 --> 00:09:00,873
+他就会直接用爱丽丝的公钥来加密X 并将其发送给爱丽丝
+
+240
+00:08:56,356 --> 00:09:00,873
+ahead and encrypt X under Alice's public
+key, send the value back to Alice. Alice
+
+241
+00:09:00,873 --> 00:09:05,220
+爱丽丝得到了这个X 并且她以为自己和鲍勃交换了密钥
+
+242
+00:09:00,873 --> 00:09:05,220
+will obtain this X and as far as she's
+concerned, she just did a key exchange
+
+243
+00:09:05,220 --> 00:09:09,849
+他们两个都得到了X的值 但问题是
+
+244
+00:09:05,220 --> 00:09:09,849
+with Bob, where both of them learned the
+value X, but the problem of course is that
+
+245
+00:09:09,849 --> 00:09:14,418
+中间人也知道了X的值 所以这个协议是完全不安全的
+
+246
+00:09:09,849 --> 00:09:14,418
+the man in the middle also knows the value
+X. So this protocol becomes completely
+
+247
+00:09:14,418 --> 00:09:19,264
+一旦中间人篡改了爱丽丝和鲍勃之间的消息的话
+
+248
+00:09:14,418 --> 00:09:19,264
+insecure once the man in the middle can
+tamper with messages from Alice to Bob and
+
+249
+00:09:19,264 --> 00:09:23,772
+所以我们来做些事情来让这个协议变得安全
+
+250
+00:09:19,264 --> 00:09:23,772
+from Bob to Alice. So again we have to do something to this protocol to make it secure and
+
+251
+00:09:23,772 --> 00:09:28,280
+我们要做的是 数字签名
+
+252
+00:09:23,772 --> 00:09:28,280
+we're gonna see how to do that, actually,
+in two weeks after we introduce digital
+
+253
+00:09:28,280 --> 00:09:32,557
+那么现在 我要告诉你们的就是 公钥加密意味着
+
+254
+00:09:28,280 --> 00:09:32,557
+signatures. So now that I've show you that
+public encryption implies key exchange
+
+255
+00:09:32,557 --> 00:09:36,633
+面对窃听的密钥交换安全 那我们如何来构建一个公钥加密系统呢
+
+256
+00:09:32,557 --> 00:09:36,633
+security against eavesdropping. The next
+question is how do we construct public key
+
+257
+00:09:36,633 --> 00:09:40,761
+一般来说 我们需要依靠数字理论和代数
+
+258
+00:09:36,633 --> 00:09:40,761
+encryption systems? And it turns out that
+these constructions generally rely on
+
+259
+00:09:40,761 --> 00:09:44,941
+就像Diffie-Hellman协议依靠代数构建而成
+
+260
+00:09:40,761 --> 00:09:44,941
+number theory and some algebra, and just
+like the Diffie-Hellman protocol relied on
+
+261
+00:09:44,941 --> 00:09:49,017
+在我们看这些协议的更多细节之前
+
+262
+00:09:44,941 --> 00:09:49,017
+some algebra. And so before we go into
+these protocols in more detail what I'd
+
+263
+00:09:49,017 --> 00:09:53,406
+我想简单的绕个弯 说个别的东西 在下一小节中
+
+264
+00:09:49,017 --> 00:09:53,406
+like to do is kind of take a quick detour.
+In the next module we're going to look at
+
+265
+00:09:53,406 --> 00:09:57,743
+我们要介绍下相关的数字理论的背景 我们会用一个小节介绍它
+
+266
+00:09:53,406 --> 00:09:57,743
+the relevant number theory background.
+We'll just do one module on this and then
+
+267
+00:09:57,743 --> 00:10:02,317
+然后再回来看公钥设施以及更多密钥交换的例子
+
+268
+00:09:57,743 --> 00:10:02,317
+come back and talk about these public key
+constructions and more constructions for
+
+269
+00:10:02,317 --> 00:10:06,818
+所以这就是这一小节的结尾了 提前预习下
+
+270
+00:10:02,317 --> 00:10:06,818
+key exchange. So this is the end of this
+module. And as further reading, I just
+
+271
+00:10:06,818 --> 00:10:11,705
+第一张上面我想在这里指出的是 如果我们依靠对称加密
+
+272
+00:10:06,818 --> 00:10:11,705
+wanted to point to this paper that shows
+if in fact all we do is rely on symmetric
+
+273
+00:10:11,705 --> 00:10:16,062
+以及Hash函数 那么Merkle谜题就是最好的关于密钥交换
+
+274
+00:10:11,705 --> 00:10:16,062
+ciphers and hash functions then
+Merkle puzzles are optimal for key
+
+275
+00:10:16,062 --> 00:10:20,713
+并且事实上 我们不可能比一个二次间隙做的更多
+
+276
+00:10:16,062 --> 00:10:20,713
+exchange and in fact we cannot achieve
+more than a quadratic gap as long as we
+
+277
+00:10:20,713 --> 00:10:25,077
+除非我们先得到原始的黑匣子
+
+278
+00:10:20,713 --> 00:10:25,077
+treat the primitives we're given as a
+black box. So basically this shows that a
+
+279
+00:10:25,077 --> 00:10:28,994
+所以说 二次间隙是最好的可能
+
+280
+00:10:25,077 --> 00:10:28,994
+quadratic gap is the best possible and
+also I wanted to point to another paper
+
+281
+00:10:28,994 --> 00:10:33,110
+然后另一张上面总结了我们说过的这些密钥交换机制
+
+282
+00:10:28,994 --> 00:10:33,110
+that kind of summarizes some of these key
+exchange mechanisms that we talked about,
+
+283
+00:10:33,110 --> 00:10:37,176
+包括了使用公钥加密的密钥交换和使用了Diffie-Hellman的密钥交换
+
+284
+00:10:33,110 --> 00:10:37,176
+key exchange using public key cryptography
+and key exchange using Diffie-Hellman. You
+
+285
+00:10:37,176 --> 00:10:41,342
+你可以看一下这一页 可以预习下后面的东西
+
+286
+00:10:37,176 --> 00:10:41,342
+can take a look at this paper and it kind
+of will give you a look ahead into what's
+
+287
+00:10:41,342 --> 00:10:45,557
+也可以明白怎么让密钥交换协议怎么抵御中间人攻击
+
+288
+00:10:41,342 --> 00:10:45,557
+coming and how to make these key exchange
+protocols secure against man in the middle
+
+289
+00:10:45,557 --> 00:10:49,956
+而不仅仅是面对窃听 好吧 这一小节到这里就结束了
+
+290
+00:10:45,557 --> 00:10:49,956
+and not just secure against eavesdropping.
+Okay so that's the end of this module and
+
+291
+00:10:49,956 --> 00:10:54,480
+在下一节中 我们会简单的说一下
+
+292
+00:10:49,956 --> 00:10:54,480
+in the next module we'll take a brief
+detour and do a kind of a brief overview
+
+293
+00:10:54,480 --> 00:10:56,080
+算数和数字理论
+
+294
+00:10:54,480 --> 00:10:56,080
+of algebra and number theory.
+

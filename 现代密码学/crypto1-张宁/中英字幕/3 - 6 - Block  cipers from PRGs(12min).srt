@@ -1,0 +1,1359 @@
+1
+00:00:00,000 --> 00:00:04,388
+In this segment we ask whether we can
+build block ciphers from simpler
+
+2
+00:00:00,000 --> 00:00:04,388
+本节 我们会提出一个问题 是否能使用简单基元 如伪随机数发生器来建造分组密码
+
+3
+00:00:04,388 --> 00:00:09,456
+primitives like pseudo random generators.
+and we're gonna show the answer is yes. So to begin with, let's
+
+4
+00:00:04,388 --> 00:00:09,456
+而接下来我们会证明答案是肯定的 所以首先 我们会问
+
+5
+00:00:09,456 --> 00:00:14,215
+ask whether we can build pseudo random
+functions as opposed to pseudo random
+
+6
+00:00:09,456 --> 00:00:14,215
+能否利用伪随机数发生器构建伪随机函数
+
+7
+00:00:14,215 --> 00:00:18,789
+permutations from a pseudo random
+generator. Can we build a PRF from a PRG?
+
+8
+00:00:14,215 --> 00:00:18,789
+而不是伪随机置换。也就是我们能否由PRG构建PRF?
+
+9
+00:00:18,789 --> 00:00:23,873
+Our ultimate goal though is to build a
+block cipher which is a PRP. And we'll get
+
+10
+00:00:18,789 --> 00:00:23,873
+尽管我们的最终目标是建造一个分组密码 也就是伪随机置换 最终我们会达到这个目标
+
+11
+00:00:23,873 --> 00:00:29,130
+to that at the end. Okay, for now we build
+a PRF. So let's start with a PRG that
+
+12
+00:00:23,873 --> 00:00:29,130
+那现在 我们要构造一个伪随机函数 所以我们从可以将输入延长一倍的伪随机数产生器开始
+
+13
+00:00:29,130 --> 00:00:34,590
+doubles its inputs so the seeds for the
+PRG is an element in K and the output is
+
+14
+00:00:29,130 --> 00:00:34,590
+所以伪随机数产生器的种子就是K里面的一个元素 输出为
+
+15
+00:00:34,590 --> 00:00:39,420
+actually two elements in K. So here we
+have a schematic of the generator, that
+
+16
+00:00:34,590 --> 00:00:39,420
+K里面的两个元素 这里我们有一个发生器的原理图
+
+17
+00:00:39,420 --> 00:00:44,296
+basically takes his input of C and K, and
+outputs two elements, in K as its output.
+
+18
+00:00:39,420 --> 00:00:44,296
+产生器得到C和K做为输入 然后输出K中的两个元素
+
+19
+00:00:44,296 --> 00:00:48,992
+And now what does it mean for this PRG
+to be secure, recall this means that
+
+20
+00:00:44,296 --> 00:00:48,992
+伪随机数发生器是安全的指的是
+
+21
+00:00:48,992 --> 00:00:52,965
+essentially the output is
+indistinguishable from a random element
+
+22
+00:00:48,992 --> 00:00:52,965
+不能从输出中区别出K^2里面的任意元素
+
+23
+00:00:52,965 --> 00:00:58,355
+inside of K squared Now it turns out that
+it's very easy to define basically what's
+
+24
+00:00:52,965 --> 00:00:58,355
+事实上 依伪随机数产生器定义1位伪随机数函数是非常容易的
+
+25
+00:00:58,355 --> 00:01:03,455
+called a one bit PRF from this PRG. So
+what's a one bit PRF is basically a PRF
+
+26
+00:00:58,355 --> 00:01:03,455
+所以1比特伪随机数函数指的是
+
+27
+00:01:03,455 --> 00:01:08,360
+who's domain is only one bit. Okay, so
+it's a PRF that just takes one bit as
+
+28
+00:01:03,455 --> 00:01:08,360
+定义域仅为1比特的伪随机数函数 也就是只以一比特长度为输入
+
+29
+00:01:08,360 --> 00:01:13,461
+input. Okay, and the way we'll do it is
+we'll say is if the input bit X is zero
+
+30
+00:01:08,360 --> 00:01:13,461
+所以 我们这里会说 如果输入位X是0
+
+31
+00:01:13,461 --> 00:01:18,627
+I'll put the left output and if the input
+bit X is one then I'll put the right
+
+32
+00:01:13,461 --> 00:01:18,627
+那么我就会将PRF输出赋值为左边这个 如果输入位X是1 那我就会将PRF输出赋值为右边这个
+
+33
+00:01:18,627 --> 00:01:23,678
+output of the PRF. Okay, in symbols we
+basically have what we wrote here. Now it
+
+34
+00:01:18,627 --> 00:01:23,678
+如果以符号表示的话 就是在这写的这个公式
+
+35
+00:01:23,678 --> 00:01:28,523
+is straightforward to show, that in fact G
+is a secure PRG, then this one bit PRF is
+
+36
+00:01:23,678 --> 00:01:28,523
+可以很明显地看到 G就是一个安全的PRG 那么这个1比特PRF事实上就是
+
+37
+00:01:28,523 --> 00:01:32,901
+in fact a secure PRF. If you think about
+it for a second, this is really a tautology.
+
+38
+00:01:28,523 --> 00:01:32,901
+一个安全PRF 如果你思考片刻就会知道 这完全是无谓的重复
+
+39
+00:01:32,901 --> 00:01:37,571
+Its really just stating the
+same thing twice. So i will leave it for
+
+40
+00:01:32,901 --> 00:01:37,571
+将同样的事叙述两次 所以我会把这个留给你们
+
+41
+00:01:37,571 --> 00:01:42,241
+you to think about this briefly and see
+and convince yourself that in fact this
+
+42
+00:01:37,571 --> 00:01:42,241
+去思考更简洁的叙述方式 并说服自己这个理论是正确的
+
+43
+00:01:42,241 --> 00:01:46,853
+theorem is true. The real questions is
+whether we can build a PRF, that actually
+
+44
+00:01:42,241 --> 00:01:46,853
+真正要解决的问题是我们是否能建立一个PRF使之具有大于1比特的定义域
+
+45
+00:01:46,853 --> 00:01:51,756
+has a domain that is bigger than one bit.
+Ideally we would like the domain to be 128
+
+46
+00:01:46,853 --> 00:01:51,756
+理想情况下 我们希望定义域为128比特
+
+47
+00:01:51,756 --> 00:01:56,425
+bits, just say as a AES has. So
+the question is can we build 128 bit PRS
+
+48
+00:01:51,756 --> 00:01:56,425
+正如AES的域一样 那么问题就在于我们能否用一个伪随机数产生器来构建一个128位PRF？
+
+49
+00:01:56,425 --> 00:02:01,197
+from a pseudo random generator. Well so
+let's see if we can make progress. So the
+
+50
+00:01:56,425 --> 00:02:01,197
+好了 让我们来看看我们能否取得进展
+
+51
+00:02:01,197 --> 00:02:05,970
+first thing we're gonna do is we're gonna
+say, well again, let's start with a PRG
+
+52
+00:02:01,197 --> 00:02:05,970
+那么我们要做的第一件事是 以一个可以
+
+53
+00:02:05,970 --> 00:02:10,863
+that doubles its input let's see if we can
+build a PRG that quadruples its inputs.
+
+54
+00:02:05,970 --> 00:02:10,863
+允许两倍输入的PRG开始 看我们是否能建一个能够接受四倍输入的PRG
+
+55
+00:02:10,863 --> 00:02:15,797
+Okay? So it goes from K to K to the fourth
+instead of K to K squared. Okay, so let's
+
+56
+00:02:10,863 --> 00:02:15,797
+所以流程为从K→K^4 而不是K→K^2  好 让我们看看怎么完成这个过程
+
+57
+00:02:15,797 -->  00:02:20,809
+see how to do this. So here we start with
+our original PRG that just doubles its
+
+58
+00:02:15,797 --> 00:02:20,809
+我们从能够两倍化输入的PRG开始
+
+59
+00:02:20,809 --> 00:02:25,884
+inputs, now remember that the fact that
+this is a PRG means that the output of the
+
+60
+00:02:20,809 --> 00:02:25,884
+这里需要记住的是 这个是PRG 意味着它的输出和
+
+61
+00:02:25,884 --> 00:02:30,771
+PRG is indistinguishable from two random
+values in K. Well, if the output looks
+
+62
+00:02:25,884 --> 00:02:30,771
+K中的两个随机值不可区分  如果输出与
+
+63
+00:02:30,771 --> 00:02:35,847
+like two random values in K, we can simply
+apply the generator again to those two
+
+64
+00:02:30,771 --> 00:02:35,847
+K中的两随机值相似 那我们就可以将这两个输出再次送入PRG
+
+65
+00:02:35,847 --> 00:02:40,358
+outputs. So let's say we apply the
+generator once to the left output, and
+
+66
+00:02:35,847 --> 00:02:40,358
+假设我们先把左边的输出送入PRG
+
+67
+00:02:40,358 --> 00:02:45,342
+once to the rights outputs. And we are
+going to call the output of that, this
+
+68
+00:02:40,358 --> 00:02:45,342
+再把右边的这个输出送入PRG 然后我们称这
+
+69
+00:02:45,342 --> 00:02:50,448
+quadruple of elements, we are, are going
+to call that G1K. And i wrote down in
+
+70
+00:02:45,342 --> 00:02:50,448
+四元组的输出为G1（K）这里我用符号表示这个
+
+71
+00:02:50,448 --> 00:02:55,554
+symbols what this generator does, but you
+can see basically from this figure,
+
+72
+00:02:50,448 --> 00:02:55,554
+生成器的行为 但你能从这个图中看出
+
+73
+00:02:55,554 --> 00:03:00,862
+exactly how the generator works. So now
+that we have a generator from K to K to
+
+74
+00:02:55,554 --> 00:03:00,862
+产生器的工作方式 所以我们有一个能做到K→K^4的产生器
+
+75
+00:03:00,862 --> 00:03:06,170
+the fourth, We actually get a two bit PRF.
+Namely, what we will do is, we will say,
+
+76
+00:03:00,862 --> 00:03:06,170
+实质上也得到了一个2比特的PRF 换句话说 给定两比特
+
+77
+00:03:06,170 --> 00:03:11,410
+given two bits, 000110 or eleven, will
+simply output the appropriate block that
+
+78
+00:03:06,170 --> 00:03:11,410
+00，01，10或11就可以输出与G1(K)输出对应的特定分组
+
+79
+00:03:11,410 --> 00:03:16,070
+the output of G1K. Okay, so now we can
+basically have a PRF that takes four
+
+80
+00:03:11,410 --> 00:03:16,070
+所以 我们这里就有了一个可以
+
+81
+00:03:16,070 --> 00:03:21,061
+possible inputs as opposed to just two
+possible inputs as before. So the question
+
+82
+00:03:16,070 --> 00:03:21,061
+接收四种输入的PRF 而不是像前面那样，只有两种可能输入的PRF了
+
+83
+00:03:21,061 --> 00:03:26,113
+you should be asking me is why is this G1
+case secure? Why is it a secure PRG? That
+
+84
+00:03:21,061 --> 00:03:26,113
+那么问题是为什么G1是安全的？ 为什么G1是个安全的PRG？
+
+85
+00:03:26,113 --> 00:03:30,611
+is why is this quadruple of outputs
+indistinguishable from random. And so
+
+86
+00:03:26,113 --> 00:03:30,611
+为什么这个四元组输出与随机序列不可被区分？
+
+87
+00:03:30,611 --> 00:03:35,664
+let's do a quick proof of this, we'll just
+do a simple proof by pictures. So here's
+
+88
+00:03:30,611 --> 00:03:35,664
+让我们仅仅以图片形式快速证明这些问题 
+
+89
+00:03:35,664 --> 00:03:40,408
+our generator that we want to prove is
+secure. And what that means is that we
+
+90
+00:03:35,664 --> 00:03:40,408
+这个是我们想证明是安全的产生器 我们试图证明其安全性
+
+91
+00:03:40,408 --> 00:03:45,399
+want to argue that this distribution is
+indistinguishable from a random four-tuple
+
+92
+00:03:40,408 --> 00:03:45,399
+这意味着我们想证明这个分布与K^4中的随机四元组是不可区分的
+
+93
+00:03:45,399 --> 00:03:49,292
+in K to the fourth. Okay so our goal is to
+prove that these two are
+
+94
+00:03:45,399 --> 00:03:49,292
+所以我们的目标是证明这两个
+
+95
+00:03:49,292 --> 00:03:53,887
+indistinguishable. Well let's do it one
+step at a time. We know that the generator
+
+96
+00:03:49,292 --> 00:03:53,887
+是不可区分的 我们一步一步来 我们知道这个产生器
+
+97
+00:03:53,887 --> 00:03:58,028
+is a secure generator, therefore in fact
+the output of the first level is
+
+98
+00:03:53,887 --> 00:03:58,028
+是安全的 因此 第一层的输出
+
+99
+00:03:58,028 --> 00:04:02,453
+indistinguishable from random. In other
+words, if we replace the first level by
+
+100
+00:03:58,028 --> 00:04:02,453
+与随机数是不可区分的 换句话说 如果我们以真随机串替换第一层
+
+101
+00:04:02,453 --> 00:04:06,991
+truly random strings these two are truly
+random picked in the key space, then no
+
+102
+00:04:02,453 --> 00:04:06,991
+这两个是从密钥空间中选出的真随机串
+
+103
+00:04:10,267 --> 00:04:11,359
+efficient adversary should be able to
+distinguish these two distributions. In
+
+104
+00:04:10,267 --> 00:04:11,359
+那么没有有效的攻击能够区分这两个分布 事实上
+
+105
+00:04:11,359 --> 00:04:15,954
+fact, if you could distinguish these two
+distributions, it's easy to show that you
+
+106
+00:04:11,359 --> 00:04:15,954
+如果你可以区分这两个分布 那很容易证明
+
+107
+00:04:15,954 --> 00:04:20,768
+would break the original PRG. Okay, but
+essentially you see that the reason we can
+
+108
+00:04:15,954 --> 00:04:20,768
+你也可以破解最初的PRG 你应该知道我们能进行替换
+
+109
+00:04:20,768 --> 00:04:25,581
+do this replacement, we can replace the
+output of G, with truly random values, is
+
+110
+00:04:20,768 --> 00:04:25,581
+（以真随机值替换G的输出）的原因是
+
+111
+00:04:25,581 --> 00:04:30,578
+exactly because of the definition of the
+PRG, which says the out put of the PRG is
+
+112
+00:04:25,581 --> 00:04:30,578
+PRG的定义 即PRG的输出与随机数是不可区分的
+
+113
+00:04:30,578 --> 00:04:35,391
+indistinguishable from random, so we might
+as well just put random there, and no
+
+114
+00:04:30,578 --> 00:04:35,391
+所以 我们同样可以将随机数放到这里 并且
+
+115
+00:04:35,391 --> 00:04:40,265
+efficient adversary can distinguish the
+resulting two distributions. Okay, so far
+
+116
+00:04:35,391 --> 00:04:40,265
+没有有效的攻击可以分辩出这两个分布 目前为止一切还算顺利
+
+117
+00:04:40,265 --> 00:04:45,018
+so good, but now we can do the same thing
+again to the left hand side. In other
+
+118
+00:04:40,265 --> 00:04:45,018
+现在我们给左边做同样的处理 换句话说
+
+119
+00:04:45,018 --> 00:04:49,710
+words, we can replace these two pseudo
+random outputs, by truly random outputs.
+
+120
+00:04:45,018 --> 00:04:49,710
+我们以真随机输出替换这两个伪随机输出
+
+121
+00:04:49,710 --> 00:04:53,925
+And again because the generator G is
+secure, no efficient adversary can tell
+
+122
+00:04:49,710 --> 00:04:53,925
+同样地 由于发生器G是安全的 所以没有有效的攻击可以辨别出
+
+123
+00:04:54,091 --> 00:04:57,807
+the difference between these two
+distributions. But differently, if an
+
+124
+00:04:54,091 --> 00:04:57,807
+这两种分配方式的区别 但不同的是
+
+125
+00:04:57,807 --> 00:05:02,077
+adversary can distinguish these two
+distributions, then we would also give an
+
+126
+00:04:57,807 --> 00:05:02,077
+如果一个攻击者可以分辨这两种分配方式的不同 那我们也可以给出
+
+127
+00:05:02,077 --> 00:05:06,707
+attack on the generator G. And now finally
+we're gonna do this one last time. We're
+
+128
+00:05:02,077 --> 00:05:06,707
+一个对发生器G的攻击 最后我们再做一次替换
+
+129
+00:05:06,707 --> 00:05:11,280
+gonna replace this pseudo random pair By a
+truly random pair, and lo and behold we
+
+130
+00:05:06,707 --> 00:05:11,280
+我们以真随机对替换掉这一伪随机对 你看！
+
+131
+00:05:11,280 --> 00:05:15,672
+get the actual distribution that we were
+shooting for, we would get a distribution
+
+132
+00:05:11,280 --> 00:05:15,672
+我们获得了我们想要的分布 也就是以
+
+133
+00:05:15,672 --> 00:05:19,851
+that is really made of four independent
+blocks. And so now we have proved this
+
+134
+00:05:15,672 --> 00:05:19,851
+四个独立分组构成的分布 我们已经证明在这个转换中
+
+135
+00:05:19,851 --> 00:05:23,279
+transition basically that these two
+indistinguishable, these two
+
+136
+00:05:19,851 --> 00:05:23,279
+这两个是无法区分的  这两个
+
+137
+00:05:23,279 --> 00:05:27,243
+indistinguishable, and these two
+indistinguishable, and therefore these two
+
+138
+00:05:23,279 --> 00:05:27,243
+是无法区分的 还有这两个是不可区分的 因此 这两个
+
+139
+00:05:27,243 --> 00:05:31,475
+are indistinguishable, which is what we
+wanted to prove. Okay so this is kind of
+
+140
+00:05:27,243 --> 00:05:31,475
+也是无法区分的 这正是我们想证明的 这是证明的
+
+141
+00:05:31,475 --> 00:05:35,760
+the high level idea for the proof, it is
+not too difficult to make this rigorous,
+
+142
+00:05:31,475 --> 00:05:35,760
+大致想法 要想用其它方法严谨地证明并非难事
+
+143
+00:05:35,760 --> 00:05:39,792
+but i just wanted to show you kinda
+intuition for how the proof works. Well,
+
+144
+00:05:35,760 --> 00:05:39,792
+但我只想告诉大家直观的证明思路
+
+145
+00:05:39,792 --> 00:05:44,363
+if we were able to extend the generators
+outputs once, there's nothing preventing
+
+146
+00:05:39,792 --> 00:05:44,363
+如果我们可以延长发生器输出一次 那就没有什么能阻止
+
+147
+00:05:44,363 --> 00:05:48,822
+us from doing it again so here is a
+generator G1 that outputs four elements in
+
+148
+00:05:44,363 --> 00:05:48,822
+我们再延长一次 于是这里有一个输出密钥空间中四个元素的发生器G1
+
+149
+00:05:48,822 --> 00:05:53,337
+the key space. And remember the output
+here is indistinguishable from our random
+
+150
+00:05:48,822 --> 00:05:53,337
+并且记住 这里的输出与随机四元组是不可区分的
+
+151
+00:05:53,337 --> 00:05:57,909
+four-tuple, that's what we just proved.
+And so there's nothing preventing us from
+
+152
+00:05:53,337 --> 00:05:57,909
+就是我们刚证明过的 我们完全可以再次用这个发生器延长输出
+
+153
+00:05:57,909 --> 00:06:02,480
+applying the generator again. So we'll
+take the generator apply it to this random
+
+154
+00:05:57,909 --> 00:06:02,480
+这里我们用这个发生器来延长这个看似随机的串
+
+155
+00:06:02,480 --> 00:06:07,221
+looking thing and we should be able to get
+this random looking thing. This pair over
+
+156
+00:06:02,480 --> 00:06:07,221
+当然得到的也是一个看似随机的串 就是这一对
+
+157
+00:06:07,221 --> 00:06:11,511
+here that's random looking. And we can do
+the same thing again, and again, and
+
+158
+00:06:07,221 --> 00:06:11,511
+我们当然能一次又一次地延长输出
+
+159
+00:06:11,511 --> 00:06:16,405
+again. And now basically we've built a new
+generator that outputs elements in K to
+
+160
+00:06:11,511 --> 00:06:16,405
+所以基本上 我们建立了一个可以输出K^8中元素的发生器
+
+161
+00:06:16,405 --> 00:06:21,261
+the eighth, as opposed to K to the fourth.
+And again the proof of security is very
+
+162
+00:06:16,405 --> 00:06:21,261
+与前面的K^4发生器不同 还有 其安全性证明与
+
+163
+00:06:21,261 --> 00:06:26,056
+much the same as the one I just showed you
+essentially you gradually change the
+
+164
+00:06:21,261 --> 00:06:26,056
+我前面展示的方法一样 也就是那个以真随机输出替换原输出的方法
+
+165
+00:06:26,056 --> 00:06:30,612
+outputs into truly random outputs. So we
+would change this to a truly random
+
+166
+00:06:26,056 --> 00:06:30,612
+所以我们会先将这个替换为真随机输出
+
+167
+00:06:30,612 --> 00:06:35,168
+output, then this, then that, then this,
+then that and so on and so forth. Until
+
+168
+00:06:30,612 --> 00:06:35,168
+然后这里、接着那里、然后这里、再接着那里等等 直到
+
+169
+00:06:35,168 --> 00:06:39,724
+finally we get something that's truly
+random and therefore the original two
+
+170
+00:06:35,168 --> 00:06:39,724
+最后我们得到真正的随机字符串 并且以G2(K)开始的两个原始分配
+
+171
+00:06:39,724 --> 00:06:44,396
+distributions we started with G2K and
+truly random are indistinguishable. Okay,
+
+172
+00:06:39,724 --> 00:06:44,396
+与真随机数是不可区分的
+
+173
+00:06:44,396 --> 00:06:49,325
+so far so good. So now we have a generator
+that outputs elements in K to the eighth.
+
+174
+00:06:44,396 --> 00:06:49,325
+到目前还好 所以我们得到了一个能输出K^8中元素的发生器
+
+175
+00:06:49,325 --> 00:06:54,016
+Now if we do that basically we get a three
+bit PRF. In other words, at zero, zero,
+
+176
+00:06:49,325 --> 00:06:54,016
+基本上就是一个3比特PRF 换句话说
+
+177
+00:06:54,016 --> 00:06:58,884
+zero this PRF would output this block, and
+so on and so forth until one, one, one it
+
+178
+00:06:54,016 --> 00:06:58,884
+在000时 我们输出这个分组 以此类推 直到111时
+
+179
+00:06:58,884 --> 00:07:03,163
+would output this block. Now the
+interesting thing is that in fact this PRF
+
+180
+00:06:58,884 --> 00:07:03,163
+它会输出这个分组 现在，有趣的是事实上这个PRF很容易计算
+
+181
+00:07:03,163 --> 00:07:07,695
+is easy to compute. For example, suppose
+we wanted to compute the PRF at the point
+
+182
+00:07:03,163 --> 00:07:07,695
+例如 如果我们想要计算PRF
+
+183
+00:07:07,695 --> 00:07:11,948
+one zero one. Okay, it's a three bit PRF.
+Okay so one zero one. How would we do
+
+184
+00:07:07,695 --> 00:07:11,948
+在101时的输出 注意这个是3比特PRF 所以选101 接下来呢？
+
+185
+00:07:11,948 --> 00:07:16,536
+that? Well basically we would start from
+the original key K. And now we would apply
+
+186
+00:07:11,948 --> 00:07:16,536
+我们先以原始密钥K开始 然后我们会使用发生器G
+
+187
+00:07:16,536 --> 00:07:20,620
+the generator G but we would only pay
+attention to the right output of G,
+
+188
+00:07:16,536 --> 00:07:20,620
+但我们只关注G输出的右侧
+
+189
+00:07:20,620 --> 00:07:25,040
+because the first bit is one. And then we
+will apply the generator again, but we
+
+190
+00:07:20,620 --> 00:07:25,040
+因为第一个比特是1 接下来 我们再使用发生器一次 但
+
+191
+00:07:25,040 --> 00:07:29,516
+would only pay attention to the left of
+the output of the generator because the
+
+192
+00:07:25,040 --> 00:07:29,516
+我们只关注左边的输出 因为
+
+193
+00:07:29,516 --> 00:07:33,864
+second bit is zero. And then we would
+apply the generator again and only pay
+
+194
+00:07:29,516 --> 00:07:33,864
+第二个比特是0 再之后 我们再用一次发生器 并且只关注
+
+195
+00:07:33,864 --> 00:07:38,588
+attention to the right outputs because the
+third bit is one and that would be the
+
+196
+00:07:33,864 --> 00:07:38,588
+右侧的输出 因为第三个比特是1 然后这个输出就是
+
+197
+00:07:38,588 --> 00:07:43,140
+final output. Right, so you can see that,
+that lead us to 101, and in fact because
+
+198
+00:07:38,588 --> 00:07:43,140
+最终输出 就像你看到的 这个就是101的情况 事实上
+
+199
+00:07:43,140 --> 00:07:47,461
+the entire generator is pseudo
+random, we know that, in particular that,
+
+200
+00:07:43,140 --> 00:07:47,461
+因为整个发生器是伪随机的 所以我们可以知道
+
+201
+00:07:47,461 --> 00:07:52,796
+this output here is pseudo random. Okay,
+so this gives us a three bit PRF. Well, if
+
+202
+00:07:47,461 --> 00:07:52,796
+这个输出也是伪随机的 这就给了我们一个3比特的PRF
+
+203
+00:07:52,796 --> 00:07:58,632
+it worked three times, there's no reason
+why it can't work N times. And so if we
+
+204
+00:07:52,796 --> 00:07:58,632
+好了 既然这个过程能生效三次 那没就有理由不能生效N次 如果我们
+
+205
+00:07:58,632 --> 00:08:03,501
+apply this transformation again and again,
+we arrive at what's called a GGMPRF. Ggm
+
+206
+00:07:58,632 --> 00:08:03,501
+一次又一次地运用这种转换 最终我们就会得到一个GGMPRF
+
+207
+00:08:03,501 --> 00:08:07,956
+stands for Goldreich, Goldwasser and
+Micali these are the inventors of
+
+208
+00:08:03,501 --> 00:08:07,956
+GGM是指Goldreich、Goldwasser、Micali 他们是这个PRF的发明家
+
+209
+00:08:07,956 --> 00:08:12,528
+this PRF and the way it works is as
+follows. So we start off with a generator
+
+210
+00:08:07,956 --> 00:08:12,528
+这个PRF的工作方式是这样的 我们以一个两倍化输出的发生器开始
+
+211
+00:08:12,528 --> 00:08:17,279
+just doubles its outputs, and now we're
+able to build a PRF that acts on a large
+
+212
+00:08:12,528 --> 00:08:17,279
+之后我们能够建一个拥有巨大定义域的PRF
+
+213
+00:08:17,279 --> 00:08:22,236
+domain mainly a domain of size zero one to
+the N. Or N could be as big as 128 or even
+
+214
+00:08:17,279 --> 00:08:22,236
+这个域的大小为0 1一直到N 这里N可以是128甚至更大
+
+215
+00:08:22,236 --> 00:08:26,897
+more. So let's see, suppose we're given an
+input in 01 to the N, let me show you how
+
+216
+00:08:22,236 --> 00:08:26,897
+让我们来看看 假设给定一个长为N的0、1比特输入 我会展示给你们怎么
+
+217
+00:08:26,897 --> 00:08:31,274
+to evaluate the PRF. Well by now you
+should actually have a good idea for how
+
+218
+00:08:26,897 --> 00:08:31,274
+求这个PRF 当然你现在应该也有一个应该怎么做的想法
+
+219
+00:08:31,274 --> 00:08:35,480
+to do it. Essentially we start from the
+original key and then we apply the
+
+220
+00:08:31,274 --> 00:08:35,480
+基本上 我们以原始密钥开始 然后使用
+
+221
+00:08:35,480 --> 00:08:40,255
+generator and we take either the left or
+the right side depending on the bit X0 and
+
+222
+00:08:35,480 --> 00:08:40,255
+发生器并且以X0的比特来决定来选择左、右的输出
+
+223
+00:08:40,255 --> 00:08:44,746
+then we arrive at the next key, K1. And
+then we apply the generator again and we
+
+224
+00:08:40,255 --> 00:08:44,746
+之后我们得到了下一密钥K1 然后我们继续使用发生器
+
+225
+00:08:44,746 --> 00:08:49,444
+take the left or the right side depending
+on X1 and we arrive at the next key. And
+
+226
+00:08:44,746 --> 00:08:49,444
+并以X1的值决定输出是左边还是右边 这步我们得到下一个密钥
+
+227
+00:08:49,444 --> 00:08:54,730
+then we do this again and again, until
+finally we are arrive at the output. So we
+
+228
+00:08:49,444 --> 00:08:54,730
+然后我们循环做这个步骤 直到我们得到最后的输出
+
+229
+00:08:54,730 --> 00:08:59,818
+have processed all end bits, and we arrive
+at the output of this function. And
+
+230
+00:08:54,730 --> 00:08:59,818
+这样我们就处理了所有的比特 并且得到了整个函数的输出
+
+231
+00:08:59,818 --> 00:09:05,170
+basically we can prove security again
+pretty much along the same lines as we did
+
+232
+00:08:59,818 --> 00:09:05,170
+而且我们可以用前面证明的方法来证明整个过程的安全性
+
+233
+00:09:05,170 --> 00:09:10,324
+before, and we can show that if G is a
+secure PRG, then in fact we get a secure
+
+234
+00:09:05,170 --> 00:09:10,324
+这样我们就能知道 如果G是一个安全的PRG 那么事实上 我们就得到了一个安全的PRF
+
+235
+00:09:10,324 --> 00:09:14,917
+PRF, on 01 to the N, on a very large
+domain. So that's fantastic. Now we have
+
+236
+00:09:10,324 --> 00:09:14,917
+它定义在{0,1}^N上且具有很大的定义域 整个过程很奇炒
+
+237
+00:09:14,917 --> 00:09:19,064
+we have essential, we have a PRF that's
+provably secure, assuming that the
+
+238
+00:09:14,917 --> 00:09:19,064
+本质上 我们就有了一个可证其安全的PRF 
+
+239
+00:09:19,064 --> 00:09:23,495
+underlying generator is secure, and the
+generator is supposedly much easier to
+
+240
+00:09:19,064 --> 00:09:23,495
+以安全的发生器为前提 并且整个发生器（=PRF）
+
+241
+00:09:23,495 --> 00:09:28,153
+build than an actual PRF. And in fact it
+works on blocks that can be very large, in
+
+242
+00:09:23,495 --> 00:09:28,153
+比一个实际的PRF更容易建造 它还可以处理非常大的分组
+
+243
+00:09:28,153 --> 00:09:33,296
+particular, 01 to the 128th, which is what
+we needed. So you might ask well why isn't
+
+244
+00:09:28,153 --> 00:09:33,296
+特别地 如128位的01比特串 这正是我们需要的 所以你可能会问到
+
+245
+00:09:33,296 --> 00:09:39,122
+this thing being used in practice? And the
+reason is, that it's actually fairly slow.
+
+246
+00:09:33,296 --> 00:09:39,122
+为什么不在实际中应用这个东西呢？原因是 它的速度很慢
+
+247
+00:09:39,122 --> 00:09:44,597
+So imagine we plug in as a generator we
+plug in the salsa generator. So now to
+
+248
+00:09:39,122 --> 00:09:44,597
+想象现在我们接通一个发生器 一个salsa发生器
+
+249
+00:09:44,597 --> 00:09:50,142
+evaluate this PRF at a 128 bit inputs, we
+would basically have to run the salsa
+
+250
+00:09:44,597 --> 00:09:50,142
+现在来计算这个PRF在某个128位输入的值 我们必须要运行这个salsa发生器
+
+251
+00:09:50,142 --> 00:09:55,617
+generator 128 times. One time per bit of
+the input. But then we would get a PRF
+
+252
+00:09:50,142 --> 00:09:55,617
+128次 一次只对应一位输入 这样我们会得到一个
+
+253
+00:09:55,617 --> 00:10:01,513
+that's 128 times slower than the original
+salsa. And that's much, much, much slower
+
+254
+00:09:55,617 --> 00:10:01,513
+PRF 其运行时间却是原本Salsa的128倍 这比AES慢太多太多
+
+255
+00:10:01,513 --> 00:10:06,227
+than AES. Aes is a heuristic PRF. But
+nevertheless it's much faster then what we
+
+256
+00:10:01,513 --> 00:10:06,227
+AES是一种启发式PRF 但不管怎么样 它比我们刚做出来的这个要快得多
+
+257
+00:10:06,227 --> 00:10:10,585
+just got here. And so even though this is
+a very elegant construction, it's not used
+
+258
+00:10:06,227 --> 00:10:10,585
+所以即使它的结构非常简洁 我们依然不会用
+
+259
+00:10:10,585 --> 00:10:14,522
+in practice to build pseudo random
+functions although in a week we will be
+
+260
+00:10:10,585 --> 00:10:14,522
+它来建造伪随机函数 虽然本周我们会
+
+261
+00:10:14,522 --> 00:10:18,915
+using this type of construction to build a
+message integrity mechanism. So the last
+
+262
+00:10:14,522 --> 00:10:18,915
+用这种结构来构建数据完整性的机制 最后
+
+263
+00:10:18,915 --> 00:10:23,183
+step, is basically now that we've built a
+PRF, the questions is whether we can
+
+264
+00:10:18,915 --> 00:10:23,183
+我们已经建了一个PRF 但问题是 我们是否能够
+
+265
+00:10:23,183 --> 00:10:27,729
+actually build the block cypher. In other
+words, can we actually build a secure PRP
+
+266
+00:10:23,183 --> 00:10:27,729
+构建分组密码 换句话说 我们能否从一个安全的PRG构建一个安全的PRP？
+
+267
+00:10:27,729 --> 00:10:32,054
+from a secure PRG. Everything we've done
+so far is not reversible. Again if you
+
+268
+00:10:27,729 --> 00:10:32,054
+迄今我们所做的一切并不是可逆的
+
+269
+00:10:32,054 --> 00:10:36,600
+look at this construction here, we can't
+decrypt basically given the final outputs.
+
+270
+00:10:32,054 --> 00:10:36,600
+如果你们看着这个结构 只给定最后输出 并不能解密出明文
+
+271
+00:10:36,600 --> 00:10:40,535
+It is not possible to go back or at least
+we don't know how to go back the, the
+
+272
+00:10:36,600 --> 00:10:40,535
+你不能逆向返回 或者至少 我们不知道怎么逆向返回出原明文
+
+273
+00:10:40,535 --> 00:10:44,520
+original inputs. So now the question of
+interest is so can we actually solve the
+
+274
+00:10:40,535 --> 00:10:44,520
+一个比较有趣的问题是我们能不能解决
+
+275
+00:10:44,520 --> 00:10:48,654
+problem we wanted solve initially? Mainly,
+can we actually build a block cipher from
+
+276
+00:10:44,520 --> 00:10:48,654
+我们最初想要解决的那个问题 也就是 我们能不能根据安全的PRG构建一个分组密码？
+
+277
+00:10:48,654 --> 00:10:53,540
+a secure PRG? So ill let you think about
+this for a second, and mark the answer. So
+
+278
+00:10:48,654 --> 00:10:53,540
+我会留点时间让你们考虑 并记下答案
+
+279
+00:10:53,540 --> 00:10:57,718
+of course I hope everyone said the answer
+is yes and you already have all the
+
+280
+00:10:53,540 --> 00:10:57,718
+当然我希望每个人的回答都是肯定的 并且你已经想出
+
+281
+00:10:57,718 --> 00:11:01,896
+ingredients to do it. In particular, you
+already know how to build a PRF from a
+
+282
+00:10:57,718 --> 00:11:01,896
+完成它所需要的材料 更具体点 你已经知道怎么从一个伪随机数发生器来构建一个PRF
+
+283
+00:11:01,896 --> 00:11:06,395
+pseudo random generator. And we said that
+once we have a PRF we can plug it into the
+
+284
+00:11:01,896 --> 00:11:06,395
+我们以前说过 只要你有一个PRF 那么我们就可以将它嵌入
+
+285
+00:11:06,395 --> 00:11:10,573
+Luby-Rackoff construction, which if you
+remember, is just a three-round feistel.
+
+286
+00:11:06,395 --> 00:11:10,573
+Luby-Rackoff结构 如果你记得 它只是一个三轮Feistel网络
+
+287
+00:11:10,573 --> 00:11:14,750
+So we said that if you plug a secure PRF
+into a three-round feistel, you get a
+
+288
+00:11:10,573 --> 00:11:14,750
+所以 我们说过 如果你将一个安全PRF嵌入到一个三轮Feistel中 你会得到
+
+289
+00:11:14,750 --> 00:11:19,044
+secure PRP. So combining these two
+together, basically gives us a secure PRP
+
+290
+00:11:14,750 --> 00:11:19,044
+安全的PRP 所以结合这两点 基本上就能够由PRG生成一个安全的PRP
+
+291
+00:11:19,044 --> 00:11:23,328
+from a pseudo random generator. And this
+is provably secure as long as the
+
+292
+00:11:19,044 --> 00:11:23,328
+这个PRP的安全条件是 只需要
+
+293
+00:11:23,328 --> 00:11:28,075
+underlying generator is secure. So it's a
+beautiful result but unfortunately again
+
+294
+00:11:23,328 --> 00:11:28,075
+结构中内含的发生器是安全的 这个是很好的结果 但不幸的是
+
+295
+00:11:28,075 --> 00:11:32,475
+it's not used in practice because it's
+considerably slower than heuristics
+
+296
+00:11:28,075 --> 00:11:32,475
+实际应用中不会出现这种用法 因为这种结构比类似AES的启发式结构来的慢得多
+
+297
+00:11:32,475 --> 00:11:36,725
+constructions like AES. Okay so
+this completes our module on constructing
+
+298
+00:11:32,475 --> 00:11:36,725
+好了 这样我们就完成了构建过程
+
+299
+00:11:36,725 --> 00:11:40,456
+pseudo random permutations, and pseudo
+random functions. And then in the next
+
+300
+00:11:36,725 --> 00:11:40,456
+伪随机置换和函数 在接下来的模块中
+
+301
+00:11:40,456 --> 00:11:44,287
+module we're gonna talk about how to use
+these things to do proper encryption.
+
+302
+00:11:40,456 --> 00:11:44,287
+我们将讨论怎么运用这些东西来正确地加密
+

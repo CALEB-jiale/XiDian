@@ -1,0 +1,662 @@
+1
+00:00:00,000 --> 00:00:04,052
+Now that we know what MACs are, let's go
+ahead and build our first secure MACs.
+
+2
+00:00:04,052 --> 00:00:08,469
+First I want to remind you that a MAC is a
+pair of algorithms. The first is a signing
+
+3
+00:00:08,469 --> 00:00:12,922
+algorithm that's given a message and a key
+will generate a corresponding tag And the
+
+4
+00:00:12,922 --> 00:00:17,103
+second is verification algorithms are
+given a key message and a tag while
+
+5
+00:00:17,103 --> 00:00:21,736
+outputs zero or one depending on whether
+the tag is valid or not. And we said that
+
+6
+00:00:21,736 --> 00:00:26,313
+a MAC is secure if it is existentially
+unforgeable under a chosen message attack.
+
+7
+00:00:26,313 --> 00:00:30,890
+In other words, the attackers allow to
+mount a chosen message attack where he can
+
+8
+00:00:30,890 --> 00:00:35,298
+submit arbitrary messages of his choice
+and obtain the corresponding tags for
+
+9
+00:00:35,298 --> 00:00:39,520
+those messages, and then despite the
+ability to generate arbitrary tags The
+
+10
+00:00:39,520 --> 00:00:43,616
+attacker cannot create a new message-tag pair that was not given to him
+
+11
+00:00:43,616 --> 00:00:47,976
+during the chosen message attack. Okay so
+we've already seen this definition in the
+
+12
+00:00:47,976 --> 00:00:52,179
+last segment and now the question is how
+do we build secure MACs? So the first
+
+13
+00:00:52,179 --> 00:00:57,217
+example I want to give you is basically
+showing that any secure PRF directly gives
+
+14
+00:00:57,217 --> 00:01:01,952
+us a secure MAC as well. So let's see how
+we do it. So suppose we have a pseudo
+
+15
+00:01:01,952 --> 00:01:06,808
+random function so the pseudo random
+function takes and inputs X and outputs in
+
+16
+00:01:06,808 --> 00:01:12,173
+Y. And let's define the following MAC. So
+the way we sign a message 'M' is basically
+
+17
+00:01:12,173 --> 00:01:17,182
+by simply evaluating the function at the
+point 'M' So the tag for the message M is
+
+18
+00:01:17,182 --> 00:01:21,350
+simply the value of the function at the
+point M and then the way we verify a
+
+19
+00:01:21,350 --> 00:01:26,006
+message to that pair is by recomputing the
+value of the function at the message M and
+
+20
+00:01:26,006 --> 00:01:30,283
+checking whether that is equal to the tag
+given to us. We say yes if so and we
+
+21
+00:01:30,283 --> 00:01:34,681
+reject otherwise. So here you have in
+pictures basically that when Alice wants
+
+22
+00:01:34,681 --> 00:01:39,023
+to send a message to Bob she computes a
+tag by the value of PRF and then she
+
+23
+00:01:39,023 --> 00:01:43,252
+appends this tag to the message, Bob
+receives the corresponding tab pair, he
+
+24
+00:01:43,252 --> 00:01:47,820
+recomputes the value of the function and
+tests whether the given tag is actually
+
+25
+00:01:47,820 --> 00:01:52,730
+equal to the value of the function at the
+point M. So let's look at a bad example of
+
+26
+00:01:52,730 --> 00:01:57,832
+this instruction. And so suppose that we
+have a pseudo-random function that happens
+
+27
+00:01:57,832 --> 00:02:02,873
+to output only ten bits. Okay, so this is
+a fine pseudo-random function and it just
+
+28
+00:02:02,873 --> 00:02:07,668
+so happens that for any message 'M' it
+only outputs ten bits value. My question
+
+29
+00:02:07,668 --> 00:02:12,463
+to you is if we use this function 'F' to
+construct a MAC, is that going to be a
+
+30
+00:02:12,463 --> 00:02:17,184
+secure MAC? So the answer is no, this MAC
+is insecure. In particular because the
+
+31
+00:02:17,184 --> 00:02:21,471
+tags are too short. So consider the
+following simple adversary. What the
+
+32
+00:02:21,471 --> 00:02:26,119
+adversary will do is simply choose an
+arbitrary message M and just guess the
+
+33
+00:02:26,119 --> 00:02:30,768
+value of the MAC for that particular
+message. Now, because the tag is only ten
+
+34
+00:02:30,768 --> 00:02:35,175
+bits long, the adversary has a chance of
+one in two to the ten in guessing the MAC
+
+35
+00:02:35,175 --> 00:02:40,004
+correctly. In other words, the advantage
+of the guessing adversary, one distinctly
+
+36
+00:02:40,004 --> 00:02:44,351
+guesses a random tag for a given message.
+That adversary is going to have an
+
+37
+00:02:44,351 --> 00:02:48,898
+advantage against the mac that's basically
+one over two to the ten which is one over
+
+38
+00:02:48,898 --> 00:02:52,962
+a thousand twenty four and that's
+definitely non negligible. So the adversary
+
+39
+00:02:52,962 --> 00:02:57,348
+basically will successfully forge the mac
+on a given message with probability one
+
+40
+00:02:57,348 --> 00:03:01,841
+on a thousand which is insecure. However
+it turns out this is the only example that
+
+41
+00:03:01,841 --> 00:03:06,280
+where things can go wrong, only when the
+output of the function is small can things
+
+42
+00:03:06,280 --> 00:03:10,536
+go wrong. If the output of the PRF is
+large Then we get a secure MAC out of this
+
+43
+00:03:10,536 --> 00:03:14,344
+function. And let's state the security
+theorem here. So suppose we have a
+
+44
+00:03:14,344 --> 00:03:18,257
+function 'F' that takes messages in 'X'
+and outputs tags in 'Y', then the MAC
+
+45
+00:03:18,257 --> 00:03:22,588
+that's derived from this PRF in fact is a
+secure MAC. In particular, if you look at
+
+46
+00:03:22,588 --> 00:03:26,804
+the security theorem here, you'll see very
+clearly the era bounds, in other words
+
+47
+00:03:26,804 --> 00:03:31,179
+since the PRF is secure we know that this
+quantity here is negligible. And so if we
+
+48
+00:03:31,179 --> 00:03:35,395
+want this quantity to be negligible, this
+is what we want, we want to say that no
+
+49
+00:03:35,395 --> 00:03:39,664
+adversary can defeat the MAC 'I sub F',
+that implies that we want this quantity to
+
+50
+00:03:39,664 --> 00:03:43,722
+be negligible, in other words we want the
+output space to be large. And so for
+
+51
+00:03:43,722 --> 00:03:48,096
+example, taking a PRF that outputs eighty
+bits is perfectly fine. That will generate
+
+52
+00:03:48,096 --> 00:03:52,102
+an eighty bit MAC and therefore the
+advantage of any adversary will be at most
+
+53
+00:03:52,102 --> 00:03:56,521
+one over two to the eighty. So now the proof
+of this theorem is really simple, so lets
+
+54
+00:03:56,521 --> 00:04:00,906
+just go ahead and do it. So in fact lets
+start by saying that suppose instead of a
+
+55
+00:04:00,906 --> 00:04:05,446
+PRF we have a truly random function from
+the message space to the tag space so this
+
+56
+00:04:05,446 --> 00:04:10,087
+is just a random function from X to Y
+that's chosen at random from the set of
+
+57
+00:04:10,087 --> 00:04:14,966
+all such functions. Now lets see if that
+function can give us a secure mac. So what
+
+58
+00:04:14,966 --> 00:04:19,551
+the adversary says is, 'I want a tag on
+the message M1'. What he gets back is the
+
+59
+00:04:19,551 --> 00:04:24,157
+tag which just happens to be the function
+evaluated at the point M1. Notice there is
+
+60
+00:04:24,157 --> 00:04:28,489
+no key here because F is just a truly
+random function from X to Y. And then the
+
+61
+00:04:28,489 --> 00:04:33,096
+adversary gets to choose a message from M2
+and he obtains the tag from M2, he choose
+
+62
+00:04:33,096 --> 00:04:37,264
+M3, M4 up to MQ and he obtains all the
+corresponding tags. Now his goal is to
+
+63
+00:04:37,264 --> 00:04:41,432
+produce a message tag pair and we say that
+he wins, remember that this is an
+
+64
+00:04:41,432 --> 00:04:45,891
+existential forgery, in other words first
+of all T has to be equal to F of M This
+
+65
+00:04:45,891 --> 00:04:49,968
+means that 'T' is a valid tag for the
+message 'M'. And second of all, the
+
+66
+00:04:49,968 --> 00:04:54,685
+message 'M' has to be new. So the message
+'M' had better not be one of M-one to M-Q.
+
+67
+00:04:54,685 --> 00:04:58,879
+But let's just think about this for a
+minute, what does this mean? So the
+
+68
+00:04:58,879 --> 00:05:03,830
+adversary got to see the value of a truly
+random function at the points M-one to M-Q
+
+69
+00:05:03,830 --> 00:05:08,800
+and now he?s suppose to predict the value
+of this function as some new point, M
+
+70
+00:05:08,800 --> 00:05:13,411
+However, for a truly random function, the
+value of the function at the point M is
+
+71
+00:05:13,411 --> 00:05:18,195
+independent of its value at the points M-1
+to M-Q. So the best the adversary can do
+
+72
+00:05:18,195 --> 00:05:22,749
+at predicting the value of the function at
+the point M is just guess the value,
+
+73
+00:05:22,749 --> 00:05:27,302
+because he has no information about F of
+M. And as a result his advantage if he
+
+74
+00:05:27,302 --> 00:05:31,625
+guesses the value of the function at the
+point M he'll guess it right with
+
+75
+00:05:31,625 --> 00:05:36,294
+probability exactly one over Y. And then
+the tag that he produced will be correct
+
+76
+00:05:36,294 --> 00:05:40,582
+with probability exactly one over Y. Okay,
+again he had no information about the
+
+77
+00:05:40,582 --> 00:05:44,801
+value of the function of M and so the best
+he could do is guess. And if he guesses,
+
+78
+00:05:44,801 --> 00:05:49,347
+he'll get it right with probability one
+over Y. And now of course, because the
+
+79
+00:05:49,347 --> 00:05:54,420
+function capital F is a pseudo random
+function The adversary is gonna behave the
+
+80
+00:05:54,420 --> 00:05:58,565
+same whether we give him the truly random
+function or the pseudo random function.
+
+81
+00:05:58,565 --> 00:06:02,659
+The adversary can't tell the difference
+and as a result even if we use a pseudo
+
+82
+00:06:02,659 --> 00:06:06,600
+random function, the adversary is gonna
+have advantages at most one over Y in
+
+83
+00:06:06,600 --> 00:06:10,774
+winning the game. Okay, so you can see
+exactly the security theorem, let's go
+
+84
+00:06:10,774 --> 00:06:15,561
+back there for just a second. Essentially
+this is basically why we got an error term
+
+85
+00:06:15,561 --> 00:06:20,005
+of one over Y because of the guessing
+attack and that's the only way that the
+
+86
+00:06:20,005 --> 00:06:24,734
+attacker can win the game. So now that we
+know that any secure PRF is also a secure
+
+87
+00:06:24,734 --> 00:06:29,122
+MAC, we already know that we have our
+first example MAC. In particular, we know
+
+88
+00:06:29,122 --> 00:06:33,680
+that AES, or at least we believe that AES
+is a secure PRF, therefore, AES since it
+
+89
+00:06:33,680 --> 00:06:38,011
+takes sixteen byte inputs, right the
+message space for AES is 128 bits, which
+
+90
+00:06:38,011 --> 00:06:43,212
+is sixteen bytes. Therefore the AES cipher
+essentially gives us a MAC that can match
+
+91
+00:06:43,212 --> 00:06:48,140
+messages that are exactly sixteen bytes.
+Okay, so that's our first example of a
+
+92
+00:06:48,140 --> 00:06:53,257
+MAC. But now the question is if we have a
+PRF for small inputs like AES that only
+
+93
+00:06:53,257 --> 00:06:58,564
+acts on sixteen bytes, can we build a MAC
+for big messages that can act on gigabytes
+
+94
+00:06:58,564 --> 00:07:02,066
+of data? Sometimes I call this the
+McDonald's problem. Basically given a
+
+95
+00:07:02,066 --> 00:07:05,871
+small MAC and we build a big MAC out of
+it. In other words, given a MAC for small
+
+96
+00:07:05,871 --> 00:07:10,234
+messages and we build a MAC for large
+messages. So we're gonna look at two
+
+97
+00:07:10,234 --> 00:07:14,835
+constructions for doing so. The first
+example is called a CBC MAC that again
+
+98
+00:07:14,835 --> 00:07:19,315
+takes PRF for small messages as input
+and produces a PRF for very large
+
+99
+00:07:19,315 --> 00:07:23,686
+messages. As outputs. The second one we'll
+see is HMAC which does the same thing
+
+100
+00:07:23,686 --> 00:07:28,278
+again takes a PRF for small inputs and
+generates a PRF for very large inputs. Now
+
+101
+00:07:28,278 --> 00:07:32,050
+the two are used in very different
+contexts. Cbc-mac is actually very
+
+102
+00:07:32,050 --> 00:07:36,315
+commonly used in the banking industry. For
+example, there's a system called the
+
+103
+00:07:36,315 --> 00:07:40,797
+Automatic Clearing House, ACH, which banks
+use to clear checks with one another and
+
+104
+00:07:40,797 --> 00:07:44,788
+that system, CBC-MAC, is used to ensure
+integrity of the checks as they're
+
+105
+00:07:44,788 --> 00:07:49,107
+transferred from bank to bank. On the
+Internet, protocols like SSL and IPsec and
+
+106
+00:07:49,107 --> 00:07:53,173
+SSH, those all use HMAC for integrity. Two
+different MACs and were gonna discuss them
+
+107
+00:07:53,173 --> 00:07:57,086
+in the next couple of segments. And as I
+said were also gonna start from a PRF for
+
+108
+00:07:57,086 --> 00:08:01,274
+small messages and produce PRF for
+messages that are gigabytes long and in
+
+109
+00:08:01,274 --> 00:08:06,043
+particular they can both be substantiated
+with AES as the underlying cipher. So the
+
+110
+00:08:06,043 --> 00:08:10,597
+last comment I want to make about these
+PRF based MACs is that in fact their
+
+111
+00:08:10,597 --> 00:08:15,269
+output can be truncated. So suppose we
+have a PRF that outputs N bit outputs. So
+
+112
+00:08:15,269 --> 00:08:19,941
+again for AES this would be a PRF that
+outputs 128 bits as outputs. Its an easy
+
+113
+00:08:19,941 --> 00:08:24,909
+lemma to show that in fact if you have an
+N bit PRF if you truncated, in other words
+
+114
+00:08:24,909 --> 00:08:31,062
+if you only output first key bits The
+result is also a secure PRF and the
+
+115
+00:08:31,062 --> 00:08:36,529
+intuition here is if the big PRF outputs N
+bits of randomness for any inputs that you
+
+116
+00:08:36,529 --> 00:08:42,059
+give to the PRF then certainly chopping it
+off and truncating it to T bits is still
+
+117
+00:08:42,059 --> 00:08:46,572
+gonna look random. The attacker now gets
+less information so his job of
+
+118
+00:08:46,572 --> 00:08:51,657
+distinguishing the outputs from random
+just became harder. In other words, if the
+
+119
+00:08:51,657 --> 00:08:56,742
+N bit PRF is secure, then the T less than
+N bit PRF, the truncated PRF, would also
+
+120
+00:08:56,742 --> 00:09:01,177
+be secure. So this is an easy lemma and
+since any secure PRF also gives us a
+
+121
+00:09:01,177 --> 00:09:05,993
+secure MAC, what this means is if you give
+me a MAC that's based on a PRF and what I
+
+122
+00:09:05,993 --> 00:09:10,686
+can do is I can truncate it to W bits,
+however, because of the error term in the
+
+123
+00:09:10,864 --> 00:09:15,379
+MAC based PRF theorem we know that
+truncating to W bits will only be secure
+
+124
+00:09:15,379 --> 00:09:19,954
+as long as one over two to the W is
+negligible. So if you truncate the PRF to
+
+125
+00:09:19,954 --> 00:09:24,410
+only three bits, the resulting MAC is not
+going to be secure. However, if you
+
+126
+00:09:24,410 --> 00:09:29,222
+truncate it to say 80 bits or maybe even
+64 bits, then the resulting MAC is still
+
+127
+00:09:29,222 --> 00:09:33,974
+gonna be a secure MAC. Okay, so the thing
+to remember here is that even though we
+
+128
+00:09:33,974 --> 00:09:39,235
+use AES to construct larger PRFs and the
+output of these PRFs is gonna be 128 bits,
+
+129
+00:09:39,235 --> 00:09:44,115
+it doesn't mean that the MAC itself has to
+produce 128 bit tags We can always
+
+130
+00:09:44,115 --> 00:09:48,550
+truncate the outputs to 90 bits or 80
+bits, and as a result, we would get still
+
+131
+00:09:48,550 --> 00:09:53,097
+secure MACs but now the output tag is
+gonna be more reasonable size and doesn't
+
+132
+00:09:53,097 --> 00:09:57,702
+have to be the full 128 bits. Okay, so in
+the next segment we're gonna look at how
+
+133
+00:09:57,702 --> 00:09:58,726
+the CBC-MAC works.

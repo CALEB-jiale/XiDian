@@ -1,0 +1,1033 @@
+1
+00:00:00,000 --> 00:00:03,819
+In the last segment we talked about the
+CBC-MAC and the NMAC, but throughout
+
+2
+00:00:00,000 --> 00:00:03,819
+上一节课我们讨论了CBC-MAC和NMAC
+
+3
+00:00:03,819 --> 00:00:07,688
+the segment we always assumed that the
+message length was a multiple of the block
+
+4
+00:00:03,819 --> 00:00:07,688
+但是在那一节里我们总是假定明文长度是分组长度的倍数
+
+5
+00:00:07,738 --> 00:00:12,234
+size. In this segment, we're going to see
+what to do when the message length is not
+
+6
+00:00:07,738 --> 00:00:12,234
+在这节里 我们来看看当明文长度不是分组长度的倍数时该怎么做
+
+7
+00:00:12,284 --> 00:00:16,817
+a multiple of the block size. So recall
+that the encrypted CBC mac or ECBC-MAC for
+
+8
+00:00:12,284 --> 00:00:16,817
+因此回忆一下 加密CBC-MAC或者简称为ECBC-MAC
+
+9
+00:00:16,817 --> 00:00:21,401
+short uses pseudorandom permutation F to
+actually compute the CBC function as we
+
+10
+00:00:16,817 --> 00:00:21,401
+使用伪随机置换F来计算CBC函数
+
+11
+00:00:21,401 --> 00:00:25,928
+discussed in the last segment. But in the
+last segment, we always assumed that the
+
+12
+00:00:21,401 --> 00:00:25,928
+这是我们上节讨论的 但是在上节里 我们总是假定
+
+13
+00:00:25,928 --> 00:00:30,288
+message itself could be broken into an
+integer number of blocks for the block
+
+14
+00:00:25,928 --> 00:00:30,288
+明文本身可以分解成分组密码分组的整数倍
+
+15
+00:00:30,288 --> 00:00:34,689
+cipher. And the question is what to do
+when the message length is not a multiple
+
+16
+00:00:30,288 --> 00:00:34,689
+那么问题就是当明文长度不是分组长度的整数倍是我们要怎么做
+
+17
+00:00:34,689 --> 00:00:38,919
+of the block size. So here we have a
+message where the last block actually is
+
+18
+00:00:34,689 --> 00:00:38,919
+这里有一个明文信息 它的最后一个分组
+
+19
+00:00:38,919 --> 00:00:43,258
+shorter than the full block and the
+question is how to compute the ECBC-MAC in
+
+20
+00:00:38,919 --> 00:00:43,258
+比满的分组要短 那么问题就是在这种情况下怎么计算ECBC-MAC
+
+21
+00:00:43,258 --> 00:00:47,707
+comes to mind is to simply pad the message
+that case. So the solution of course is to
+pad the message and the first pad that
+
+22
+00:00:43,258 --> 00:00:47,707
+答案就是填充明文 第一个想到的填充方法
+
+23
+00:00:47,707 --> 00:00:52,376
+with all zeros. In other words we take the
+
+24
+00:00:47,707 --> 00:00:52,376
+就是用全0来填充 换句话说
+
+25
+00:00:52,376 --> 00:00:57,045
+last block and just add zeros to it until
+the last block becomes as long as one full
+
+26
+00:00:52,376 --> 00:00:57,045
+我们取最后一个分组 填充0直到它的长度等于满分组的长度
+
+27
+00:00:57,045 --> 00:01:02,071
+block size. And so my question to you is
+whether the resulting MAC is secure. So
+
+28
+00:00:57,045 --> 00:01:02,071
+那么我给大家的问题是这样产生MAC是否是安全的
+
+29
+00:01:02,071 --> 00:01:06,911
+the answer is no, the MAC is not secure.
+And let me explain why, basically the
+
+30
+00:01:02,071 --> 00:01:06,911
+答案是否 这个MAC不安全 我来解释下为什么
+
+31
+00:01:06,911 --> 00:01:12,324
+problem is that it's possible now to come
+up with messages so that message m and the
+
+32
+00:01:06,911 --> 00:01:12,324
+我们很可能找出一个明文m
+
+33
+00:01:12,324 --> 00:01:17,738
+message m concatenated zero happen to have
+exactly the same Pad. And as a result once
+
+34
+00:01:12,324 --> 00:01:17,738
+明文m联结0之后恰巧有有同样的填充 结果
+
+35
+00:01:17,738 --> 00:01:22,833
+we plug in both m and m||0 into ECBC we'll
+get the same tag out, which means that
+
+36
+00:01:17,738 --> 00:01:22,833
+一旦我们向ECBC-MAC里插入m和m||0 我们就会输出同样的标签 这就意味着
+
+37
+00:01:22,833 --> 00:01:27,928
+both m and m||0 have the
+same tag and therefore the attacker can
+
+38
+00:01:22,833 --> 00:01:27,928
+m和m||0有同样的标签 因此攻击者能够
+
+39
+00:01:27,928 --> 00:01:33,194
+mount an existential forgery. He would ask
+for the tag on the message m. And then he
+
+40
+00:01:27,928 --> 00:01:33,194
+实施一个存在性伪造 他会询问明文m的标签
+
+41
+00:01:33,194 --> 00:01:38,344
+would output as its forgery the tag and the
+message m||0. And it's
+
+42
+00:01:33,194 --> 00:01:38,344
+然后他会输出伪造标签和明文m||0
+
+43
+00:01:38,344 --> 00:01:43,432
+easy to say why that's the case. Basically, to be absolutely clear here, we have our
+
+44
+00:01:38,344 --> 00:01:43,432
+这是很容易就能明白为什么是这样 更清楚地来说
+
+45
+00:01:43,432 --> 00:01:48,272
+message m. Which after padding becomes m000. So we had to add three
+
+46
+00:01:43,432 --> 00:01:48,272
+我们有明文m m在填充之后变成了m000.因此我们必须加三个0
+
+47
+00:01:48,272 --> 00:01:53,298
+0's to it. And here we have the message m
+zero, an m that ends with zero. And after
+
+48
+00:01:48,272 --> 00:01:53,298
+另外我们有明文m||0 以0结尾的m
+
+49
+00:01:53,298 --> 00:01:58,324
+padding, we basically now have to add two
+0's to it. And lo and behold, they become
+
+50
+00:01:53,298 --> 00:01:58,324
+在填充后 我们必须再加两个0 大家看
+
+51
+00:01:58,324 --> 00:02:03,118
+the same pad, so that they're gonna have
+exactly the same tag which allows the
+
+52
+00:01:58,324 --> 00:02:03,118
+它们就有了同样的填充 那么它们也会有同样的标签
+
+53
+00:02:03,118 --> 00:02:07,866
+adversary to mount the existential forgery
+attack. So this is not a good idea. In
+
+54
+00:02:03,118 --> 00:02:07,866
+这就使得敌手实施存在性伪造攻击 那么这就不是一个好方法
+
+55
+00:02:07,866 --> 00:02:12,801
+fact appending all 0s is a terrible idea.
+And if you think about concrete case where
+
+56
+00:02:07,866 --> 00:02:12,801
+事实上附加全0是一个糟糕的方法 如果大家想想具体的情况
+
+57
+00:02:12,801 --> 00:02:17,222
+this comes up imagine the automatic
+clearing house system used for clearing
+
+58
+00:02:12,801 --> 00:02:17,222
+就会有问题 想想自动清扫房间系统
+
+59
+00:02:17,222 --> 00:02:21,794
+checks. I might have a check for a $100
+and the tag on that check. Well, now, the
+
+60
+00:02:17,222 --> 00:02:21,794
+被用来处理支票 我有一张100美元的支票 上面有标签 那么现在
+
+61
+00:02:21,794 --> 00:02:25,943
+attacker basically could append a zero to
+my check and make it a check for $1000,
+
+62
+00:02:21,794 --> 00:02:25,943
+攻击者能在我的支票上附加0 使它变成1000美元的支票
+
+63
+00:02:25,943 --> 00:02:30,093
+and that wouldn't actually change the tag.
+So this ability to extend the message
+
+64
+00:02:25,943 --> 00:02:30,093
+实际上这不会改变标签 这种扩展明文
+
+65
+00:02:30,093 --> 00:02:34,294
+without changing the tag actually could
+have pretty disastrous consequences. So I
+
+66
+00:02:30,093 --> 00:02:34,294
+而不改变标签的能力实际上有非常灾难性的后果
+
+67
+00:02:34,294 --> 00:02:38,547
+hope this example convinces you that the
+padding function itself must be a one to
+
+68
+00:02:34,294 --> 00:02:38,547
+所以我希望这个例子能使大家明白填充函数本身必须是一个一一映射的函数
+
+69
+00:02:38,547 --> 00:02:42,904
+one function. In other words, it should be
+the case that two distinct messages always
+
+70
+00:02:38,547 --> 00:02:42,904
+换句话说 应该是这种情况 两个不同的明文
+
+71
+00:02:42,904 --> 00:02:47,157
+map to two distinct padded messages. We
+shouldn't actually have a collision on the
+
+72
+00:02:42,904 --> 00:02:47,157
+映射到不同的两个填充的明文 我们不应该在填充函数上有碰撞
+
+73
+00:02:47,157 --> 00:02:51,254
+padding function. Another way of saying it
+is that the padding function must be
+
+74
+00:02:47,157 --> 00:02:51,254
+或者说 填充函数必须是可逆的
+
+75
+00:02:51,254 --> 00:02:55,033
+invertible. That guarantees that the
+padding function is one to one. So a
+
+76
+00:02:51,254 --> 00:02:55,033
+这就保证了填充函数是一一映射的
+
+77
+00:02:55,033 --> 00:02:59,945
+standard way to do this was proposed by
+the International Standards Organization
+
+78
+00:02:55,033 --> 00:02:59,945
+因此一种标准的实现方法被国际标准化组织ISO提出
+
+79
+00:02:59,945 --> 00:03:04,736
+ISO. What they suggested is basically,
+let's append the string 100000 to the end
+
+80
+00:02:59,945 --> 00:03:04,736
+他们提议把字符创100000附在明文后面
+
+81
+00:03:04,736 --> 00:03:09,587
+of the message to make the message be a
+multiple of the block length. Now to see
+
+82
+00:03:04,736 --> 00:03:09,587
+是明文长度变成分组长度的倍数 现在来看
+
+83
+00:03:09,587 --> 00:03:14,439
+that this padding is invertible, all we do
+is describe the inversion algorithm
+
+84
+00:03:09,587 --> 00:03:14,439
+这个填充就是可逆的 我们要做的就是描述这个可逆算法
+
+85
+00:03:14,489 --> 00:03:19,230
+which simply is gonna scan the message
+from right to left, until it hits the
+
+86
+00:03:14,489 --> 00:03:19,230
+就是简单地从右到左扫描明文 直到找到
+
+87
+00:03:19,280 --> 00:03:23,778
+first one and then it's gonna remove all
+the bits to the right of this one,
+
+88
+00:03:19,280 --> 00:03:23,778
+第一个1 然后移除这个1右面的所有比特
+
+89
+00:03:23,828 --> 00:03:27,929
+including the one. And you see that once
+we've removed the pattern this way, we
+
+90
+00:03:23,828 --> 00:03:27,929
+包括这个1 并且你能看到一旦我们按这种方式移除一部分
+
+91
+00:03:27,929 --> 00:03:32,355
+obtain the original message. So here's an
+example, so here we have a message where
+
+92
+00:03:27,929 --> 00:03:32,355
+我们就能得到原始的明文 这有一个例子 我们有一个明文
+
+93
+00:03:32,355 --> 00:03:36,726
+the last block happens to be shorter than
+the block length, and then we
+
+94
+00:03:32,355 --> 00:03:36,726
+它的最后一个分组比分组长度短
+
+95
+00:03:36,726 --> 00:03:40,878
+append the 1,0,0 string to it.
+It's very easy to see what the pad is,
+
+96
+00:03:36,726 --> 00:03:40,878
+我们就把1 0 0字符串附加在它后面 很容易就能看出来填充位是什么
+
+97
+00:03:40,878 --> 00:03:45,249
+simply look for the first one from the
+right, we can remove this pad and recover
+
+98
+00:03:40,878 --> 00:03:45,249
+从右边看 找到第一个1 我们可以移除这些填充位
+
+99
+00:03:45,249 --> 00:03:49,666
+the original message back. Now there's one
+corner case that's actually quite
+
+100
+00:03:45,249 --> 00:03:49,666
+然后我们就恢复了原始明文 现在有一种极端情况 实际上挺重要的
+
+101
+00:03:49,666 --> 00:03:54,401
+important, and that is what do we do if
+the original message length is already the
+
+102
+00:03:49,666 --> 00:03:54,401
+那是如果原始明文已经是分组长度的倍数 我们该怎么办
+
+103
+00:03:54,401 --> 00:03:59,440
+multiple of a block size? In that case
+it's really very, very important that we
+
+104
+00:03:54,401 --> 00:03:59,440
+那种情况下 这么做非常非常重要的
+
+105
+00:03:59,440 --> 00:04:04,143
+add an extra dummy block. That contains
+the pad 1000. And again, I can't tell you
+
+106
+00:03:59,440 --> 00:04:04,143
+加一个假的分组 包括填充1000 我都不知道
+
+107
+00:04:04,143 --> 00:04:08,279
+how many products and standards have
+actually made this mistake where they
+
+108
+00:04:04,143 --> 00:04:08,279
+有多少产品和标准犯过这种错误
+
+109
+00:04:08,279 --> 00:04:12,691
+didn't add a dummy block and as a result,
+the MAC is insecure because there's an
+
+110
+00:04:08,279 --> 00:04:12,691
+他们没有加一个假分组 结果MAC就不安全了
+
+111
+00:04:12,691 --> 00:04:17,159
+easy existential forgery attack. And let
+me show you why. So suppose in case the
+
+112
+00:04:12,691 --> 00:04:17,159
+因为这有一个很简单的存在性伪造攻击 我来给大家说明原因 假定这种情况下
+
+113
+00:04:17,159 --> 00:04:21,736
+message is a multiple of a block length,
+suppose we didn't add a dummy block and we
+
+114
+00:04:17,159 --> 00:04:21,736
+明文长度是分组长度的倍数 我们没有附加假分组
+
+115
+00:04:21,736 --> 00:04:26,202
+literally MAC-ed this message here. Well,
+the result now is that if you look at
+
+116
+00:04:21,736 --> 00:04:26,202
+我们计算这个信息的MAC 结果是
+
+117
+00:04:26,202 --> 00:04:31,120
+the message which is a multiple of the
+block size and a message which is not a
+
+118
+00:04:26,202 --> 00:04:31,120
+如果你看这个信息长度是分组的倍数
+
+119
+00:04:31,120 --> 00:04:35,915
+multiple of the block size but is padded
+to the block size, and imagine it so
+
+120
+00:04:31,120 --> 00:04:35,915
+还有一个信息的长度不是分组长度的倍数 但它被补齐到分组的大小了
+
+121
+00:04:35,915 --> 00:04:40,782
+happens that this message m prime one
+happens to end with 1-0-0. At this point,
+
+122
+00:04:35,915 --> 00:04:40,782
+想象一下 这个信息m以100结尾
+
+123
+00:04:40,782 --> 00:04:45,321
+you realize that here, the original
+message. Here, let me draw it this way.
+
+124
+00:04:40,782 --> 00:04:45,321
+这里大家发现 这个原信息 我这样画
+
+125
+00:04:45,321 --> 00:04:50,133
+You realize that the original message
+after padding. Would become identical to
+
+126
+00:04:45,321 --> 00:04:50,133
+你发现原信息补齐之后
+
+127
+00:04:50,133 --> 00:04:55,028
+the second message that was not padded at
+all. And as a result, if I ask for the tag
+
+128
+00:04:50,133 --> 00:04:55,028
+与第二个没补齐的相同
+
+129
+00:04:55,028 --> 00:04:59,806
+on this message over here, I would obtain
+also the tag on the second message that
+
+130
+00:04:55,028 --> 00:04:59,806
+因此 如果我问这个信息的标签 我也获得了第二个以100结尾的信息的标签
+
+131
+00:04:59,806 --> 00:05:04,288
+happened to end in 1-0-0. Okay, so if we
+didn't add the dummy block, basically,
+
+132
+00:04:59,806 --> 00:05:04,288
+好 如果我们不加假的分组
+
+133
+00:05:04,288 --> 00:05:08,594
+again, the pad would be not invertible,
+because two different messages, two
+
+134
+00:05:04,288 --> 00:05:08,594
+补齐将不是可逆的 因为两个不同的信息
+
+135
+00:05:08,594 --> 00:05:13,135
+distinct messages, happen to map to the
+same padded result. Again, as a result,
+
+136
+00:05:08,594 --> 00:05:13,135
+正好被映射到了相同的补齐结果
+
+137
+00:05:13,135 --> 00:05:17,893
+the MAC becomes insecure. So to summarize,
+this ISO standard is a perfectly fine way
+
+138
+00:05:13,135 --> 00:05:17,893
+这样MAC就不安全了 总结一下 这个ISO标准是完美的补齐方法
+
+139
+00:05:17,893 --> 00:05:22,535
+to pad, except you have to remember also
+to add a dummy block in case message is a
+
+140
+00:05:17,893 --> 00:05:22,535
+但大家要记住也要加假的分组
+
+141
+00:05:22,535 --> 00:05:26,749
+multiple of the block length to begin
+with. Now some of you might be wondering
+
+142
+00:05:22,535 --> 00:05:26,749
+当信息长度是分组长度的倍数时 现在也许有人想知道
+
+143
+00:05:26,749 --> 00:05:30,919
+if there is a padding scheme that never
+needs to add a dummy block, and the answer
+
+144
+00:05:26,749 --> 00:05:30,919
+是否有一种补齐方式 从不需要加假的分组
+
+145
+00:05:30,919 --> 00:05:35,139
+is that if you look at a deterministic
+padding function, then it's pretty easy to
+
+146
+00:05:30,919 --> 00:05:35,139
+答案是 如果你看确定的补齐函数
+
+147
+00:05:35,139 --> 00:05:39,054
+argue that there will always be cases
+where we need to pad, and the reason is
+
+148
+00:05:35,139 --> 00:05:39,054
+容易证明所有情况下我们都需要补齐
+
+149
+00:05:39,054 --> 00:05:43,815
+just literally the number of messages that
+are multiples of the block length is much
+
+150
+00:05:39,054 --> 00:05:43,815
+原因是长度为分组倍数的信息数
+
+151
+00:05:43,815 --> 00:05:48,510
+smaller than the total number of messages
+that need not be a multiple of the block
+
+152
+00:05:43,815 --> 00:05:48,510
+比长度不必是分组倍数的信息数目少得多
+
+153
+00:05:48,510 --> 00:05:52,853
+length. And as a result we can't have a
+one to one function from this bigger
+
+154
+00:05:48,510 --> 00:05:52,853
+因此我们不能获得一个从大的所有信息的集合
+
+155
+00:05:52,853 --> 00:05:56,986
+set of all messages to the smaller set of
+messages which are a multiple of
+
+156
+00:05:52,853 --> 00:05:56,986
+到小的分组倍数长的信息集合的一一映射
+
+157
+00:05:56,986 --> 00:06:01,013
+the block length. There will always be cases
+where we have to extend the original
+
+158
+00:05:56,986 --> 00:06:01,013
+总会有我们必须扩展原信息的情况
+
+159
+00:06:01,013 --> 00:06:05,040
+message and in this case that would
+correspond to adding this dummy padding
+
+160
+00:06:01,013 --> 00:06:05,040
+这种情况就对应于加假的补齐分组
+
+161
+00:06:05,040 --> 00:06:09,279
+block. However, there is a very clever
+idea called CMAC which shows that using a
+
+162
+00:06:05,040 --> 00:06:09,279
+但是 有一个非常聪明的方法叫CMAC
+
+163
+00:06:09,279 --> 00:06:13,639
+randomized padding function we can avoid
+having to ever add a dummy block. And so
+
+164
+00:06:09,279 --> 00:06:13,639
+可以使用一个随机的补齐函数 不用加假分组了
+
+165
+00:06:13,639 --> 00:06:18,353
+let me explain how CMAC works. So CMAC
+actually uses three keys. And, in fact,
+
+166
+00:06:13,639 --> 00:06:18,353
+我来解释一下CMAC如何工作 CMAC使用了三个密钥
+
+167
+00:06:18,353 --> 00:06:22,941
+sometimes this is called a three key
+construction. So this first key, K, is
+
+168
+00:06:18,353 --> 00:06:22,941
+事实上这叫做三密钥机制 第一个密钥K
+
+169
+00:06:22,941 --> 00:06:27,654
+used in the CBC, the standard CBC MAC
+algorithm. And then the keys, K1 and K2,
+
+170
+00:06:22,941 --> 00:06:27,654
+用于CBC计算 标准的CBC-MAC算法 然后密钥k1和k2
+
+171
+00:06:27,654 --> 00:06:32,815
+are used just for the padding scheme at
+the very, very last block. And in fact in
+
+172
+00:06:27,654 --> 00:06:32,815
+仅用于补齐最后一个分组
+
+173
+00:06:32,815 --> 00:06:38,479
+the CMAC standard, the keys K1, K2 are
+derived from the key K by some sort of a
+
+174
+00:06:32,815 --> 00:06:38,479
+事实上在CMAC标准中 密钥k1和k2是由密钥k推出的
+
+175
+00:06:38,479 --> 00:06:43,834
+pseudo random generator. So the way CMAC
+works is as follows. Well, if the message
+
+176
+00:06:38,479 --> 00:06:43,834
+使用某种伪随机数发生器 CMAC如下工作
+
+177
+00:06:43,834 --> 00:06:48,960
+happens to not be a multiple of a block
+length, then we append the ISO padding to
+
+178
+00:06:43,834 --> 00:06:48,960
+如果信息长度正好是分组长度的整数倍 那么我们采用ISO补齐方法
+
+179
+00:06:48,960 --> 00:06:54,022
+it. But then we also XOR this last
+block with a secret key, K1, that the
+
+180
+00:06:48,960 --> 00:06:54,022
+但我们还要把这最后一个分组和密钥k1异或
+
+181
+00:06:54,022 --> 00:06:58,560
+adversary doesn't know. However, if the
+message is a multiple of the block length,
+
+182
+00:06:54,022 --> 00:06:58,560
+攻击者不知道k1 但是如果信息长度是分组长度的倍数
+
+183
+00:06:58,560 --> 00:07:02,872
+then of course, we don't append anything
+to it. But we XOR it with a different
+
+184
+00:06:58,560 --> 00:07:02,872
+那么当然 我们不做扩展 而是与另一密钥k2异或
+
+185
+00:07:02,872 --> 00:07:06,692
+key, K2, that, again, the adversary
+doesn't actually know. So it turns out,
+
+186
+00:07:02,872 --> 00:07:06,692
+攻击者也不知道k2
+
+187
+00:07:06,692 --> 00:07:11,276
+just by doing that, it's now impossible to
+apply the extension attacks that we could
+
+188
+00:07:06,692 --> 00:07:11,276
+这样做的话 不可能实施对级联函数、原CBC所适用的扩展攻击
+
+189
+00:07:11,276 --> 00:07:14,933
+do on the cascade function, and on
+raw CBC. Because the poor
+
+190
+00:07:11,276 --> 00:07:14,933
+因为可怜的攻击者
+
+191
+00:07:14,933 --> 00:07:18,971
+adversary actually doesn't know what is
+the last block that went into the
+
+192
+00:07:14,933 --> 00:07:18,971
+不知道最后分组运行了哪个函数
+
+193
+00:07:18,971 --> 00:07:22,900
+function. He doesn't know K1, and therefore,
+he doesn't know the value at this
+
+194
+00:07:18,971 --> 00:07:22,900
+他不知道k1 因此他不知道这个点的值
+
+195
+00:07:22,900 --> 00:07:27,103
+particular point and as a result, he can't do
+an extension attack. In fact, this is a
+
+196
+00:07:22,900 --> 00:07:27,103
+所以他无法实施扩展攻击 事实上
+
+197
+00:07:27,103 --> 00:07:32,158
+provable statement. And so that this
+construction here is simply by XOR-ing
+
+198
+00:07:27,103 --> 00:07:32,158
+这个命题可以证明 这个机制就是简单地
+
+199
+00:07:32,158 --> 00:07:36,441
+K1 or XOR-ing K2 is really a PRF.
+Despite not having to do a final
+
+200
+00:07:32,158 --> 00:07:36,441
+异或k1或是异或k2 是个PRF 尽管不需要做原CBC函数后面的
+
+201
+00:07:36,441 --> 00:07:40,327
+最终加密步骤 那么这是一个好处
+
+202
+00:07:36,441 --> 00:07:40,327
+encryption step after the raw CBC
+function is computed. So, that's one
+
+203
+00:07:40,327 --> 00:07:44,768
+没有最终加密 那么好处是
+
+204
+00:07:40,327 --> 00:07:44,768
+benefit, that there's no final encryption
+step. And the second benefit is that we resolve
+
+205
+00:07:44,768 --> 00:07:49,430
+我们解决了“是否发生了补齐”所带来的歧义
+
+206
+00:07:44,768 --> 00:07:49,430
+this ambiguity between whether padding did
+happen or padding didn't happen by using
+
+207
+00:07:49,430 --> 00:07:54,149
+通过使用两个密钥来区分 “信息长度是分组长度的倍数”
+
+208
+00:07:49,430 --> 00:07:54,149
+two different keys to distinguish the case
+that the message is a multiple of the block
+
+209
+00:07:54,149 --> 00:07:58,761
+与信息长度不是分组长度的倍数 而我们补齐了这两种情况
+
+210
+00:07:54,149 --> 00:07:58,761
+length versus the case where it's not but
+we have a pad appended to the message. So
+
+211
+00:07:58,761 --> 00:08:03,099
+两个不同的密钥解决了两种情况之间的歧义
+
+212
+00:07:58,761 --> 00:08:03,099
+the two distinct keys resolve this
+ambiguity between the two cases, and as a
+
+213
+00:08:03,099 --> 00:08:06,866
+因此这个补齐是充分安全的 所以如我所说
+
+214
+00:08:03,099 --> 00:08:06,866
+result, this padding actually is
+sufficiently secure. And as I said,
+
+215
+00:08:06,866 --> 00:08:11,660
+CMAC有一个漂亮的定理告诉我们
+
+216
+00:08:06,866 --> 00:08:11,660
+there's actually a nice security theorem
+that goes with CMAC that shows that the
+
+217
+00:08:11,660 --> 00:08:15,884
+CMAC机制是一个伪随机函数 具有与
+
+218
+00:08:11,660 --> 00:08:15,884
+CMAC construction really is a pseudo-random
+function, with the same security
+
+219
+00:08:15,884 --> 00:08:20,438
+CBC-MAC相同的安全性 那么我想提醒一下
+
+220
+00:08:15,884 --> 00:08:20,438
+properties as CBC-MAC. So I wanted to
+mention that CMAC is a federal standard
+
+221
+00:08:20,438 --> 00:08:24,864
+CMAC是NIST标准化的联邦标准 如果大家最近想用CBC-MAC
+
+222
+00:08:20,438 --> 00:08:24,864
+standardized by NIST and if you now, these
+days, wanted to use a CBC-MAC for
+
+223
+00:08:24,875 --> 00:08:29,373
+还是去用CMAC吧 作为标准方法
+
+224
+00:08:24,875 --> 00:08:29,373
+anything, you would actually be using CMAC
+as the standard way to do it. But
+
+225
+00:08:29,373 --> 00:08:34,290
+特别是在CMAC中 底层函数是AES
+
+226
+00:08:29,373 --> 00:08:34,290
+particularly in CMAC, the underlying block
+cypher is AES and that gives us a secure
+
+227
+00:08:34,290 --> 00:08:38,261
+可以给我们一个由AES推出的安全的CBC-MAC
+本节完结 下节我们讨论
+
+228
+00:08:34,290 --> 00:08:38,261
+CBC-MAC derived from AES. So that's the end
+on the segment and in the next segment
+
+229
+00:08:38,261 --> 00:08:39,549
+一个并行的MAC机制
+
+230
+00:08:38,261 --> 00:08:39,549
+we'll talk about a parallel MAC.
+

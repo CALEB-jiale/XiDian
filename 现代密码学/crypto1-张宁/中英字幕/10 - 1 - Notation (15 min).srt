@@ -1,0 +1,1520 @@
+1
+00:00:00,000 --> 00:00:04,078
+In the last module we saw that number
+theory can be useful for key exchange.
+
+2
+00:00:00,000 --> 00:00:04,078
+上节我们学过数论对密钥交换是非常有用的
+
+3
+00:00:04,078 --> 00:00:08,471
+In this modlule we will review some basic facts
+of number theory that will help us build
+
+4
+00:00:04,078 --> 00:00:08,471
+而本节我们会复习对构建公钥系统有用的一些
+
+5
+00:00:08,471 --> 00:00:12,759
+many public key systems next week. As we
+go through the material in this module it
+
+6
+00:00:08,471 --> 00:00:12,759
+基础知识 当我们学习本节的材料时
+
+7
+00:00:12,759 --> 00:00:17,047
+might help to pause the video from time to
+time to make sure all the examples are clear
+
+8
+00:00:12,759 --> 00:00:17,047
+时不时地暂停本视频可能对更好地学习例子有帮助
+
+9
+00:00:17,047 --> 00:00:21,283
+So as I said we're gonna use number
+theory to build key exchange protocols.
+
+10
+00:00:17,047 --> 00:00:21,283
+前面说过 数论有助于构建密钥交换协议
+
+11
+00:00:21,283 --> 00:00:26,836
+We're gonna use number theory to build
+digital signatures, public encryption and many, many other things.
+
+12
+00:00:21,283 --> 00:00:26,836
+所以可以利用数论构建数字签名 公钥加密和许多其它的应用
+
+13
+00:00:26,836 --> 00:00:29,676
+But before we can
+do all that, we have to review some basic
+
+14
+00:00:26,836 --> 00:00:29,676
+但首先我们必须复习一些数论的
+
+15
+00:00:29,676 --> 00:00:33,855
+facts from number theory and in fact in
+this module we're gonna do a quick course
+
+16
+00:00:29,676 --> 00:00:33,855
+基础知识 而且本节将会对相关的概念做简单讲解
+
+17
+00:00:33,855 --> 00:00:38,034
+on the relevant concept. If you'd like to
+review some of the material discussed in
+
+18
+00:00:33,855 --> 00:00:38,034
+但如果你想要课下复习本节讨论的知识
+
+19
+00:00:38,034 --> 00:00:41,958
+this module offline, I referenced at the
+end of the module a free textbook by
+
+20
+00:00:38,034 --> 00:00:41,958
+我会在本节最后介绍一本由Victor Shoup所著的免费教科书
+
+21
+00:00:42,110 --> 00:00:45,932
+Victor Shoup and I pointed to some
+specific chapters in his book that will
+
+22
+00:00:42,110 --> 00:00:45,932
+并且我会标出这本书中一些特别的章节 这样可能会
+
+23
+00:00:45,932 --> 00:00:50,897
+explain the materials that we will cover
+here. So from here on I'm going to use the
+
+24
+00:00:45,932 --> 00:00:50,897
+更好地说明本节所讲的知识  从这里开始我会使用
+
+25
+00:00:50,897 --> 00:00:55,832
+following notation. I'm going to use
+capital N to always denote a positive
+
+26
+00:00:50,897 --> 00:00:55,832
+一些符号 首先使用大写N标记一个正整数
+
+27
+00:00:55,832 --> 00:01:01,368
+integer, and I'm going to use lower case p
+to always denote a positive prime number.
+
+28
+00:00:55,832 --> 00:01:01,368
+然后使用小写p标记一正素数
+
+29
+00:01:01,368 --> 00:01:06,503
+Now I'd like to introduce the following
+notation, there's this funny Z that's
+
+30
+00:01:01,368 --> 00:01:06,503
+此外我还要介绍接下来的这个Z符号
+
+31
+00:01:06,503 --> 00:01:12,172
+written like two diagonal lines here with
+a subscript N I'm gonna use that to denote
+
+32
+00:01:06,503 --> 00:01:12,172
+它写作两条对角线并附带一个下标N 我用它来表示
+
+33
+00:01:12,172 --> 00:01:16,939
+the sets as zero, one, two, up to N minus
+one. This is actually a very common
+
+34
+00:01:12,172 --> 00:01:16,939
+由0-（N-1）的一组数 它在密码学中是非常
+
+35
+00:01:16,939 --> 00:01:21,780
+notation that's used in Crypto, and so
+I'll stick to that here. So again, Z sub N
+
+36
+00:01:16,939 --> 00:01:21,780
+常见的符号 所以忠于密码学中的表示 再次强调
+
+37
+00:01:21,780 --> 00:01:26,865
+denotes the set of integers 0,1 up to N-1. And in fact, this is not just a
+
+38
+00:01:21,780 --> 00:01:26,865
+Z带下标N表示一组由0-（N-1）的整数 但事实上 它不仅仅表示
+
+39
+00:01:26,865 --> 00:01:31,890
+set of integers. We can do addition and
+multiplication in this set as long as we
+
+40
+00:01:26,865 --> 00:01:31,890
+一组整数 还可以在这组整数中做加法与乘法 只要
+
+41
+00:01:31,890 --> 00:01:36,991
+always multiply module of the number N.
+For those of you who know a little bit of
+
+42
+00:01:31,890 --> 00:01:36,991
+我们乘以模数N 而对于了解一点代数的同学
+
+43
+00:01:36,991 --> 00:01:40,853
+algebra, I'll just say that Z sub N
+denotes a ring where addition and
+
+44
+00:01:36,991 --> 00:01:40,853
+Z带下标N可以代表乘法与加法均在
+
+45
+00:01:40,853 --> 00:01:45,388
+multiplication are done modulo N. This is
+very common notation in crypto, although
+
+46
+00:01:40,853 --> 00:01:45,388
+模N条件下的环 这是个在密码学中非常常见的符号
+
+47
+00:01:45,388 --> 00:01:49,922
+in modern mathematics Z sub N sometimes
+denotes something else. But as I said I'm
+
+48
+00:01:45,388 --> 00:01:49,922
+但现代数学中Z带下标N有时表示其它的东西 但出于忠于密码学的表示
+
+49
+00:01:49,922 --> 00:01:54,568
+gonna keep on using Z sub N to denote the
+set of integers 0 to N-1 with
+
+50
+00:01:49,922 --> 00:01:54,568
+这里Z带下标N表示加法与乘法均在模N条件下的
+
+51
+00:01:54,568 --> 00:01:59,230
+addition and multiplication modulo N. So
+I want to make sure everybody's
+
+52
+00:01:54,568 --> 00:01:59,230
+由0-（N-1）的整数组 所以我需要每个人
+
+53
+00:01:59,230 --> 00:02:04,551
+comfortable with modular arithmetic. And
+so let's just look at the number, say, N=12
+
+54
+00:01:59,230 --> 00:02:04,551
+都熟悉模运算 这里举个例子 假设N=12
+
+55
+00:02:04,551 --> 00:02:09,612
+And let's just see some basic facts about modular arithmetic. So
+
+56
+00:02:04,551 --> 00:02:09,612
+然后通过该例了解模运算的基础知识
+
+57
+00:02:09,612 --> 00:02:14,348
+I'm gonna say that nine plus eight is
+seventeen; seventeen is five modulo
+
+58
+00:02:09,612 --> 00:02:14,348
+首先9+8=17 而17≡5 mod 12
+
+59
+00:02:14,348 --> 00:02:19,962
+twelve, so I'm gonna write that nine plus
+eight is equal to five in Z 12. Now
+
+60
+00:02:14,348 --> 00:02:19,962
+所以这里表示为Z12中9+8=5
+
+61
+00:02:19,962 --> 00:02:26,866
+can someone tell me how much is five times
+seven in Z12? In other words, how much is modular 12?
+
+62
+00:02:19,962 --> 00:02:26,866
+然后有人可以告诉我在Z12中5*7等于多少？ 换言之 5*7模12等于多少？
+
+63
+00:02:29,513 --> 00:02:33,660
+Well, five times seven is 35. And if you recall, 36 is divisible by 12
+
+64
+00:02:29,513 --> 00:02:33,660
+当然5*7=35 而36可被12整除
+
+65
+00:02:33,660 --> 00:02:38,805
+So five times seven is really -1 module of 12. 35 is minus
+
+66
+00:02:33,660 --> 00:02:38,805
+所以5*7≡-1mod 12 且35等于-1模12
+
+67
+00:02:38,805 --> 00:02:44,491
+one module of twelve. But minus one module
+of 12 is basically the same as 11,
+
+68
+00:02:38,805 --> 00:02:44,491
+但-1模12与11相同
+
+69
+00:02:44,491 --> 00:02:49,975
+cuz I just add 12  to -1 and I
+get 11. And the next question is, how
+
+70
+00:02:44,491 --> 00:02:49,975
+因为12+（-1）=11 接下来的问题是
+
+71
+00:02:49,975 --> 00:02:56,189
+much is 5 - 7 seven in the Z12?
+Well, 5-7 is -2.
+
+72
+00:02:49,975 --> 00:02:56,189
+Z12中5-7等于多少？ 当然5-7=-2
+
+73
+00:02:56,189 --> 00:03:01,828
+-2 modulo 12, well, I just add 12
+to -2 and I get 10. As a result,
+
+74
+00:02:56,189 --> 00:03:01,828
+而-2 mod 12 当然只需在-2上加12 得到10 所以
+
+75
+00:03:01,828 --> 00:03:07,815
+we say that 5 - 7 is equal to
+10. So again, this is just to make sure
+
+76
+00:03:01,828 --> 00:03:07,815
+结果就是 5-7≡10 mod 12 上面这个例子只是为了确保
+
+77
+00:03:07,815 --> 00:03:13,848
+everybody is comfortable with this notation of working
+in Z12. In other words, working in modulo 12.
+
+78
+00:03:07,815 --> 00:03:13,848
+每位同学都熟悉Z12中的符号 换言之 就是模12运算
+
+79
+00:03:13,848 --> 00:03:18,856
+Now, I'd just like to make a
+general statement that, in fact,
+
+80
+00:03:13,848 --> 00:03:18,856
+现在 有一点需要注意
+
+81
+00:03:19,028 --> 00:03:23,034
+arithmetic in ZN, in other words,
+arithmetic modulo N works just as you
+
+82
+00:03:19,028 --> 00:03:23,034
+ZN中的运算 换言之 就是模N运算的运算方法与你们以前学过的一样
+
+83
+00:03:23,034 --> 00:03:27,268
+would expect. So, for example, all the
+laws that you know about addition and
+
+84
+00:03:23,034 --> 00:03:27,268
+例如 你们了解的加法乘法法则
+
+85
+00:03:27,268 --> 00:03:31,847
+multiplication work equally well in ZN.
+For example, the distributive law, X times
+
+86
+00:03:27,268 --> 00:03:31,847
+同样适用于ZN 如 分配律 X*（Y+Z）
+
+87
+00:03:31,847 --> 00:03:36,196
+Y plus Z, is still gonna be equal to X
+times Y plus X times Z. So many of the
+
+88
+00:03:31,847 --> 00:03:36,196
+同样等于X*Y+X*Z 所以你们
+
+89
+00:03:36,196 --> 00:03:41,003
+things that you know about arithmetic when
+working over the integers or in the reals,
+
+90
+00:03:36,196 --> 00:03:41,003
+了解的很多整数 实数中的运算法则
+
+91
+00:03:41,003 --> 00:03:46,247
+will translate to working in, ZN, namely
+working modulo N.
+
+92
+00:03:41,003 --> 00:03:46,247
+都可以转化成ZN中的运算 也就是模N运算
+
+93
+00:03:46,247 --> 00:03:51,965
+So the next concept we need is what's called a greatest common
+divisor, or a GCD. And so suppose they
+
+94
+00:03:46,247 --> 00:03:51,965
+然后接下来的概念是最大公约数 即GCD 假设
+
+95
+00:03:51,965 --> 00:03:57,319
+give you two integers X and Y. We say that
+the GCD of X and Y is basically the
+
+96
+00:03:51,965 --> 00:03:57,319
+给定整数X与Y X与Y的最大公约数就是
+
+97
+00:03:57,319 --> 00:04:02,880
+greatest common divisor it's the largest
+number, the largest integer that divides
+
+98
+00:03:57,319 --> 00:04:02,880
+公约数的最大值 就是能够整除X与Y的最大整值
+
+99
+00:04:02,880 --> 00:04:09,138
+both X and Y. So for example, what is the
+GCD of 12 and 18?
+
+100
+00:04:02,880 --> 00:04:09,138
+例如 12与18的最大公约数是？
+
+101
+00:04:09,630 --> 00:04:15,258
+Well the GCD is 6, because 6 divides both 12
+and 18,
+
+102
+00:04:09,630 --> 00:04:15,258
+当然这个数是6 因为6可以同时被12与18除尽
+
+103
+00:04:15,258 --> 00:04:18,965
+and it's the largest number that divides both 12 and 18.
+
+104
+00:04:15,258 --> 00:04:18,965
+而且它是能够被12与18除尽的最大的整数
+
+105
+00:04:18,965 --> 00:04:27,245
+Now
+there is an important fact about GCD's in particular, if I give you two numbers, two
+integers X and Y, there will always exist
+
+106
+00:04:18,965 --> 00:04:27,245
+然后有一个关于GCD的重要特征 如果给定两个整数X与Y 则一定存在
+
+107
+00:04:27,245 --> 00:04:32,711
+two other integers, I will call them A and
+B, such that if I look at a times X + B
+
+108
+00:04:27,245 --> 00:04:32,711
+另外两个整数 a与b 并且有a*X+b*Y与
+
+109
+00:04:32,711 --> 00:04:38,177
+times Y what I get is the GCD of X and Y.
+In other words the GCD of X and Y is a
+
+110
+00:04:32,711 --> 00:04:38,177
+所求的X与Y的GCD相同 换言之 X与Y的GCD
+
+111
+00:04:38,177 --> 00:04:43,711
+linear combination of X and Y using the
+integers A and B. So far let us look at a
+
+112
+00:04:38,177 --> 00:04:43,711
+用整数a与b求得的X与Y的线性组合 让我们看一个例子
+
+113
+00:04:43,711 --> 00:04:49,245
+simple example, here, let's look at the
+GCD from before, so the integers for the
+
+114
+00:04:43,711 --> 00:04:49,245
+例如前面举过的这个例子 所以要求得GCD所需的整数是
+
+115
+00:04:49,245 --> 00:04:55,831
+GCD would be 2 times 12 Minus 1
+times 18. That's 24 minus 18,
+
+116
+00:04:49,245 --> 00:04:55,831
+2*12-1*18 也就是24-18
+
+117
+00:04:55,831 --> 00:05:02,533
+which is equal to 6. So the integers A
+and B in this case would be 2 and -1
+
+118
+00:04:55,831 --> 00:05:02,533
+等于6 所以这里的a与b就是2与-1
+
+119
+00:05:02,533 --> 00:05:08,625
+But this is just an example, and in
+fact, these integers, A and B will exist
+
+120
+00:05:02,533 --> 00:05:08,625
+这里是举的一个特例 事实上 对任意整数X与Y
+
+121
+00:05:08,625 --> 00:05:13,463
+for any integers, X and Y. Now not only do
+A and B exist, in fact there's a very
+
+122
+00:05:08,625 --> 00:05:13,463
+都存在整数a与b 而且事实上有一种
+
+123
+00:05:13,463 --> 00:05:17,838
+simple and efficient algorithm to find
+these integers, to find A and B. The
+
+124
+00:05:13,463 --> 00:05:17,838
+非常简便有效的计算这两个整数a与b的方法
+
+125
+00:05:17,838 --> 00:05:22,627
+algorithm is what's called the extended
+Euclidean algorithm. This is actually one
+
+126
+00:05:17,838 --> 00:05:22,627
+这个算法叫做扩展Euclid算法 它是
+
+127
+00:05:22,627 --> 00:05:27,416
+of the prettiest algorithms from ancient
+Greek times, due to Euclid of course. I'm
+
+128
+00:05:22,627 --> 00:05:27,416
+古希腊时期非常好的算法之一 当然由Euclid提出
+
+129
+00:05:27,416 --> 00:05:31,672
+not gonna show you how this algorithm
+works here, I. It's a fairly simple
+
+130
+00:05:27,416 --> 00:05:31,672
+这里我不会说明该算法的工作方式 它只是个很简单的算法
+
+131
+00:05:31,672 --> 00:05:36,343
+algorithm. I'll just tell that in fact
+given X and Y, this algorithm will find A
+
+132
+00:05:31,672 --> 00:05:36,343
+但需要说明的是 给定X与Y 该算法会在
+
+133
+00:05:36,343 --> 00:05:40,942
+and B in time roughly quadratic in the
+logarithms of X and Y. We'll come back to
+
+134
+00:05:36,343 --> 00:05:40,942
+大约计算X与Y的对数的二次方倍的时间内找到a与b
+
+135
+00:05:40,942 --> 00:05:44,966
+that and discuss the, the performance of
+Euclid's algorithm I have a bit more
+
+136
+00:05:40,942 --> 00:05:44,966
+之后 我们返回到这里并讨论Euclid算法 而且我会补充
+
+137
+00:05:44,966 --> 00:05:49,752
+detail in just a minute. But, for now all
+we need to know is that A and B can
+
+138
+00:05:44,966 --> 00:05:49,752
+一些细节 但现在我们需要知道是确实有方法可以有效地
+
+139
+00:05:49,752 --> 00:05:55,719
+actually be found efficiently. Now, if the
+GCD of X and Y happens to be 1. In other
+
+140
+00:05:49,752 --> 00:05:55,719
+找出整数a与b  如果X与Y的GCD值正好是1
+
+141
+00:05:55,719 --> 00:06:00,956
+words, 1 is the largest integer that
+divides both X and Y, then we say that X
+
+142
+00:05:55,719 --> 00:06:00,956
+换句话说 1是X与Y的公约数中的最大值 那么就称
+
+143
+00:06:00,956 --> 00:06:05,926
+and Y are relatively prime. For example,
+the GCD of three and five, it's not
+
+144
+00:06:00,956 --> 00:06:05,926
+X与Y互素 例如 gcd(3,5) 不难发现
+
+145
+00:06:05,926 --> 00:06:11,567
+difficult to see that it hap, that happens
+to be 1, Because both 3 and 5 are
+
+146
+00:06:05,926 --> 00:06:11,567
+这个值正好是1 因为3与5都是素数
+
+147
+00:06:11,567 --> 00:06:15,688
+prime. The next topic we need to talk
+about is modulated inversion. So other
+
+148
+00:06:11,567 --> 00:06:15,688
+接下来我们要讨论的是模逆运算
+
+149
+00:06:15,688 --> 00:06:20,214
+than rationals we know what the inverse of
+a number is. In other words if I give you
+
+150
+00:06:15,688 --> 00:06:20,214
+不同于我们知道的有理数的逆 也就是说 如果给定
+
+151
+00:06:20,214 --> 00:06:24,130
+the number 2 the inverse of 2 is
+simply the fraction one half.
+
+152
+00:06:20,214 --> 00:06:24,130
+一个数2 那么它的逆就是分数1／2
+
+153
+00:06:24,130 --> 00:06:30,111
+the qestion is what about inverses when we, we
+work module N. Well, so the inverse of
+
+154
+00:06:24,130 --> 00:06:30,111
+而这里的问题如何在模N的条件下找数的逆 这里
+
+155
+00:06:30,111 --> 00:06:37,475
+an element X in Z N is simply another
+element Y in Z N such that X times Y is
+
+156
+00:06:30,111 --> 00:06:37,475
+ZN中的元素X的逆应该是ZN中另一个元素Y 且X*Y
+
+157
+00:06:37,475 --> 00:06:43,650
+equal to 1 in Z N. In other words X
+times Y is equal to 1 modulo N. And this
+
+158
+00:06:37,475 --> 00:06:43,650
+在ZN中等于1 换言之 X*Y≡1mod N 那么这个
+
+159
+00:06:43,650 --> 00:06:49,066
+number Y is denoted by X inverse. And it's
+not difficult to see that if, if Y exists,
+
+160
+00:06:43,650 --> 00:06:49,066
+数Y就是X的模逆 不难发现 如果Y存在
+
+161
+00:06:49,066 --> 00:06:54,351
+then in fact it's unique. And as I said,
+we'll use X inverse to denote the inverse
+
+162
+00:06:49,066 --> 00:06:54,351
+那么它也就是唯一的 这里我们用X＾-1表示X的逆
+
+163
+00:06:54,351 --> 00:06:59,440
+of X. So let's look at a quick example.
+Suppose N is some odd integer, and I ask
+
+164
+00:06:54,351 --> 00:06:59,440
+举个例子 假设N是奇整数 待求
+
+165
+00:06:59,440 --> 00:07:04,636
+you what is the inverse of 2 in ZN?
+So it's not too difficult to see that the
+
+166
+00:06:59,440 --> 00:07:04,636
+2在ZN中的逆 不难发现
+
+167
+00:07:04,636 --> 00:07:09,810
+inverse of two in ZN in fact is N plus one
+over 2 and you can see that this is an
+
+168
+00:07:04,636 --> 00:07:09,810
+2在ZN中的逆应该是N+1／2 不难发现它是一个整数
+
+169
+00:07:09,810 --> 00:07:14,429
+integer because N is odd, therefore, N+1 is even and, therefore, (N+1)/2
+
+170
+00:07:09,810 --> 00:07:14,429
+因为N为奇数 因此N+1是偶数 所以(N+1)/2
+
+171
+00:07:14,429 --> 00:07:19,542
+is in fact an integer and the
+range 1..N as required. Now why is (N+1)/2
+
+172
+00:07:14,429 --> 00:07:19,542
+是整数且在范围1-N中 然后为什么是(N+1)/2
+
+173
+00:07:19,542 --> 00:07:24,407
+the inverse of two?
+Well, let's just multiply the 2 so we do
+
+174
+00:07:19,542 --> 00:07:24,407
+我们将其乘以2,
+
+175
+00:07:24,407 --> 00:07:29,273
+2 times (N+1) over 2 and what do
+we get? Well, that's simply equal to N+1
+
+176
+00:07:24,407 --> 00:07:29,273
+计算2乘以(N+1)/2会得到什么？很简单,等于N+1，
+
+177
+00:07:29,273 --> 00:07:34,508
+and N+1 is simply equal to
+1 in ZN. So since their product is equal
+
+178
+00:07:29,273 --> 00:07:34,508
+而N+1在ZN中等于1。因此，由它们的乘积为1，
+
+179
+00:07:34,508 --> 00:07:38,889
+to 1. We know that (N+1)/2
+is the inverse of 2 in ZN.
+
+180
+00:07:34,508 --> 00:07:38,889
+得到(N+1)/2是ZN中2的逆。
+
+181
+00:07:38,889 --> 00:07:44,174
+Now we understand what a modular inverse is, the
+question is which elements actually have
+
+182
+00:07:38,889 --> 00:07:44,174
+现在我们知道了什么是模逆，问题是ZN中哪些元素有逆呢？
+
+183
+00:07:44,174 --> 00:07:48,853
+an inverse in ZN? And so there's a very
+simple lemma that says that if for an
+
+184
+00:07:44,174 --> 00:07:48,853
+有一个简单的引理表明：若ZN中的一个元素X可逆，
+
+185
+00:07:48,853 --> 00:07:53,911
+element X in ZN, that element has
+an inverse if and only if it is relatively
+
+186
+00:07:48,853 --> 00:07:53,911
+（条件是）当且仅当
+
+187
+00:07:53,911 --> 00:07:58,500
+prime to the modulus N, to the number N.
+So I'll say that again. X and ZN is
+
+188
+00:07:53,911 --> 00:07:58,500
+它与模N互质，和N互质。我再说一遍，
+
+189
+00:07:58,500 --> 00:08:03,607
+invertible if and only if X is relatively
+prime to N. And let's quickly prove that.
+
+190
+00:07:58,500 --> 00:08:03,607
+当且仅当X与N互质时，X和ZN可逆。我们快速地证明一下，
+
+191
+00:08:03,607 --> 00:08:08,403
+It's actually fairly simple to see. So
+suppose a GCD of X and N happens to be
+
+192
+00:08:03,607 --> 00:08:08,403
+这相当简单。假设X和N的GCD恰好等于1，
+
+193
+00:08:08,403 --> 00:08:13,262
+equal to one. So X is relatively prime to
+N. Well, by this property of GCD as we
+
+194
+00:08:08,403 --> 00:08:13,262
+即X与N互质。由已知的GCD的性质，
+
+195
+00:08:13,262 --> 00:08:18,120
+know that there exists integers A and B.
+Such that A times X plus B times N is
+
+196
+00:08:13,262 --> 00:08:18,120
+存在整数A和B，使得A*X+B*N
+
+197
+00:08:18,120 --> 00:08:23,469
+equal to the GCD of X and N, which happens
+to be one. So A times X plus B times N is
+
+198
+00:08:18,120 --> 00:08:23,469
+等于X和N的GCD，也就是1。所以，A*X+B*N等于1。
+
+199
+00:08:23,469 --> 00:08:28,778
+equal to 1. Now we can actually take
+this equation here and, and us it reduce
+
+200
+00:08:23,469 --> 00:08:28,778
+现在我们把这个等式记录在这，然后简化它的模N运算。
+
+201
+00:08:28,778 --> 00:08:34,360
+it's modulo N. So what this means is that
+a times X is equal to one in Z, N. Once we
+
+202
+00:08:28,778 --> 00:08:34,360
+这就是说a*X在ZN中等于1。
+
+203
+00:08:34,360 --> 00:08:39,669
+reduce this equation modulo N this term
+simply falls off because B times N is
+
+204
+00:08:34,360 --> 00:08:39,669
+最后我们可以把这个取模等式减少这项是因为B*N可以被N整除，
+
+205
+00:08:39,669 --> 00:08:46,059
+divisible by N and therefore is 0
+modulo N. But what we just showed is that
+
+206
+00:08:39,669 --> 00:08:46,059
+对N取模运算结果为0。我们刚才证明了
+
+207
+00:08:46,059 --> 00:08:52,763
+in fact X inverse is simply A in ZN. So
+because X is relatively prime to N, we
+
+208
+00:08:46,059 --> 00:08:52,763
+X的逆是ZN中的A。因此，已知X与N互质，
+
+209
+00:08:52,763 --> 00:08:58,700
+were able to show that X is invertible by
+actually building the inverse of X modulo N
+
+210
+00:08:52,763 --> 00:08:58,700
+可通过求X mod N 的逆证明X是可逆的。
+
+211
+00:08:58,700 --> 00:09:03,349
+Now what about the other direction?
+What happens if the GCD is greater than 1?
+
+212
+00:08:58,700 --> 00:09:03,349
+换一个方向呢？如果GCD大于1会怎么样？
+
+213
+00:09:03,349 --> 00:09:08,339
+Then we want to show that there is no
+inverse. But that's actually very easy to
+
+214
+00:09:03,349 --> 00:09:08,339
+我们想证明无逆存在，而这其实很容易证明。
+
+215
+00:09:08,339 --> 00:09:12,908
+see because in this case, if you claim
+that A happens to be the inverse of X
+
+216
+00:09:08,339 --> 00:09:12,908
+因为在这种情况下，假设A是X模N的逆，
+
+217
+00:09:12,908 --> 00:09:17,658
+modulo N, well, let's look at a<i>x; a<i>X we know should be equal to 1 modulo N</i></i>
+
+218
+00:09:12,908 --> 00:09:17,658
+考察a*x，a*x应该等于 1 mod N，
+
+219
+00:09:17,658 --> 00:09:22,467
+But if the GCD(X,N) is
+bigger than 1, then the GCD(a<i>X,N)</i>
+
+220
+00:09:17,658 --> 00:09:22,467
+但如果 GCD(X,N)大于1，GCD(a*X,N) 也会大于1。
+
+221
+00:09:22,467 --> 00:09:27,157
+is bigger than one. But, if the GCD
+of A times X and N is bigger than 1,
+
+222
+00:09:22,467 --> 00:09:27,157
+而如果GCD(a*X,N)大于1，
+
+223
+00:09:27,157 --> 00:09:32,366
+then it's not possible that A<i>X is
+equal to 1. So A<i>X must also be</i></i>
+
+224
+00:09:27,157 --> 00:09:32,366
+那么 A*X 就不可能等于1，而是一定比1大。
+
+225
+00:09:32,567 --> 00:09:38,436
+bigger than 1, and therefore, A cannot
+be the inverse of X module N.
+
+226
+00:09:32,567 --> 00:09:38,436
+因此，A不可能是X mod N 的逆。
+
+227
+00:09:38,436 --> 00:09:42,602
+So this proves that, in fact, in, when the GCD is
+greater than 1, X cannot have an
+
+228
+00:09:38,436 --> 00:09:42,602
+至此，证明了GCD大于1时，X没有逆。
+
+229
+00:09:42,602 --> 00:09:47,282
+inverse, because there is no A, such that
+A times X is equal to one modulo N
+
+230
+00:09:42,602 --> 00:09:47,282
+因为不存在A满足A*X等于 1 mod N 。
+
+231
+00:09:47,282 --> 00:09:51,791
+And this might be a bit confusing, so you
+might be best just to, do an example. So
+
+232
+00:09:47,282 --> 00:09:51,791
+这可能有点令人费解，所以最好举个例子。
+
+233
+00:09:51,791 --> 00:09:56,451
+let's look at, let's suppose that the GCD
+of X and N happens to be equal to 2.
+
+234
+00:09:51,791 --> 00:09:56,451
+于是，我们假设X和N的GCD恰好是2，
+
+235
+00:09:56,451 --> 00:10:01,843
+I claim that X is therefore, is not
+invertible modular N. Well, why is that
+
+236
+00:09:56,451 --> 00:10:01,843
+那么，X在ZN中不可逆。为什么呢？
+
+237
+00:10:01,843 --> 00:10:07,615
+true? Well, for all A, we know that A
+times X is gonna be even, is even. And the
+
+238
+00:10:01,843 --> 00:10:07,615
+我们知道对任意的A，A*X为偶数。
+
+239
+00:10:07,615 --> 00:10:13,471
+reason we know that is because, well, 2
+divides X and 2 divides N. Well, since
+
+240
+00:10:07,615 --> 00:10:13,471
+因为2能整除X，也能整除N。
+
+241
+00:10:13,471 --> 00:10:18,501
+two divide X, 2 is also gonna divide A
+times X. And therefore, A times X must be
+
+242
+00:10:13,471 --> 00:10:18,501
+若2能整除X，那么2也能整除A*X，无疑，A*X必是偶数。
+
+243
+00:10:18,501 --> 00:10:23,468
+even. But what that means is that there's
+no way that A times X is equal to 1 modulo N
+
+244
+00:10:18,501 --> 00:10:23,468
+这说明A*X不可能等于 1 mod N 。
+
+245
+00:10:23,468 --> 00:10:28,649
+In particular, there's no way
+that A times X is equal to B times N + 1
+
+246
+00:10:23,468 --> 00:10:28,649
+特别地，A*X不可能等于B*（N+1)。
+
+247
+00:10:28,649 --> 00:10:33,749
+This simply can't happen, this
+equality must not hold. Because this side
+
+248
+00:10:28,649 --> 00:10:33,749
+A*X=B*(N+1)不成立，不然等式两边不相等。因为一边
+
+249
+00:10:33,749 --> 00:10:39,257
+happens to be even, as we said. B times N
+for exactly the same reason is also even:
+
+250
+00:10:33,749 --> 00:10:39,257
+刚好如我们所说是偶数，同理，B*N也是偶数：
+
+251
+00:10:39,257 --> 00:10:44,832
+N is divisible by two; therefore B times N
+is also divisible by two. So therefore B
+
+252
+00:10:39,257 --> 00:10:44,832
+N能被2整除，所以B*N也能被2整除，所以
+
+253
+00:10:44,832 --> 00:10:50,340
+times N+1 is odd. And since even
+can't equal to odd, it's not possible that
+
+254
+00:10:44,832 --> 00:10:50,340
+B*(N+1)是奇数。因为偶数不可能等于奇数，所以
+
+255
+00:10:50,340 --> 00:10:56,297
+A times X is equal to some multiple of N+1. And in particular this means
+
+256
+00:10:50,340 --> 00:10:56,297
+A*X与N+1的倍数不相等。这表明：
+
+257
+00:10:56,297 --> 00:11:01,331
+that A cannot be the inverse of X because
+A times X cannot be 1 mod N so X is not
+
+258
+00:10:56,297 --> 00:11:01,331
+A不可能是X的逆，因为A*X不等于 1 mod N，因此，X在模N情况下
+
+259
+00:11:01,331 --> 00:11:05,308
+invertible modular N. So now we have a
+complete understanding of what are the
+
+260
+00:11:01,331 --> 00:11:05,308
+不是可逆的。现在我们完全理解了什么是可逆元素。
+
+261
+00:11:05,308 --> 00:11:09,192
+invertible elements. Basically, we know
+that an element is invertible if and only
+
+262
+00:11:05,308 --> 00:11:09,192
+基本上，我们知道了：当且仅当一个元素与N互质时该元素可逆。
+
+263
+00:11:09,192 --> 00:11:13,270
+if it's relatively prime to N. And what I
+like about this proof is I would say this
+
+264
+00:11:09,192 --> 00:11:13,270
+这个证明让我喜欢的地方，我愿意称其为
+
+265
+00:11:13,270 --> 00:11:17,623
+is what's called a computer-science proof
+In the sense that not only does it prove
+
+266
+00:11:13,270 --> 00:11:17,623
+计算机科学证明。从某种意义上说，它不仅证明了
+
+267
+00:11:17,623 --> 00:11:22,250
+to you that the inverse exists; it also
+shows you how to efficiently calculate the
+
+268
+00:11:17,623 --> 00:11:22,250
+可逆解的存在性，同时证明了如何有效计算逆运算的结果。
+
+269
+00:11:22,250 --> 00:11:26,312
+inverse. And the way we calculate the
+inverse, is basically by using this
+
+270
+00:11:22,250 --> 00:11:26,312
+而计算逆运算的结果的方法基于
+
+271
+00:11:26,312 --> 00:11:30,826
+extending decreasing algorithm. Define the
+numbers A and B. And once we found the
+
+272
+00:11:26,312 --> 00:11:30,826
+扩展递减算法。定义数字A和B，一旦我们算出A和B，
+
+273
+00:11:30,826 --> 00:11:35,453
+numbers A and B, we done because A is the
+inverse of X. And the numbers A and B can
+
+274
+00:11:30,826 --> 00:11:35,453
+计算就完成了，因为A是X的逆，而且可以高效地
+
+275
+00:11:35,453 --> 00:11:41,269
+be found very efficiently. So along the
+way I've also shown you an algorithm for
+
+276
+00:11:35,453 --> 00:11:41,269
+计算出数字A和B。所以在证明过程中我已经告诉了你们计算
+
+277
+00:11:41,269 --> 00:11:43,768
+inverting elements, modulo N.
+
+278
+00:11:41,269 --> 00:11:43,768
+模N的元素的逆的算法。
+
+279
+00:11:43,768 --> 00:11:53,243
+Okay. So bear with me, and let's introduce this little more notation. 
+So we're gonna denote by ZN as the set of invertible elements in
+
+280
+00:11:43,768 --> 00:11:53,243
+OK.坚持一下，再介绍一个符号。我们用ZN*表示ZN中可逆元素的集合。
+
+281
+00:11:53,243 --> 00:11:58,439
+Z N. In other words, ZN is the set
+of all elements in ZN such that GCD(X,N)=1
+
+282
+00:11:53,243 --> 00:11:58,439
+换句话说，ZN*是ZN中满足GCD(X,N)=1的元素的集合。
+
+283
+00:11:58,439 --> 00:12:02,930
+Okay. But I want you, again, to think of ZN as
+
+284
+00:11:58,439 --> 00:12:02,930
+OK.再一次，我希望你们只是把ZN*看成
+
+285
+00:12:02,930 --> 00:12:07,736
+basically those elements in ZN that have
+an inverse. So let's look at a few
+
+286
+00:12:02,930 --> 00:12:07,736
+ZN中逆存在的元素的集合。下面，我们来看几个例子。
+
+287
+00:12:07,736 --> 00:12:12,859
+examples. So let's start with a prime p.
+We know that of the integers from zero to
+
+288
+00:12:07,736 --> 00:12:12,859
+首先，质数p。众所周知，所有从0到p-1
+
+289
+00:12:12,859 --> 00:12:17,350
+p-1, all of them are gonna be
+relatively primed to p except one
+
+290
+00:12:12,859 --> 00:12:17,350
+的整数都和p互质，除了一个
+
+291
+00:12:17,350 --> 00:12:22,409
+integer--namely, the integer 0. Zero is
+not relatively primed to P, because the
+
+292
+00:12:17,350 --> 00:12:22,409
+整数——0。0和p不互质，因为
+
+293
+00:12:22,409 --> 00:12:27,719
+GCD(p,0)=0, not 1. So
+therefore, if p is a prime, the set ZP
+
+294
+00:12:22,409 --> 00:12:27,719
+GCD(p,0)=0，不等于1，因此，若p为质数，集合ZP*
+
+295
+00:12:27,719 --> 00:12:34,196
+is simply ZP minus 0, Which means
+that everything in Z<u>P is invertible</u>
+
+296
+00:12:27,719 --> 00:12:34,196
+就是ZP减去0，也就是说，除0外，ZP中的所有元素都是可逆的。
+
+297
+00:12:34,196 --> 00:12:41,093
+except for 0. So if you like the size
+of ZP<i>, it's simply P-1. Now</i>
+
+298
+00:12:34,196 --> 00:12:41,093
+如果你想知道ZP*的大小，很简单，就是p-1。接下来，
+
+299
+00:12:41,093 --> 00:12:46,230
+let's look at our favorite integer again.
+So why don't you tell me what is Z12
+
+300
+00:12:41,093 --> 00:12:46,230
+再看看我们最喜欢的整数。为什么不告诉我Z12，
+
+301
+00:12:46,230 --> 00:12:52,036
+what is the set of invertible elements modulo 12?
+
+302
+00:12:46,230 --> 00:12:52,036
+Z12可逆元素的集合是什么？
+
+303
+00:12:54,036 --> 00:12:57,226
+And the answer, of course, is all the numbers
+that are relatively primed to 12--namely,
+
+304
+00:12:54,036 --> 00:12:57,226
+当然，答案就是所有和12互质的数字，即
+
+305
+00:12:57,226 --> 00:13:01,839
+1, 5, 7, and 11. So, for
+example, 3, 4, 6--all of those are
+
+306
+00:12:57,226 --> 00:13:01,839
+1,5,7和11。其他数字如3,4,6——他们都不是可逆的
+
+307
+00:13:01,839 --> 00:13:06,802
+not invertible because they all have a, a
+non-trivial GCD with twelve, And as we
+
+308
+00:13:01,839 --> 00:13:06,802
+因为他们都和12有一个大于1的GCD。
+
+309
+00:13:06,802 --> 00:13:11,085
+said before, if I give you an element X
+and ZN<i>, you can find its inverse</i>
+
+310
+00:13:06,802 --> 00:13:11,085
+如前所述，给定元素X和ZN，可通过扩展Euclid算法
+
+311
+00:13:11,085 --> 00:13:15,476
+using the extended Euclidean algorithm.
+You can find its inverse very efficiently,
+
+312
+00:13:11,085 --> 00:13:15,476
+算出X的逆，实际上，用这种算法
+
+313
+00:13:15,476 --> 00:13:19,760
+in fact, using this algorithm. So what we
+just learned is basically how to solve
+
+314
+00:13:15,476 --> 00:13:19,760
+计算很高效。所以，我们刚才学习的只是怎样解
+
+315
+00:13:19,760 --> 00:13:24,205
+modular linear equations. In other words,
+if I give you a linear equation and I ask
+
+316
+00:13:19,760 --> 00:13:24,205
+模数线性方程。换句话说，如果给定一个线性方程，
+
+317
+00:13:24,205 --> 00:13:28,543
+you to solve it mod N, it's actually very
+easy to do. All you do is you move B to
+
+318
+00:13:24,205 --> 00:13:28,543
+求解并对N取模是很简单的：只需要将B移到另一边，
+
+319
+00:13:28,543 --> 00:13:32,826
+the other side so you have a minus B, and
+then you multiply by A inverse. So the
+
+320
+00:13:28,543 --> 00:13:32,826
+得到-B，然后乘以A的逆。
+
+321
+00:13:32,826 --> 00:13:37,217
+answer is minus B times A inverse. And you
+can find A inverse using the Euclidean
+
+322
+00:13:32,826 --> 00:13:37,217
+答案就是(-B)*A^(-1),可以利用扩展Euclid算法计算A的逆。
+
+323
+00:13:37,217 --> 00:13:41,585
+algorithm. And once you have a inverse,
+you'd simply multiply it by minus B,
+
+324
+00:13:37,217 --> 00:13:41,585
+一旦算出了逆，将其乘以-B，
+
+325
+00:13:41,585 --> 00:13:46,188
+modulo N, and that gives you the solution
+to this linear equation. Now the
+
+326
+00:13:41,585 --> 00:13:46,188
+mod N,就得到了线性方程的解。
+
+327
+00:13:46,188 --> 00:13:51,149
+Euclidian algorithm actually takes time
+that's quadratic in logarithm of N. So it
+
+328
+00:13:46,188 --> 00:13:51,149
+Euclid算法实际花费时间是N的对数的平方，所以
+
+329
+00:13:51,149 --> 00:13:55,690
+takes time proportional to log squared N.
+And as a result we say that this is a
+
+330
+00:13:51,149 --> 00:13:55,690
+它花费的时间和logN的平方成比例，因此，我们称这是一个
+
+331
+00:13:55,690 --> 00:13:59,980
+quadratic algorithm for solving linear
+equations, modulo N, and if fact this is
+
+332
+00:13:55,690 --> 00:13:59,980
+解线性方程的二次算法，mod N，而且，这也是
+
+333
+00:13:59,980 --> 00:14:04,876
+the best know algorithm. And so if you
+think back to your high-school algebra
+
+334
+00:13:59,980 --> 00:14:04,876
+最广为人知的算法。回想高中代数，
+
+335
+00:14:04,876 --> 00:14:08,692
+days, after you learned how to solve
+linear equations, the next question was,
+
+336
+00:14:04,876 --> 00:14:08,692
+在学习解线性方程之后，接下来的问题是，
+
+337
+00:14:08,692 --> 00:14:12,305
+well, what about quadratic equations. And
+that problem is actually quite
+
+338
+00:14:08,692 --> 00:14:12,305
+如何解二次方程。这个问题很有趣，
+
+339
+00:14:12,305 --> 00:14:15,460
+interesting, and we're gonna see that in
+the next few segments.
+
+340
+00:14:12,305 --> 00:14:15,460
+在接下来的几节，我们来看看怎么解决这个问题。
+

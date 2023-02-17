@@ -1,0 +1,206 @@
+So as our first example lets look at a
+very simple way of using a block cipher
+for encryption. In particular we'll see
+how to use a block cipher with a one time
+key. So in this segment we're just gonna
+use the block cipher to encrypt using keys
+that are used one time. In other words,
+all the adversary gets to see is one ciphertext,
+and its goal is to break semantic
+security of that ciphertext. Now, in the
+next segment, we're going to turn into
+more, interesting applications of block
+ciphers and we're going to see how to
+encrypt using keys that are used many,
+many times to encrypt many messages. So
+before we start, I want to mention that
+there's like a classic mistake in using a
+block cipher. Unfortunately, there are some
+products that actually work this way, and
+they are badly broken, so I want to make
+sure that none of you guys actually make
+this mistake. So this mode of operation is
+called an electronic code book. And it
+works as follows: it's the first thing
+that comes to mind when you want to use a
+block cipher for encryption. What we do is
+we take our message, we break it into
+blocks, each block as big as the block's
+cipher block. So in the case of AES, we
+would be breaking our message into sixteen
+byte blocks. And then we encrypt each
+block separately. So this mode is often
+called electronic codebook. And,
+unfortunately, it's terribly insecure
+because you realize if two blocks are
+equal, for example here, these two blocks
+happen to be equal, then necessarily the
+resulting ciphertext is also going to be equal.
+So an attacker who looks at the
+ciphertext, even though he might not know
+what's actually written in these blocks,
+we'll know that these two blocks are
+equal. And as a result, he learned
+something about the plaintext that he
+shouldn't have learned. And if this isn't
+clear enough for you abstractly, the best
+to explain this is using a picture. And so
+here's this guy here that, you know, has
+this really dark black hair. And when we
+encrypt. This image, this bitmap image
+using the electronic code book mode. You
+see that his hair, that contains lots of
+ones. Basically always gets encrypted the
+same way, so that his silhouette,
+actually, is completely visible, even in
+the encrypted data. Okay, so this is a
+nice example of how the electronic code
+book mode can actually leak information
+about the plaintext that could tell
+something to the attacker. So the question
+is, how to correctly use block ciphers to
+encrypt long messages. And so, I just
+want to briefly remind you of the notion
+we're trying to achieve, which is
+basically semantic security using a one
+time key. So the adversary outputs two
+messages, m0 and m1, and then he gets
+either the encryption of m0 or the
+encryption of m1, these are two different
+experiments. And then our goal is to say
+that the adversary can't distinguish
+between these two experiments. So you
+can't distinguish the encryption of m0
+from the encryption of m1. And the reason
+we call this security for a one time key
+is that the key is only used to encrypt a
+single message. And as a result, the
+adversary will ever only see one ciphertext
+encrypted using this key. Okay, so
+the first thing we want to show is that in
+fact the mode we just looked at,
+electronic code book, in fact, is not
+semantically secure. And this is true as
+long as you're encrypting more than one
+block. So here's an example. Suppose we
+encrypt two blocks using a block cipher.
+Let me show you that in fact electronic
+code book will not be secure. So here's
+what we would do. So we're the adversary.
+So we would output two messages, m0 and
+m1, where, in one message, the blocks are
+distinct, and in the other message, the
+blocks are the same. The two blocks are
+equal to one another. Well, so what is the
+challenger gonna do? The challenger's
+going to encrypt either m0 or m1.
+Either way we are gonna get two blocks
+back. So the ciphertext actually contains two
+blocks. The first block is going to be an
+encryption of the word "Hello" and the
+second block is gonna be either an
+encryption of the word "Hello" or the word
+"World". And if the two ciphertext blocks
+are the same then the adversary knows that
+he received an encryption of the message
+"Hello Hello" and as a difference he knows
+that he received encryption of the
+message "Hello World". Okay? So, he just
+follows a simple strategy here. And if you
+think about it for a second, you'll see
+what his advantage is. So, what is the
+advantage? Well, this adversary when he
+received an encryption of the message
+m1 he will always output 0.
+and when he receives an encryption of
+the message m0 it will always output 1.
+And because of that the advantage,
+basically, is 1, which means that the
+scheme is not secure, which again shows you
+the electronic code book is not
+semantically secure and should never ever
+be used to encrypt messages that are more
+than one block long. So, what should we
+do? Well, so here's a simple example. What
+we could do is we could use what's called
+a deterministic counter mode. So in a
+deterministic counter mode, basically we
+build a stream cipher out of the block
+cipher. So suppose we have a PRF, F. So
+again you should think of AES when I say
+that. So AES is also a secure PRF. And
+what we'll do is, basically, we'll evaluate
+AES at the point zero, at the point one,
+at the point two, up to the point L. This
+will generate a pseudo random pad. And I
+will XOR that with all the message
+blocks and recover the ciphertext as a
+result. Okay, so really this is just a
+stream cipher that's built out of a PRF,
+like AES and triple DES, and it's a simple
+way to do encryption. I wanted to just
+very quickly show you the security
+theorem. In fact, we've already seen the
+security theorem when it applied to stream
+ciphers using pseudo-random generators, so
+I'm not going to repeat this again. I'll
+just remind you that essentially for every
+adversary A that's trying to attack
+deterministic counter mode, we prove that
+there's an adversary B that's trying to
+attack the PRF. And since this quantity is
+negligible, because the PRF is secure, we
+obtain that this quantity is negligible.
+And therefore, the adversary has
+negligible advantage in defeating
+deterministic counter mode. And the
+proof in pictures is a really simple
+proof. So I'll just show it to you one
+more time for completeness. So basically,
+what we want to show is, when the
+adversary's given the encryption of the
+message m0, here, this is the encryption
+of the message, m0. m0 XOR counter
+applied to the PRF, versus in giving the
+encryption of the message, m1. We wanna
+argue these two distributions are
+computationally indistinguishable. So the
+way we do that is basically we say, well
+the top distribution, if instead of a PRF,
+we use a truly random function, namely
+here f is a truly random function, then
+the adversary, because of the property of
+the PRF, the adversary cannot distinguish
+these two experiments, right. A PRF is
+indistinguishable from a truly random
+function, therefore when we replace the PRF
+on the left with a truly random function
+on the right, the adversary is going to
+behave the same. Basically you can't
+distinguish these two distributions. But
+now because F is a truly random function,
+the pad here is a truly one time pad, and
+therefore no adversary can distinguish an
+encryption of m0 from an encryption of m1
+under the one time pad. So, again, these
+two distributions are the same. In fact,
+here there's an actual equality. These two
+distributions literally are the same
+distribution. And similarly again when we
+go back from a truly random function here
+to a PRF, because the PRF is secure, the
+adversary can't distinguish these two
+bottom distributions, the left from the
+right. And so by following these three
+equalities, basically we have proven that
+the things we wanted to prove equal are
+actually computationally
+indistinguishable. Okay, so that's a very
+simply proof to show that deterministic
+counter mode is in fact secure and it's
+basically the same proof as we had when we
+proved that a stream cipher gives us
+semantic security. Okay. So that completes
+this segment and in the next segment we'll
+talk about modes that enable us to use a
+key to encrypt multiple messages.

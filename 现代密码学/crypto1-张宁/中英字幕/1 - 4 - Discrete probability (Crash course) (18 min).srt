@@ -1,0 +1,1995 @@
+1
+00:00:00,000 --> 00:00:04,473
+多年以来许多原始密码学构造被发现是不可靠的
+
+2
+00:00:00,000 --> 00:00:04,473
+Over the years many natural cryptographic
+constructions were found to be insecure.
+
+3
+00:00:04,473 --> 00:00:08,560
+使得现代密码学成为一门严谨的科学
+
+4
+00:00:04,473 --> 00:00:08,560
+In response, modern cryptography was
+developed as a rigorous science where
+
+5
+00:00:08,560 --> 00:00:13,033
+它的解释总是伴随着对安全性的证明
+
+6
+00:00:08,560 --> 00:00:13,033
+constructions are always accompanied by a
+proof of security. The language used to
+
+7
+00:00:13,033 --> 00:00:17,341
+对安全性的描述是基于离散概率
+在此节和下一小节中
+
+8
+00:00:13,033 --> 00:00:17,341
+describe security relies on discreet
+probability. In this segment and the next,
+
+9
+00:00:17,341 --> 00:00:21,538
+我将简要的回顾一下离散概率
+我提到的这篇维基教科书里的文章
+
+10
+00:00:17,341 --> 00:00:21,538
+I'll give a brief overview of discreet
+probability, and I point to this Wiki
+
+11
+00:00:21,538 --> 00:00:26,196
+有很长的一段介绍
+离散概率总是
+
+12
+00:00:21,538 --> 00:00:26,196
+books article over here for a longer
+introduction. Discrete probability is
+
+13
+00:00:26,196 --> 00:00:31,573
+用全集定义，我将其用U来表示
+并且设它为一个有穷集合
+
+14
+00:00:26,196 --> 00:00:31,573
+always defined over a universe which I'll
+denote by u and this universe in our case
+
+15
+00:00:31,573 --> 00:00:36,630
+事实上，我们的整体很常见的可能就是
+
+16
+00:00:31,573 --> 00:00:36,630
+is always going to be a finite set. In
+fact very commonly our universe is going
+
+17
+00:00:36,630 --> 00:00:41,944
+所有n位字符串的集合
+这里用01的N次集合来表示
+
+18
+00:00:36,630 --> 00:00:41,944
+to be simply the set of all n bit strings
+which here is denoted by zero one to the
+
+19
+00:00:41,944 --> 00:00:47,193
+比如0、1集合的平方是两位字符串
+
+20
+00:00:41,944 --> 00:00:47,193
+n. So for example the set zero one squared
+is the set of all two bit strings which
+
+21
+00:00:47,193 --> 00:00:52,207
+00，01，10，11的集合
+
+22
+00:00:47,193 --> 00:00:52,207
+happens to be the string zero, zero, zero
+one, One, zero, and one, one. So there are
+
+23
+00:00:52,207 --> 00:00:56,991
+所以这个集合里有4个元素
+一般来说，0、1的N次集合
+
+24
+00:00:52,207 --> 00:00:56,991
+four elements in this set, and more
+generally in the set zero one to the N,
+
+25
+00:00:56,991 --> 00:01:01,809
+有2^n个元素
+此集合U的概率分布
+
+26
+00:00:56,991 --> 00:01:01,809
+there are two to the N elements. Now a
+probability distribution over this
+
+27
+00:01:01,809 --> 00:01:07,240
+可以仅用函数P来表示
+
+28
+00:01:01,809 --> 00:01:07,240
+universe U is simply a function which I'll
+denote by P, and this function, what it
+
+29
+00:01:07,240 --> 00:01:12,470
+该函数为全局中的每一个元素赋一个0到1之间的值
+
+30
+00:01:07,240 --> 00:01:12,470
+does, is it assigns to every element in
+the universe a number between zero and
+
+31
+00:01:12,470 --> 00:01:17,567
+这个值就叫做此集合特定元素的权重或概率
+
+32
+00:01:12,470 --> 00:01:17,567
+one. And this number is what I'll call the
+weight or the probability of that
+
+33
+00:01:17,567 --> 00:01:22,663
+现在对函数P只有一个必要条件
+
+34
+00:01:17,567 --> 00:01:22,663
+particular element in the universe. Now
+there's only one requirement on this
+
+35
+00:01:22,663 --> 00:01:27,830
+就是所有权重之和为1
+
+36
+00:01:22,663 --> 00:01:27,830
+function P, and that is that the sum of
+all the weights, sum up to one. That is,
+
+37
+00:01:27,830 --> 00:01:33,573
+也就是说，如果我把此集合内每个元素X的概率相加
+
+38
+00:01:27,830 --> 00:01:33,573
+if I sum the probability of all elements X
+in the universe, what I end up with is the
+
+39
+00:01:33,573 --> 00:01:38,911
+最终会得到1。让我们看一个非常简单的例子
+全体二位字符串
+
+40
+00:01:33,573 --> 00:01:38,911
+number one. So let's look at a very simple
+example looking back to our 2-bit
+
+41
+00:01:38,911 --> 00:01:44,249
+00，01,10,11
+你可以考虑如下概率分布
+
+42
+00:01:38,911 --> 00:01:44,249
+universe. So 00，01, ,10 and 11 And you
+can consider the following probability
+
+43
+00:01:44,249 --> 00:01:49,452
+例如，P(00)=1/2
+
+44
+00:01:44,249 --> 00:01:49,452
+distribution Which, for example, assigns
+to the element 00, the probability one
+
+45
+00:01:49,452 --> 00:01:54,267
+P(01)=1/8
+
+46
+00:01:49,452 --> 00:01:54,267
+half. The elements 01, we assign the
+probability 1/8th, to ten we assign the
+
+47
+00:01:54,267 --> 00:01:59,367
+P(10)=1/4
+P(11)=1/8
+
+48
+00:01:54,267 --> 00:01:59,367
+probability one quarter and to eleven we
+assign the probability 1/8th. Okay we can
+
+49
+00:01:59,367 --> 00:02:04,343
+可以看到如果把这些数字的和加起来那么结果为一
+
+50
+00:01:59,367 --> 00:02:04,343
+see that if we sum up these numbers in
+fact we get one which means that this
+
+51
+00:02:04,343 --> 00:02:09,380
+也就是概率P符合概率分布条件
+
+52
+00:02:04,343 --> 00:02:09,380
+probability P is in fact the probability
+distribution. Now what these number mean
+
+53
+00:02:09,380 --> 00:02:14,542
+现在这些数字的意思是，如果我从这个概率分布中取样
+
+54
+00:02:09,380 --> 00:02:14,542
+is that if I sample from this probability
+distribution I'll get the string 00 with
+
+55
+00:02:14,542 --> 00:02:19,766
+那么我得到字符串00的概率是1/2
+01的概率是1/8,并以此类推
+
+56
+00:02:14,542 --> 00:02:19,766
+probability one half I'll get the string
+01 with probability 1/8th and so on and so
+
+57
+00:02:19,766 --> 00:02:24,612
+所以现在我们理解了概率分布的含义
+
+58
+00:02:19,766 --> 00:02:24,612
+forth. So now that we understand what a
+probability distribution is, let's look at
+
+59
+00:02:24,612 --> 00:02:29,025
+就让我们来看一下两个概率分布的经典例子
+
+60
+00:02:24,612 --> 00:02:29,025
+two classic examples of probability
+distributions. The first one is what's
+
+61
+00:02:29,025 --> 00:02:33,437
+第一个是均匀分布
+
+62
+00:02:29,025 --> 00:02:33,437
+called the uniform distribution. The
+uniform distribution assigns to every
+
+63
+00:02:33,437 --> 00:02:38,350
+均匀分布为集合中的每一个元素分配完全一样的权重
+
+64
+00:02:33,437 --> 00:02:38,350
+element in the universe, exactly the same
+weight. I'm gonna use U between two bars
+
+65
+00:02:38,350 --> 00:02:43,569
+记|U|为总体U的大小
+即总体的元素个数
+
+66
+00:02:38,350 --> 00:02:43,569
+to denote the size of the universe U. That
+is the number of elements in the universe,
+
+67
+00:02:43,569 --> 00:02:48,665
+既然我们希望权重的总和为一
+且每个元素的权重相同
+
+68
+00:02:43,569 --> 00:02:48,665
+and since we want the sum of all the
+weights to sum out to one, and we want all
+
+69
+00:02:48,665 --> 00:02:53,449
+这意味着总体中的每个元素X
+
+70
+00:02:48,665 --> 00:02:53,449
+these weights to be equal, what this means
+is that for every element X in the
+
+71
+00:02:53,449 --> 00:02:58,622
+我们为之赋以1/U的概率
+如果我们再详细地看一下例子
+
+72
+00:02:53,449 --> 00:02:58,622
+universe, we assign a probability of one
+over U. So in particular if we look at our
+
+73
+00:02:58,622 --> 00:03:03,642
+均匀分布和两位字符串的集合
+
+74
+00:02:58,622 --> 00:03:03,642
+example, the uniform distribution and the
+set of two bits strings, would
+
+75
+00:03:03,642 --> 00:03:09,048
+我们将会简单地给每一个字符分配1/4的权重
+
+76
+00:03:03,642 --> 00:03:09,048
+simply assign one-quarter the weight,
+one-quarter to each one of these strings
+
+77
+00:03:09,048 --> 00:03:13,875
+显然所有权重的和加起来为1
+
+78
+00:03:09,048 --> 00:03:13,875
+And clearly that, the sum of all the
+weights sums up to one. Well again, what
+
+79
+00:03:13,875 --> 00:03:19,217
+再者说，这意味着如果我从这个分布中随机取样
+
+80
+00:03:13,875 --> 00:03:19,217
+this means is that if I sample at random
+from this distribution, I'll get a uniform
+
+81
+00:03:19,217 --> 00:03:24,687
+我将会得到所有两位字符串的均匀样本
+因此所有这些4位（2位）字符串在此概率分布中
+
+82
+00:03:19,217 --> 00:03:24,687
+sample across all our 2-bit strings So all
+of these 4-bit strings are equally likely
+
+83
+00:03:24,687 --> 00:03:29,848
+被取样的概率相等
+另外一个非常常见的分布是
+
+84
+00:03:24,687 --> 00:03:29,848
+to be sampled by this distribution.
+Another distribution that's very common is
+
+85
+00:03:30,051 --> 00:03:35,734
+点分布
+点分布的主要做法是
+
+86
+00:03:30,051 --> 00:03:35,734
+what's called a point distribution at the
+point X0 And what this point distribution
+
+87
+00:03:35,734 --> 00:03:41,145
+将所有的权重分配到一个点X0上
+
+88
+00:03:35,734 --> 00:03:41,145
+does is basically it puts all the weight
+on a single point, namely X0. So here we
+
+89
+00:03:41,145 --> 00:03:46,422
+我们将所有权重都赋给X0，自然在此总体中
+
+90
+00:03:41,145 --> 00:03:46,422
+assign to the point X0 all the weight, one
+And then to all other points in the
+
+91
+00:03:46,422 --> 00:03:51,937
+我们将其他点的权重赋0
+另外我想解释一下
+
+92
+00:03:46,422 --> 00:03:51,937
+universe, we assign the weight zero And by
+the way, I want to point out that this,
+
+93
+00:03:52,357 --> 00:03:57,953
+这个倒着的A表示任意，所以这一切说明了，
+
+94
+00:03:52,357 --> 00:03:57,953
+inverted, A here should be read as, for
+all. So all this says is, that for all X
+
+95
+00:03:57,953 --> 00:04:02,963
+所有不为X0的X的概率为0
+
+96
+00:03:57,953 --> 00:04:02,963
+that are not equal to X zero, the
+probability of that X is zero. So again
+
+97
+00:04:02,963 --> 00:04:08,124
+再一次回到我们的例子，比如点分布中
+
+98
+00:04:02,963 --> 00:04:08,124
+going back to our example a point
+distribution for example, that would put
+
+99
+00:04:08,124 --> 00:04:13,352
+将概率全部只分给字符串1-0
+即P(10)=1
+
+100
+00:04:08,124 --> 00:04:13,352
+all its mass on the string 1-0, would
+assign probability one to the string 1-0
+
+101
+00:04:13,352 --> 00:04:19,184
+而其他的字符串概率均为0
+所以如果我从这个分布中取样
+
+102
+00:04:13,352 --> 00:04:19,184
+and zero to all other strings. So now if I
+sample from this distribution pretty much
+
+103
+00:04:19,184 --> 00:04:24,881
+我将总保证能得到字符串10
+而不会得到其它的字符串
+
+104
+00:04:19,184 --> 00:04:24,881
+I'm always guaranteed to always sample the
+string 1-0 and never sample any of the
+
+105
+00:04:24,881 --> 00:04:29,556
+现在我们知道分配是什么了
+
+106
+00:04:24,881 --> 00:04:29,556
+other strings. So now we know what a
+distribution is, and I just want to make
+
+107
+00:04:29,556 --> 00:04:34,196
+我还想再说最后一点
+可以这样做的原因是因为总体U为有限集
+
+108
+00:04:29,556 --> 00:04:34,196
+one last point, and that is that because
+this universe U is always gonna be a
+
+109
+00:04:34,196 --> 00:04:38,355
+所以我们可以写出U中每一个元素分配到的权重
+
+110
+00:04:34,196 --> 00:04:38,355
+finite set up for us, we can actually
+write down the weights that the
+
+111
+00:04:38,355 --> 00:04:43,236
+并且可以用一个向量表示整个分布
+
+112
+00:04:38,355 --> 00:04:43,236
+distribution assigns to every element in
+U, and represent the entire distribution
+
+113
+00:04:43,236 --> 00:04:47,881
+比如说，如果你观察所有的3位字符串
+
+114
+00:04:43,236 --> 00:04:47,881
+as a vector. So, here for example, if you
+look at the universe of an all 3-bit
+
+115
+00:04:47,881 --> 00:04:52,985
+我们可以逐个写下
+
+116
+00:04:47,881 --> 00:04:52,985
+strings, we can literally write down the
+ways that the distribution assigns to the
+
+117
+00:04:52,985 --> 00:04:58,089
+P(000)、P(001)等等
+
+118
+00:04:52,985 --> 00:04:58,089
+string 000, then the way that distribution
+assigns to the string 001 And so on, and
+
+119
+00:04:58,089 --> 00:05:03,255
+我们可以把这些概率写成向量形式
+
+120
+00:04:58,089 --> 00:05:03,255
+so forth. And you can see that we can write
+this as a vector, in this case it will be
+
+121
+00:05:03,255 --> 00:05:08,484
+这样的向量是8维的三位字符串有8个
+
+122
+00:05:03,255 --> 00:05:08,484
+a vector of dimension eight, there will
+be, there are eight strings of 3-bits as a
+
+123
+00:05:08,484 --> 00:05:13,650
+基本上整个分布用这8个实数的向量表示
+
+124
+00:05:08,484 --> 00:05:13,650
+result basically the entire distribution
+is captured by this vector of eight real
+
+125
+00:05:13,650 --> 00:05:18,874
+实数的范围都是0到1。下一步我要做的是
+
+126
+00:05:13,650 --> 00:05:18,874
+numbers, in the range of all zero to one.
+The next thing I wanna do is define the
+
+127
+00:05:18,874 --> 00:05:24,412
+定义事件的概念。考虑我们整体的子集A
+
+128
+00:05:18,874 --> 00:05:24,412
+concept of an event. So consider a subset
+A of our universe And I, I'll define the
+
+129
+00:05:24,412 --> 00:05:30,086
+定义子集A的概率为A集合中所有元素的权重
+
+130
+00:05:24,412 --> 00:05:30,086
+probability of the subsets to be simply
+the sum of the weights of all the elements
+
+131
+00:05:30,086 --> 00:05:35,419
+换句话说，我将把A中X的概率求和
+
+132
+00:05:30,086 --> 00:05:35,419
+in the set A. In other words, I'm summing
+over all X and A, the weights of these
+
+133
+00:05:35,419 --> 00:05:40,038
+因为整体的权重和应为1
+
+134
+00:05:35,419 --> 00:05:40,038
+elements X in the set A, Now because the
+sum over the entire universe of all
+
+135
+00:05:40,038 --> 00:05:44,278
+这意味着如果求和
+
+136
+00:05:40,038 --> 00:05:44,278
+weights needs to be one. This means that
+if we sum, well if you look at the
+
+137
+00:05:44,278 --> 00:05:48,517
+整体的概率应为1
+
+138
+00:05:44,278 --> 00:05:48,517
+probability of the entire universe,
+basically we get one. And if we look at
+
+139
+00:05:48,517 --> 00:05:52,813
+如果我们观察整体的一个子集的概率，我们会得到一个介于0和1之间的数
+
+140
+00:05:48,517 --> 00:05:52,813
+the probability of a subset of the
+universe, we're gonna get some number in
+
+141
+00:05:52,813 --> 00:05:57,683
+我们说集合A的概率是一个介于0和1之间的和
+
+142
+00:05:52,813 --> 00:05:57,683
+the interval zero to one And we say that
+the probability of this set A, is the sum
+
+143
+00:05:57,683 --> 00:06:02,265
+那么整体的子集A就叫做一个事件
+
+144
+00:05:57,683 --> 00:06:02,265
+which is a number between zero and one.
+And I'll tell you that a subset A of the
+
+145
+00:06:02,265 --> 00:06:06,839
+集合A的概率就叫做这一事件的的概率
+
+146
+00:06:02,265 --> 00:06:06,839
+universe is called an event. And the
+probability of the set A is called the
+
+147
+00:06:06,839 --> 00:06:12,714
+让我们看一个简单的例子，假定我们
+
+148
+00:06:06,839 --> 00:06:12,714
+probability of that event. So let's look
+at a simple example. So suppose we look at
+
+149
+00:06:12,714 --> 00:06:19,135
+有集合U，它包含所有8位字符串，好吧？
+
+150
+00:06:12,714 --> 00:06:19,135
+the universe u, which consists of all
+8-bit strings, right? So the size of this
+
+151
+00:06:19,135 --> 00:06:26,057
+所以集合的大小是256，因为它有256个8位字符串，我们本质上
+
+152
+00:06:19,135 --> 00:06:26,057
+universe u is 256 because there are 256
+8-bit strings. Essentially we're looking
+
+153
+00:06:26,057 --> 00:06:32,352
+是在看所有可能的256个字节值，现在我们定义以下事件
+
+154
+00:06:26,057 --> 00:06:32,352
+at all byte values, all 256 possible byte
+values. Now let's define the following
+
+155
+00:06:32,352 --> 00:06:37,677
+基本上事件将包含整体中所有的8个字节
+
+156
+00:06:32,352 --> 00:06:37,677
+event. Basically the event is gonna
+contain all bytes so all 8-bit strings
+
+157
+00:06:37,677 --> 00:06:44,038
+比如低两位为11的字符串
+
+158
+00:06:37,677 --> 00:06:44,038
+in the universe such that the two
+least significant bits of the byte happens
+
+159
+00:06:44,038 --> 00:06:50,324
+比如01011010，它是整体的一个元素
+
+160
+00:06:44,038 --> 00:06:50,324
+to be eleven So for example, if we look at
+01011010 that's an element in the universe
+
+161
+00:06:50,324 --> 00:06:56,132
+但它不在集合A中，如果我们把这个0改为1
+
+162
+00:06:50,324 --> 00:06:56,132
+that's not in the set A, but if we choose
+a zero to a one. Then that's an element of
+
+163
+00:06:56,132 --> 00:07:01,275
+它就是集合A中的元素，现在我们来看看全局U上的均匀分布
+
+164
+00:06:56,132 --> 00:07:01,275
+the universe which gives in our set A. And
+now let's look at the uniform distribution
+
+165
+00:07:01,275 --> 00:07:05,990
+现在我问你事件A的概率是多少？
+
+166
+00:07:01,275 --> 00:07:05,990
+over the universe U and let me ask you
+what is the probability of the, of the
+
+167
+00:07:05,990 --> 00:07:10,565
+当我们随机选择一个字节
+
+168
+00:07:05,990 --> 00:07:10,565
+event A? So what is the probability that
+when we choose a random byte, the two
+
+169
+00:07:10,565 --> 00:07:16,947
+字节最后两位正好是11的概率是多少
+
+170
+00:07:10,565 --> 00:07:16,947
+least significant bits of that byte
+happens to be one, one? Well the answer is
+
+171
+00:07:16,947 --> 00:07:23,435
+结果是1/4，而且并不难找到一个能说服你自己的正确解释
+
+172
+00:07:16,947 --> 00:07:23,435
+one-fourth, and the reason that's true is
+because it's not too difficult to convince
+
+173
+00:07:23,435 --> 00:07:29,381
+256个字符串中，有64个这样的字节
+
+174
+00:07:23,435 --> 00:07:29,381
+yourself that of the 256 eight bit
+strings, exactly 64 of them, one quarter
+
+175
+00:07:29,381 --> 00:07:34,118
+也就是1/4的字符串以11结尾
+考虑到均匀分布
+
+176
+00:07:29,381 --> 00:07:34,118
+of them, end in one, one. And the
+probability of each string is, we're
+
+177
+00:07:34,118 --> 00:07:38,722
+每个字符串的概率是1/|U|
+
+178
+00:07:34,118 --> 00:07:38,722
+looking at the uniform distribution or
+probability of each string is exactly one
+
+179
+00:07:38,722 --> 00:07:43,213
+即1/256
+
+180
+00:07:38,722 --> 00:07:43,213
+over the size of the universe, mainly one
+over 256. And the product of these, you
+
+181
+00:07:43,213 --> 00:07:47,817
+64个元素每个权重1/256，一共是1/4
+
+182
+00:07:43,213 --> 00:07:47,817
+know, 64 elements, each one has weight one
+over 256 is exactly one-fourth, which is
+
+183
+00:07:47,817 --> 00:07:52,764
+这就是事件A的概率，事件概率有一个简单的范围
+
+184
+00:07:47,817 --> 00:07:52,764
+the probability of the event A that we're
+looking at. So a very simple bound on the
+
+185
+00:07:52,764 --> 00:07:57,987
+叫做并集上界
+假设我们有两个事件A1和A2
+
+186
+00:07:52,764 --> 00:07:57,987
+probability of events is called the union
+bound. So imagine we have two events a1
+
+187
+00:07:57,987 --> 00:08:03,135
+它们都是全集U的子集，我们想知道
+
+188
+00:07:57,987 --> 00:08:03,135
+and a2. So these are both subsets of some
+universe U Snd we wanna know what is the
+
+189
+00:08:03,135 --> 00:08:07,564
+事件A1发生或者事件A2发生的概率，即P(A1∪A2)
+
+190
+00:08:03,135 --> 00:08:07,564
+probability that either A1 occurs, or A2
+occurs In other words, what is the
+
+191
+00:08:07,564 --> 00:08:12,113
+符号∪表示两个集合的并集
+
+192
+00:08:07,564 --> 00:08:12,113
+probability of the union of these two
+events? This little U here denotes the
+
+193
+00:08:12,113 --> 00:08:17,081
+并集上界指出了
+
+194
+00:08:12,113 --> 00:08:17,081
+union of the two sets. So the union bound
+tells us that the probability that either
+
+195
+00:08:17,081 --> 00:08:22,041
+P(A1∪A2)≤P(A1)+P(A2)
+
+196
+00:08:17,081 --> 00:08:22,041
+A1 occurs or A2 occurs is basically less
+than the sum of the two probabilities. And
+
+197
+00:08:22,041 --> 00:08:26,560
+这是显而易见的，在这幅图中
+
+198
+00:08:22,041 --> 00:08:26,560
+that's actually quite easy to see. So
+simply look at this picture here, you can
+
+199
+00:08:26,560 --> 00:08:31,022
+观察这两个概率的和
+
+200
+00:08:26,560 --> 00:08:31,022
+see that when we look at, at the sum of
+the two probabilities, we're basically
+
+201
+00:08:31,022 --> 00:08:35,483
+它们分别是A1中元素概率的和和A2中元素的和
+
+202
+00:08:31,022 --> 00:08:35,483
+summing the probability of all the
+elements in A1, all the elements in A2 And
+
+203
+00:08:35,483 --> 00:08:40,002
+你会意识到我们好像把两个集合重叠部分的元素加了两次
+
+204
+00:08:35,483 --> 00:08:40,002
+you realized, we kind of double-summed
+these elements in the intersection. They
+
+205
+00:08:40,002 --> 00:08:44,966
+使得在右边求和时算了两次
+
+206
+00:08:40,002 --> 00:08:44,966
+get summed twice here on the right hand
+side And as a result, the sum of the two
+
+207
+00:08:44,966 --> 00:08:50,351
+结果使得这两个概率的和大于等于P(A1∪A2)
+
+208
+00:08:44,966 --> 00:08:50,351
+probabilities is going to be larger or
+larger than or equal to, the actual
+
+209
+00:08:50,351 --> 00:08:56,102
+这就是经典的并集上界定义
+
+210
+00:08:50,351 --> 00:08:56,102
+probability of the union of A1 and A2. So
+that's the classic union bound And in fact
+
+211
+00:08:56,102 --> 00:09:01,169
+如果两个事件不相交，换句话说它们的交集为空
+
+212
+00:08:56,102 --> 00:09:01,169
+I'll tell you that if the two events are
+disjoint, in other words they're
+
+213
+00:09:01,169 --> 00:09:06,792
+那么这个式子就变成
+
+214
+00:09:01,169 --> 00:09:06,792
+intersection is empty, in that case if we
+look at the sum, at the probability that
+
+215
+00:09:06,792 --> 00:09:12,553
+P(A1∪A2)=P(A1)+P(A2)
+
+216
+00:09:06,792 --> 00:09:12,553
+either A-1 or A02 happens, that's exactly
+equal to the sum of the two probabilities.
+
+217
+00:09:12,553 --> 00:09:18,637
+怎么样？我们将在整门课使用这些结论
+
+218
+00:09:12,553 --> 00:09:18,637
+Okay? So we'll use these facts here and
+there throughout the course. So just to be
+
+219
+00:09:18,637 --> 00:09:24,378
+让我们理清一下，这个不等关系一直存在
+除非两个事件不相交，
+
+220
+00:09:18,637 --> 00:09:24,378
+clear, the inequality holds always But
+when the two events are disjoint, then in
+
+221
+00:09:24,378 --> 00:09:30,258
+那时候取等号。让我们看一个简单的例子
+
+222
+00:09:24,378 --> 00:09:30,258
+fact we get an equality over here. So
+let's look at a simple example. Suppose
+
+223
+00:09:30,258 --> 00:09:36,265
+事件A1是所有以11结尾的n位字符串的集合
+
+224
+00:09:30,258 --> 00:09:36,265
+our, event A1 is the set of all n-bit
+stings that happen to end in 1-1 And
+
+225
+00:09:36,265 --> 00:09:42,778
+假设A2是所有以11开头的n位字符串
+
+226
+00:09:36,265 --> 00:09:42,778
+suppose A2 is the set of all n-bit strings
+that happen to begin with 1-1. Okay, so N
+
+227
+00:09:42,778 --> 00:09:47,607
+n设定为H或某个大数，问事件A1或事件A2发生的概率是多少？
+
+228
+00:09:42,778 --> 00:09:47,607
+thinks of it as H or some large number and
+I'm asking that what is the probability
+
+229
+00:09:47,607 --> 00:09:51,729
+换句话说，如果在全体U中均匀取样
+
+230
+00:09:47,607 --> 00:09:51,729
+that either a one happens or a two
+happens, In other words if I sample
+
+231
+00:09:51,729 --> 00:09:56,205
+最后2位为11
+
+232
+00:09:51,729 --> 00:09:56,205
+uniformly from the universe U, what is the
+probability that either the least
+
+233
+00:09:56,205 --> 00:10:00,916
+或者最前2位是11的概率是多少？
+
+234
+00:09:56,205 --> 00:10:00,916
+significant bits are one, one or the most
+significant digits are one, one. Well as
+
+235
+00:10:00,916 --> 00:10:05,626
+我们说这个概率记为P(A1∪A2)
+
+236
+00:10:00,916 --> 00:10:05,626
+we said that's basically the probability
+of the union of A1 and A2. We know that
+
+237
+00:10:05,626 --> 00:10:10,279
+其中每一个事件的概率由前可知为1/4
+
+238
+00:10:05,626 --> 00:10:10,279
+the probability of each one of these
+events is one-quarter by what we just did
+
+239
+00:10:10,279 --> 00:10:14,813
+因此根据并集上限
+
+240
+00:10:10,279 --> 00:10:14,813
+previous slide And therefore by the union
+bound the probability of the
+
+241
+00:10:14,813 --> 00:10:19,018
+“或”的概率为P(A1)+P(A2)
+
+242
+00:10:14,813 --> 00:10:19,018
+‘or’. Is, you know, a quarter of
+the probability of A1, plus the
+
+243
+00:10:19,018 --> 00:10:23,763
+即1/4+1/4,我们这就证明了
+
+244
+00:10:19,018 --> 00:10:23,763
+probability of A2, which is a quarter plus
+a quarter. And we just proved that the
+
+245
+00:10:23,763 --> 00:10:28,448
+最前2位是11的概率或者最后两位是11的概率
+
+246
+00:10:23,763 --> 00:10:28,448
+probability of seeing 1-1 in the most
+significant bit, or 1-1 least significant
+
+247
+00:10:28,448 --> 00:10:33,198
+比1/2小，这是一个简单的例子
+
+248
+00:10:28,448 --> 00:10:33,198
+bit, is less than one-half. So that's a
+simple example of how we might go about
+
+249
+00:10:33,198 --> 00:10:37,888
+说明了我们如何用并集上界来界定两个事件中一个事件发生的概率
+
+250
+00:10:33,198 --> 00:10:37,888
+using the Union Bound to bound the
+probability that one of two events might
+
+251
+00:10:37,888 --> 00:10:41,842
+下一个我们需要定义的概念是随机变量
+
+252
+00:10:37,888 --> 00:10:41,842
+happen. The next concept we need to
+define, is what's called a random
+
+253
+00:10:41,842 --> 00:10:46,520
+随机变量是比较直观的对象
+
+254
+00:10:41,842 --> 00:10:46,520
+variable. Now, random variables are fairly
+intuitive objects. But unfortunately the
+
+255
+00:10:46,520 --> 00:10:51,197
+但令人遗憾的是随机变量的正式定义不好理解
+
+256
+00:10:46,520 --> 00:10:51,197
+formal definition of a random variable can
+be a little confusing. So what I'll do
+
+257
+00:10:51,197 --> 00:10:55,702
+所以我将要做的是，给出一个例子，并希望它足够直观
+
+258
+00:10:51,197 --> 00:10:55,702
+is, I'll give an example, and hopefully
+that will be clear enough. So formally, a
+
+259
+00:10:55,702 --> 00:11:00,264
+形式上定义随机变量为X，它是从全体到某个集合V的函数
+
+260
+00:10:55,702 --> 00:11:00,264
+random variable denoted say, by X. Is a
+function, from the universe into some set
+
+261
+00:11:00,264 --> 00:11:05,115
+集合V就是随机变量取值的地方
+
+262
+00:11:00,264 --> 00:11:05,115
+V And we say that this set V is where the
+random variable takes its values. So let's
+
+263
+00:11:05,115 --> 00:11:09,991
+让我们看一个具体的例子。假设我们有一个随机变量X
+
+264
+00:11:05,115 --> 00:11:09,991
+look at a particular example. So suppose
+we have a random variable x And this
+
+265
+00:11:09,991 --> 00:11:15,185
+这个随机变量映射到集合01中
+
+266
+00:11:09,991 --> 00:11:15,185
+random variable maps into the set 01. So
+the values of this random variable are
+
+267
+00:11:15,185 --> 00:11:20,183
+所以这个随机变量的值为0或1，也就是基础的1位。
+
+268
+00:11:15,185 --> 00:11:20,183
+going to be either zero or one. So, one
+bit, basically. Now, this random variable
+
+269
+00:11:20,183 --> 00:11:25,504
+现在，这个随机变量映射我们的全体，也就是所有2位二元字符串的定义域[0,1]^n
+
+270
+00:11:20,183 --> 00:11:25,504
+maps our universe, which is the center of
+all n bit binary strings, 01 to the n
+
+271
+00:11:25,504 --> 00:11:30,112
+它是怎么做的？从全体中给出一个具体样本
+
+272
+00:11:25,504 --> 00:11:30,112
+And how does it do it? Well, given a
+particular sample in the universe, a
+
+273
+00:11:30,112 --> 00:11:34,775
+n位字符串y。随机变量将会输出
+
+274
+00:11:30,112 --> 00:11:34,775
+particular n-bit string y. What the
+random variable will do is simply output
+
+275
+00:11:34,775 --> 00:11:39,525
+y的最后一位。这就是整个随机变量
+
+276
+00:11:34,775 --> 00:11:39,525
+the least significant bit of y And that's
+it. That's the whole random variable. So,
+
+277
+00:11:39,525 --> 00:11:44,093
+现在我要问，假设有一在集合[0,1]^n上的随机分布
+
+278
+00:11:39,525 --> 00:11:44,093
+now let me ask you. Suppose we look at a
+uniform distribution on the set zero one
+
+279
+00:11:44,093 --> 00:11:48,108
+问这个随机变量输出0的概率是多少？
+
+280
+00:11:44,093 --> 00:11:48,108
+to the n. Let me ask you what is the
+probability that this random variable
+
+281
+00:11:48,108 --> 00:11:52,352
+输出1的概率是多少？
+
+282
+00:11:48,108 --> 00:11:52,352
+output zero and what is the probability
+that a random variable outputs one? Well
+
+283
+00:11:52,352 --> 00:11:56,920
+你可以看到答案分别是1/2,1/2.让我们来推导下为什么会这样
+
+284
+00:11:52,352 --> 00:11:56,920
+you can see that the answers are half and
+half. Well let's just reason  through
+
+285
+00:11:56,920 --> 00:12:01,151
+这张图展示了全体的情况
+
+286
+00:11:56,920 --> 00:12:01,151
+why that's the case. So here we have a
+picture showing the universe and the
+
+287
+00:12:01,151 --> 00:12:05,719
+和可能的输出空间。所以变量可能的输出是0或1
+
+288
+00:12:01,151 --> 00:12:05,719
+possible output space. And so in this case
+the variable can output a zero or a one.
+
+289
+00:12:05,719 --> 00:12:10,119
+变量输出0在哪？当总体中的样本最低位为0时
+
+290
+00:12:05,719 --> 00:12:10,119
+When there is a variable output zero,
+there is a variable output zero when the
+
+291
+00:12:10,119 --> 00:12:14,801
+当变量输出0时
+
+292
+00:12:10,119 --> 00:12:14,801
+sample in the universe happens to be, to
+have its least inefficient bit
+
+293
+00:12:14,801 --> 00:12:19,111
+变量为1时总体中的样本
+
+294
+00:12:14,801 --> 00:12:19,111
+be set to zero. In variable one, output
+one When the sample in the universe
+
+295
+00:12:19,111 --> 00:12:23,723
+最低有效位为1。如果随机均匀选择字符串
+
+296
+00:12:19,111 --> 00:12:23,723
+happens to have its least significant bit
+set to one. Well, if choose strings
+
+297
+00:12:23,723 --> 00:12:28,516
+那么我们选到以0结尾的字符串的概率为1/2
+
+298
+00:12:23,723 --> 00:12:28,516
+uniformly at random, the probability that
+we choose a string that has its least
+
+299
+00:12:28,516 --> 00:12:33,250
+随机变量结果为0的概率也为1/2
+
+300
+00:12:28,516 --> 00:12:33,250
+significant bits set to zero is exactly
+one half Which the random variable output
+
+301
+00:12:33,250 --> 00:12:37,305
+同样的如果我们随机选取一个n位字符串
+
+302
+00:12:33,250 --> 00:12:37,305
+zero with a probability of exactly
+one-half. Similarly, if we choose a random
+
+303
+00:12:37,305 --> 00:12:41,627
+最后一位为1的概率也是1/2
+
+304
+00:12:37,305 --> 00:12:41,627
+n-bit string, the probability that the
+least significant bit is equal to one is
+
+305
+00:12:41,627 --> 00:12:45,682
+我们说随机变量结果为1的概率也是1/2
+
+306
+00:12:41,627 --> 00:12:45,682
+also one-half. And so we say that the
+random variable output's one, also with
+
+307
+00:12:45,682 --> 00:12:49,820
+现在，在更一般的情况如果我们有一个随机变量
+
+308
+00:12:45,682 --> 00:12:49,820
+exactly probability of one-half. Now,
+more generally, if we have a random
+
+309
+00:12:49,820 --> 00:12:55,118
+在一个确定集合V中取值，这个随机变量实际上可以推出
+
+310
+00:12:49,820 --> 00:12:55,118
+variable taking values in a certain set v,
+then this random variable actually induces
+
+311
+00:12:55,118 --> 00:13:00,042
+集合V的分布。这里我们以符号形式
+
+312
+00:12:55,118 --> 00:13:00,042
+a distribution on this set v. And here, I
+just wrote a, kind of a, in symbols, what
+
+313
+00:13:00,042 --> 00:13:05,216
+表示这个分布的意义。不过这其实是很好解释的
+
+314
+00:13:00,042 --> 00:13:05,216
+this distribution means But it's actually
+very easy to explain. Essentially, what it
+
+315
+00:13:05,216 --> 00:13:10,871
+本质上它表示这个变量结果为V。因为我们在全体中随机选取元素
+
+316
+00:13:05,216 --> 00:13:10,871
+says is that the variable outputs v
+Basically, with the same probability that
+
+317
+00:13:10,871 --> 00:13:15,631
+所以概率是相等，然后我们应用函数X
+
+318
+00:13:10,871 --> 00:13:15,631
+if we sample a random element in the
+universe, and, and then we apply the
+
+319
+00:13:15,631 --> 00:13:20,648
+问输出为v的可能性是多少？
+
+320
+00:13:15,631 --> 00:13:20,648
+function x. We ask, how likely is it that
+the output is actually equal to v? So formally
+
+321
+00:13:20,648 --> 00:13:25,620
+形式上说P(X=v)为我们在总体中随机取出一个元素
+
+322
+00:13:20,648 --> 00:13:25,620
+we say that the probability that X outputs
+V, is the same as the probability of the
+
+323
+00:13:25,620 --> 00:13:30,411
+在函数X的作用下
+
+324
+00:13:25,620 --> 00:13:30,411
+event That when we sample a random element
+in the universe, we fall into the pre
+
+325
+00:13:30,411 --> 00:13:35,024
+结果落在v的原象中的概率。如果这样不清楚，也不要紧
+
+326
+00:13:30,411 --> 00:13:35,024
+image of V under the function X And again,
+if this wasn't clear, it's not that
+
+327
+00:13:35,024 --> 00:13:39,516
+你需要知道的是，随机变量在特定的集合V中取值
+
+328
+00:13:35,024 --> 00:13:39,516
+important. All you need to know is that a
+random variable takes values in a
+
+329
+00:13:39,516 --> 00:13:44,014
+而且可以推导出集合V的概率分布
+
+330
+00:13:39,516 --> 00:13:44,014
+particular set V, and in, induces a
+distribution on that set V. Now there's a
+
+331
+00:13:44,014 --> 00:13:48,902
+有一个特别重要的随机变量叫均匀随机变量
+
+332
+00:13:44,014 --> 00:13:48,902
+particularly important random variable
+called a uniform random variable. And it's
+
+333
+00:13:48,902 --> 00:13:53,910
+它基本上是如你期望的那样进行定义。那么我们说U是某有限集
+
+334
+00:13:48,902 --> 00:13:53,910
+basically defined as you would expect. So
+let's say that U is some finite
+
+335
+00:13:53,910 --> 00:13:58,557
+比如所有N位二元字符串
+
+336
+00:13:53,910 --> 00:13:58,557
+set For example the set of all N bit
+binary strings, and we're gonna denote a
+
+337
+00:13:58,557 --> 00:14:03,203
+我们用R表示随机变量，从集合U均匀地取样
+
+338
+00:13:58,557 --> 00:14:03,203
+random variable R that's basically
+sample's uniformly from the set U by this
+
+339
+00:14:03,203 --> 00:14:08,109
+用这个有点搞笑的箭头加上R表示，
+
+340
+00:14:03,203 --> 00:14:08,109
+little funny arrow with a little R on top
+of it. In this, again the notes that the
+
+341
+00:14:08,109 --> 00:14:13,164
+讲义上的随机变量R是集合U上的均匀随机变量
+
+342
+00:14:08,109 --> 00:14:13,164
+random variable R is literally a uniform
+random variable sampled over the set U. So
+
+343
+00:14:13,164 --> 00:14:17,792
+用符号表示为所有a∈ U
+
+344
+00:14:13,164 --> 00:14:17,792
+in symbols what's this means is that for
+all elements A in the universe, the
+
+345
+00:14:17,792 --> 00:14:22,907
+P(r=a)=1/|U|，如果你坚持使用
+
+346
+00:14:17,792 --> 00:14:22,907
+probability that R is equal to A is simply
+R one over U. And if you want to stick to
+
+347
+00:14:22,907 --> 00:14:27,901
+均匀随机变量的正式定义，这个也不那么重要
+
+348
+00:14:22,907 --> 00:14:27,901
+the formal definition of a, of a uniform
+variable, it's not actually that important
+
+349
+00:14:28,084 --> 00:14:33,017
+但我想说从形式上均匀随机变量是恒等式
+
+350
+00:14:28,084 --> 00:14:33,017
+But I would just say that formally the
+uniform random variable is an identity
+
+351
+00:14:33,017 --> 00:14:38,341
+也就是说 对所有x∈ U  R(x)=X ，只是为了确保这足够清楚
+
+352
+00:14:33,017 --> 00:14:38,341
+function namely R(x)is equal to
+X for all X in the universe So just to see
+
+353
+00:14:38,341 --> 00:14:43,716
+我要问你们一个简单的问题。假设
+
+354
+00:14:38,341 --> 00:14:43,716
+that this is clear, let me ask you a
+simple puzzle. Suppose we have a uniform
+
+355
+00:14:43,716 --> 00:14:49,375
+我们有一个2位字符串的均匀随机变量全体，即集合为01, 10, 00, 11
+
+356
+00:14:43,716 --> 00:14:49,375
+random variable over 2-bit strings, so
+over the set, 01, ten, one and now, let's
+
+357
+00:14:49,375 --> 00:14:55,317
+定义一个新的随机变量x，表示将R的第1位和第2位相加
+
+358
+00:14:49,375 --> 00:14:55,317
+define a new random variable X to basicall
+y sum the first and second bits of R. That
+
+359
+00:14:55,317 --> 00:15:01,117
+即X=r1+r2，R的第1位和第2位相加
+
+360
+00:14:55,317 --> 00:15:01,117
+is, X simply is the sum of R1 and R2, the
+first and second bits of R, treating those
+
+361
+00:15:01,117 --> 00:15:06,914
+把这2位当做整数，例如R=00，那么X=0+0=0
+
+362
+00:15:01,117 --> 00:15:06,914
+bits as integers. So, for example, if, r
+happens to be 00, then x will be 0+0,
+
+363
+00:15:06,914 --> 00:15:13,400
+所以我要问，P(x=2)是多少？
+
+364
+00:15:06,914 --> 00:15:13,400
+which is zero. So let me ask you, what is
+the probability that x is = to two? So
+
+365
+00:15:13,400 --> 00:15:19,289
+不难看出答案是1/4,因为
+
+366
+00:15:13,400 --> 00:15:19,289
+it's not difficult to see that the answer
+is exactly, one-fourth because, basically
+
+367
+00:15:19,289 --> 00:15:24,777
+x=2的情况只有R=11
+
+368
+00:15:19,289 --> 00:15:24,777
+the only way that x is equal to two is if
+r happens to be 1,1 but the probability
+
+369
+00:15:24,777 --> 00:15:29,930
+但是R=11的概率只有1/4,因为R是在所有2位字符串中均匀分布的
+
+370
+00:15:24,777 --> 00:15:29,930
+that r is equal to 1,1 is basically
+one-fourth because r is uniform over the
+
+371
+00:15:29,930 --> 00:15:34,409
+最后一个我想在这一节定义的概念是
+
+372
+00:15:29,930 --> 00:15:34,409
+set of all two bit strings. The last
+concept I want to define in this segment
+
+373
+00:15:34,409 --> 00:15:38,629
+随机算法，我相信你们都熟悉确定性算法
+
+374
+00:15:34,409 --> 00:15:38,629
+is what's called a randomized algorithm.
+So I'm sure you're all familiar with
+
+375
+00:15:38,629 --> 00:15:42,355
+这些算法对特定的输入数据
+
+376
+00:15:38,629 --> 00:15:42,355
+deterministic algorithms. These are
+algorithms that basically take a
+
+377
+00:15:42,355 --> 00:15:47,068
+总是产生相同的输出，记为Y
+
+378
+00:15:42,355 --> 00:15:47,068
+particular, input data, as input, and they
+always produce the same output, say Y. So
+
+379
+00:15:47,068 --> 00:15:51,671
+如果我们将算法在同样输入下运行一百遍，我们总会得到同样的输出
+
+380
+00:15:47,068 --> 00:15:51,671
+if we run the algorithm a hundred times on
+the same input, we'll always get the same
+
+381
+00:15:51,671 --> 00:15:55,617
+所以可以把确定算法看做一个函数
+
+382
+00:15:51,671 --> 00:15:55,617
+output. So you can think of a
+deterministic algorithm as a function that
+
+383
+00:15:55,617 --> 00:16:00,056
+给出一个确定输入数据M，总会准确地产生同样的输出A(m)
+
+384
+00:15:55,617 --> 00:16:00,056
+given a particular input data, M, will
+always produce exactly the same output, A
+
+385
+00:16:00,056 --> 00:16:05,345
+随机算法有点不同，在随机算法中
+
+386
+00:16:00,056 --> 00:16:05,345
+of M. A randomized algorithm is a little
+different, in that, as before, it takes
+
+387
+00:16:05,345 --> 00:16:11,197
+依旧将取数据M作为输入，不过还有一个隐形参数R
+
+388
+00:16:05,345 --> 00:16:11,197
+the input data M as input, but it also
+has an implicit argument called R, where
+
+389
+00:16:11,197 --> 00:16:16,770
+R在每次运行算法的时候都会重新取样，特别的
+
+390
+00:16:11,197 --> 00:16:16,770
+this R is sampled anew every time the
+algorithm is run. And in particular this R
+
+391
+00:16:16,770 --> 00:16:21,925
+R是在所有N位字符串中均匀随机取样的
+
+392
+00:16:16,770 --> 00:16:21,925
+is sampled uniformly at random from the
+set of all N-bit strings, for some
+
+393
+00:16:22,134 --> 00:16:26,716
+N任意指定，现在的情况是每次我们在输入M下运行算法
+
+394
+00:16:22,134 --> 00:16:26,716
+arbitrary N. Now what happens is every
+time we run the algorithm on a particular
+
+395
+00:16:26,716 --> 00:16:31,172
+都会得到一个不同的输出，因为每次的R都不一样
+
+396
+00:16:26,716 --> 00:16:31,172
+input M we're gonna get a different output
+because a different R is generated every
+
+397
+00:16:31,172 --> 00:16:35,044
+所以我们第一次运行算法会得到一个输出
+
+398
+00:16:31,172 --> 00:16:35,044
+time. So the first time we run the
+algorithm we get one output. The second
+
+399
+00:16:35,044 --> 00:16:39,128
+第二次运行算法产生一个新R，我们又会得到一个不同的输出
+
+400
+00:16:35,044 --> 00:16:39,128
+time we run the algorithm a new R is
+generated and we get a different output.
+
+401
+00:16:39,128 --> 00:16:43,530
+第三次运行算法又会产生一个新R，我们又会得到另一个不同的输出
+
+402
+00:16:39,128 --> 00:16:43,530
+The third time we run the algorithm a new
+R is generated and we get a third output
+
+403
+00:16:43,689 --> 00:16:48,742
+以此类推。所以想成随机算法其实就是定义一个随机变量
+
+404
+00:16:43,689 --> 00:16:48,742
+and so on. So really the way to think
+about a randomized algorithm is it's
+
+405
+00:16:48,742 --> 00:16:53,689
+对吧？给出一个特定输入信息M
+
+406
+00:16:48,742 --> 00:16:53,689
+actually defining a random variable.
+Right? So given a particular input
+
+407
+00:16:53,689 --> 00:16:59,201
+它就定义了一个随机变量
+
+408
+00:16:53,689 --> 00:16:59,201
+message, M, it's defining a random
+variable which is, defining a distribution
+
+409
+00:16:59,201 --> 00:17:04,533
+也就是定义了一个此算法的所有可能输出集合的分布概率，在给定输入M的情况下
+
+410
+00:16:59,201 --> 00:17:04,533
+over the set of a [laugh] possible outputs
+of this algorithm, given the input, M. So
+
+411
+00:17:04,533 --> 00:17:09,222
+所以要记住的事情是每次运行随机算法，它的输出都会变化
+
+412
+00:17:04,533 --> 00:17:09,222
+the thing to remember is that the output
+of a randomized algorithm changes every
+
+413
+00:17:09,222 --> 00:17:14,085
+事实上，算法本身定义了一个分布和所有可能输出的集合
+
+414
+00:17:09,222 --> 00:17:14,085
+time you run it And in fact, the algorithm
+defines a distribution and the set of all
+
+415
+00:17:14,085 --> 00:17:18,480
+让我们看一个特定的例子，假设我们有一个随机算法
+
+416
+00:17:14,085 --> 00:17:18,480
+possible outputs. So let's look at a
+particular example. So suppose we have a
+
+417
+00:17:18,480 --> 00:17:23,266
+以M为输入，当然也有隐性输入
+
+418
+00:17:18,480 --> 00:17:23,266
+randomized algorithm that takes as input a
+message M And of course it also takes an
+
+419
+00:17:23,266 --> 00:17:27,533
+也就是这个字符串，用来使过程随机化
+
+420
+00:17:23,266 --> 00:17:27,533
+implicate input which is this random
+string that is used to randomize its
+
+421
+00:17:27,533 --> 00:17:32,838
+现在这个算法要做的是以这个随机字符串为输入
+
+422
+00:17:27,533 --> 00:17:32,838
+operation. So now what the algorithm will
+do is simply will encrypt the message M
+
+423
+00:17:32,838 --> 00:17:38,300
+加密信息M。所以这基本上定义了一个随机变量
+
+424
+00:17:32,838 --> 00:17:38,300
+using the random string as input. So this
+basically defines a random variable. This
+
+425
+00:17:38,300 --> 00:17:43,495
+此随机变量取值于信息M的加密结果
+
+426
+00:17:38,300 --> 00:17:43,495
+random variable takes values that are
+encryptions of the message M And really
+
+427
+00:17:43,495 --> 00:17:48,557
+这个随机变量其实是定义在均匀密匙下
+
+428
+00:17:43,495 --> 00:17:48,557
+what this random, random variable is it's
+a distribution over the set of all
+
+429
+00:17:48,557 --> 00:17:53,532
+信息M全部可能的加密结果上的概率分布。所以重点要记住的是
+
+430
+00:17:48,557 --> 00:17:53,532
+possible encryptions of the message M
+under a uniform key. So the main point to
+
+431
+00:17:53,532 --> 00:17:58,087
+就算每次运行随机算法的时候
+
+432
+00:17:53,532 --> 00:17:58,087
+remember is that even though the inputs to
+a randomized algorithm might always be the
+
+433
+00:17:58,087 --> 00:18:02,219
+输入可能总是相同的，你也将会得到一个不同的输出
+
+434
+00:17:58,087 --> 00:18:02,219
+same every time you run the randomized
+algorithm you're gonna get a different
+
+435
+00:18:02,219 --> 00:18:05,836
+好了，这一节就结束了，我们将在下一节
+
+436
+00:18:02,219 --> 00:18:05,836
+output. Okay So, that concludes this
+segment, and we'll see a bit more discrete
+
+437
+00:18:05,836 --> 00:18:07,320
+讨论更多关于离散概率的内容
+
+438
+00:18:05,836 --> 00:18:07,320
+probability in the next segment.
+

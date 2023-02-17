@@ -1,0 +1,375 @@
+In the previous segment, we talked about
+how to solve modular linear equations.
+In this segment, we're gonna talk about how
+to solve modular quadratic equations.
+And more generally, we're gonna talk about how
+to compute modular e'th roots. As I said,
+now we know how to solve linear equations
+simply by using an inversion algorithm to
+compute a inverse and then multiplying
+the result by minus B. So the question is
+what about higher degree polynomials and
+in particular we are interested in
+solving, polynomials modulo primes. So
+solving polynomials in ZP, but polynomials
+particularly of the form x squared - c
+or y cubed - c or z to the 37 - c, all in ZP.
+So solving this polynomial, for
+example, involved computing the square root of C.
+Solving this polynomial
+involves computing the cube root of C.
+Solving this polynomial involves computing
+the thirty-seventh root of C. And so on.
+So, again, let's fix the primes P, and
+let's say that C is some element in ZP.
+We'll say that X in ZP that satisfies X to
+the E is equal to C. We'll call such an X
+the modular E-th root of C. So let's look
+at an example. We say that the cube root
+of 7 in Z11 is equal to 6,
+because 6 cubed is equal to 216, which
+happens to be 7 modulo 11. And
+therefore, the cube root of 7 modulo 11
+is equal to 6. So let me ask you,
+what is the square root of 3 in Z11?
+So the answer is 5 because 5
+squared is equal to 25, which is 3 modulo 11.
+And similarly, let me ask
+you, what is the cubed root of 1, modulo 11.
+Well the cube root of 1
+is simply 1, because one cubed is equal to 1, in Z11.
+In fact that's true
+in modulo any prime. One thing I'd like to
+point out is that these e'th roots
+don't always exist. For example, if I
+asked you to compute the square root of
+2 modulo 11, you'd have a problem,
+because the square root of two simply
+doesn't exist modulo 11. So now that
+we understand what an e'th root is, the next
+question is, when do these e'th roots
+exist, and when we know that they do
+exist, can we actually compute them efficiently?
+So, let's start with the easy
+case. The easy case is, when we want to
+compute an e'th root of something, and it
+so happens that e is relatively prime to p-1.
+In this case, c to the one over
+e always exists, and there's a very easy
+algorithm to actually compute the e'th root
+of c and ZP. So let's see how this works.
+So first, since e is relatively prime to
+p-1, we know that e has an inverse
+modulo of p-1. So let's compute
+this inverse, and let's call it d.
+So let's let d be the inverse of e modulo p-1. Then I claim that in fact c to the 1/e
+is simply c to the d,
+modulo p. So if this equation holds then
+first of all it proves that for all
+с in ZP the e'th root to c actually
+exists. And moreover, it gives a very
+efficient algorithm to compute this e'th root to c,
+simply by computing the inverse
+of e modulo p-1, and then raising
+c to the power of that inverse. Okay? So
+we kill two birds in one stone. So let's
+see why this equation holds. So first of
+all the fact that d times e is equal to
+one mod p-1, what that means is there
+exists some integer k. Such that if I look
+at d times e for that's basically gonna be
+k times p-1 plus 1. That's basically
+what it means that d times e is equal to
+one modulo p-1. Well, so now we can
+actually confirm that c to the d is a
+e'th root of C. Well, how do we
+confirm that? Well, let's take C to the D,
+and raise it to the power of E. If in
+fact, c to the d is an e'th root of
+c, when we raise it to the power of e;
+we're supposed to get c back. So let's see
+why that's true. Well, that's simply equal
+to c times d to the e, and c times d to
+the e, well, by definition, is equal to c
+to the power of k times p-1 plus 1
+Well, using the laws of
+exponentiation, we can write this as c to
+the power of p-1 to the power of k times c.
+All I did is I distributed the
+exponentiation using the standard laws of exponentiation.
+Now what do we know about
+c to the p-1? Since c lives in ZP
+by Fermat's theorem we know that c
+to the p-1 is equal to 1, in ZP.
+1 to the k is also equal to 1 and as a
+result, this is simply equal to c in ZP,
+which is exactly what we needed to prove
+that c to the d is an e'th root of c.
+Okay. So this is what I call the easy
+case. In fact, the e'th root always exists
+when e is relatively prime to p-1. And it's very easy to compute it
+simply by using this formula here. Now
+let's turn to the less easy case. So the
+less easy case is when e is not relatively
+prime to p-1. And the canonical example
+here is when e is equal to 2. So now
+suppose we want to compute square roots of
+c in ZP. So if p is an odd prime, and in
+fact we are going to focus on odd primes
+from now on, then in fact p-1 is going to
+be even. Which means that two are divided
+p-1, and indeed the gcd(2,p-1) is
+not equal to 1, So this is not the easy case.
+So the algorithm that we just saw on
+the previous slide is not gonna work when
+we want to compute square roots modulo
+an odd prime.
+So when we work modulo odd prime, the squaring function is actually a
+2-to-1 function. Namely, it maps X and
+minus X to the same value. It matched both
+of them to X squared. And as a result, we
+say that this function is a 2-to-1
+function. So here's a simple example.
+Let's look at what happens when we compute
+squares modulo eleven. So you can see that
+1 and -1 modulo 11 both map
+to 1. 2 and -2 both map to 4.
+3 and -3  both map to
+9, and so on and so forth, So you can
+see that it's a 2-to-1 map. So, in
+fact, these elements here, 1, 4,
+9, 5, 3, all are gonna have square roots. For example, the square root
+of 4 is simply gonna be 2 and 9.
+And I claim that, in fact, none of the
+other elements of Z11 are gonna have
+a square root. And that motivates this
+definition to say that an element x in ZP,
+we're gonna say, is called a quadratic
+residue. If in fact, it has a square root
+in ZP. Okay, and if it doesn't have a
+square root, we'll say that it's a non
+quadratic residue. For example modulo 11
+4 is going to be a quadratic
+residue, 9 is a quadratic residue, 5
+is a quadratic residue, 3 is a
+quadratic residue, and, of course, 1 is
+a quadratic residue. So let me ask you, if
+p is an odd prime, what do you think is
+the number of quadratic residues in ZP?
+And I'll give you a hint; the squaring
+function is a 2-to-1 map, which means
+that half the elements in ZP can't have a
+pre-image under this map. So the number of
+quadratic residues is simply (p-1)/2 + 1
+And the reason that's
+true is because we know that exactly half
+the elements in ZP are gonna be
+quadratic residues, Because of the fact
+that the squaring function is a 2-to-1
+map. So there can be, at most (p-1)/2
+elements in the image of that
+map. So half the elements in ZP are
+quadratic residues, And then, in ZP,
+there's also zero. We also have to account
+for zero. Zero is always a quadratic
+residue, 'cause zero squared is equal to
+zero. So overall, we get (p-1)/2
+quadratic residues in ZP<i>, plus 1,</i>
+the zero element, which is a quadratic
+residue in ZP. So overall, in ZP, there
+are (p-1)/2 + 1 quadratic
+residues. Okay, so the main points to
+remember is that roughly half the elements
+have a square root and the other half does
+not have a square root. I wanna emphasize
+that this is very different from the easy
+case, where e was relatively prime to p-1. If you remember in the easy
+case, every element in ZP had an e'th
+root. When e is not relatively prime to p-1,
+that's no longer the case, and
+in particular in the case of e equals 2,
+only half of the elements in ZP have
+a square root. Well, so the natural
+question then is, can we given an element x
+that's in ZP<i>, can we tell whether it has</i>
+a square root or not? So Euler did some
+important work on that too and in fact, he
+came up with a very clean criteria to test
+exactly which elements are quadratic
+residues and which are not. And in
+particular he said that x and ZP is a
+quadratic residue if and only if x to the
+power of (p-1)/2 is equal to 1 modulo p.
+Okay, very, very elegant and
+very simple condition. Let's see a simple
+example in Z11, so when we work mod 11. So here I compute it at the 5th
+power of all the elements in 11 for
+you, and you can see that this symbol,
+this X to the (p-1)/2, is
+always either one or minus one, and it's
+one precisely at the quadratic
+residues--so 1, 3, 4, 5, and 9.
+Okay, those are the quadratic
+residues, and the other elements are not
+quadratic residues. Here, I'll circle them
+in green. These are the elements that do
+not have a square root when we work modulo
+11. One thing I'd like to point out
+is, in fact, if we take an x that's not
+equal to 0, and we look at x to the (p-1)/2
+Well, we can write that as the square root of x to the p-1
+The kind of, the half bubbles out, and this is simply the square
+root of x to the p-1. Well, x to
+the p-1 by Fermat's theorem, is 1.
+So, x to the (p-1)/2 is
+simply a square root of 1, which must be 1 or -1.
+So what this proves is that really this exponentiation here must
+output 1 or -1, and we actually
+saw that happening here. It outputs 1
+when x is a quadratic residue, and it
+outputs -1 when x is not a
+quadratic residue. This is not a
+particularly difficult proof, but I'm not
+going to show it to you here. It's in the
+reference that I point to you at the end
+of the module. And just for completeness,
+I'll mention that this value, x to the (p-1)/2
+has a name, it's called the Legendre's symbol of x over p.
+And as we said, this for elements in ZP the symbol is either 1 or -1
+depending on the quadratic residuosity
+of x. Now, the sad thing about Euler's
+Theorem is that it's not constructive.
+Even though it's a very, very cute theorem,
+it tells us exactly which elements are quadratic residues and which
+aren't, this theorem doesn't do it
+constructively, in the sense that if we
+want to compute the square roots of a
+quadratic residue, the theorem doesn't
+actually tell us how to do that. And in
+fact, even if you look at the proof, the
+proof is by an existential argument. So it
+proves that the square roots exists, but
+it doesn't show us how to compute the
+square root when we want it.
+So the next question is then how do we compute square roots modulo primes. So it turns out
+that's actually not so hard and, again, it
+breaks up into two cases. The first case
+is when p is equal to 3 modulo 4
+in, which case, it's really easy to
+compute the square root and I'll just tell
+you there's a simple formula. The square
+root of c in this case is simply c to the
+power of (p+1)/4.
+You'll notice that because p is equal to 3
+modulo 4, p+1 is necessarily,
+p+1 is equal to 0 modulo 4.
+Which means that p+1 is divisible by
+4, and therefore (p+1)/4 is an integer. And that's exactly what allows
+us to compute this exponentiation, and I
+claim that, that actually gives us the
+square root of c. Very simple formula,
+that directly gives us the square root of c.
+So let's verify that that's actually
+true.
+Well I'll take c to the power of (p+1)/4 and square that.
+And if, in fact, if c to the (p+1)/4 is the square root of c, when I square it, I should get c.
+So let's see what happens. So first of all, by laws of exponentiation, this is simply equal to c
+to the power of (p+1)/2. And that I can write as c to the power of (p-1)/2 times c
+Okay, again, this is basically, I took, one-half, and moved it
+out of the exponentiation. Now, what do we
+know about c to the power of (p-1)/2 ?
+Since c is a quadratic residue,
+we know that c to the power of (p-1)/2 is 1.
+And therefore, this is really equal to one times c, which is c in
+ZP as we wanted to show. Okay. So this
+basically proves that c to the power of (p+1)/4
+is the square root of c, at least in the case when p is equal to 3 modulo 4.
+Now you should ask me, well, what about the case when p is equal to 1 mod 4 ?
+In that case, this formula doesn't even make sense. Because (p+1)/4
+this exponent here, (p+1)/4 is gonna be a rational fraction, and I don't
+know how to raise, c to the power of a
+rational fraction. Nevertheless, it turns
+out that even in the case where p is equal
+to 1 mod 4; we can efficiently find
+square roots, although it's a little bit
+harder. And in particular, we don't have a
+deterministic algorithm to do it. We have
+to use a randomized algorithm to do it.
+But this randomized algorithm will
+actually find the square root of x mod p,
+very efficiently. I guess I should mention
+that if someone could prove that the
+extended Riemann hypothesis--this is some deep
+hypothesis of analytic number theory. If
+someone could prove that, that hypothesis
+is true, in fact, it would give a
+deterministic algorithm for computing square roots even when p is equal to 1 modulo 4.
+So the reason I like to mention that is because you notice that as
+soon as you put the computational lens on
+something--for example, I ask you to
+compute the square roots of a number x
+modulo p. Coming up with an algorithm
+already requires extremely, extremely deep
+results in mathematics some of which are
+not even known to be true today. So as
+things stand today, we simply don't have a
+deterministic algorithm to compute square
+roots where p is 1 mod 4. But as I
+said, we have good randomized algorithms,
+and this problem is considered easy.
+Essentially, it boils down to a few exponentiations. And as a result, as we'll
+see, the running time of computing square
+roots essentially is cubic in the number
+of bits of p. So excellence. And now we
+know how to compute square roots mod p,
+and so now we can talk about solving
+quadratic equations modulo p. So suppose
+I give you a quadratic equation and I
+asked you to find a solution of this
+quadratic equation in ZP. Well so now I
+claim that you know how to solve it. The
+way you would solve it is basically you
+would use the high school formula for
+solving quadratic equations, you know. So
+the solution is minus b plus minus the
+square root of b squared minus 4ac over
+2a. And I claim that you know how to
+compute all the elements in this formula. So you know how to compute the inverse of 2a.
+So you can divide by 2a. That's done using the extended Euclidean algorithm.
+And you know how to complete a square root of b squared minus 4ac, using one of
+the square root algorithms from the
+previous slide. And of course the formula
+will only be solvable if the square root
+actually exists in ZP. So that's cool. So
+now, you guys know how to solve quadratic
+equations in ZP. So now, the next obvious
+question is what about computing these
+roots, modulo composites rather than
+modulo primes. So we can ask exactly the
+same questions that we asked before. So
+when does the e'th root modulo N exist?
+And if we know that it exists, can we
+actually compute it efficiently? And here,
+the problem is much, much, much harder.
+And in fact it turns out that, for all we
+know, computing e'th roots modular
+composites is in fact as hard as factoring
+that composite. Now, for a general e, this
+is actually not known to be true, but the
+best algorithm that we have for computing
+e'th roots modulo N requires us to factor
+the modulus. And once we factor the
+modulus, then it's actually easier to
+compute e'th roots modulo each of the
+prime factors. And we can combine all the
+e'th roots together to get the e'th roots
+modulo the composite N. So it's a very
+interesting case, where computing e'th
+root modulo prime was very easy. In
+fact, for many e's, it was very easy. But
+computing e'th root  modulo composite is much, much, much harder and, in fact,
+requires the factorization of N. So that's
+all I wanted to tell you about e'th roots.
+In the next segment, we're gonna turn to
+modular algorithms and we're gonna talk
+about addition and multiplication and exponentiation algorithms, modulo primes and composites.

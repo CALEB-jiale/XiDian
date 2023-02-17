@@ -1,0 +1,730 @@
+1
+00:00:00,000 --> 00:00:03,843
+In this module I wanna show you another
+approach to key exchange based on the
+
+2
+00:00:03,843 --> 00:00:07,714
+concept of public key encryption. So again
+just to remind you of the settings, we
+
+3
+00:00:07,714 --> 00:00:11,916
+have our friends Alice and Bob as usual,
+and they're both to exchange a secret key
+
+4
+00:00:11,916 --> 00:00:15,402
+K. The eavesdropper gets to see the
+messages they send to one another, but
+
+5
+00:00:15,402 --> 00:00:19,270
+even though he shouldn't learn anything
+about the key K that, that they exchanged.
+
+6
+00:00:19,270 --> 00:00:22,900
+And as usual in this module we're only
+going to be looking at eavesdropping
+
+7
+00:00:22,900 --> 00:00:26,725
+security. That is we don't allow the
+attacker to tamper with data or to mount
+
+8
+00:00:26,725 --> 00:00:30,719
+any other form of active attack. So, just
+to remind you, earlier in this module we
+
+9
+00:00:30,719 --> 00:00:34,514
+saw an inefficient mechanism based on
+generic block ciphers. In the previous
+
+10
+00:00:34,514 --> 00:00:38,009
+segment we saw the Diffie-Hellman key
+exchange mechanism which has an
+
+11
+00:00:38,009 --> 00:00:42,153
+exponential gap between the work that the
+participants have to do versus the work
+
+12
+00:00:42,153 --> 00:00:46,198
+that the attacker has to do. And in fact
+this Diffie-Hellman protocol is used all
+
+13
+00:00:46,198 --> 00:00:49,992
+over the web very frequently. In this
+segment I want to show you, a different
+
+14
+00:00:49,992 --> 00:00:54,309
+approach based on public key encryption.
+So, what is public encryption? So just as
+
+15
+00:00:54,309 --> 00:00:58,891
+in the case of symmetric encryption, there's an encryption algorithm and a
+
+16
+00:00:58,891 --> 00:01:03,415
+decryption algorithm. However, here the
+encryption algorithm is given one key,
+
+17
+00:01:03,415 --> 00:01:07,764
+which we're going to call a public key.
+Let's call this the public key that
+
+18
+00:01:07,764 --> 00:01:12,172
+belongs to Bob. And the decryption algorithm is given a different key, we'll
+
+19
+00:01:12,172 --> 00:01:16,696
+call it a secret key. That also belongs to
+Bob. So these two keys are sometimes
+
+20
+00:01:16,696 --> 00:01:24,144
+called a key pair. One half of the pair is
+the public key and the other half of the
+
+21
+00:01:24,144 --> 00:01:28,752
+pair is the secret key. Now the way you
+encrypt this as usual, a message would
+
+22
+00:01:28,752 --> 00:01:33,187
+come in, the encryption algorithm would
+generate a cipher text, that is the
+
+23
+00:01:33,187 --> 00:01:38,026
+encryption of this message using the given
+public key. And then when the cipher text
+
+24
+00:01:38,026 --> 00:01:42,864
+is given to the decryption algorithm, the
+decryption algorithm basically outputs the
+
+25
+00:01:42,864 --> 00:01:47,645
+corresponding, message. So, as I said, PK
+is called the public key and SK is called
+
+26
+00:01:47,645 --> 00:01:52,308
+the secret key. So more precisely, what is
+public encryption? Well, public encryption
+
+27
+00:01:52,308 --> 00:01:56,957
+is actually made up of three algorithms,
+G, E, and D. Algorithm G is what's called
+
+28
+00:01:56,957 --> 00:02:01,492
+a key generation algorithm. When you run
+algorithm G, it will output two keys, the
+
+29
+00:02:01,492 --> 00:02:05,744
+public key and the secret key. The
+encryption algorithm basically, given the
+
+30
+00:02:05,744 --> 00:02:10,053
+public key in the message, will output the
+corresponding cipher text. And the
+
+31
+00:02:10,053 --> 00:02:14,418
+decryption algorithm, given the secret key
+in the cipher text, will output the
+
+32
+00:02:14,418 --> 00:02:19,332
+message or it will output bottom if an
+error occurred. And as usual we have the
+
+33
+00:02:19,332 --> 00:02:24,269
+usual consistency properties that say that
+for any public key and secret key that
+
+34
+00:02:24,269 --> 00:02:29,148
+could have been output by the key generation
+algorithm if we encrypt the message using
+
+35
+00:02:29,148 --> 00:02:33,794
+the public key and then decrypt using the
+secret key we should get the original
+
+36
+00:02:33,794 --> 00:02:38,313
+message back. Now, what does it mean for a
+public key system to be secure? Well, we
+
+37
+00:02:38,313 --> 00:02:42,975
+use the same concept of semantic security
+that we used before, except the game is now
+
+38
+00:02:42,975 --> 00:02:47,300
+a little bit different. So let me
+explain, how we define semantic security
+
+39
+00:02:47,300 --> 00:02:51,737
+for a public key system. So here, the
+challenger is gonna run the key generation
+
+40
+00:02:51,737 --> 00:02:56,287
+algorithm to generate a public key and a
+secret key pair, and he's gonna give the
+
+41
+00:02:56,287 --> 00:03:00,242
+public key to the adversary. The
+challenger keeps the secret key to
+
+42
+00:03:00,242 --> 00:03:05,373
+himself. What the adversary will do is he
+will output two equal length messages M0 and
+
+43
+00:03:05,373 --> 00:03:10,321
+M1 as before and then the challenger will
+give him the encryption of M0 or M1. As
+
+44
+00:03:10,321 --> 00:03:15,147
+usual we define two experiments: experiment
+zero and experiment one. In experiment
+
+45
+00:03:15,147 --> 00:03:20,279
+zero the adversary is given the encryption
+of M0. In experiment one the adversary is
+
+46
+00:03:20,279 --> 00:03:24,860
+given the encryption of M1 and then the
+adversary's goal is to guess which
+
+47
+00:03:24,860 --> 00:03:29,381
+encryption he was given. Was he given the
+encryption of M0 or was he given
+
+48
+00:03:29,381 --> 00:03:34,945
+encryption of M1. And we refer to his
+guess as the output of experiment zero or
+
+49
+00:03:34,945 --> 00:03:40,119
+experiment one. One thing I want to
+emphasize is that in the case of public
+
+50
+00:03:40,119 --> 00:03:44,590
+encryption there's no need to give the
+attacker the ability to mount a chosen
+
+51
+00:03:44,590 --> 00:03:49,083
+plaintext attack. Why is that? Well in
+the case of a symmetric key system, the
+
+52
+00:03:49,083 --> 00:03:53,813
+attacker had to request the encryption of
+messages of his choice. In the case of a
+
+53
+00:03:53,813 --> 00:03:58,081
+public key system, the attacker has the
+public key and therefore he can by
+
+54
+00:03:58,081 --> 00:04:02,350
+himself, encrypt for himself any message
+that he wants. He doesn't need the
+
+55
+00:04:02,350 --> 00:04:07,022
+challenger's help to create encryptions of
+messages of his choice. And as a result,
+
+56
+00:04:07,022 --> 00:04:11,348
+in a public key setting, a chosen
+plaintext attack is inherent. There's no
+
+57
+00:04:11,348 --> 00:04:16,035
+reason to give the attacker extra power to
+mount a chosen plaintexts attack. And
+
+58
+00:04:16,035 --> 00:04:20,513
+that's why we never discussed chosen
+plaintext queries in the context of
+
+59
+00:04:20,513 --> 00:04:25,210
+defining semantic security for public key
+systems. Now that we defined the game
+
+60
+00:04:25,210 --> 00:04:29,539
+we're going to say that a public key system
+GED is semantically secure if
+
+61
+00:04:29,539 --> 00:04:34,093
+basically the attacker cannot distinguish
+experiment zero from experiment one. In
+
+62
+00:04:34,093 --> 00:04:38,534
+other words, the adversary's probability
+of outputting one in experiment zero is
+
+63
+00:04:38,534 --> 00:04:42,920
+about the same as his probability of
+outputting one in experiment one. So again,
+
+64
+00:04:42,920 --> 00:04:47,024
+the attacker can't tell whether he was
+given the encryption of M0 or the
+
+65
+00:04:47,024 --> 00:04:51,694
+encryption of M1. Now that we understand
+what a public key encryption is let's see
+
+66
+00:04:51,694 --> 00:04:56,151
+how to use it to establish a shared
+secret. See here are our friends Alice and
+
+67
+00:04:56,151 --> 00:05:00,666
+Bob. Alice will start off by generating a
+random public key secret key pair for
+
+68
+00:05:00,666 --> 00:05:04,952
+herself using the key generation
+algorithm. And then she's going to send to
+
+69
+00:05:04,952 --> 00:05:09,523
+bob the public key PK. And she also says,
+hey this message is from Alice. What Bob
+
+70
+00:05:09,523 --> 00:05:14,324
+will do is he will generate a random 128
+bit value X and he will send back to Alice
+
+71
+00:05:14,324 --> 00:05:19,124
+saying hey this message is from Bob and he
+will send back the encryption of X under
+
+72
+00:05:19,124 --> 00:05:23,674
+Alice's public key. Alice will receive
+this cipher text, she will decrypt it
+
+73
+00:05:23,674 --> 00:05:28,686
+using her secret key and that will give
+her the value X and now this value X can
+
+74
+00:05:28,686 --> 00:05:34,339
+be used basically as a shared secret
+between the two of them. I wanna emphasize
+
+75
+00:05:34,339 --> 00:05:38,966
+that this protocol is very different from
+the Diffie-Hellman protocol that we saw in
+
+76
+00:05:38,966 --> 00:05:43,375
+the last segment in the sense that here
+the parties have to take turns, In the
+
+77
+00:05:43,375 --> 00:05:47,730
+sense that Bob cannot send his message
+until he receives the message from Alice.
+
+78
+00:05:47,730 --> 00:05:52,316
+In other words, Bob cannot encrypt X to
+Alice's public key until he receives the
+
+79
+00:05:52,316 --> 00:05:56,272
+public key from Alice. In the
+Diffie-Hellman protocol however the two
+
+80
+00:05:56,272 --> 00:06:00,802
+parties could send their messages at
+arbitrary times and there was no ordering
+
+81
+00:06:00,802 --> 00:06:04,808
+enforced on those messages. As a result we
+had this nice application of
+
+82
+00:06:04,808 --> 00:06:08,887
+Diffie-Hellman, where, everybody could
+post their messages to Facebook, for
+
+83
+00:06:08,887 --> 00:06:13,190
+example. And then just by looking at
+Facebook profiles, any pair would already
+
+84
+00:06:13,190 --> 00:06:17,492
+have a shared key, without any need for
+additional communication. Here, this is
+
+85
+00:06:17,492 --> 00:06:21,963
+not quite true, even if everybody posts
+their public key to Facebook, there would
+
+86
+00:06:21,963 --> 00:06:26,380
+still be a need to send this message
+before a shared key can be established. So
+
+87
+00:06:26,380 --> 00:06:30,997
+now that we understand protocol the first
+question we need to ask is why is this
+
+88
+00:06:30,997 --> 00:06:35,556
+protocol secure. And as usual we're only
+gonna look at eavesdropping security. So
+
+89
+00:06:35,556 --> 00:06:40,173
+in this protocol the attacker gets to see
+the public key and the encryption of X
+
+90
+00:06:40,173 --> 00:06:44,960
+under the public key and what he wants to
+get is basically this value X. Now we know
+
+91
+00:06:44,960 --> 00:06:49,748
+that the system the public key system that
+we used is semantically secure, what that
+
+92
+00:06:49,748 --> 00:06:54,151
+means is that the attacker cannot
+distinguish the encryption of X, From the
+
+93
+00:06:54,151 --> 00:06:59,164
+encryption of something random. In other
+words, just given encryption of X, the
+
+94
+00:06:59,164 --> 00:07:04,164
+attacker can't tell whether the plain text
+is X or just some random junk that was
+
+95
+00:07:04,164 --> 00:07:08,920
+chosen from M, And because of that, that
+basically says that just by looking at
+
+96
+00:07:09,103 --> 00:07:13,980
+messages in this protocol, the value of X
+is indistinguishable in the attacker's
+
+97
+00:07:13,980 --> 00:07:18,797
+view from a random element in M and as a
+result, X can be used as a session key
+
+98
+00:07:18,797 --> 00:07:23,370
+between the two parties. It's just a
+random value which the attacker cannot
+
+99
+00:07:23,370 --> 00:07:28,014
+actually guess other than by trying all
+possible values in M. Then I should say
+
+100
+00:07:28,014 --> 00:07:32,483
+that showing that these two distributions
+are distinguishable follows directly from
+
+101
+00:07:32,483 --> 00:07:36,234
+semantic security and in fact it's a
+simple exercise to show that if the
+
+102
+00:07:36,234 --> 00:07:39,984
+attacker could distinguish this
+distribution from that distribution then
+
+103
+00:07:39,984 --> 00:07:44,218
+the attacker could also break semantic
+security. And as usual even though this
+
+104
+00:07:44,218 --> 00:07:48,816
+protocol is secure against eavesdropping,
+it's completely insecure against the
+
+105
+00:07:48,816 --> 00:07:53,488
+man-in-the-middle attack. So let's see a
+simple man in the middle attack. Well so
+
+106
+00:07:53,488 --> 00:07:58,257
+here we have Alice generating her public
+key secret key pair. At the same time the
+
+107
+00:07:58,257 --> 00:08:02,561
+man in the middle is also going to
+generate his own public key secret key
+
+108
+00:08:02,561 --> 00:08:07,156
+pair. And now when Alice sends her public
+key over to Bob, The man in the middle
+
+109
+00:08:07,156 --> 00:08:11,808
+will intercept that and instead he'll say
+yeah this is a message from Alice, but
+
+110
+00:08:11,808 --> 00:08:16,169
+Alice's public key is p K prime. So now
+Bob receives this message, he thinks he
+
+111
+00:08:16,169 --> 00:08:20,461
+got a message from Alice, what he'll send
+back is, well he's going to choose his
+
+112
+00:08:20,461 --> 00:08:24,535
+random X, and he'll send back the
+encryption of X under PK prime. The man in
+
+113
+00:08:24,535 --> 00:08:28,882
+the middle is going to intercept this
+message, and he's going to replace it with
+
+114
+00:08:28,882 --> 00:08:33,065
+something else. So, his goal is to make
+sure that the key exchange succeeds, in
+
+115
+00:08:33,065 --> 00:08:37,412
+other words Alice thinks that she got a
+message from Bob, and yet the man in the
+
+116
+00:08:37,412 --> 00:08:41,541
+middle should know exactly what the
+exchanged secret is. So what should the man in
+
+117
+00:08:41,541 --> 00:08:47,211
+the middle send to Alice in this case? So
+yeah let's call the cipher text C. What
+
+118
+00:08:47,211 --> 00:08:51,783
+the man in the middle will do is he will
+decrypt the cipher text C using his own
+
+119
+00:08:51,783 --> 00:08:56,356
+secret key that will reveal X to the man
+in the middle. And then he's going to go
+
+120
+00:08:56,356 --> 00:09:00,873
+ahead and encrypt X under Alice's public
+key, send the value back to Alice. Alice
+
+121
+00:09:00,873 --> 00:09:05,220
+will obtain this X and as far as she's
+concerned, she just did a key exchange
+
+122
+00:09:05,220 --> 00:09:09,849
+with Bob, where both of them learned the
+value X, but the problem of course is that
+
+123
+00:09:09,849 --> 00:09:14,418
+the man in the middle also knows the value
+X. So this protocol becomes completely
+
+124
+00:09:14,418 --> 00:09:19,264
+insecure once the man in the middle can
+tamper with messages from Alice to Bob and
+
+125
+00:09:19,264 --> 00:09:23,772
+from Bob to Alice. So again we have to do something to this protocol to make it secure and
+
+126
+00:09:23,772 --> 00:09:28,280
+we're gonna see how to do that, actually,
+in two weeks after we introduce digital
+
+127
+00:09:28,280 --> 00:09:32,557
+signatures. So now that I've show you that
+public encryption implies key exchange
+
+128
+00:09:32,557 --> 00:09:36,633
+security against eavesdropping. The next
+question is how do we construct public key
+
+129
+00:09:36,633 --> 00:09:40,761
+encryption systems? And it turns out that
+these constructions generally rely on
+
+130
+00:09:40,761 --> 00:09:44,941
+number theory and some algebra, and just
+like the Diffie-Hellman protocol relied on
+
+131
+00:09:44,941 --> 00:09:49,017
+some algebra. And so before we go into
+these protocols in more detail what I'd
+
+132
+00:09:49,017 --> 00:09:53,406
+like to do is kind of take a quick detour.
+In the next module we're going to look at
+
+133
+00:09:53,406 --> 00:09:57,743
+the relevant number theory background.
+We'll just do one module on this and then
+
+134
+00:09:57,743 --> 00:10:02,317
+come back and talk about these public key
+constructions and more constructions for
+
+135
+00:10:02,317 --> 00:10:06,818
+key exchange. So this is the end of this
+module. And as further reading, I just
+
+136
+00:10:06,818 --> 00:10:11,705
+wanted to point to this paper that shows
+if in fact all we do is rely on symmetric
+
+137
+00:10:11,705 --> 00:10:16,062
+ciphers and hash functions then
+Merkle puzzles are optimal for key
+
+138
+00:10:16,062 --> 00:10:20,713
+exchange and in fact we cannot achieve
+more than a quadratic gap as long as we
+
+139
+00:10:20,713 --> 00:10:25,077
+treat the primitives we're given as a
+black box. So basically this shows that a
+
+140
+00:10:25,077 --> 00:10:28,994
+quadratic gap is the best possible and
+also I wanted to point to another paper
+
+141
+00:10:28,994 --> 00:10:33,110
+that kind of summarizes some of these key
+exchange mechanisms that we talked about,
+
+142
+00:10:33,110 --> 00:10:37,176
+key exchange using public key cryptography
+and key exchange using Diffie-Hellman. You
+
+143
+00:10:37,176 --> 00:10:41,342
+can take a look at this paper and it kind
+of will give you a look ahead into what's
+
+144
+00:10:41,342 --> 00:10:45,557
+coming and how to make these key exchange
+protocols secure against man in the middle
+
+145
+00:10:45,557 --> 00:10:49,956
+and not just secure against eavesdropping.
+Okay so that's the end of this module and
+
+146
+00:10:49,956 --> 00:10:54,480
+in the next module we'll take a brief
+detour and do a kind of a brief overview
+
+147
+00:10:54,480 --> 00:10:56,080
+of algebra and number theory.

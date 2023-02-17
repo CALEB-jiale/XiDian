@@ -1,0 +1,923 @@
+1
+00:00:00,348 --> 00:00:03,576
+Now that we understand how DES works, let's look at a few attacks on DES,
+
+2
+00:00:03,576 --> 00:00:06,594
+and we're going to start with an attack called exhaustive search.
+
+3
+00:00:06,594 --> 00:00:12,817
+So our goal here is basically that given a few input-output pairs, (mi, ci),
+
+4
+00:00:12,817 --> 00:00:16,867
+our goal is to find the key that maps these m's to the c's.
+
+5
+00:00:16,867 --> 00:00:24,667
+In other words, our goal is to find the key that maps m1, m2, m3 into c1, c2, c3,
+
+6
+00:00:24,667 --> 00:00:27,867
+and as I said, our goal is to find the key that does this mapping.
+
+7
+00:00:27,867 --> 00:00:30,800
+The first question is, how do we know that this key is unique?
+
+8
+00:00:30,800 --> 00:00:34,467
+And so, let's do a little bit of analysis to show that in fact
+
+9
+00:00:34,467 --> 00:00:38,267
+just one pair is enough to completely constrain a DES key,
+
+10
+00:00:38,267 --> 00:00:40,800
+and that's why this question makes sense.
+
+11
+00:00:40,800 --> 00:00:43,352
+OK, so let's see. So we're going to prove this simple lemma.
+
+12
+00:00:43,352 --> 00:00:47,267
+Now let's assume that DES is what's called an ideal cipher.
+
+13
+00:00:47,267 --> 00:00:52,245
+So what is an ideal cipher? Basically we're going to pretend like DES is made up of
+
+14
+00:00:52,245 --> 00:00:58,867
+random invertible functions. In other words, for every key, DES implements a random invertible function.
+
+15
+00:00:58,867 --> 00:01:04,528
+Since there are 2^56 keys in DES, we're going to pretend like DES really is a collection
+
+16
+00:01:04,528 --> 00:01:15,233
+of 2^56 functions that are invertible from {0,1}^64 to {0,1}^64. OK? So of course,
+
+17
+00:01:15,233 --> 00:01:21,800
+DES is not a collection of 2^56 random functions, but we can idealize about the cipher and pretend
+
+18
+00:01:21,800 --> 00:01:25,380
+that it is such a collection. Then what can we say?
+
+19
+00:01:25,380 --> 00:01:31,115
+Then in fact it turns out that just given one message and ciphertext, you just give me
+
+20
+00:01:31,115 --> 00:01:38,867
+one pair, message and ciphertext, there's already only one key that maps this message to that ciphertext.
+
+21
+00:01:38,867 --> 00:01:46,467
+So already just given one pair m and c, I can ask you, find me the key that maps m to c,
+
+22
+00:01:46,467 --> 00:01:53,000
+and the solution is very likely to be unique. In fact it's going to be unique with probability roughly 99.5%.
+
+23
+00:01:53,000 --> 00:01:58,467
+I should say that this statement is true for all m and c, and the probability is just over the choice
+
+24
+00:01:58,467 --> 00:02:02,467
+of the random permutations that make up the cipher.
+
+25
+00:02:02,467 --> 00:02:05,666
+So let's write a proof. This is fairly straightforward. So what we're basically asking is,
+
+26
+00:02:05,666 --> 00:02:11,467
+what's the probability that there exists some key that's not equal to k such that,
+
+27
+00:02:11,467 --> 00:02:19,111
+well, c we know is equal to DES(k, m) by defintion of c and m, but we're asking how likely is it
+
+28
+00:02:19,111 --> 00:02:24,103
+that there's this other key, k-prime, that also satisfies this equality?
+
+29
+00:02:24,103 --> 00:02:29,699
+You realize that if this is true, if such a key k-prime exists, then just given m and c,
+
+30
+00:02:29,699 --> 00:02:35,040
+you can't decide whether the right key is k or k-prime, because both of them work. OK?
+
+31
+00:02:35,040 --> 00:02:38,000
+But I want to argue that this happens with low probability.
+
+32
+00:02:38,000 --> 00:02:42,467
+Well, so what does it mean that there exists a key k-prime that satisfies this relation?
+
+33
+00:02:42,467 --> 00:02:48,133
+Well, we're asking, what's the probability that the first key, the all-zero key, satisfies it?
+
+34
+00:02:48,133 --> 00:02:52,037
+Or, the second key satisfies it. Or, the third key satisfies it. And so on and so forth.
+
+35
+00:02:52,037 --> 00:02:58,979
+So by the union bound, we can bound this probability by the sum over all keys k-prime,
+
+36
+00:02:58,979 --> 00:03:10,102
+over all 56-bit keys, of the probability that DES(k,m) is equal to DES(k-prime, m).
+
+37
+00:03:10,102 --> 00:03:15,600
+OK? So we're asking, basically, what is this probability, for a fixed key k-prime,
+
+38
+00:03:15,600 --> 00:03:21,178
+that it happens to collide with the key k at the message m? Well, let's think about this for a second.
+
+39
+00:03:21,178 --> 00:03:25,400
+Let's fix this value, let's suppose it's some fixed value. And then we're asking,
+
+40
+00:03:25,400 --> 00:03:31,348
+how likely is it that a random permutation, pi k-prime, at the point m,
+
+41
+00:03:31,348 --> 00:03:37,014
+happens to produce exactly the same output as the key k at the point m?
+
+42
+00:03:37,014 --> 00:03:43,000
+Well, it's not difficult to answer and see that in fact this is, for a single key k-prime,
+
+43
+00:03:43,000 --> 00:03:50,040
+the probability is at most one over 2^64. Right? There are 2^64 possible outputs for the permutation,
+
+44
+00:03:50,040 --> 00:03:55,822
+what's the probability that it lands exactly on this output, well, it's one over 2^64.
+
+45
+00:03:55,822 --> 00:04:00,652
+And we're summing over all 2^56 keys, so we just multiply the two,
+
+46
+00:04:00,652 --> 00:04:06,758
+we get one over 2^8, which is basically one over 256. OK? So the probability
+
+47
+00:04:06,758 --> 00:04:12,099
+that the key is not unique is one over 256, therefore the probability that it is unique
+
+48
+00:04:12,099 --> 00:04:18,800
+is one minus that, which is 99.5%. OK? So already, if you give me one plaintext-ciphertext pair,
+
+49
+00:04:18,800 --> 00:04:23,430
+the key is completely determined. There's only one key that will map that plaintext
+
+50
+00:04:23,430 --> 00:04:26,774
+to that ciphertext, and the question is just, can you find that key?
+
+51
+00:04:26,774 --> 00:04:32,933
+Now it turns out in fact if you give me two pairs, so you give me m1 and m2,
+
+52
+00:04:32,933 --> 00:04:37,780
+and their corresponding outputs, c1 and c2, the probability basically
+
+53
+00:04:37,780 --> 00:04:41,821
+—just do exactly the same analysis, the probability basically becomes one.
+
+54
+00:04:41,821 --> 00:04:46,766
+That there's only one such key. OK, essentially, this is very, very, very close to 1,
+
+55
+00:04:46,766 --> 00:04:51,248
+and basically it says given two pairs, it's very very likely that only one key
+
+56
+00:04:51,248 --> 00:04:56,031
+will map this pair of messages to this pair of ciphertexts, and as a result again,
+
+57
+00:04:56,031 --> 00:05:00,559
+we can ask, well, find me that unique key. And by the way, the same is true for AES,
+
+58
+00:05:00,559 --> 00:05:05,226
+if you look at AES-128, again, just given two input-output pairs,
+
+59
+00:05:05,226 --> 00:05:09,638
+there's going to be only one key with very high probability. So essentially now
+
+60
+00:05:09,638 --> 00:05:14,654
+we can ask this exhaustive search problem, I give you two or three pairs, and I ask you,
+
+61
+00:05:14,654 --> 00:05:19,228
+well, find me the key. So how are you going to do it? Well, you're going to do it by exhaustive search,
+
+62
+00:05:19,228 --> 00:05:24,824
+essentially by trying all possible keys, one by one, until you find the right one.
+
+63
+00:05:24,824 --> 00:05:29,816
+So this is what's known as the DES challenge. So let me explain how the DES challenge worked.
+
+64
+00:05:29,816 --> 00:05:34,333
+The challenge was issued by a company called RSA, and what they did is basically,
+
+65
+00:05:34,333 --> 00:05:40,333
+they published a number of ciphertexts, but three of the ciphertexts had known plaintexts.
+
+66
+00:05:40,333 --> 00:05:46,133
+So in particular, what they did is they took the message here: The unknown message is, colon,
+
+67
+00:05:46,133 --> 00:05:50,867
+and you can see they broke it up into blocks. If you look at these, these are basically
+
+68
+00:05:50,867 --> 00:05:57,267
+eight-byte blocks. Eight bytes, as you know, is 64 bits, right, so each of these is 64 bits.
+
+69
+00:05:57,267 --> 00:06:01,651
+And then they encrypted them using a secret key. They encrypted them all using the same
+
+70
+00:06:01,651 --> 00:06:07,711
+secret key to get three ciphertexts. So this gives us three plaintext-ciphertext pairs,
+
+71
+00:06:07,711 --> 00:06:12,239
+and then they gave us a whole bunch of other ciphertexts, you know, c4, c5, c6,
+
+72
+00:06:12,239 --> 00:06:16,372
+and the challenge was, decrypt these guys using the key that you found
+
+73
+00:06:16,372 --> 00:06:20,784
+from an exhaustive search over the first three pairs that you were given.
+
+74
+00:06:20,784 --> 00:06:25,683
+OK. So that was called the DES challenge, and let me tell you a little bit
+
+75
+00:06:25,683 --> 00:06:31,467
+about how long it took to solve it. So interestingly, in 1997, using an Internet search,
+
+76
+00:06:31,467 --> 00:06:36,574
+using distributed.net, basically, they were able to search through enough of the keyspace
+
+77
+00:06:36,574 --> 00:06:42,779
+to find the correct key in about three months. You realize the keyspace has size 2^56,
+
+78
+00:06:42,779 --> 00:06:47,487
+but on average you only have to search through half the keyspace to find the key,
+
+79
+00:06:47,487 --> 00:06:51,574
+and so it took them three months. Then, kind of a miraculous thing happened.
+
+80
+00:06:51,574 --> 00:06:57,890
+The EFF actually contracted Paul Kocher to build special-purpose hardware to break DES.
+
+81
+00:06:57,890 --> 00:07:03,416
+This was a machine called Deep Crack. It cost about 250,000 dollars, and it broke
+
+82
+00:07:03,416 --> 00:07:09,500
+the next DES challenge in only three days. Interestingly, by the way, RSA said that
+
+83
+00:07:09,500 --> 00:07:14,120
+they would pay ten thousand dollars for each solution of a challenge, so you can see
+
+84
+00:07:14,120 --> 00:07:18,439
+that this is not quite economical. They spent 250K, they got ten thousand dollars
+
+85
+00:07:18,439 --> 00:07:22,154
+for solving the challenge. The next thing that happened is in 1999,
+
+86
+00:07:22,154 --> 00:07:27,286
+RSA issued another challenge, and they said, well, I'm gonna solve it in half the time
+
+87
+00:07:27,286 --> 00:07:32,600
+of the previous solution, and so using both Deep Crack and the Internet search together,
+
+88
+00:07:32,600 --> 00:07:35,622
+they were able to break DES in 22 hours.
+
+89
+00:07:35,622 --> 00:07:40,498
+So the bottom line here is, essentially, DES is completely dead.
+
+90
+00:07:40,498 --> 00:07:45,351
+Essentially, if you forget, or you lose your DES 56-bit key, don't worry—
+
+91
+00:07:45,351 --> 00:07:51,226
+within 22 hours, you can actually recover it and in fact, anyone can recover it, and so
+
+92
+00:07:51,226 --> 00:07:56,467
+DES essentially is dead and no longer secure. And just kind of a final nail in the coffin,
+
+93
+00:07:56,467 --> 00:08:03,765
+as hardware technology improved, there was another project called COPACABANA that used FPGAs,
+
+94
+00:08:03,765 --> 00:08:11,450
+just off-the-shelf FPGAs, only 120 FPGAs. It only cost 10,000 dollars. And they were able to break,
+
+95
+00:08:11,450 --> 00:08:16,768
+to do an exhaustive key search in about seven days. So very, very cheap hardware, just off the shelf,
+
+96
+00:08:16,768 --> 00:08:21,365
+you can break DES already very quickly. So the lesson from all this is essentially,
+
+97
+00:08:21,365 --> 00:08:26,467
+56-bit ciphers are totally, totally dead. And so the question is what to do.
+
+98
+00:08:26,467 --> 00:08:30,700
+People really liked DES, it was deployed in a lot of places, there were a lot of implementations,
+
+99
+00:08:30,700 --> 00:08:34,415
+there was a lot of hardware support for it, so the question was what to do.
+
+100
+00:08:34,415 --> 00:08:37,933
+And so the first thing that came to mind is, well maybe we can take DES
+
+101
+00:08:37,933 --> 00:08:42,681
+and we can kind of artificially expand the key size, so we strengthen it against
+
+102
+00:08:42,681 --> 00:08:47,400
+this exhaustive search attack. And the first idea that comes to mind is basically,
+
+103
+00:08:47,400 --> 00:08:51,900
+well, let's iterate the block cipher a couple of times. And this is what's called Triple DES.
+
+104
+00:08:51,900 --> 00:08:56,200
+So Triple DES is a general construction. Basically it says the following.
+
+105
+00:08:56,200 --> 00:08:59,957
+Suppose you gave me a block cipher E. So here, it has a keyspace K,
+
+106
+00:08:59,957 --> 00:09:03,974
+it has a message space M, and an output space of course M as well.
+
+107
+00:09:03,974 --> 00:09:10,429
+Let's define the triple construction, which now uses three keys, and it's defined as follows,
+
+108
+00:09:10,429 --> 00:09:15,561
+basically, here, the triple construction uses three independent keys, encrypts the same
+
+109
+00:09:15,561 --> 00:09:21,412
+message block as before, and what it does is, it will encrpyt using the key k3,
+
+110
+00:09:21,412 --> 00:09:29,098
+then it will decrypt using the key k2, then it will encrypt again using the key k1.
+
+111
+00:09:29,098 --> 00:09:33,881
+OK so basically encrpyting three times, using three independent keys.
+
+112
+00:09:33,881 --> 00:09:40,104
+You might be wondering, why is it doing E, D, E, why not just do E, E, E?
+
+113
+00:09:40,104 --> 00:09:43,843
+Why do we have to have a D in the middle? Well, that's just for, uh, kind of a hack.
+
+114
+00:09:43,843 --> 00:09:50,019
+You notice what happens if you set up k1 equals k2 equals k3? What happens if all three keys
+
+115
+00:09:50,019 --> 00:09:57,200
+are the same? Well, basically, what will happen is, one E and one D would cancel,
+
+116
+00:09:57,200 --> 00:10:02,419
+and you would just get normal DES out. So it's just a hack so that if you have a hardware implementation
+
+117
+00:10:02,419 --> 00:10:07,504
+of Triple DES, you can set all three keys to be the same, and you'll get a hardware implementation
+
+118
+00:10:07,504 --> 00:10:12,101
+of single DES. Of course it'll be three times as slow as a regular impelmentation of single DES,
+
+119
+00:10:12,101 --> 00:10:17,094
+but nevertheless, it's still an option. OK, so for Triple DES now we get a key size
+
+120
+00:10:17,094 --> 00:10:25,499
+that's 3 times 56, which is 168 bits; this is, 168 bits is way too long to do an exhaustive search on.
+
+121
+00:10:25,499 --> 00:10:31,420
+That will take time 2^168, which is more than all the machines on earth working for ten years
+
+122
+00:10:31,420 --> 00:10:36,800
+would be able to do. Unfortunately, of course, the cipher is three times slower than DES.
+
+123
+00:10:36,800 --> 00:10:40,964
+So this is a real problem with Triple DES. Now I want to mention that in fact you might think
+
+124
+00:10:40,964 --> 00:10:49,160
+Triple DES has security 2^168, but in fact, there is a simple attack that runs in time 2^118,
+
+125
+00:10:49,160 --> 00:10:55,800
+and I want to show you how that attack works. OK? So— but in fact 2^118 is still a large number.
+
+126
+00:10:55,800 --> 00:11:02,814
+In fact, anything that's, kind of, bigger than 2^90 is considered sufficiently secure.
+
+127
+00:11:02,814 --> 00:11:06,668
+2^118 is definitely sufficiently secure against exhaustive search,
+
+128
+00:11:06,668 --> 00:11:09,933
+and generally is considered a high enough level of security.
+
+129
+00:11:09,933 --> 00:11:14,447
+So clearly Triple DES is three times as slow as DES. So the question is,
+
+130
+00:11:14,447 --> 00:11:18,467
+why did they repeat the cipher three times? Why not repeat the cipher just two times,
+
+131
+00:11:18,467 --> 00:11:21,297
+or in particular, the question is, what's wrong with double DES?
+
+132
+00:11:21,297 --> 00:11:25,546
+So here we have double DES. Basically you see it uses only two keys, and it uses only
+
+133
+00:11:25,546 --> 00:11:30,979
+two applications of the block cipher, and as a result it's only going to be twice as slow as DES,
+
+134
+00:11:30,979 --> 00:11:36,067
+not three times as slow as DES. Well, the key length for double DES is 2 times 56, which is
+
+135
+00:11:36,067 --> 00:11:42,613
+112 bits, and in fact doing exhaustive search on a space of 112 bits is too much.
+
+136
+00:11:42,613 --> 00:11:47,400
+2^112 is too big of a number to do exhaustive search over such a large space.
+
+137
+00:11:47,400 --> 00:11:51,227
+So the question is, what's wrong with this construction. Well, it turns out
+
+138
+00:11:51,227 --> 00:11:54,687
+this construction is completely insecure, and I want to show you an attack.
+
+139
+00:11:54,687 --> 00:12:01,200
+So, suppose I'm given a bunch of inputs, say m1 to m10, and I'm given the corresponding outputs
+
+140
+00:12:01,200 --> 00:12:09,060
+c1 to c10. What's my goal? Well, my goal is basically to find keys, you know, a pair of keys k1, k2,
+
+141
+00:12:09,060 --> 00:12:17,559
+such that if I encrypt the message M using these keys, in other words if I do this encryption,
+
+142
+00:12:17,559 --> 00:12:23,248
+this double DES encryption, then I get the ciphertext vector that was given to me.
+
+143
+00:12:23,248 --> 00:12:28,067
+OK, so our goal is to solve this equation here. Now you stare at this equation a little bit,
+
+144
+00:12:28,067 --> 00:12:32,267
+and you realize, hey wait a minute, I can rewrite it in kind of an interesting way;
+
+145
+00:12:32,267 --> 00:12:36,483
+I can apply the decryption algorithm, and then what I'll get is that I'm really looking for
+
+146
+00:12:36,483 --> 00:12:43,960
+keys k1, k2 that satisfy this equation here, where basically all I did is I applied
+
+147
+00:12:43,960 --> 00:12:51,400
+the decryption algorithm using k1 to both sides. OK, now whenever you see an equation like this,
+
+148
+00:12:51,400 --> 00:12:55,918
+what just happened here is that we separated our variables into two sides,
+
+149
+00:12:55,918 --> 00:13:00,098
+the variables now appear on independent sides of the equation, and that usually means
+
+150
+00:13:00,098 --> 00:13:04,579
+that there is a faster attack than exhaustive search, and in fact this attack is called
+
+151
+00:13:04,579 --> 00:13:09,107
+a meet-in-the-middle attack, where really the meet-in-the-middle is going to somehow
+
+152
+00:13:09,107 --> 00:13:14,169
+attack this particular point in the construction. OK, so we're going to try and find a key
+
+153
+00:13:14,169 --> 00:13:18,533
+that maps m to a particular value here, and maps c to the same value.
+
+154
+00:13:18,533 --> 00:13:22,969
+OK, so let me show you how the attack works. So the first thing we're going to do is
+
+155
+00:13:22,969 --> 00:13:26,220
+we're going to build a table. Here, let me clear up some space here.
+
+156
+00:13:26,220 --> 00:13:31,096
+The first step is to build a table that for all possible values of k2,
+
+157
+00:13:31,096 --> 00:13:35,647
+encrypts m under that value. OK, so here we have this table, so you notice
+
+158
+00:13:35,647 --> 00:13:45,600
+these are all 2^56 Single DES keys, OK, so the table has 2^56 entries,
+
+159
+00:13:45,600 --> 00:13:50,800
+and what we do is basically, for each entry, we compute the encryption of m
+
+160
+00:13:50,800 --> 00:13:54,641
+under the appropriate key. So this is the encryption of m under the all-zero key,
+
+161
+00:13:54,641 --> 00:13:59,494
+the encryption of m under the one key, and at the bottom, we have the encryption of m
+
+162
+00:13:59,494 --> 00:14:04,933
+under the all-one key. OK, so there are 2^56 entries, and we sort this table based on the second column.
+
+163
+00:14:04,933 --> 00:14:10,083
+OK, so far, so good. So by the way this takes time—to build this table takes time 2^56,
+
+164
+00:14:10,083 --> 00:14:17,733
+and I guess we also want to sort, sorting takes n log n time, so it's 2^56 times log 2^56. OK.
+
+165
+00:14:17,733 --> 00:14:21,733
+So now that we have this table, we've essentially built all possible values
+
+166
+00:14:21,733 --> 00:14:24,618
+in the forward direction for this point.
+
+167
+00:14:24,618 --> 00:14:28,533
+Now what we're going to do is this meet-in-the-middle attack,
+
+168
+00:14:28,533 --> 00:14:33,094
+where now we try to go in the reverse direction with all possible keys k.
+
+169
+00:14:33,094 --> 00:14:37,761
+Essentially we compute the decryption of c under all possible keys k1.
+
+170
+00:14:37,761 --> 00:14:43,333
+OK, so now for each potential decryption, remember the table holds all possible values
+
+171
+00:14:43,333 --> 00:14:49,580
+in the midpoint, so then for each possible decrpytion, we check, hey, is the decryption in the table,
+
+172
+00:14:49,580 --> 00:14:53,248
+in the second column in the table? If it is in the table, then aha, we found the match,
+
+173
+00:14:53,248 --> 00:14:58,055
+and then what do we know? We know that essentially, well, we found the match, so we know that
+
+174
+00:14:58,055 --> 00:15:04,557
+say for example a decryption using a particular key k1 happened to match this entry in the table,
+
+175
+00:15:04,557 --> 00:15:11,151
+say, k2 or more generally ki, then we know that the encryption of m under ki
+
+176
+00:15:11,151 --> 00:15:17,513
+is equal to the decryption of c under k. OK, so we kind of build this meet-in-the-middle,
+
+177
+00:15:17,513 --> 00:15:25,896
+where the two sides, you know, the encryption of m under ki and the decryption of c under k,
+
+178
+00:15:25,896 --> 00:15:32,490
+collided, but if they collided, then we know that in fact this pair, ki and k, is equal to
+
+179
+00:15:32,490 --> 00:15:36,089
+the pair that we're looking for. And so we've just solved our challenge.
+
+180
+00:15:36,089 --> 00:15:40,965
+So now let's look at what's the running time of this? Well, we had to build a table,
+
+181
+00:15:40,965 --> 00:15:47,867
+and sort it, and then for all possible decryptions, we had to do a search through the table.
+
+182
+00:15:47,867 --> 00:15:53,690
+So there were 2^56 possible decryptions, each search in a sorted table takes log(2^56) time,
+
+183
+00:15:53,690 --> 00:15:59,400
+if you just work it out this turns out to be 2^63, which is way, way, way, way, way smaller
+
+184
+00:15:59,400 --> 00:16:07,413
+than 2^112. OK, so this is a serious attack, it's probably doable today, that runs in a total time
+
+185
+00:16:07,413 --> 00:16:12,359
+of 2^63, which is about the same time as the exhaustive search attack on DES.
+
+186
+00:16:12,359 --> 00:16:16,446
+So really, double DES really didn't solve the exhaustive search problem,
+
+187
+00:16:16,446 --> 00:16:19,650
+because, well, there's an attack on it that runs in about the same time
+
+188
+00:16:19,650 --> 00:16:23,086
+as exhaustive search on single DES. Now someone might complain
+
+189
+00:16:23,086 --> 00:16:26,895
+that in fact this algorithm, well, we have to store this big table,
+
+190
+00:16:26,895 --> 00:16:31,283
+so it takes up a lot of space, but you know, so be it. Nevertheless, the running time
+
+191
+00:16:31,283 --> 00:16:35,439
+is still quite small or significantly smaller than 2^112.
+
+192
+00:16:35,439 --> 00:16:39,248
+Now you notice, by the way, this same attack applies to Triple DES.
+
+193
+00:16:39,248 --> 00:16:42,267
+What you would do is you would implement the meet-in-the-middle attack against this point,
+
+194
+00:16:42,267 --> 00:16:47,867
+you would build a table of size 2^56 of all possible encryptions of m,
+
+195
+00:16:47,867 --> 00:16:53,000
+and then you would try to decrypt with all 2^112 keys until you find a collision,
+
+196
+00:16:53,000 --> 00:16:56,639
+and when you find a collision, you have basically found k1, k2, k3.
+
+197
+00:16:56,639 --> 00:17:03,333
+OK, so even Triple DES has an attack that basically explores only 2^112 possible keys.
+
+198
+00:17:03,333 --> 00:17:08,087
+But 2^112 is a large enough number, so Triple DES in fact, as far as we know,
+
+199
+00:17:08,087 --> 00:17:13,706
+is sufficiently secure. I should mention that Triple DES is actually a NIST standard,
+
+200
+00:17:13,706 --> 00:17:19,859
+and so Triple DES is actually used quite a bit, and in fact DES should never ever ever be used,
+
+201
+00:17:19,859 --> 00:17:24,867
+if for some reason you're forced to use some version of DES, use Triple DES, not DES.
+
+202
+00:17:24,867 --> 00:17:29,310
+OK, I want to mention one more method for strengthening DES against exhaustive search attacks.
+
+203
+00:17:29,310 --> 00:17:33,118
+This method actually is not standardized by NIST, because it doesn't defend against
+
+204
+00:17:33,118 --> 00:17:37,692
+more subtle attacks on DES, but nevertheless if all you're worried about is exhaustive search,
+
+205
+00:17:37,692 --> 00:17:43,010
+and you don't want to pay the performance penalties of Triple DES, then this is an interesting idea.
+
+206
+00:17:43,010 --> 00:17:47,630
+So let me show you how it works. So let E be a block cipher that operates on n-bit blocks.
+
+207
+00:17:47,630 --> 00:17:53,319
+We're going to define the EX construction, and for DES we're going to get DESX, to be the following.
+
+208
+00:17:53,319 --> 00:17:59,733
+So we use three keys, k1, k2, k3, and then basically before encrpytion, we XOR with k3,
+
+209
+00:17:59,733 --> 00:18:05,231
+then we encrypt using k2, and then after encryption we XOR with k1. That's it.
+
+210
+00:18:05,231 --> 00:18:09,387
+That's the whole construction. So basically, you'll notice it doesn't slow the block cipher much,
+
+211
+00:18:09,387 --> 00:18:14,403
+because all we did is we applied the cipher plus two additional XORs, which are super fast.
+
+212
+00:18:14,403 --> 00:18:20,092
+The key length for this is in fact, well, we got two keys that are as long as the block size,
+
+213
+00:18:20,092 --> 00:18:25,038
+and we got one key that's as long as the key size, so the total is 184 bits.
+
+214
+00:18:25,038 --> 00:18:31,446
+Now, it turns out actually the best attack that's known is actually an attack that takes time 2^120,
+
+215
+00:18:31,446 --> 00:18:37,158
+and this is actually fairly simple. So it's a generic attack on EX, it will always take time basically
+
+216
+00:18:37,158 --> 00:18:41,222
+block size plus the key size, and it's a simple homework problem
+
+217
+00:18:41,222 --> 00:18:43,892
+for you to try to figure out this attack. I think this is a good exercise.
+
+218
+00:18:43,892 --> 00:18:48,867
+OK, in fact there is some analysis to show that there is no exhaustive search attack
+
+219
+00:18:48,867 --> 00:18:53,041
+on this type of construction, so it's a fine construction against exhaustive search,
+
+220
+00:18:53,041 --> 00:18:56,600
+but there are more subtle attacks on DES that we'll talk about in the next segment,
+
+221
+00:18:56,600 --> 00:18:59,566
+that basically this construction will not prevent.
+
+222
+00:18:59,566 --> 00:19:05,789
+One thing that I want to point out, unfortunately I found this mistake in a number of products,
+
+223
+00:19:05,789 --> 00:19:12,383
+is if you just decide to XOR on the outside, or if you just decide to XOR on the inside,
+
+224
+00:19:12,383 --> 00:19:13,985
+as opposed to XOR-ing on both sides, which is what DESX does,
+
+225
+00:19:13,985 --> 00:19:18,165
+you notice DESX XORs both on the outside and on the inside,
+
+226
+00:19:18,165 --> 00:19:22,067
+If you just do one of them, then basically this construction does nothing
+
+227
+00:19:22,067 --> 00:19:26,780
+to secure your cipher. It'll still be as vulnerable to exhaustive search
+
+228
+00:19:26,780 --> 00:19:30,518
+as the original block cipher E. OK, so this is another homework problem,
+
+229
+00:19:30,518 --> 00:19:34,094
+and actually you'll see that as part of our homeworks. OK.
+
+230
+00:19:34,094 --> 00:19:37,809
+So this basically concludes our discussion of exhaustive search attacks,
+
+231
+00:19:37,809 --> 00:19:41,292
+and next we'll talk about more sophisticated attacks on DES.

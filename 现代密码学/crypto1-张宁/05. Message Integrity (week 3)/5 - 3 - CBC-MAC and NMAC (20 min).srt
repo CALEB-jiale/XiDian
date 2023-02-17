@@ -1,0 +1,1251 @@
+1
+00:00:00,000 --> 00:00:04,616
+In this segment, we're going to construct
+two classic MACS, the CBC-MAC and the
+
+2
+00:00:04,616 --> 00:00:09,233
+NMAC. Recall in the last segment, we said
+that if you give me a secure PRF, then
+
+3
+00:00:09,233 --> 00:00:14,087
+that secure PRF can actually be used to
+construct a secure MAC, simply by defining
+
+4
+00:00:14,087 --> 00:00:18,763
+the signature on the message m as the
+value of the function at the point m. The
+
+5
+00:00:18,763 --> 00:00:23,203
+only caveat was that the output of the
+PRF F had to be large. For example, it
+
+6
+00:00:23,203 --> 00:00:27,947
+could be 80 bits or 128 bits, and that
+would generate a secure MAC Now we also
+
+7
+00:00:27,947 --> 00:00:33,220
+said that because AES is a secure PRF,
+essentially AES already gives us a secure
+
+8
+00:00:33,220 --> 00:00:37,899
+MAC, except that it can only process
+sixteen byte messages. And the question
+
+9
+00:00:37,899 --> 00:00:42,889
+now is, given a PRF for short messages
+like AES for sixteen byte messages, can we
+
+10
+00:00:42,889 --> 00:00:48,005
+construct a PRF for long messages that are
+potentially gigabytes long? And this is
+
+11
+00:00:48,005 --> 00:00:53,245
+shorthand for what's coming. I'm going to
+denote by X, the set {0,1} to the N where N
+
+12
+00:00:53,245 --> 00:00:58,485
+is the block size for the underlying PRF.
+So since we're always going to be thinking
+
+13
+00:00:58,485 --> 00:01:03,247
+of AES as the underlying PRF, you can
+think of N as essentially 128 bits. So
+
+14
+00:01:03,247 --> 00:01:08,296
+the first construction is called the
+encrypted CBC MAC, or ECBC for short.
+
+15
+00:01:08,296 --> 00:01:13,967
+Encrypted CBC MAC. So ECBC uses a PRF that
+takes messages in the set X {0,1} to the N
+
+16
+00:01:13,967 --> 00:01:19,500
+and outputs messages in the same set X.
+And what we're going to be building is a
+
+17
+00:01:19,500 --> 00:01:24,687
+PRF that basically takes pairs of keys. It
+takes very long messages, in fact
+
+18
+00:01:24,687 --> 00:01:29,667
+arbitrarily long messages, and I'll
+explain this in just a second and it
+
+19
+00:01:29,667 --> 00:01:34,596
+outputs also tags in {0,1} to the N. So
+that's our goal. Now what is this X to the
+
+20
+00:01:34,596 --> 00:01:39,478
+less than or equal to L? The point here is
+that in fact CBC MAC can take very long
+
+21
+00:01:39,478 --> 00:01:44,118
+messages up to L blocks. L could be a
+million or a billion. But it could also
+
+22
+00:01:44,118 --> 00:01:49,063
+take variable length messages as inputs.
+In other words, X less than or equal to L
+
+23
+00:01:49,063 --> 00:01:53,825
+means that we allow the input to be
+messages that contain an arbitrary number
+
+24
+00:01:53,825 --> 00:01:58,709
+of blocks between one and L. So each CBC
+can process messages that are one block
+
+25
+00:01:58,709 --> 00:02:03,349
+long, two blocks long, ten blocks long,
+100 blocks long. It's perfectly fine to
+
+26
+00:02:03,349 --> 00:02:07,826
+give it variable size inputs. But just to
+keep the discussion simple, we up our
+
+27
+00:02:07,826 --> 00:02:12,301
+bounds the maximum length by capital L. So
+let's see how ECBC works. Well, we start
+
+28
+00:02:12,301 --> 00:02:16,886
+by taking our message and breaking it into
+blocks, each block is as long as a block
+
+29
+00:02:16,886 --> 00:02:21,250
+of the underlying function f, and then
+essentially we run through the CBC chain
+
+30
+00:02:21,250 --> 00:02:25,835
+except that we don't output intermediate
+values. So you notice we basically encrypt
+
+31
+00:02:25,835 --> 00:02:30,309
+the first block and then feed the results
+into the XOR with the second block and
+
+32
+00:02:30,309 --> 00:02:34,784
+then feed that into f again, and we do
+that again and again and again and finally
+
+33
+00:02:34,784 --> 00:02:39,302
+we get a value out here. Which is called
+the CBC outputs of this long chain. And
+
+34
+00:02:39,302 --> 00:02:44,235
+then, I would like to point your attention
+to the fact that we do one more encryption
+
+35
+00:02:44,235 --> 00:02:48,927
+step. And this step is actually done using
+an independent key, K1. That's different
+
+36
+00:02:48,927 --> 00:02:53,756
+and chosen independently of the key K, and
+finally the output gives us the tag. So in
+
+37
+00:02:53,756 --> 00:02:58,183
+this case the tag would be N bits long,
+but we also mentioned in the previous
+
+38
+00:02:58,183 --> 00:03:02,956
+segment that it's fine to truncate the tag
+to less than N bits long as long as one
+
+39
+00:03:02,956 --> 00:03:07,555
+over two to the end is negligible. So now
+you can see that FECBC takes a pair of
+
+40
+00:03:07,555 --> 00:03:11,867
+keys as inputs, it can process
+variable length messages and it produces
+
+41
+00:03:11,867 --> 00:03:16,206
+an output in the set X. So you might be
+wondering what this last encryption step
+
+42
+00:03:16,206 --> 00:03:20,228
+is for. And I'll tell you that the
+function that's defined without this last
+
+43
+00:03:20,228 --> 00:03:24,196
+encryption step is called the raw CBC
+function. In other words, if we simply
+
+44
+00:03:24,196 --> 00:03:28,377
+stop processing over here, and we take
+that as the output, that's called raw CBC.
+
+45
+00:03:28,377 --> 00:03:32,852
+And as we'll see in a minute, raw CBC is
+actually not a secure MAC. So this last
+
+46
+00:03:32,852 --> 00:03:37,120
+step is actually critical for making
+the MAC secure. So another class of
+
+47
+00:03:37,120 --> 00:03:41,511
+construction for converting a small PRF
+into a large PRF is called NMAC,
+
+48
+00:03:41,511 --> 00:03:46,264
+for Nested MAC. Now, the NMAC starts
+from PRF that, as before, takes inputs
+
+49
+00:03:46,264 --> 00:03:50,977
+in X, but outputs elements in the key
+space. And remember that for CBC, the
+
+50
+00:03:50,977 --> 00:03:56,136
+output has to be in the set X. Here, the
+output needs to be in the key space K. And
+
+51
+00:03:56,136 --> 00:04:01,167
+again, we basically obtain the PRF F-NMAC, which takes pairs of keys as inputs.
+
+52
+00:04:01,167 --> 00:04:06,008
+Again, can process variable length
+messages up until L blocks. And the output
+
+53
+00:04:06,008 --> 00:04:11,167
+is an element in the key space. And the
+way NMAC works is kind of, starts as
+
+54
+00:04:11,167 --> 00:04:16,313
+before. We take our message, and we break
+it into blocks. Each block is, again, as
+
+55
+00:04:16,313 --> 00:04:21,890
+big as the block length of the underlying
+PRF. And now we take our key and we feed
+
+56
+00:04:21,890 --> 00:04:27,171
+our key as the key input into the function
+F. And the message block is given as the
+
+57
+00:04:27,171 --> 00:04:32,515
+data input into the function F. What comes
+out is the key for the next block of NMAC.
+
+58
+00:04:32,515 --> 00:04:37,414
+So now we have a new key for the next
+evaluation of the PRF. And the data for
+
+59
+00:04:37,414 --> 00:04:42,376
+the next evaluation is the next message
+block and so on and so forth until we
+
+60
+00:04:42,376 --> 00:04:47,707
+reach the final output. The final output
+is gonna be an element in K. Okay? And
+
+61
+00:04:47,707 --> 00:04:52,959
+just as before, in fact, if we stop here.
+The function that we obtain is called a
+
+62
+00:04:52,959 --> 00:04:57,938
+cascade function. And we're gonna look at
+cascade in more detail in just a minute.
+
+63
+00:04:57,938 --> 00:05:02,734
+So cascade will output an element in K.
+However, that, as we'll see again, is not
+
+64
+00:05:02,734 --> 00:05:07,529
+a secure MAC. To get a secure MAC, what we
+do is we need to map this element T,
+
+65
+00:05:07,529 --> 00:05:12,679
+which is in K, into the set X. And so,
+typically, as we'll see, NMAC is used
+
+66
+00:05:12,679 --> 00:05:18,495
+with, PRFs, where the block length, X, is
+much bigger than the key length. And so
+
+67
+00:05:18,495 --> 00:05:24,239
+what we do is we simply append fixed pad.
+fpad is called a fixed pad that gets
+
+68
+00:05:24,239 --> 00:05:29,209
+appended to this tag T. And then this
+becomes, this input here, this block here
+
+69
+00:05:29,209 --> 00:05:33,885
+becomes an element of X. We feed this into
+the function, and again, notice here that
+
+70
+00:05:33,885 --> 00:05:38,334
+there's an independent key that's being
+used for the last encryption step. And
+
+71
+00:05:38,334 --> 00:05:42,782
+then finally, the last tag is an element
+of K which we output as the output of
+
+72
+00:05:42,782 --> 00:05:47,059
+NMAC. So remember without the last
+encryption step, the function is called a
+
+73
+00:05:47,059 --> 00:05:51,393
+cascade. With the last step as we'll see
+which is necessary for security, we
+
+74
+00:05:51,393 --> 00:05:55,884
+actually get a PRF which outputs elements
+in K, and can process variable length
+
+75
+00:05:55,884 --> 00:06:00,034
+messages that are up to L blocks long.
+Alright so that is the NMAC
+
+76
+00:06:00,034 --> 00:06:06,587
+construction. So now we have two MACs. That
+we can use to build a large PRF, from AES,
+
+77
+00:06:06,587 --> 00:06:11,023
+basically. So before I analyze the
+security of MAC constructions, I'd like
+
+78
+00:06:11,023 --> 00:06:15,170
+you to understand better what the last
+encryption step is for. So, let's start
+
+79
+00:06:15,170 --> 00:06:19,533
+with NMAC. So I explained that it
+is actually very easy too see that if we
+
+80
+00:06:19,533 --> 00:06:23,573
+omitted the last encryption step. In other
+words, if we just use the cascade
+
+81
+00:06:23,573 --> 00:06:27,936
+function, then the MAC will be completely
+insecure. Okay so suppose we look at this
+
+82
+00:06:27,936 --> 00:06:32,298
+MAC to find over here. In other words, all
+we do is we output directly the cascade
+
+83
+00:06:32,298 --> 00:06:36,661
+applied to m without the last encryption
+step. So let me ask you how do you forge
+
+84
+00:06:36,661 --> 00:06:40,809
+tags in this MAC. And I guess I've kinda
+given it away that this answer isn't
+
+85
+00:06:40,809 --> 00:06:45,360
+correct. So I hope everybody sees that the
+answer is, that, in fact, given one chosen
+
+86
+00:06:45,360 --> 00:06:49,203
+message query, you can mount an
+existential forgery. And the reason is,
+
+87
+00:06:49,203 --> 00:06:53,769
+I'll show you in a second in the diagram,
+but let me write it out in symbols first.
+
+88
+00:06:53,769 --> 00:06:58,113
+The reason if, if you're given the output
+of the cascade function applied to a
+
+89
+00:06:58,113 --> 00:07:02,918
+message M. I can derive from it, me being
+the adversary, I can derive from it the
+
+90
+00:07:02,918 --> 00:07:07,541
+cascade applied to the message M
+concatenated W for any message W, for any
+
+91
+00:07:07,541 --> 00:07:11,851
+W. So first of all, it should be clear
+that this is enough to mount an
+
+92
+00:07:11,851 --> 00:07:17,287
+existential forgery because essentially by
+asking for a tag on this message I obtain
+
+93
+00:07:17,287 --> 00:07:22,472
+the tag on this longer message which I can
+then output as my forgery. Okay, so the
+
+94
+00:07:22,472 --> 00:07:27,720
+MAC is insecure because given a MAC in one
+message, I can produce the MAC in another
+
+95
+00:07:27,720 --> 00:07:32,259
+message. But let's go back to the diagram
+describing cascade, and see why this is
+
+96
+00:07:32,259 --> 00:07:36,243
+true. And so let's see what happens if
+this last step isn't there. As an
+
+97
+00:07:36,243 --> 00:07:40,451
+attacker, what I can do, I can add one
+more block here, which we called W. And
+
+98
+00:07:40,451 --> 00:07:44,660
+then, then basically, I can take the
+output of cascade, which is this value T.
+
+99
+00:07:44,660 --> 00:07:49,731
+And we can simply apply the function F to
+it again. So here I'll take this T value.
+
+100
+00:07:49,731 --> 00:07:54,995
+I'll plug it in to F. And plug my last
+block W into it and what I'll get is T
+
+101
+00:07:54,995 --> 00:08:00,520
+prime which is, well, the evaluation of
+cascade on the message M concatenated W.
+
+102
+00:08:00,520 --> 00:08:04,661
+In [inaudible] calculated t prime, which I can use
+for my existential forgery. Okay, so this
+
+103
+00:08:04,661 --> 00:08:08,753
+kind of shows you why this property of
+cascade holes. This is called an extension
+
+104
+00:08:08,753 --> 00:08:12,945
+attack, Where giving a tag of the message
+m I can deduce the tag for the extension
+
+105
+00:08:12,945 --> 00:08:16,728
+of m. And in fact for any extension of my
+choice. So basically, Cascade is
+
+106
+00:08:16,728 --> 00:08:20,917
+completely insecure if we don't do this
+last encryption step, and the last
+
+107
+00:08:20,917 --> 00:08:25,420
+encryption step here basically prevents
+this type of extension attack. I can tell
+
+108
+00:08:25,420 --> 00:08:29,349
+you by the way that in fact extension
+attacks are the only attacks on a cascade
+
+109
+00:08:29,349 --> 00:08:33,706
+and that could be made to precise. But I'm
+not gonna do that here. The next question
+
+110
+00:08:33,706 --> 00:08:38,091
+is, why did we have the extra encryption
+block in the ECBC construction? So again,
+
+111
+00:08:38,091 --> 00:08:42,312
+let me show you that without this extra
+encryption block ECBC is insecure. So
+
+112
+00:08:42,312 --> 00:08:46,752
+let's define a map that uses raw CBC. In
+other words, it's the same as CBC MAC, but
+
+113
+00:08:46,752 --> 00:08:51,028
+without the last encryption step. And
+let's see that, that MAC is also insecure.
+
+114
+00:08:51,028 --> 00:08:55,249
+Except now, the attack is a little bit
+more difficult than a simple extension
+
+115
+00:08:55,249 --> 00:08:59,360
+attack. So suppose the attacker is given
+this value, the raw CBC value for a
+
+116
+00:08:59,360 --> 00:09:03,592
+particular message M. And now, the
+attacker wants to extend and compute the
+
+117
+00:09:03,592 --> 00:09:08,692
+MAC on some message M, concatenated on
+with some word W. So here's our W well the
+
+118
+00:09:08,692 --> 00:09:13,377
+core attacker can take this value and try
+to XOR the two together but now you
+
+119
+00:09:13,377 --> 00:09:18,046
+realize he has to evaluate the function.
+At this point. But he doesn't know what
+
+120
+00:09:18,046 --> 00:09:22,814
+this key K is. And as a result, he doesn't
+know what the output of the function is.
+
+121
+00:09:22,814 --> 00:09:27,112
+So he simply can't just depend on
+block W, and compute the value of
+
+122
+00:09:27,112 --> 00:09:31,763
+raw CBC on N concatenated W. However, it
+turns out they he can actually evaluate
+
+123
+00:09:31,763 --> 00:09:36,234
+this function. By using the chosen message
+attack. And I wanna show you how to do
+
+124
+00:09:36,234 --> 00:09:40,600
+that. Okay, so we said that basically so
+our goal is to show raw CBC is insecure.
+
+125
+00:09:40,600 --> 00:09:45,298
+So let's look at a particular attack. So
+in the attack, the adversary is going to
+
+126
+00:09:45,298 --> 00:09:49,810
+start by requesting the tag on a
+particular message m that's a one-block
+
+127
+00:09:49,810 --> 00:09:54,755
+message. So what does it mean to apply CBC
+to a one-block message? Well basically,
+
+128
+00:09:54,755 --> 00:09:59,701
+all you do is you just apply the function
+f directly. So what you get is the tag,
+
+129
+00:09:59,701 --> 00:10:04,421
+which is just the application of f
+directly to the one-block message m. Good,
+
+130
+00:10:04,421 --> 00:10:09,586
+so now the adversary has this value T. And
+now I claim that he can define this
+
+131
+00:10:09,586 --> 00:10:14,487
+message, M prime, which contains two
+blocks. The first block is M, the second
+
+132
+00:10:14,487 --> 00:10:19,917
+block is T XOR M. And I claim that the
+value T that he just received is a valid
+
+133
+00:10:19,917 --> 00:10:24,726
+tag for this two block message, M Prime.
+So let's see why that's true. Well, so
+
+134
+00:10:24,726 --> 00:10:29,782
+suppose we apply the raw CBC construction
+to this message M prime. So if you plug it
+
+135
+00:10:29,782 --> 00:10:34,296
+in directly what, let's see. The way it
+would work is first of all, the first
+
+136
+00:10:34,296 --> 00:10:39,213
+message M is processed by encrypting it
+directly using the function F. Then we XOR
+
+137
+00:10:39,213 --> 00:10:44,774
+the results with the second block
+with is T-XOR-M. And then we apply F to
+
+138
+00:10:44,774 --> 00:10:49,984
+the results of that. That is the
+definition of raw CBC. Now what do we know about
+
+139
+00:10:49,984 --> 00:10:55,052
+F(k,m)? F(k,m) is simply this value T by
+definition. So the next step we get is
+
+140
+00:10:55,052 --> 00:11:00,542
+essentially T-XOR-T-XOR-M. But
+this T- XOR-T simply goes away and what
+
+141
+00:11:00,542 --> 00:11:06,134
+we get is F(k,m). Which is, of course, T.
+And as a result, T is a valid MAC for the
+
+142
+00:11:06,134 --> 00:11:11,505
+two block message, (M, T-XOR-M). So
+the adversary was able to produce this
+
+143
+00:11:11,505 --> 00:11:16,553
+valid tag T for this two block message
+that he never queried. And therefore, he
+
+144
+00:11:16,553 --> 00:11:20,195
+was able to break the MAC. So let's look
+at the ECBC diagram for just one more
+
+145
+00:11:20,195 --> 00:11:24,071
+second. And let me point out that if you
+don't include this last encryption step in
+
+146
+00:11:24,071 --> 00:11:27,806
+the computation of the MAC, essentially,
+the MAC would be insecure because of the
+
+147
+00:11:27,806 --> 00:11:31,728
+attack that we just saw. And I'll tell you
+that there are many products that do this
+
+148
+00:11:31,728 --> 00:11:35,323
+incorrectly. And, in fact, there are even
+standards that do this incorrectly, so
+
+149
+00:11:35,323 --> 00:11:39,012
+that the resulting MAC is insecure. You
+now know that this needs to be done, and
+
+150
+00:11:39,012 --> 00:11:43,080
+you won't make this mistake yourself. So
+let's state the CBC and NMAC security
+
+151
+00:11:43,080 --> 00:11:47,817
+theorems. And so the statement is as usual
+for any message length that we'd like to,
+
+152
+00:11:47,988 --> 00:11:52,269
+apply the MAC to. Essentially for every
+PRF adversary A, there's an efficient
+
+153
+00:11:52,269 --> 00:11:56,778
+adversary B and, you know, these are kind
+of the usual statements. Where, the facts
+
+154
+00:11:56,778 --> 00:12:01,458
+that you need to know are the error terms
+which are kind of similar in both cases.
+
+155
+00:12:01,458 --> 00:12:06,139
+By the way, I'd like to point out that the
+analysis for CBC actually uses the fact
+
+156
+00:12:06,139 --> 00:12:10,938
+that F is a PRP even though we never had
+to invert F during the computation of
+
+157
+00:12:10,938 --> 00:12:16,279
+ECBC, the analysis is better if you assume
+that F is actually a PRP. In other words,
+
+158
+00:12:16,279 --> 00:12:21,489
+it's invertible, not just a function. For
+a MAC, the PRF need not be invertible.
+
+159
+00:12:21,489 --> 00:12:26,829
+So what these error terms basically say
+is that these MACs are secure, as long as,
+
+160
+00:12:26,829 --> 00:12:32,330
+key is not used to MAC more than square
+root of X or square root of K messages. So
+
+161
+00:12:32,330 --> 00:12:36,714
+for AES of course this would be a two to
+the 64. But I want to show you an example
+
+162
+00:12:36,714 --> 00:12:40,937
+of how you would use these bounds. So
+here, I've stated the security theorem again
+
+163
+00:12:40,937 --> 00:12:45,321
+for the CBC MAC, and Q here, again, is the
+number of messages that are MACed with a
+
+164
+00:12:45,321 --> 00:12:49,598
+particular key. So suppose we wanted to
+ensure that for all adversaries that the
+
+165
+00:12:49,598 --> 00:12:53,875
+adversary has an advantage of less than
+one over two to the 32 in distinguishing
+
+166
+00:12:53,875 --> 00:12:57,781
+the PRF from a truly random function.
+Suppose that is our goal. Well, by the
+
+167
+00:12:57,781 --> 00:13:01,673
+security theorem, what that means is we
+need to ensure that Q squared over X is
+
+168
+00:13:01,673 --> 00:13:05,515
+less than one over two to the 32, right.
+We want this term to be, well, I'm going
+
+169
+00:13:05,515 --> 00:13:09,210
+to ignore this two here just for
+simplicity. We want to ensure this term is
+
+170
+00:13:09,210 --> 00:13:13,201
+less than one over two to the 32 and this
+term, of course, is negligible, so we can
+
+171
+00:13:13,201 --> 00:13:17,914
+just ignore it. This would imply that this
+term is also less than one over two to the
+
+172
+00:13:17,914 --> 00:13:22,683
+32. Okay, so if we want to ensure that the
+advantage is less than one over two to the
+
+173
+00:13:22,683 --> 00:13:27,396
+32, we need to ensure that Q squared over
+X is less than one over two to the 32. For
+
+174
+00:13:27,396 --> 00:13:31,881
+AES, basically this means that after MACing
+two to the 48 messages, you have to
+
+175
+00:13:31,881 --> 00:13:35,970
+change your key. Otherwise, you won't
+achieve the security level. So you can
+
+176
+00:13:35,970 --> 00:13:40,412
+MAC, at most, two to the 48 messages. You
+notice that if I plug in triple DES, which
+
+177
+00:13:40,412 --> 00:13:44,526
+has a much shorter block, only 64 bits.
+The same result says you now have to
+
+178
+00:13:44,526 --> 00:13:48,592
+change your key every 65,000 messages. So
+this basically is quite problematic
+
+179
+00:13:48,592 --> 00:13:52,202
+whereas this is fine. This is actually a,
+a very fairly large number. For
+
+180
+00:13:52,202 --> 00:13:56,117
+AES this means you have to change
+your key only every 16 billion
+
+181
+00:13:56,117 --> 00:14:00,000
+messages which is perfectly reasonable.
+And so this is one of the reasons why AES
+
+182
+00:14:00,000 --> 00:14:03,657
+has a larger block, than triple DES. Some of these modes remain
+
+183
+00:14:03,657 --> 00:14:07,410
+secure and you don't have to change your
+key as often as you would with triple
+
+184
+00:14:07,410 --> 00:14:12,076
+DES. Okay, so I want to show you
+that in fact these attacks are not just in
+
+185
+00:14:12,076 --> 00:14:16,876
+the statements in the security theorem, in
+fact there really are real attacks that
+
+186
+00:14:16,876 --> 00:14:21,616
+correspond to these values. Now the macs
+really do become insecure after you sign,
+
+187
+00:14:21,616 --> 00:14:26,474
+you know, square root of X or square root
+of K messages. So I'm going to show you an
+
+188
+00:14:26,474 --> 00:14:30,688
+attack on both PRFs so either ECBC or
+NMAC. Assuming that the underlying
+
+189
+00:14:30,688 --> 00:14:35,195
+function is a PRP, is actually a block
+cipher like AES. Let's call F big, let's
+
+190
+00:14:35,195 --> 00:14:40,053
+say that F big is either F ECBC or F NMAC.
+So F big means that it's a PRF for large
+
+191
+00:14:40,053 --> 00:14:44,293
+messages. Now, it turns out both
+constructions have the following extension
+
+192
+00:14:44,293 --> 00:14:49,859
+property. Namely, if you give me a
+collision. On messages X and Y. Then, in
+
+193
+00:14:49,859 --> 00:14:54,669
+fact, that also implies a collision on an
+extension of X and Y. In other words, if I
+
+194
+00:14:54,669 --> 00:14:59,480
+append W to both X and Y, I'll also get a
+collision on the resulting words. So it's
+
+195
+00:14:59,480 --> 00:15:04,349
+fairly easy to convince yourself that this
+extension property holds, you do it just
+
+196
+00:15:04,349 --> 00:15:08,925
+by staring at the diagram for a second.
+And so imagine I give you two messages
+
+197
+00:15:08,925 --> 00:15:13,559
+that happen to collide at this point. Now
+remember, I assumed that F is a PRP. So
+
+198
+00:15:13,559 --> 00:15:18,018
+once you fix K1, it's a one to one
+function. So if the two messages happen to
+
+199
+00:15:18,018 --> 00:15:23,023
+map to the same value at the output. This
+means they also happen to map to the same
+
+200
+00:15:23,023 --> 00:15:27,457
+value at the output of the raw CBC
+function. But if they map to the same
+
+201
+00:15:27,457 --> 00:15:32,198
+value at the output of the raw CBC
+function, that means that if I add another
+
+202
+00:15:32,198 --> 00:15:37,584
+block, let's call it a W. And I take this
+output here. Then I'm computing the same
+
+203
+00:15:37,584 --> 00:15:43,162
+value for both messages. And I'll get, for
+both messages, I'll get the same value at
+
+204
+00:15:43,162 --> 00:15:47,991
+this point, too. And when I encrypt,
+again, with K1, I'll also get, you know,
+
+205
+00:15:47,991 --> 00:15:53,501
+so there's one more F here. I'll also get
+the same output, final output, after I've
+
+206
+00:15:53,501 --> 00:15:58,123
+appended the block W. Okay, so if the two
+values happen to be the same for two
+
+207
+00:15:58,123 --> 00:16:02,741
+distinct messages. If I appended block W
+to both messages, I'm still gonna get the
+
+208
+00:16:02,741 --> 00:16:07,189
+same value out. It's easy to convince
+yourself that the same is true for NMAC
+
+209
+00:16:07,189 --> 00:16:12,144
+as well. Okay, so both of these, PRFs have
+this extension property. So based on this,
+
+210
+00:16:12,144 --> 00:16:17,347
+we can define an attack. So here's the
+extension property stated again. And the
+
+211
+00:16:17,347 --> 00:16:22,350
+attack would work as follows. Suppose I
+issued square of Y chosen message
+
+212
+00:16:22,350 --> 00:16:27,567
+queries. So, for AES, remember, the value
+of Y is basically {0,1} to the 128. So this
+
+213
+00:16:27,567 --> 00:16:33,178
+would mean that I would be asking, two to
+the 64 shows in message queries. For just
+
+214
+00:16:33,178 --> 00:16:38,142
+arbitrary messages in the input space.
+Well, what will happen is, I'll obtain,
+
+215
+00:16:38,142 --> 00:16:42,975
+well, I'll obtain two to the 64 message
+MAC pairs. Now, we're gonna see in the
+
+216
+00:16:42,975 --> 00:16:48,126
+next module, actually, there's something
+called a birthday paradox. Some of you may
+
+217
+00:16:48,126 --> 00:16:53,150
+have heard of it already. It basically
+says that if I have two to the 64 random
+
+218
+00:16:53,150 --> 00:16:58,046
+elements of a space of size two to the
+128, there's a good chance that two of
+
+219
+00:16:58,046 --> 00:17:02,879
+them are the same. So I'm gonna look for
+two distinct messages. MU and MV, for
+
+220
+00:17:02,879 --> 00:17:08,120
+which the corresponding MACs are the same.
+Okay, and as I said, by the birthday
+
+221
+00:17:08,120 --> 00:17:14,070
+paradox, these are very likely to exist.
+Once I have that, now I've basically found
+
+222
+00:17:14,070 --> 00:17:19,947
+MU and MV to have the same MAC. And as a
+result, what I can do is, I can extend MU
+
+223
+00:17:19,947 --> 00:17:25,810
+with an arbitrary word W, and ask for the
+tag for the word MU concatenated W. But
+
+224
+00:17:25,810 --> 00:17:31,631
+because NU and NV happen to have the same
+output, I know that NU concatenated W has
+
+225
+00:17:31,631 --> 00:17:37,312
+the same output as NV concatenated W. So
+now that I've obtained the output for NU
+
+226
+00:17:37,312 --> 00:17:42,953
+concatenated W, I also have the output for
+NV concatenated W. And therefore I have
+
+227
+00:17:42,953 --> 00:17:47,564
+obtained my forgery. Okay, so now T is
+also a forgery for the message MV
+
+228
+00:17:47,564 --> 00:17:52,695
+concatenated W which I've never asked
+before. And therefore, this is as valid as
+
+229
+00:17:52,695 --> 00:17:57,890
+a potential forgery. Okay, so this is kind
+of an acute attack and the bottom line
+
+230
+00:18:00,520 --> 00:18:03,151
+here is that in fact after square root of
+Y queries, I am able to forge a MAC with
+
+231
+00:18:03,151 --> 00:18:07,605
+fairly good probability. Okay, so what
+does square root of Y mean? If we go back
+
+232
+00:18:07,605 --> 00:18:12,055
+to the security theorems, this means that
+basically for ECBC after square root of X
+
+233
+00:18:12,055 --> 00:18:16,129
+or for NMAC after square root of K,
+messages have been MACed, the MAC becomes
+
+234
+00:18:16,129 --> 00:18:20,365
+insecure and the attacker can actually
+find new MACs for messages for which he
+
+235
+00:18:20,365 --> 00:18:24,707
+was never given a MAC for. So again, this
+is an acute attack that shows the bounds
+
+236
+00:18:24,707 --> 00:18:29,507
+of the theorem really are real. And as a
+result these downs that derived in this
+
+237
+00:18:29,507 --> 00:18:34,688
+example are real and you should never use
+a single key to MAC more than, say, two
+
+238
+00:18:34,688 --> 00:18:39,398
+to 48 messages with AES based CBC. So to
+conclude, I'll just mention that we've
+
+239
+00:18:39,398 --> 00:18:44,705
+seen two examples. We saw ECBC and NMAC.
+ECBC is in fact, a very commonly used MAC
+
+240
+00:18:44,705 --> 00:18:49,481
+that's built from AES. 80211I, for example,
+uses ECBC with AES for integrity.
+
+241
+00:18:49,481 --> 00:18:54,921
+There's also a NIST standard called CMAC,
+that we'll talk in the next segment, that
+
+242
+00:18:54,921 --> 00:19:00,095
+also is based on the ECBC MAC. NMAC with
+contrast is not typically used with a
+
+243
+00:19:00,095 --> 00:19:05,270
+block cipher. And the main reason is, in
+order to [inaudible] in the NMAC construction,
+
+244
+00:19:05,270 --> 00:19:10,766
+the key changes from block to block. That
+means that the whole AES key expansion has
+
+245
+00:19:10,766 --> 00:19:15,710
+to be computed and recomputed on every
+block. And AES is not designed to perform
+
+246
+00:19:15,710 --> 00:19:20,777
+well when he changes key very rapidly. And
+so, typically, when you use NMAC, you use
+
+247
+00:19:20,777 --> 00:19:25,446
+block ciphers that are better at changing
+their keys on every block. And as a
+
+248
+00:19:25,446 --> 00:19:29,489
+result, NMAC typically is not used with
+AES. But in fact, N Mac is a basis of a
+
+249
+00:19:29,489 --> 00:19:33,688
+very popular MAC called HMAC, which we're
+also gonna look at next. And you'll see
+
+250
+00:19:33,688 --> 00:19:37,835
+very clearly, the NMAC underlying the HMAC construction. Okay, so that's the end
+
+251
+00:19:37,835 --> 00:19:41,309
+of this segment, and we'll talk about more
+MACs in the next segment.

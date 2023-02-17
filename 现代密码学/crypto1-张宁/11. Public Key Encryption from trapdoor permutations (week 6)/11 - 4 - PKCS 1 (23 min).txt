@@ -1,0 +1,526 @@
+In this segment I wanna show you how RSA
+is used in practice and in particular, I
+wanna tell you about a standard called a
+Public Key Cryptography standard number
+one PKCS one. So I've already told you a
+couple of times that you should never use
+what's called textbook RSA. You should
+never directly encrypt the message using
+RSA because that's insecure. You always
+have to do something to the message before
+you actually apply the RSA function. We
+saw the ISO standard in the previous
+segment where what we did is we generated
+a random x, encrypted x using RSA, and
+then from this x we derived a symmetric
+encryption key. But that's actually not how
+RSA is used in practice. In practice
+things worked a little differently and
+typically what happens is the system
+generates a symmetric encryption key and
+then RSA is asked to encrypt the given
+symmetric encryption key rather than
+generating the symmetric key as part of
+[our same encryption or RSA encryption?]. So in practice as I
+say, what happens the RSA system is given
+this input a symmetric encryption key to
+encrypt for example this could be a, an AES
+key that would be like 128 bits and then
+the way this key is actually encrypted is
+first we take these 128 bits and we expand
+them into the full modulo size. For
+example, this would be 2048 bits, and then
+we apply the RSA function. And so the
+question is, how should this preprocessing
+be done? How should we expand the 128 bit
+AES key that was given to us into a 2048
+bit value that can then be applied with
+RSA. And then furthermore the question is,
+how do we argue that the resulting system
+is secure? So in all the way of doing it
+which is actually very widely deployed in
+practice is what's called PKCS1 version
+1.5, Public Key Cryptography Standard,
+that's what PKCS stands for. So I wanna
+show you how this mechanism works and in
+particular, I'll show you what's called
+PKCS1 Mode 2. Mode 2 denotes
+encryption, mode 1 denotes signatures so
+here we're gonna just focus on the
+encryption. So the way PKCS1 works is
+as follows, you take your message, this
+would be the 128 bit AES key for example,
+and you put it as a least significant bit
+of the value that you're creating. The
+next thing you do is you append sixteen
+bits of one to it, you know [foreign].
+This is sixteen bits of one. And then the
+next you do is you append the random pad
+that actually does not contain FF
+anywhere inside the random pad. So this
+is basically something like on the order
+of what is it, 1900 random bits except
+that there are on FF's inside those random
+bits and finally at the very top, you put
+the number 02. This indicates that this
+plain text has been encoded using PKCS1
+mode 2. And then this whole value here,
+this whole thing that we just created.
+This is just 2048 bit string is the thing
+that gets fed into the RSA function and is
+raised to the power of e modulo N. And the
+resulting thing is PKCS1 ciphertext. Now
+the decrypter of course is going to invert
+the RSA function, He's gonna get back this
+block, He's gonna look at the most
+significant bits and he's gonna say
+there's a 02 in there that means that this
+PKCS one formatted. Since it's PKCS one
+formatted, it's gonna remove those 02.
+It's gonna remove all the random pad up
+until the FF. And then anything
+that stays beyond that is the original
+message which is then used you know to say
+decrypt the actual body of the ciphertext.
+And as I said, this mechanism is extremely
+widely deployed, For example, it's used in
+HTTPS. Now interestingly, this PKCS1
+version 1.5 was designed in the late 80's.
+There was really no security proof to
+argue that this mechanism is in fact
+secure. And as it turns out, it is very
+common when there is no security proof, it
+turns out that actually things break and
+there's a very, very elegant attack due to
+Bleichenbacher back in 1998, Daniel
+Bleichenbacher which shows how to attack
+PKCS1 when it's used for example inside of
+HTTPS. So let's see how the attack works.
+So the idea is this, supposed the attacker
+intercepted a certain ciphertext so this
+is PKCS1 ciphertext so the point is
+it's encoded using PKCS1 and then the
+result is fed into the RSA function. And
+we call the ciphertext the output of the
+RSA function. The attacker wants to
+basically decrypt the ciphertext, So let
+me show you abstractly what the attacker
+is gonna do. We're gonna just simplify SSL
+and just say that the attacker can
+basically send the ciphertext directly to
+the web server. The web server is gonna
+try and decrypt the ciphertext using its
+secret key. And then what is it gonna do?
+Well, the first thing it does after the
+encryption, well, it's gonna ask: is the
+decryption of the ciphertext PKCS1
+encoded? In other words, it's gonna look
+at the most significant bits and ask: is
+this 02 in the most significant positions? If
+they are, it's gonna continue properly
+decrypting and then continue with the
+protocol and if there is no 02 in those
+positions, it's gonna announce an error.
+So if the most significant bits of the
+plaintext are 02, it's gonna continue
+with the protocol as expected, if the most
+significant bits are not 02 is gonna send
+back an error message and tell the
+attacker, hey, you sent in invalid
+ciphertext. Now the amazing thing is that,
+this lets the attacker test whether the
+sixteen most significant bits of the
+decryption of the given ciphertext are 02
+or not. In other words, the attacker can
+submit whatever ciphertext he wants to the
+web server. The web server will invert the
+RSA function and then tell the attacker
+whether the inversion started with 02 or
+not. So in some sense gives the attacker an
+oracle that lets him test whether the
+inversion of any ciphertext begins with 02
+or not. And it turns out that's actually
+enough to completely decrypt any
+ciphertext the attacker wants, Just add
+little bit of information leakage just by
+properties of RSA lest the attacker
+completely decrypt a given ciphertext.
+Also here's what the attacker is gonna do,
+well, he has a ciphertext that he wants to
+decrypt so what he'll do is he'll take a
+cyphertext and of course feed that
+directly into the web server and ask does
+it begin with the 02 or not. The next
+thing he's gonna do is he's gonna chose a
+random value r and he's gonna build a new
+ciphertext c prime. Which is (r to the e)
+c modulo N. Now what does that do? If we
+pull the r into the RSA function, really
+what we just did is we multiply the RSA
+plaintext, you know the PKCS1 including
+in m, we multiply that by r and that,
+that whole thing gets raised to the power
+of e. Okay. So that's the effect of
+multiplying c by (r to the e). It multiplies
+the plaintext by r, a value that the
+attacker controls. And then he's gonna
+send c prime to the web server and the web
+server is gonna say yes, this starts with
+02 or no, this doesn't start with 02. So
+now we can abstract this problem to
+something more general which you can think
+of as the following so I have this number
+x in my head. This is the number I'm
+trying to get The PKCS1 encoding on m. I'm
+thinking of this number x and then what I
+let you do is for r, which way r of your
+choice I will tell you whether r times x mod n
+starts with 02 or not. And it turns out by
+asking enough questions it turns out
+either by million questions of this type,
+you can basically recover all of x. Just
+by learning whether r times x begins with 02
+or not by asking enough questions, you can
+actually recover x. So in reality what
+this means is that the attacker can
+capture a given ciphertext. This maybe
+corresponds to a ciphertext where the user
+enters the credit card number or a
+password, and now the attacker wants to
+decrypt the ciphertext. What he would do
+is he would send about a million
+ciphertext like this, the web server for
+each ciphertext is gonna respond whether
+the plaintext begins with 02 or not and at
+the end of the attack, the attacker just
+blocks away with the, decryption of the
+ciphertext c. So this might seem a
+little magical to you, how are you able to
+just from learning whether the most
+significant bits are 02 or not, how you're
+able to recover the entire plain text. So
+let me show you a simple example of this.
+I'll call those bab y Bleichenbacher just
+to kinda get the idea across on how this
+attack might work. So imagine that the
+attacker is able to send the ciphertext c,
+the web server is gonna use the secret key
+to decrypt but let's suppose that instead
+of checking for 02 or not, all the web
+server does is he asked is the most
+significant bit one or not. If the most
+significant bit is one, the web server
+says yes. If the most significant bit is
+not one, the web server is no. Moreover,
+to simplify things, let's assume that the
+RSA module is n is a power of two. So n =
+two^n. Of course, this is not a valid RSA
+modulus. An RSA modulus used to be a
+product of two distinct primes. But again,
+just to keep things simple, let's pretend
+for a second that n is actually a power of
+two. So now you realize that by sending
+the ciphertext c over to the web server,
+the adversary just learn the most
+significant bits of the plaintext x.
+Basically, the servers behavior completely
+reveals what the most significant is. Now
+what the attacker can do is he can
+multiply the ciphertext by two to the e.
+Now multiplying by two to the e has the
+effect of multiplying the plaintext x. By
+two simply multiplying x by two and
+because we're working mod two to the N,
+multiplying by two basically means shift
+left, okay. So now when we shift left in
+fact we get to learn the most significant
+bits of 2x which is really the second most
+significant bit of x, okay. So, again the
+most significant bit of 2x basically we
+shift x to the left. And we reduce modulo
+n. So now, the most significant bit of 2x
+modulo n is basically the second most
+significant bit of x. So now we learned
+another bit of x. And now we're gonna
+repeat this again. We're gonna query a
+four to the e  c, That corresponds to
+querying of 4x to the power e. Querying of
+4x basically reveals the most significant
+bit of 4x mod n. 4x  four corresponds the
+shifting by two bits. Which mean now we
+get to learn the third most significant
+bit of x. And when we repeat this again,
+and again, and again for different multip
+les of c and you can see that after just a
+few queries, about a 1,000 or 2,000
+queries, we'll recover all of x. The
+reason Bleichenbacher needed about a
+million queries is because he wasn't
+testing for one, He was actually testing
+for 02 or not 02 and that basically means
+that he needs instead of 2,000 queries he
+needs actually a million queries but
+that's still enough to recover all of the
+plaintext text. Okay? So I hope this is
+explains why this attack is possible. Why
+just this little bit of information about
+the most significant bits of the RSA
+inverse is enough to completely decrypt
+RSA. So the bottom line here is that PKCS1 as implemented in web server as up
+until this attack was discovered was
+basically insecure because the attacker
+could essentially decrypt a ciphertext he
+wants just by issuing enough queries to
+the web server. So how do we defend
+against this attack? Well, so the SSL
+community basically wanted the minimum
+change in their code that would prevent
+this attack from working and so if you
+look at the RFC, what they propose is the
+following. Well, there's a lot of text
+here but basically what they propose is to
+say that if after you apply the RSA
+decryption, you get a plaintext that's not
+PKCS1 encoded. In other words it doesn't
+start with 02. What you're supposed to do
+is basically choose some random string r.
+And just pretend that the plaintext is
+just a random string r and continuous as
+nothing happened and of course the
+protocol will fail later on. So to be
+concrete you see if the PKCS one encoding
+is not correct, what you would do is you
+would just say the premaster secret is
+this random string or that we just picked
+up off thin air and let's continue the
+protocol and of course the session set up
+will fail because the client and the
+server will end up agreeing on different
+keys and that will cause the session to
+terminate. So we actually don't tell the
+attacker whether the plaintext begins with
+02 or not. All we do is just pretend that
+the plaintext is some random value. So
+this was a minor code change to many web
+servers and it was fairly easy to get
+deployed and in fact most web servers out
+there today implement this version of
+PKCS1. However, this kind of raises the
+question of whether PKCS1 should be
+changed all together so that we actually
+are able to prove chosen ciphertext
+security. And that brings us to a
+different way of doing encryption using
+RSA which is called Optimal Asymmetric
+Encryption Padding, OAEP. And in fact the
+PKCS standard was updated and PKCS1 version
+2.0 actually has support for OAEP which is
+a better way of doing RSA encryption. So
+let me explain how OAEP works. So OAEP is
+due to the Bellare and Rogaway back in 1994. And
+the way OAEP works is as follows. So you
+take your message that you wanna encrypt
+this for example could be the 128 bits AES
+key. And then the first thing you do is
+you append a short pad to it. So in this
+case, you put a 01 in the beginning and
+then you add a whole bunch of zeroes. How
+many zeroes is actually depends on the
+standard but you know that's supposed like
+they're 128 zeroes in here. And then you
+also choose a random value so that this
+whole string is as big as your RSA modulus
+so let's just say this is 2047 bits. Now
+before you apply the RSA function, you
+first of all take the random value that
+you chose and you feed it into the hash
+function. This hash function produces a
+value that's as big as the left hand side
+of your encoding. You XOR the outputs.
+You feed the result into another hash
+function which we call a g. You XOR
+that with a random value. And then
+finally, you get these two values that you
+concatenate together. Okay, So, you
+concatenate either left side and the
+right side that gives you something that
+says is 2047 bits long and that's the thing
+that you apply the RSA function to. And the
+result is the RSA encryption. Now there's
+a theory that was proved in 2001, due to
+Fujisaki, Okamoto, Pointcheval, and Stern,
+that shows that in fact if all you do is
+you, you assume that the RSA function is a
+Trapdoor permutation, a secure Trapdoor
+permut ation, but in fact this mode of
+encrypting using RSA is in fact chosen
+ciphertext secure but we have to
+assume that the functions h and g are kind
+of ideal hash functions as I said these
+are called random oracles. Basically, we
+assume that h and g are just random
+functions from their domains to their
+range. In practice of course when OAEP is
+implemented, people just use SHA-256
+say for h and g. Why is this called
+Optimal Asymmetric Encryption Padding?
+Why is this o? Why does this stands for
+optimal? Well, the reason is if you look
+at the ciphertext, you'll notice that the
+ciphertext is basically as short as it can
+be. The ciphertext is exactly the length
+of one RSA output, there are no trailing
+values that are appended to the ciphertext
+whereas for example, the ISO standard
+if you remember even if you had to encrypt
+a very short message, what you would have
+to do is you would have to encrypt x using
+RSA and then append to that x, the
+encryption with the short message under
+the symmetric encryption system. So even
+if you have just to encrypt a 128 bit AES
+key, with the ISO standard you would
+get one RSA output plus a symmetric
+cipher whereas with OAEP, you just get one
+RSA output and nothing else so in that
+sense, it's optimal, Optimal in terms of
+the length of the ciphertext.
+Interestingly, this theorem here really
+rely on properties of RSA. And in fact,
+the theorem is known to be false if
+you use a general trapdoor permutation.
+Some other permutation doesn't have the
+algebraic properties of RSA. So that left
+this question of if we have a general
+trapdoor permutation, what is the correct
+way to do OAEP? And it turns out, there's
+a minor modification to OAEP which makes
+the result more general. This is a result
+due to Shoup back in 2001. Just shows that
+if you give me a general trapdoor
+permutation f. It turns out if you replace
+the fixed pad that's using OAEP by a hash
+function, this hash function w, which
+happens to be a hash function of the
+message m and the randomness r that
+you're encrypting with, and then during
+decryption, you actually check that this
+hash function value is correct. So when
+you decrypt, you actually check the w of
+mr is really what's written in this
+position in the plaintext. If you do that
+then basically this OAEP called OAEP+.
+Is in fact CCS secure, Chosen Ciphertext
+Secure for any trapdoor permutation. You
+don't have to rely on a specific
+properties of RSA. There's another result
+called Simple Asymmetric Encryption
+Padding, SAEP+ which basically says
+that if you are gonna rely on properties
+of RSA, then in particular way with RSA
+when the public exponent is equal to
+3, it turns out you actually don't
+need the second stage of encryption. The
+simple padding scheme here again using the
+function w is actually already enough to
+guarantee chosen ciphertext security. So
+these are variants OAEP but they're not
+really used. I just wanted to mention and
+to let you know they exist. These are not
+really used mainly OAEP has been
+standardized is what's used. Although
+again in reality, the most common
+application of RSA for public encryption
+is in fact this PKCS1 that's
+standardized in the HTTPS RFC. So just to
+make sure it is clear in your mind how
+decryption actually works, let me ask you,
+how would you decrypt an SAEP ciphertext
+ct. So here, you're given the ciphertext
+ct here and the question is which of these
+three methods is the correct way of
+decrypting the ciphertext. So the correct
+answer is the first one and let's see why.
+Well, given the ciphertext the first thing
+what we need to do is apply the RSA
+inverse functions, the ciphertext and that
+will give us the RSA plaintext which
+happens to be in this case x and r. So we
+get this x and r here. The next thing we
+need to do is we need to hash r using the
+function h and XOR the result with x and
+that will give us m and wm, r. And the
+last we need to do is to make sure that
+the pad W(m,r) is correct so we check that
+in fact w is equal to W(m,r) and if so we
+output m and if not, we output bottom to
+say that the ciphertext is invalid and
+the decryption algorithm rejects it. And
+by the way I'd like to emphasize that this
+checking of the pad during decryption is
+crucial in all of the schemes that we
+just saw. So for example, in both OAEP+ and SAEP+, it's doing decryption.
+It's very important to check that the pad
+is in fact correct so that the value of w
+that you get here during the encryption
+really is the hash under the capital W of
+m and r and similarly on OAEP, it's very
+important to check it during decryption.
+In fact, the value of the pad is the
+constant 010000000. And of course if it
+happens to be not 01000 then you output
+bottom and you say the ciphertext is
+invalid. The last thing I wanna point out
+is that actually implementing OAEP can be
+quite tricky and let's see why. So
+supposed you have, you write an OAEP
+decryption routine that takes the
+ciphertext as input. The first thing you
+would do is you would apply the RSA
+inverse function to the ciphertext and you
+would say well, you expect to get an n bit
+value out, you know 2047 bits in the case
+of 2048 bit RSA modulus and if you get
+something that's bigger than two to the
+2047, you say reject. We say error = one
+and we go to Exit. The next thing we're
+gonna do is we're gonna check whether the
+pad is in fact the correct pad and again
+if the pad is not the correct pad, then
+again, we're gonna reject and go to Exit.
+The problem with this implementation is
+well by now I hope you kind of guessed it
+is it's vulnerable to a timing attack,
+right. So essentially by leaking timing
+information the attacker can now figure
+out what caused the error. Was it, that
+was there an error the RSA decryption
+happened to be too big or was there an
+error because the pad happened to be too
+large? And if the attacker can this
+distinguish these two errors say by
+timing. Then it turns out similar to the
+Bleichenbacher attack, it's possible to
+completely decrypt any ciphertext of your
+choice. Just at very, very, very small
+leak of information would completely allow
+the attacker to decrypt completely any
+ciphertext that he wants to. So this shows
+that if you, even if you implement the
+mathematics of OAEP decryption correctly,
+you can very easily mess up and open
+yourself up to a timing attack which would
+make your implementation completely
+insecure. So as usual, the lesson is,
+don't implement crypto yourself in
+particular, RSA OAEP is particularly
+dangerous to implement yourself. Just use one
+of the standard libraries for example,
+OpenSSL has an OAEP implementation and of
+course what they do is very careful to
+make sure that the running time of OAEP
+decrypt is always the same no matter what
+causes the error. Okay, So let's stop here
+and then in the next segment we'll talk
+about the security of the RSA trapdoor
+permutation.

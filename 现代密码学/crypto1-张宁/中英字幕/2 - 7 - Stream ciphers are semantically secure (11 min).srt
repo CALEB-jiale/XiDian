@@ -1,0 +1,1272 @@
+1
+00:00:00,000 --> 00:00:04,134
+So now that we understand what a secure
+PRG is, and we understand what semantic
+
+2
+00:00:00,000 --> 00:00:04,134
+现在我们知道了什么是安全PRG，什么是语义安全
+
+3
+00:00:04,134 --> 00:00:08,425
+security means, we can actually argue that
+a stream cipher with a secure PRG is, in
+
+4
+00:00:04,134 --> 00:00:08,425
+因此我们可以证明具有安全PRG的流密码是语义安全的
+
+5
+00:00:08,425 --> 00:00:12,559
+fact, a semantically secure. So that's our
+goal for this, segment. It's a fairly
+
+6
+00:00:08,425 --> 00:00:12,559
+这就是我们本节的目标
+
+7
+00:00:12,559 --> 00:00:16,746
+straightforward proof, and we'll see how
+it goes. So the theory we wanna prove is
+
+8
+00:00:12,559 --> 00:00:16,746
+这是个相当简单的证明，我们来看是如何做的
+
+9
+00:00:16,746 --> 00:00:20,932
+that, basically, given a generator G that
+happens to be a secured, psedo-random
+
+10
+00:00:16,746 --> 00:00:20,932
+我们要证明的理论是，给定一个安全的伪随机数发生器G
+
+11
+00:00:20,932 --> 00:00:24,805
+generator. In fact, the stream cipher
+that's derived from this generator is
+
+12
+00:00:20,932 --> 00:00:24,805
+由此发生器推出的流密码将是语义安全的
+
+13
+00:00:24,805 --> 00:00:28,924
+going to be semantically secure. Okay and
+I want to emphasize. That there was no
+
+14
+00:00:24,805 --> 00:00:28,924
+然而，我需要强调
+
+15
+00:00:28,924 --> 00:00:33,085
+hope of proving a theorem like this for
+perfect secrecy. For Shannons concept of
+
+16
+00:00:28,924 --> 00:00:33,085
+基于香农定理本身的完善保密性，想对类似的理论进行证明是不可能的
+
+17
+00:00:33,085 --> 00:00:37,193
+perfect secrecy. Because we know that a
+stream cipher can not be perfectly
+
+18
+00:00:33,085 --> 00:00:37,193
+因为我们知道流密码的密钥太短，不满足完善保密性
+
+19
+00:00:37,193 --> 00:00:41,264
+secure because it has short keys. And
+perfect secrecy requires the keys to be as
+
+20
+00:00:37,193 --> 00:00:41,264
+完善保密性要求密钥至少要和明文一样长
+
+21
+00:00:41,264 --> 00:00:45,321
+long as the message. So this is really
+kind of the first example the we see where
+
+22
+00:00:41,264 --> 00:00:45,321
+那么这是我们看到的
+
+23
+00:00:45,321 --> 00:00:49,229
+we're able to prove that a cipher with
+short keys has security. The concept of
+
+24
+00:00:45,321 --> 00:00:49,229
+第一个真正能够证明短密钥密码也具有安全性的例子
+
+25
+00:00:49,229 --> 00:00:53,236
+security is semantic security. And this
+actually validates that, really, this is a
+
+26
+00:00:49,229 --> 00:00:53,236
+即语义安全的概念
+
+27
+00:00:53,236 --> 00:00:56,943
+very useful concept. And in fact, you
+know, we'll be using semantic security
+
+28
+00:00:53,236 --> 00:00:56,943
+这也说明语义安全是一个很重要的概念
+
+29
+00:00:56,943 --> 00:01:00,750
+many, many times throughout the course.
+Okay, so how do we prove a theory like
+
+30
+00:00:56,943 --> 00:01:00,750
+这门课我们将会反复用到语义安全这个概念
+
+31
+00:01:00,750 --> 00:01:04,257
+this? What we're actually gonna be doing,
+is we're gonna be proving the
+
+32
+00:01:00,750 --> 00:01:04,257
+那么我们如何证明这个定理？事实上我们将证明它的逆否命题
+
+33
+00:01:04,257 --> 00:01:08,264
+contrapositive. What we're gonna show is
+the following. So we're gonna prove this
+
+34
+00:01:04,257 --> 00:01:08,264
+我们来进行如下证明
+
+35
+00:01:08,264 --> 00:01:12,815
+statement down here, but let me parse it
+for you. Suppose. You give me a semantic
+
+36
+00:01:08,264 --> 00:01:12,815
+我们要证的这个命题，让我来解析一下
+
+37
+00:01:12,815 --> 00:01:18,345
+security adversary A. What we'll do is
+we'll build PRG adversary B to satisfy
+
+38
+00:01:12,815 --> 00:01:18,345
+假设有一个威胁语义安全的敌手A，我们要构造一个PRG敌手B来满足这个不等式
+
+39
+00:01:18,345 --> 00:01:23,686
+this inequality here. Now why is this
+inequality useful? Basically what do we
+
+40
+00:01:18,345 --> 00:01:23,686
+为什么要满足这个不等式？我们知道什么？
+
+41
+00:01:23,686 --> 00:01:28,878
+know? We know that if B is an efficient
+adversary. Then we know that since G is a
+
+42
+00:01:23,686 --> 00:01:28,878
+我们知道如果B是一个有效敌手，那么由于发生器G是安全的
+
+43
+00:01:28,878 --> 00:01:33,053
+secure generator, we know that this
+advantage is negligible, right? A secure
+
+44
+00:01:28,878 --> 00:01:33,053
+我们就知道这个优势是可以被忽略的，对吧？
+
+45
+00:01:33,053 --> 00:01:37,510
+generator has a negligible advantage
+against any efficient statistical test. So
+
+46
+00:01:33,053 --> 00:01:37,510
+一个安全的发生器对于一切有效统计测试都具有可忽略的优势
+
+47
+00:01:37,510 --> 00:01:42,023
+the right hand side, basically, is gonna
+be negligible. But because the right hand
+
+48
+00:01:37,510 --> 00:01:42,023
+所以右边基本上是可以忽略的
+
+49
+00:01:42,023 --> 00:01:46,023
+side is negligible, we can deduce that the
+left hand side is negligible.
+
+50
+00:01:42,023 --> 00:01:46,023
+由于右边是可忽略的，我们可以推断左边也是可忽略的
+
+51
+00:01:46,023 --> 00:01:50,767
+And therefore, the adversary that you looked
+at actually has negligible advantage in
+
+52
+00:01:46,023 --> 00:01:50,767
+因此敌手对于流密码E的优势是可忽略的
+
+53
+00:01:50,767 --> 00:01:54,538
+attacking the stream cipher E. Okay. So
+this is how this, this will work.
+
+54
+00:01:50,767 --> 00:01:54,538
+这就是这个式子的含义
+
+55
+00:01:54,538 --> 00:01:58,486
+Basically all we have to do is given an
+adversary A we're going to build an
+
+56
+00:01:54,538 --> 00:01:58,486
+给定任一敌手A，我们要构造出一个敌手B。
+
+57
+00:01:58,486 --> 00:02:02,591
+adversary B. We know that B has negligible
+advantage against generator but that
+
+58
+00:01:58,486 --> 00:02:02,591
+我们知道B对于发生器的优势是可忽略的
+
+59
+00:02:02,591 --> 00:02:06,036
+implies that A has negligible advantage
+against the stream cipher.
+
+60
+00:02:02,591 --> 00:02:06,036
+这意味着A对于流密码的优势也是可忽略的
+
+61
+00:02:06,082 --> 00:02:10,994
+So let's do that. So all we have to do again
+is given A, we have to build B.
+
+62
+00:02:06,082 --> 00:02:10,994
+这就是我们要做的，给定A，我们只需要构造B
+
+63
+00:02:10,994 --> 00:02:15,183
+So let A be a semantic security adversary against
+the stream cipher. So let me remind you
+
+64
+00:02:10,994 --> 00:02:15,183
+设A为一流密码下的语义安全的敌手
+
+65
+00:02:15,183 --> 00:02:19,320
+what that means. Basically, there's a
+challenger. The challenger starts off by
+
+66
+00:02:15,183 --> 00:02:19,320
+回想一下这里的含义。即有一个挑战者选择密钥K
+
+67
+00:02:19,320 --> 00:02:23,509
+choosing the key K. And then the adversary
+is gonna output two messages, two equal
+
+68
+00:02:19,320 --> 00:02:23,509
+然后敌手输出两个等长的明文M0和M1
+
+69
+00:02:23,509 --> 00:02:27,383
+length messages. And he's gonna receive
+the encryption of M0 or M1
+
+70
+00:02:23,509 --> 00:02:27,383
+然后他将会收到M0或者M1的密文，并输出B1
+
+71
+00:02:27,383 --> 00:02:31,226
+and outputs B1. Okay, that's
+what a semantic security adversary is
+
+72
+00:02:27,383 --> 00:02:31,226
+这就是语义安全的敌手所做的
+
+73
+00:02:31,226 --> 00:02:34,933
+going to do. So now we're going to start
+playing games with this adversary. And
+
+74
+00:02:31,226 --> 00:02:34,933
+现在我们与这个敌手来玩这个游戏
+
+75
+00:02:34,933 --> 00:02:38,498
+that's how we're going to prove our lemma. Alright, so the first thing
+
+76
+00:02:34,933 --> 00:02:38,498
+我们就是这样来证明引理的
+
+77
+00:02:38,498 --> 00:02:42,535
+we're going to do is we're going to make
+the challenger. Also choose a random R.
+
+78
+00:02:38,498 --> 00:02:42,535
+首先我们要构造挑战者，并让其选择一个随机字符串R
+
+79
+00:02:42,535 --> 00:02:47,500
+Okay, a random string R. So, well you know
+the adversary doesn't really care what the
+
+80
+00:02:42,535 --> 00:02:47,500
+敌手不关心挑战者内部是如何实现的
+
+81
+00:02:47,500 --> 00:02:52,405
+challenger does internally. The challenger
+never uses R, so this doesn't affect the
+
+82
+00:02:47,500 --> 00:02:52,405
+挑战者从来不使用R
+
+83
+00:02:52,405 --> 00:02:56,365
+adversary's advantage at all. The
+adversary just doesn't care that the
+
+84
+00:02:52,405 --> 00:02:56,365
+所以这不影响敌手的优势，敌手也不关心挑战者挑选的R
+
+85
+00:02:56,365 --> 00:03:00,706
+challenger also picks R. But now comes the
+trick. What we're going to do is we're
+
+86
+00:02:56,365 --> 00:03:00,706
+然而这里有一个技巧
+
+87
+00:03:00,706 --> 00:03:05,042
+going to, instead of encrypting using GK.
+We're going to encrypt using R. You can
+
+88
+00:03:00,706 --> 00:03:05,042
+我们使用R来加密而不是G(K)
+
+89
+00:03:05,042 --> 00:03:09,993
+see basically what we're doing
+here. Essentially we're changing the
+
+90
+00:03:05,042 --> 00:03:09,993
+你能看到这里我们是怎么做的
+
+91
+00:03:09,993 --> 00:03:14,219
+challenger so now the challenge
+cipher text is encrypted using a
+
+92
+00:03:09,993 --> 00:03:14,219
+我们使挑战者输出的密文使用真随机数进行加密
+
+93
+00:03:14,219 --> 00:03:19,006
+truly random pad. As opposed to just pseudo
+random pad GK. Okay. Now, the property of
+
+94
+00:03:14,219 --> 00:03:19,006
+而不是使用伪随机数G(k)
+
+95
+00:03:19,006 --> 00:03:23,639
+the pseudo-random generator is that its
+output is indistinguishable from truly
+
+96
+00:03:19,006 --> 00:03:23,639
+这个伪随机数发生器的性质是，它的输出与真随机是不可区分的
+
+97
+00:03:23,639 --> 00:03:28,273
+random. So, because the PRG is secure, the
+adversary can't tell that we made this
+
+98
+00:03:23,639 --> 00:03:28,273
+因为这个PRG是安全的，敌手无法发现其中的变化
+
+99
+00:03:28,273 --> 00:03:33,082
+change. The adversary can't tell that we
+switched from a pseudo-random string to a
+
+100
+00:03:28,273 --> 00:03:33,082
+敌手不知道我们是否从伪随机字符串换成了真随机字符串
+
+101
+00:03:33,082 --> 00:03:37,422
+truly random string. Again, because the generator is secure. Well, but now look at
+
+102
+00:03:33,082 --> 00:03:37,422
+这又是因为这个发生器是安全的
+
+103
+00:03:37,422 --> 00:03:41,762
+the game that we ended up with. So the
+adversary's advantage couldn't have
+
+104
+00:03:37,422 --> 00:03:41,762
+现在我们来看这个游戏
+
+105
+00:03:41,762 --> 00:03:46,630
+changed by much, because he can't tell the
+difference. But now look at the game that
+
+106
+00:03:41,762 --> 00:03:46,630
+敌手的优势没有明显变化，因为他无法发现其中的区别
+
+107
+00:03:46,630 --> 00:03:51,073
+we ended up with. Now this game is truly a
+one time pad game. This a semantic
+
+108
+00:03:46,630 --> 00:03:51,073
+现在这个游戏是一个一次一密的游戏
+
+109
+00:03:51,073 --> 00:03:55,803
+security game against the one time pad.
+Because now the adversary is getting a one
+
+110
+00:03:51,073 --> 00:03:55,803
+是一次一密下的语义安全
+
+111
+00:03:55,803 --> 00:04:00,238
+time pad encryption of M0 or M1 But in the
+one time pad we know that the adversaries
+
+112
+00:03:55,803 --> 00:04:00,238
+因为敌手得到的M0和M1的密文使用了一次一密
+
+113
+00:04:00,238 --> 00:04:04,048
+advantage is zero, because you can't beat
+the one time pad. The one time pad is
+
+114
+00:04:00,238 --> 00:04:04,048
+我们知道一次一密下敌手的优势为0，因为一次一密是不可破的
+
+115
+00:04:04,048 --> 00:04:08,165
+secure Unconditionally secure. And as a
+result, because of this. Essentially
+
+116
+00:04:04,048 --> 00:04:08,165
+一次一密是无条件安全的
+
+117
+00:04:08,165 --> 00:04:12,674
+because the adversary couldn't have told
+the difference when
+
+118
+00:04:08,165 --> 00:04:12,674
+因此当我们从伪随机变为真随机时，敌手无法发现这里的区别
+
+119
+00:04:12,674 --> 00:04:17,013
+we moved from pseudo random to random. But he couldn't win the
+random game. That also means that he
+
+120
+00:04:12,674 --> 00:04:17,013
+他不能赢下真随机的游戏
+
+121
+00:04:17,013 --> 00:04:21,411
+couldn't win the sudo random game. And as
+a result, the stream cipher, the original
+
+122
+00:04:17,013 --> 00:04:21,411
+也表示他不能赢下这个伪随机的游戏，因此最初的流密码一定是安全的
+
+123
+00:04:21,411 --> 00:04:25,634
+stream cipher must be secure. So that's
+the intuition for how the proof is gonna go.
+
+124
+00:04:21,411 --> 00:04:25,634
+这就是证明的直观思路
+
+125
+00:04:25,634 --> 00:04:29,594
+But I wanna do it rigorously once.
+From now on, we're just gonna argue by
+
+126
+00:04:25,634 --> 00:04:29,594
+然而我想再来严格地证明一下
+
+127
+00:04:29,594 --> 00:04:33,975
+playing games with our challenger. And, we
+won't be doing things as formal as I'm
+
+128
+00:04:29,594 --> 00:04:33,975
+从现在开始，我们与挑战者进行游戏
+
+129
+00:04:33,975 --> 00:04:38,304
+gonna do next. But I wanna do formally and
+precisely once, just so that you see how
+
+130
+00:04:33,975 --> 00:04:38,304
+以后我们不会这样正式来做，但这一次我想正式而精确地说明证明的原理
+
+131
+00:04:38,304 --> 00:04:42,629
+these proofs actually work. Okay, so I'm
+gonna have to introduce some notation. And
+
+132
+00:04:38,304 --> 00:04:42,629
+我们需要引入一些记号
+
+133
+00:04:42,629 --> 00:04:47,751
+I'll do the usual notation, basically. If
+the original semantics are here at the
+
+134
+00:04:42,629 --> 00:04:47,751
+基本都用常见的记号
+
+135
+00:04:47,751 --> 00:04:52,937
+beginning, when we're actually using a
+pseudo-random pad, I'm gonna use W0 and W1
+
+136
+00:04:47,751 --> 00:04:52,937
+使用伪随机时，我用W0和W1分别表示
+
+137
+00:04:52,937 --> 00:04:58,059
+to denote the event that the adversary
+outputs one, when it gets the encryption
+
+138
+00:04:52,937 --> 00:04:58,059
+敌手在接收到M0或M1的密文的情况下
+
+139
+00:04:58,059 --> 00:05:02,856
+of M0, or gets the encryption of M1,
+respectively. Okay? So W0 corresponds to
+
+140
+00:04:58,059 --> 00:05:02,856
+输出1的事件
+
+141
+00:05:02,856 --> 00:05:07,719
+outputting 1 when receiving the
+encryption of M0. And W1 corresponds
+
+142
+00:05:02,856 --> 00:05:07,719
+所以W0表示接收到M0的密文时输出1
+
+143
+00:05:07,719 --> 00:05:13,141
+to outputting 1 when receiving the encryption of M1. So that's the standard
+
+144
+00:05:07,719 --> 00:05:13,141
+W1表示接收到M1的密文时输出1
+
+145
+00:05:13,141 --> 00:05:19,606
+definition of semantic security. Now once
+we flip to the random pad. I'm gonna use
+
+146
+00:05:13,141 --> 00:05:19,606
+这是语义安全的标准定义。现在来看真随机
+
+147
+00:05:19,606 --> 00:05:24,505
+R0 and R1 to denote the event that the
+adversary outputs 1 when receiving the
+
+148
+00:05:19,606 --> 00:05:24,505
+我用R0和R1分别表示敌手在接收到M0和M1的密文的情况下
+
+149
+00:05:24,505 --> 00:05:29,125
+one-type pad encryption of M0 or the
+one-time pad encryption of M1. So we have
+
+150
+00:05:24,505 --> 00:05:29,125
+输出1的事件
+
+151
+00:05:29,125 --> 00:05:33,567
+four events, W0, W1 from the original
+semmantics security game, and R0 and R1
+
+152
+00:05:29,125 --> 00:05:33,567
+所以我们得到4个事件。W0，W1来自最初语义安全的游戏
+
+153
+00:05:33,567 --> 00:05:38,365
+from the semmantics security game once we
+switch over to the one-time pad. So now
+
+154
+00:05:33,567 --> 00:05:38,365
+R0，R1来自切换到一次一密后的游戏
+
+155
+00:05:38,365 --> 00:05:42,985
+let's look at relations between these
+variables. So first of all, R0 and R1 are
+
+156
+00:05:38,365 --> 00:05:42,985
+现在我们来看这些变量的关系
+
+157
+00:05:42,985 --> 00:05:47,427
+basically events from a semmantics
+security game against a one-time pad. So
+
+158
+00:05:42,985 --> 00:05:47,427
+首先，R0和R1是一次一密下语义安全的事件
+
+159
+00:05:47,427 --> 00:05:51,929
+the difference between these probabilities
+is that, as we said, basically the
+
+160
+00:05:47,427 --> 00:05:51,929
+因此概率之差就等于
+
+161
+00:05:51,929 --> 00:05:56,902
+advantage of algorithm A, of adversary A,
+against the one-time pad. Which we know is
+
+162
+00:05:51,929 --> 00:05:56,902
+敌手A对于一次一密的优势，即为0
+
+163
+00:05:56,902 --> 00:06:01,231
+zero. Okay, so that's great. So that
+basically means that probability of, of R0
+
+164
+00:05:56,902 --> 00:06:01,231
+很好，这表示R0的概率等于R1的概率
+
+165
+00:06:01,231 --> 00:06:05,662
+is equal to the probability of R1. So now,
+let's put these events on a line, on a
+
+166
+00:06:01,231 --> 00:06:05,662
+我们来把这些事件放在一条线上
+
+167
+00:06:05,662 --> 00:06:10,261
+line segment between zero and one. So here
+are the events. W0 and W1 are the events
+
+168
+00:06:05,662 --> 00:06:10,261
+区间在0到1之间
+
+169
+00:06:10,261 --> 00:06:14,499
+we're interested in. We wanna show that
+these two are close. Okay. And the way
+
+170
+00:06:10,261 --> 00:06:14,499
+我们关心的是W0和W1，我们想证明它们很接近
+
+171
+00:06:14,499 --> 00:06:18,490
+we're going to do it is basically by
+showing, oh and I should say, here is
+
+172
+00:06:14,499 --> 00:06:18,490
+我们要做的是
+
+173
+00:06:18,490 --> 00:06:22,754
+probability R0 and R1, it says
+they're both same, I just put them in the
+
+174
+00:06:18,490 --> 00:06:22,754
+这里是R0和R1，它们相等，所以放在了一起
+
+175
+00:06:22,754 --> 00:06:27,237
+same place. What we're gonna do is we're
+gonna show that both W0 and W1 are
+
+176
+00:06:22,754 --> 00:06:27,237
+我们要说明W0和W1都接近于Rb
+
+177
+00:06:27,237 --> 00:06:31,720
+actually close to the probability of RB
+and as a result they must be close to one
+
+178
+00:06:27,237 --> 00:06:31,720
+所以它们彼此之间一定也接近
+
+179
+00:06:31,720 --> 00:06:35,656
+another. Okay, so the way we do that is
+using a second claim, so now we're
+
+180
+00:06:31,720 --> 00:06:35,656
+我们利用第二个论断来说明
+
+181
+00:06:35,656 --> 00:06:39,865
+interested in the distance between
+probability of Wb and the probability of
+
+182
+00:06:35,656 --> 00:06:39,865
+这里我们关注的是Wb和Rb之间的距离
+
+183
+00:06:39,865 --> 00:06:44,730
+Rb. Okay so we'll prove the claim in a
+second. Let me just state the claim. The
+
+184
+00:06:39,865 --> 00:06:44,730
+我们稍后来证明这个论断，首先我来说明一下
+
+185
+00:06:44,730 --> 00:06:49,938
+claim says that there exists in adversary
+B. Such that the difference of these two
+
+186
+00:06:44,730 --> 00:06:49,938
+这个论断指出存在敌手B
+
+187
+00:06:49,938 --> 00:06:55,081
+probabilities is basically the advantage
+of B against the generator G and this is
+
+188
+00:06:49,938 --> 00:06:55,081
+使得这两个概率之差等于敌手B对于发生器G的优势，对b的两个取值都成立
+
+189
+00:06:55,081 --> 00:06:59,833
+for both b's. Okay? So given these two
+claims, like the theorem is done because
+
+190
+00:06:55,081 --> 00:06:59,833
+因此给定了这两个论断，就证明了这个定理
+
+191
+00:06:59,833 --> 00:07:04,771
+basically what do we know. We know this
+distance is less than the advantage of B
+
+192
+00:06:59,833 --> 00:07:04,771
+因为我们知道这个距离小于B对于G的优势
+
+193
+00:07:04,771 --> 00:07:09,523
+against G. That's from claim two and
+similarly, this distance actually is even
+
+194
+00:07:04,771 --> 00:07:09,523
+根据论断2，这个距离就等于B对于G的优势
+
+195
+00:07:09,523 --> 00:07:14,401
+equal to, I'm not gonna say
+less but is equal to the advantage. Of B
+
+196
+00:07:09,523 --> 00:07:14,401
+而不是小于B对于G的优势
+
+197
+00:07:14,401 --> 00:07:19,455
+against G, and as a result you can see
+that the distance between W0 and W1
+
+198
+00:07:14,401 --> 00:07:19,455
+因此正如你所看到的
+
+199
+00:07:19,455 --> 00:07:24,446
+is basically almost twice the
+advantage of B against G. That's basically
+
+200
+00:07:19,455 --> 00:07:24,446
+W0和W1之间的距离最多为B对于G优势的两倍
+
+201
+00:07:24,446 --> 00:07:29,375
+the thing that we are trying to prove.
+Okay the only thing that remains is just
+
+202
+00:07:24,446 --> 00:07:29,375
+这就是我们要证明的
+
+203
+00:07:29,375 --> 00:07:34,304
+proving this claim two and if you think
+about what claim two says, it basically
+
+204
+00:07:29,375 --> 00:07:34,304
+因此剩下要做的就是证明论断2
+
+205
+00:07:34,304 --> 00:07:39,170
+captures the question of what happens in
+experiment zero what happens when we
+
+206
+00:07:34,304 --> 00:07:39,170
+论断2表示的是当伪随机G(k)被替换成真随机R后
+
+207
+00:07:39,170 --> 00:07:43,530
+replace the pseudo random pad GK, by
+truly random pad R. Here in
+
+208
+00:07:39,170 --> 00:07:43,530
+实验0产生的变化
+
+209
+00:07:43,530 --> 00:07:48,910
+experiment zero say we're using the pseudo
+random pad and here in experiment zero we
+
+210
+00:07:43,530 --> 00:07:48,910
+在这个实验0中，我们使用伪随机
+
+211
+00:07:48,910 --> 00:07:53,593
+are using a Truly random pad and we are
+asking can the adversary tell the
+
+212
+00:07:48,910 --> 00:07:53,593
+而在这个实验0中则使用真随机
+
+213
+00:07:53,593 --> 00:07:58,972
+difference between these two and we wanna
+argue that he cannot because the generator
+
+214
+00:07:53,593 --> 00:07:58,972
+我们让敌手分辨这两者，然后我们想证明这是不可能的，因为发生器是安全的
+
+215
+00:07:58,972 --> 00:08:03,845
+is secure. Okay so here's what we are
+gonna do. So let's prove claim two. So we
+
+216
+00:07:58,972 --> 00:08:03,845
+这就是我们要做的，我们来证明论断2
+
+217
+00:08:03,845 --> 00:08:08,728
+are gonna argue that in fact there is a
+PRG adversary B that has exactly the
+
+218
+00:08:03,845 --> 00:08:08,728
+我们要证明有一敌手B对于PRG的优势
+
+219
+00:08:08,728 --> 00:08:13,764
+difference of the two probabilities as
+it's advantage. Okay and since the point
+
+220
+00:08:08,728 --> 00:08:13,764
+严格等于这两个概率之差
+
+221
+00:08:13,764 --> 00:08:18,319
+is since this is negligible this is
+negligible. And that's basically what we
+
+222
+00:08:13,764 --> 00:08:18,319
+因为这个是可忽略的，这个也是可忽略的 这就是我们想证明的
+
+223
+00:08:18,319 --> 00:08:22,323
+wanted to prove. Okay, so let's look at
+the statistical test b. So, what, our
+
+224
+00:08:18,319 --> 00:08:22,323
+我们来看统计测试b
+
+225
+00:08:22,323 --> 00:08:26,514
+statistical test b is gonna use adversary
+A in his belly, so we get to build
+
+226
+00:08:22,323 --> 00:08:26,514
+我们的统计测试b将在内部用到敌手A
+
+227
+00:08:26,514 --> 00:08:31,091
+statistical test b however we want. As we
+said, it's gonna use adversary A inside of
+
+228
+00:08:26,514 --> 00:08:31,091
+因此我们根据需要构建统计测试b 正如我们说过的，内部使用敌手A
+
+229
+00:08:31,091 --> 00:08:35,558
+it, for its operation, and it's a regular
+statistical test, so it takes an n-bit
+
+230
+00:08:31,091 --> 00:08:35,558
+是一个常规的统计测试
+
+231
+00:08:35,558 --> 00:08:39,694
+string as inputs, and it's supposed to
+output, you know, random or non-random,
+
+232
+00:08:35,558 --> 00:08:39,694
+使用n位比特字符串作为输入，判断输出随机或不随机，0还是1
+
+233
+00:08:39,694 --> 00:08:43,995
+zero or one. Okay, so let's see. So it's,
+first thing it's gonna do, is it's gonna
+
+234
+00:08:39,694 --> 00:08:43,995
+我们来看它首先做了什么
+
+235
+00:08:43,995 --> 00:08:48,407
+run adversary A, and adversary A is gonna
+output two messages, M0 and M1. And then,
+
+236
+00:08:43,995 --> 00:08:48,407
+运行敌手A，敌手A输出两个信息M0和M1
+
+237
+00:08:48,407 --> 00:08:54,053
+what adversary b's gonna do, is basically
+gonna respond. With M0 XOR or the string that
+
+238
+00:08:48,407 --> 00:08:54,053
+敌手B用M0与输入的字符串异或，返回给A
+
+239
+00:08:54,053 --> 00:08:59,942
+it was given as inputs. Alright? That's
+the statistical lesson, then. Whenever A
+
+240
+00:08:54,053 --> 00:08:59,942
+这就是这个统计测试
+
+241
+00:08:59,942 --> 00:09:05,418
+outputs, it's gonna output, its output.
+And now let's look at its advantage. So
+
+242
+00:08:59,942 --> 00:09:05,418
+A的输出就是统计测试的输出 现在我们来看它的优势
+
+243
+00:09:05,418 --> 00:09:10,477
+what can we say about the advantage of
+this statistical test against the
+
+244
+00:09:05,418 --> 00:09:10,477
+所以统计测试对于发生器的优势是多少？
+
+245
+00:09:10,477 --> 00:09:15,606
+generator? Well, so by definition, it's
+the probability that, if you choose a
+
+246
+00:09:10,477 --> 00:09:15,606
+根据定义，如果你选择一个真随机字符串
+
+247
+00:09:15,606 --> 00:09:20,527
+truly random string. So here are 01 to the N, so probability
+
+248
+00:09:15,606 --> 00:09:20,527
+这里是{0,1}^n
+
+249
+00:09:20,527 --> 00:09:25,587
+that R, that B outputs 1 minus the
+probability, is that when we choose a
+
+250
+00:09:20,527 --> 00:09:25,587
+B输出1的概率减去当我们选择伪随机字符串时
+
+251
+00:09:25,587 --> 00:09:32,603
+pseudo random string, B outputs 1, okay?
+Okay, but let's think about what this is.
+
+252
+00:09:25,587 --> 00:09:32,603
+B输出1的概率，对吧?
+
+253
+00:09:32,603 --> 00:09:37,398
+What can you tell me about the first
+expressions? What can you tell me about
+
+254
+00:09:32,603 --> 00:09:37,398
+想一想第一个式子说明了什么？这个式子说明了什么？
+
+255
+00:09:37,398 --> 00:09:42,256
+this expression over here? Well, by the
+definition that's exactly if you think
+
+256
+00:09:37,398 --> 00:09:42,256
+根据定义，想想这里发生的
+
+257
+00:09:42,256 --> 00:09:47,366
+about what's going on here, that's this is
+exactly the probability R0 right?
+
+258
+00:09:42,256 --> 00:09:47,366
+这个式子就等于R0的概率，对吧？
+
+259
+00:09:47,366 --> 00:09:52,729
+Because this game that we are playing with
+the adversary here is basically he helped
+
+260
+00:09:47,366 --> 00:09:52,729
+因为我们与敌手玩的这个游戏中敌手输出M0和M1
+
+261
+00:09:52,729 --> 00:09:58,028
+us M0 and M1 right here he helped add M0 and m1 and he got the encryption
+
+262
+00:09:52,729 --> 00:09:58,028
+他得到了M0和M1一次一密加密后的密文
+
+263
+00:09:58,028 --> 00:10:03,919
+of M0 under truly one time pad. Okay,
+so this is basically a [inaudible]. Here
+
+264
+00:09:58,028 --> 00:10:03,919
+这就是一个概率
+
+265
+00:10:03,919 --> 00:10:10,214
+let me write this a little better. That's
+the basic level probability of R0.
+
+266
+00:10:03,919 --> 00:10:10,214
+我来写的好看一点，这就是R0的概率
+
+267
+00:10:10,660 --> 00:10:15,467
+Now, what can we say about the next
+expression, well what can we say about
+
+268
+00:10:10,660 --> 00:10:15,467
+那么第二个式子说明什么？
+
+269
+00:10:15,467 --> 00:10:19,100
+when B is given a pseudo random
+string Y as input.
+
+270
+00:10:15,467 --> 00:10:19,100
+当B以伪随机字符串为输入时
+
+271
+00:10:19,100 --> 00:10:23,493
+Well in that case, this is exactly experiment zero and
+true stream cipher game
+
+272
+00:10:19,100 --> 00:10:23,493
+这种情况下，这是实验0和真正的流密码的游戏
+
+273
+00:10:23,493 --> 00:10:29,999
+because now we're computing M XOR M0, XOR GK. This is
+exactly W0.
+
+274
+00:10:23,493 --> 00:10:29,999
+现在我们计算M异或M0，异或G(k)，这就是W0
+
+275
+00:10:29,999 --> 00:10:33,015
+Okay, that's exactly what we have to prove. So it's kind of a trivial proof.
+
+276
+00:10:29,999 --> 00:10:33,015
+这正是我们要证明的，这是个很简单的证明
+
+277
+00:10:33,015 --> 00:10:39,563
+Okay, so that completes the proof of claim two. And again, just to
+make sure this is all clear, once we have
+
+278
+00:10:33,015 --> 00:10:39,563
+好，论断2就证明完毕了 为确保讲清楚了
+
+279
+00:10:39,563 --> 00:10:43,799
+claim two, we know that W0 must be close
+to W1, and that's the theorem.
+
+280
+00:10:39,563 --> 00:10:43,799
+一但证明了论断2，我们就知道W0一定接近于W1
+
+281
+00:10:43,814 --> 00:10:50,383
+That's what we have to prove. Okay, so now we've
+established that a stream cypher is in
+
+282
+00:10:43,814 --> 00:10:50,383
+这就是我们要证明的定理 好的，现在我们证明了只要PRG是安全的
+
+283
+00:10:50,383 --> 00:10:53,880
+fact symmantically secure, assuming that
+the PRG is secure.
+
+284
+00:10:50,383 --> 00:10:53,880
+流密码就是语义安全的
+

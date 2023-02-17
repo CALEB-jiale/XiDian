@@ -1,0 +1,1384 @@
+1
+00:00:00,000 --> 00:00:04,076
+This week, we saw two families of public
+encryption systems. One family was built
+
+2
+00:00:04,076 --> 00:00:04,076
+这次我们来学习一下两类公共加密系统，一个是基于陷门函数尤其
+
+3
+00:00:04,076 --> 00:00:08,204
+from trapdoor functions, and particularly
+RSA, and the other family was built from
+
+4
+00:00:08,204 --> 00:00:08,204
+包含了rsa函数，另一个是基于
+
+5
+00:00:08,204 --> 00:00:12,078
+the Diffie-Hellman protocol. In this last
+segment, I wanna show you that both
+
+6
+00:00:12,078 --> 00:00:12,078
+Diffie-Hellman协议。在上一段中我为你们展示一下基于
+
+7
+00:00:12,078 --> 00:00:16,065
+families in fact follow from a more
+general principle. The unifying theme is
+
+8
+00:00:16,065 --> 00:00:16,065
+一个更平常规则的两类系统。统一的题目就是
+
+9
+00:00:16,065 --> 00:00:20,671
+what's called a one-way function. So what
+is a one-way function? Well, we've already
+
+10
+00:00:20,671 --> 00:00:20,671
+被我们叫做单向函数。什么是单向函数呢？我们之前已经研究
+
+11
+00:00:20,671 --> 00:00:24,995
+seen this concept briefly before. But
+basically, a function from, one set to
+
+12
+00:00:24,995 --> 00:00:24,995
+它的简要概念。但是事实上，一个从单值指向另一个单值的函数
+
+13
+00:00:24,995 --> 00:00:29,376
+another, say, from X to Y is said to be
+one way, if, in fact, there's an efficient
+
+14
+00:00:29,376 --> 00:00:29,376
+也就是从X到Y如果有有效的算法
+
+15
+00:00:29,376 --> 00:00:33,813
+algorithm that allows us to evaluate the
+function F. So anyone can evaluate the
+
+16
+00:00:33,813 --> 00:00:33,813
+可以让我们求得函数F值，那我们就把这个函数叫做单向的。所以说每一个人
+
+17
+00:00:33,813 --> 00:00:38,306
+function F at any point of their choice.
+However, inverting the function F should
+
+18
+00:00:38,306 --> 00:00:38,306
+使用他们各自的选择求得f的值。然而转化函数f
+
+19
+00:00:38,306 --> 00:00:42,406
+be difficult. That's what makes the
+function one way. So what do I mean by
+
+20
+00:00:42,406 --> 00:00:42,406
+必须是不同的。这就是怎么是函数是单向的。我的意思是什么？
+
+21
+00:00:42,406 --> 00:00:47,068
+that? Well, you can think of the function
+F as a function again mapping the set X to
+
+22
+00:00:47,068 --> 00:00:47,068
+你可以把这个函数F当做一个再次把x集合映射到y
+
+23
+00:00:47,068 --> 00:00:52,165
+the set Y. But it so happens in many
+points in X could actually be mapped into
+
+24
+00:00:52,165 --> 00:00:52,165
+集合的函数，但是有很多x集合中的值可能会被映射到一个
+
+25
+00:00:52,165 --> 00:00:57,228
+a single point in Y. Now when they say
+that the function is difficult to invert,
+
+26
+00:00:57,228 --> 00:00:57,228
+y集合中单独的值。现在一些人说这个函数很难转化，也是就是说
+
+27
+00:00:57,228 --> 00:01:02,347
+what I mean is that when I give you some
+point inside of Y and I ask you find me
+
+28
+00:01:02,347 --> 00:01:02,347
+当我提供给你们一些y集合中的值并且要求你们求出
+
+29
+00:01:02,347 --> 00:01:07,530
+pre-image of this point, you won't be able
+to point to any of these as a pre-image.
+
+30
+00:01:07,530 --> 00:01:07,530
+这个值的原项你不能得到所有的原象。
+
+31
+00:01:07,530 --> 00:01:12,838
+In other words, no efficient algorithm can
+find any point that is the inverse of the
+
+32
+00:01:12,838 --> 00:01:12,838
+换句话来说，没有一个有效的算法可以找到转化后的给定y中的值对应的
+
+33
+00:01:12,838 --> 00:01:17,958
+given point Y. Now the way we say that
+more precisely is that we say that for all
+
+34
+00:01:17,958 --> 00:01:17,958
+原象。我们说的更精确一点就是对于所有的
+
+35
+00:01:17,958 --> 00:01:23,203
+efficient algorithm A, if I chose a random
+X in the set, capital X, and now I'm gonna
+
+36
+00:01:23,203 --> 00:01:23,203
+有效算法A，如果我选择了一个x集合里的随机数X，主要X，我现在给一个
+
+37
+00:01:23,203 --> 00:01:28,839
+give f(x) to algorithm A. And then, what
+I'm gonna ask algorithm A to do, is
+
+38
+00:01:28,839 --> 00:01:28,839
+f（x）到算法A中。之后我想要求算法A求出
+
+39
+00:01:28,839 --> 00:01:34,774
+basically produce a pre-image of the point
+f(x). Well, what does it mean that A
+
+40
+00:01:34,774 --> 00:01:34,774
+f（x)的原象。确切意思是否是
+
+41
+00:01:34,774 --> 00:01:41,030
+produced a pre-image of the point f(x)? It
+means that if I apply the function f to
+
+42
+00:01:41,030 --> 00:01:41,030
+A算法要求的f(x)的原象?它只是意味着如果我给予一个对于A的输出f函数
+
+43
+00:01:41,030 --> 00:01:47,180
+the output of A, what I should get back
+is, well, f(x). Let's think through this
+
+44
+00:01:47,180 --> 00:01:47,180
+而这个函数是我必须找到原象的。再让我们考虑一下。
+
+45
+00:01:47,180 --> 00:01:52,428
+one more time. So I chose a random point x
+in Capital X. You know I give algorithm A
+
+46
+00:01:52,428 --> 00:01:52,428
+所以我必须选择一个x集合中的随机数x，你们知道我给出了算法A的函数
+
+47
+00:01:52,428 --> 00:01:57,486
+f(x). So I'm gonna give algorithm A this
+point here. And now A is gonna produce
+
+48
+00:01:57,486 --> 00:01:57,486
+f(x)，我也给出算法A的注意点，现在A会得到一些
+
+49
+00:01:57,486 --> 00:02:02,291
+some points. So let's pretend that A
+produces this point over here. And now I
+
+50
+00:02:02,291 --> 00:02:02,291
+数值。所以让我们假设算法得出的数值覆盖了这些。现在我想知道
+
+51
+00:02:02,291 --> 00:02:07,349
+wanna say that if I apply the function F
+to this point here, that A produced, the
+
+52
+00:02:07,349 --> 00:02:07,349
+如果我提供了对于这些A得出的数值的函数F
+
+53
+00:02:07,349 --> 00:02:12,471
+probability that I get the same point that
+I started with is negligible. In other
+
+54
+00:02:12,471 --> 00:02:12,471
+我得到跟开始时相同数值的可能性是可以忽略不计的，从另一句话来说
+
+55
+00:02:12,471 --> 00:02:17,558
+words the probability that algorithm A
+was able to produce one of these three points is, in
+
+56
+00:02:17,558 --> 00:02:17,558
+就是算法可以得出这三个数值的可能性在实际上
+
+57
+00:02:17,558 --> 00:02:23,203
+fact, negligible. All he can do is produce
+some other point that maps into something
+
+58
+00:02:23,203 --> 00:02:23,203
+是不存在的。它能做的就是得到一些别的映射进f（x）
+
+59
+00:02:23,203 --> 00:02:28,440
+other than f(x), okay? So, again, all
+this is trying to do is just capture the
+
+60
+00:02:28,440 --> 00:02:28,440
+中的数值。好吧，这里要做的就是捕获给你们的
+
+61
+00:02:28,440 --> 00:02:33,814
+fact that given f(x), it's hard to find
+some pre-image of f(x). So here's some
+
+62
+00:02:33,814 --> 00:02:33,814
+f(x)函数。因为很难去找到f（x）值的原象。所以这有一些
+
+63
+00:02:33,814 --> 00:02:38,119
+easy examples of functions that are not
+one-way. For example, the identity
+
+64
+00:02:38,119 --> 00:02:38,119
+简单的非单向函数的例子。举个例子来说，一致性函数
+
+65
+00:02:38,119 --> 00:02:42,955
+function f(x) is equal to x is trivially
+not one way because given f(x), I can
+
+66
+00:02:42,955 --> 00:02:42,955
+简单地f（x)等于x函数就是一个普通的不是单向函数，因为给定一个f(x)
+
+67
+00:02:42,955 --> 00:02:47,850
+easily come up with an inverse of f(x),
+namely x. Similarly the function that will
+
+68
+00:02:47,850 --> 00:02:47,850
+我可以很容易的想到一个命名为x的f（x）的变形。相似的将所有的数值都
+
+69
+00:02:47,850 --> 00:02:52,449
+maps everything to zero is also not one
+way. So in our picture, let the function
+
+70
+00:02:52,449 --> 00:02:52,449
+映射成0的函数同样也不是一个单向函数。所以在我们的课程里，把将
+
+71
+00:02:52,449 --> 00:02:57,167
+maps everything to zero simply looks as
+follows. It takes all its points and maps
+
+72
+00:02:57,167 --> 00:02:57,167
+所有映射成0的函数看做下面的函数。它选取所有数值并将它们
+
+73
+00:02:57,167 --> 00:03:02,133
+them all to a single point. Well this
+function is not one way because if I give
+
+74
+00:03:02,133 --> 00:03:02,133
+全部映射成一个单独的值。这个函数不是一个单向函数因为
+
+75
+00:03:02,133 --> 00:03:07,324
+you this point in the image, it's trivial
+to find the pre-image. Namely, just pick
+
+76
+00:03:07,324 --> 00:03:07,324
+如果我给你一个项，它非常容易就可以找到一个原项。选取任一x
+
+77
+00:03:07,324 --> 00:03:12,579
+any point in capital X, and there will be
+a pre-image of zero. And so, f(x) equal
+
+78
+00:03:12,579 --> 00:03:12,579
+集合中的元素，就会有一个原项0。f（x）等于
+
+79
+00:03:12,579 --> 00:03:17,185
+to zero is also not a one-way function.
+And by the way, I didn't want to do it
+
+80
+00:03:17,185 --> 00:03:17,185
+0也不是一个单向函数。顺口说一句，我不想在这里讨论这个。
+
+81
+00:03:17,185 --> 00:03:21,337
+here. But if I define one-way functions
+more formally, then it turns out that
+
+82
+00:03:21,337 --> 00:03:21,337
+但是如果我更加正式地定义单向函数，这就会证明
+
+83
+00:03:21,337 --> 00:03:25,707
+proving that one-way functions exist,
+we'll have also proven that P is not equal
+
+84
+00:03:25,707 --> 00:03:25,707
+单向函数确实存在，我们也会证明P不等于
+
+85
+00:03:25,707 --> 00:03:29,805
+to NP. So, since we can't today, prove
+that P is not equal to NP, basically we
+
+86
+00:03:29,805 --> 00:03:29,805
+NP。当然，今天我们还不会去证明P是不等于np，也不去证明
+
+87
+00:03:29,805 --> 00:03:34,230
+can't prove that one-way functions exist.
+And we just have to assume that they do.
+
+88
+00:03:34,230 --> 00:03:34,230
+单向函数存在，我们现在必须假设它们是正确的。
+
+89
+00:03:34,230 --> 00:03:38,305
+So let's look at our first example of a
+1-way function. Or at least a presumed
+
+90
+00:03:38,305 --> 00:03:38,305
+所以让我们看我们第一个单向函数的例子。或者最起码是一个
+
+91
+00:03:38,305 --> 00:03:42,329
+1-way function. And so we're gonna build
+it from a pseudo random generator. And
+
+92
+00:03:42,329 --> 00:03:42,329
+假设中的单向函数。我们将会利用伪随机数生成器来建立这个函数，假设
+
+93
+00:03:42,329 --> 00:03:46,559
+suppose I have a function F from x to y
+there is a secure pseudo random generator.
+
+94
+00:03:46,559 --> 00:03:46,559
+我有一个从x映射到y的函数F,存在一个安全的伪随机数生成器。
+
+95
+00:03:46,559 --> 00:03:50,531
+So the output of f s much larger than
+the input. Remember, a pseudo-random
+
+96
+00:03:50,531 --> 00:03:50,531
+所以f s的输出远远大于输入，要记住，一个伪随机数生成器
+
+97
+00:03:50,531 --> 00:03:54,691
+generator takes a small seed and expands
+it into a much larger output. And for
+
+98
+00:03:54,691 --> 00:03:54,691
+只需要很少的输入之后它会扩大出一个很大的输出，
+
+99
+00:03:54,691 --> 00:03:58,590
+example you can, you know, the pseudo
+random generator maybe is built using
+
+100
+00:03:58,590 --> 00:03:58,590
+你们知道的，对于这个例子，伪随机数生成器可能利用
+
+101
+00:03:58,590 --> 00:04:02,806
+deterministic counter mode out of AES.
+Well, it's fairly easy to see that if, in
+
+102
+00:04:02,806 --> 00:04:02,806
+AES确定的计数器模式来构建的。这样就能很容易的研究学习了，
+
+103
+00:04:02,806 --> 00:04:06,541
+fact, F is a secure pseudo random
+generator, then F is in fact a one-way
+
+104
+00:04:06,541 --> 00:04:06,541
+事实上F是一个安全的伪随机数生成器，并且F也是一个单向函数
+
+105
+00:04:06,547 --> 00:04:10,604
+function. So our first example of a
+one-way function is directly built from a
+
+106
+00:04:10,604 --> 00:04:10,604
+所以我们第一个单向函数是直接由
+
+107
+00:04:10,604 --> 00:04:14,820
+pseudo random generator. This is actually
+kind of a trivial proof, so let's prove
+
+108
+00:04:14,820 --> 00:04:14,820
+伪随机数发生器构建的。这是仅仅是一个很不充分的证据，所以让我们
+
+109
+00:04:14,820 --> 00:04:19,088
+the contra positive. So suppose I have an
+efficient algorithm that inverts F, okay?
+
+110
+00:04:19,088 --> 00:04:19,088
+从反面来证明。现在假设我有一个有效的算法可以变形F行吗?
+
+111
+00:04:19,088 --> 00:04:22,963
+So I'm proving the contra positive.
+Suppose F is not one way. Then A is an
+
+112
+00:04:22,963 --> 00:04:22,963
+所以我开始从反面论证。假设f不是一个单向函数，之后A就是一个
+
+113
+00:04:22,963 --> 00:04:27,457
+efficient algorithm than an inverse F. And
+now I need to build an algorithm B that
+
+114
+00:04:27,457 --> 00:04:27,457
+f的逆向有效算法。现在我就需要构建一个算法B来打破
+
+115
+00:04:27,457 --> 00:04:32,301
+breaks the pseudorandom generator. Ok, so I'm proving again by contra-positive. Okay so how do I break the
+
+116
+00:04:32,301 --> 00:04:32,301
+随机数生成器。我再从正反面来证明一下。我怎么做才能打破
+
+117
+00:04:32,301 --> 00:04:38,500
+pseudo-random generator? Well, all we do
+is the following. So algorithm B is given
+
+118
+00:04:38,500 --> 00:04:38,500
+这个伪随机数生成器呢？我们要就是就是我下面说的。算法B被给与
+
+119
+00:04:38,500 --> 00:04:43,406
+some y in the set Y. And what it's gonna
+do is the following, it's gonna try and
+
+120
+00:04:43,406 --> 00:04:43,406
+一些y集合里的数值y，之后就按下面说的来做。它将会尝试并且运行
+
+121
+00:04:43,406 --> 00:04:47,608
+run algorithm a on the input y. And now,
+well, if y is the output of the
+
+122
+00:04:47,608 --> 00:04:47,608
+算法在输入的y上。现在，如果y是伪随机数生成器的输出，
+
+123
+00:04:47,608 --> 00:04:52,109
+pseudorandom generator, then algorithm A
+will output the seed, and namely
+
+124
+00:04:52,109 --> 00:04:52,109
+算法A就会输出一些数据，之后就会被命名为
+
+125
+00:04:52,109 --> 00:04:56,861
+[inaudible] an element in X with, you
+know, non-negligible probability. So what
+
+126
+00:04:56,861 --> 00:04:56,861
+【不可找到】在x集合中，你知道没有一点点可能性。所以我们要做的
+
+127
+00:04:56,861 --> 00:05:02,112
+we'll do is we'll apply the pseudorandom
+generator again to the output of algorithm
+
+128
+00:05:02,112 --> 00:05:02,112
+就是提供伪随机数生成器再一次输入算法A的输出。
+
+129
+00:05:02,112 --> 00:05:06,989
+A. As I said, if y was the output of a
+generator, then [A of A ???] will have output
+
+130
+00:05:06,989 --> 00:05:06,989
+就像我说的，如果y是生成器的输出，之后算法A就会有输出
+
+131
+00:05:06,989 --> 00:05:12,240
+the seed cuz it inverted the pseudorandom
+generator. So if we apply the pseudorandom
+
+132
+00:05:12,240 --> 00:05:12,240
+因为它转化了伪随机数生成器。所以如果我们提供了伪随机数生成器
+
+133
+00:05:12,240 --> 00:05:17,429
+generator again to the output of A, what
+we should get back is basically the y that
+
+134
+00:05:17,429 --> 00:05:17,429
+再一次输入A的输出，我们将会得到开始时我们的
+
+135
+00:05:17,429 --> 00:05:23,012
+we started with. Okay, so if this
+condition holds we're gonna say we're
+
+136
+00:05:23,012 --> 00:05:23,012
+y值。所以在这种情况发生的时候我们就可以说
+
+137
+00:05:23,012 --> 00:05:28,090
+gonna output zero. And if this condition
+doesn't hold, we're gonna output one
+
+138
+00:05:28,090 --> 00:05:28,090
+我们得到了输出0.如果这样的情况没有发生，我们将会得到输出
+
+139
+00:05:28,090 --> 00:05:32,955
+otherwise. That's it, that's our
+distinguisher against a pseudo-random
+
+140
+00:05:32,955 --> 00:05:32,955
+这就是我们讲的正反面的伪随机数
+
+141
+00:05:32,955 --> 00:05:37,383
+generator. So if our distinguisher is
+given a y that is the output of the pseudo
+
+142
+00:05:37,383 --> 00:05:37,383
+生成器。所以如果我们辨义成分是伪随机数生成器的输出y
+
+143
+00:05:37,383 --> 00:05:41,755
+random generator, then with non-negligible
+probability, our distinguisher B will
+
+144
+00:05:41,755 --> 00:05:41,755
+没有一点点可能，我们的函数B将会
+
+145
+00:05:41,755 --> 00:05:46,238
+output zero. However, if our distinguisher
+B is given a truly random string. Well, a
+
+146
+00:05:46,238 --> 00:05:46,238
+输出0。然而，如果我们的编译成分B输入的是一个真正的随机字符串，
+
+147
+00:05:46,238 --> 00:05:50,832
+truly random string doesn't have any seed
+that causes the generator to output that
+
+148
+00:05:50,832 --> 00:05:50,832
+真的随机字符串是没有可以导致生成器输出的任何数据
+
+149
+00:05:50,832 --> 00:05:56,410
+string. And therefore our distinguishable
+output one with again, with also very high
+
+150
+00:05:56,410 --> 00:05:56,410
+因此我们的假设成分输出一的可能性是
+
+151
+00:05:56,410 --> 00:06:01,291
+probability. And again I hope that's
+clear. Basically, if we look at the set of
+
+152
+00:06:01,291 --> 00:06:01,291
+很高的。我希望这是明确的，如果我们看所有
+
+153
+00:06:01,291 --> 00:06:06,129
+all possible outputs, namely the set Y,
+very few of those outputs happened to
+
+154
+00:06:06,129 --> 00:06:06,129
+可能的输出序列，即序列y，这些输出中的很少一部分
+
+155
+00:06:06,129 --> 00:06:10,370
+be the output of the pseudorandom
+generator. So if we are just given an
+
+156
+00:00:00,000 --> 00:00:00,000
+刚好是伪随机发生器的输出，所以如果我们仅仅给出
+
+157
+00:06:10,370 --> 00:06:15,088
+output y over hearsay, that's not the
+output of the pseudorandom generator, then
+
+158
+00:00:00,000 --> 00:00:00,000
+一个输出y,这不是伪随机发生器的输出
+
+159
+00:06:15,088 --> 00:06:19,687
+we rerun algorithm A on it. It can't
+possibly produce a seed that will output
+
+160
+00:00:00,000 --> 00:00:00,000
+之后我们在这个输出值上重复运行算法A.这样不可能生成一个
+
+161
+00:06:19,687 --> 00:06:24,227
+this point starr because there is no
+such seed. And as a result, since most
+
+162
+00:00:00,000 --> 00:00:00,000
+将输出起始点的种子。因为没有很多的种子。因此
+
+163
+00:06:24,227 --> 00:06:28,945
+points actually are not in the image of
+the pseudorandom generator, most points
+
+164
+00:00:00,000 --> 00:00:00,000
+实际上大多数点不在伪随机发生器的影像范围之内，
+
+165
+00:06:28,945 --> 00:06:33,462
+will not have a seed that, maps the
+generator to them and there's also where
+
+166
+00:00:00,000 --> 00:00:00,000
+大多数点没有种子，将生成器划入它们，这里
+
+167
+00:06:33,462 --> 00:06:38,130
+we were given a random point in Y, a truly
+uniform point in Y, our distinguishable B
+
+168
+00:00:00,000 --> 00:00:00,000
+就是在y中我们被给出的一个随机点，一个真正均衡的点
+
+169
+00:06:38,130 --> 00:06:42,011
+will output 1 with very high
+probability. However, if we are given a
+
+170
+00:00:00,000 --> 00:00:00,000
+我们这个可分辨的b将以很大的可能性输出1.但是如果我们给出
+
+171
+00:06:42,011 --> 00:06:46,679
+pseudo random output of a generator, then
+algorithm A will output the corresponding
+
+172
+00:00:00,000 --> 00:00:00,000
+一个发生器的伪随机的输出，这个算法A将输出相一致的种子
+
+173
+00:06:46,679 --> 00:06:51,235
+seed. When we apply the generator to that
+seed, we'll get the initial output y and
+
+174
+00:00:00,000 --> 00:00:00,000
+当我们把这个生成器用于这个种子时，将得到最初的输出y
+
+175
+00:06:51,235 --> 00:06:55,356
+therefore we'll output zero with
+non-negligible probability. Okay, so if A
+
+176
+00:00:00,000 --> 00:00:00,000
+因此我们将以不可忽略的可能性输出0，好的
+
+177
+00:06:55,356 --> 00:06:59,546
+was able to invert F, then B is able to
+break the generator. And since the
+
+178
+00:00:00,000 --> 00:00:00,000
+所以说如果A能转置F，那么b久能破解这个发生器。那么既然
+
+179
+00:06:59,546 --> 00:07:04,024
+generator is secure, algorithm A can't
+invert F. And in particular, no efficient
+
+180
+00:00:00,000 --> 00:00:00,000
+这个发生器是安全的，算法A就不能转置F。尤其是，
+
+181
+00:07:04,024 --> 00:07:08,559
+algorithm can invert F. And therefore, F
+is a one-way function. Excellent, so this
+
+182
+00:00:00,000 --> 00:00:00,000
+没有有效的算法可以用来转置F。因此，F是单向函数。
+
+183
+00:07:08,559 --> 00:07:12,788
+is a long discussion of kind of a minor
+point. But all I wanted to show you is
+
+184
+00:00:00,000 --> 00:00:00,000
+很好，这是一个有关一个小点的长讨论。但是我想告诉你们的是
+
+185
+00:07:12,788 --> 00:07:16,562
+that in fact, a pseudo-random generator
+directly gives us a one-way function.
+
+186
+00:00:00,000 --> 00:00:00,000
+实际上，一个伪随机生成器直接就给了我们一个单向函数
+
+187
+00:07:16,562 --> 00:07:20,633
+Unfortunately, this one-way function has
+no special properties. And what that means
+
+188
+00:00:00,000 --> 00:00:00,000
+不幸的是，这个单向函数没有特殊的属性。这个的意思是
+
+189
+00:07:20,633 --> 00:07:24,754
+is it's actually difficult to use it for
+key exchange or for public key encryption.
+
+190
+00:00:00,000 --> 00:00:00,000
+实际很难把这个函数用于密钥交换或者公钥加密
+
+191
+00:07:24,754 --> 00:07:28,578
+In some sense, the best key exchange we
+can do with this, as far as we know, is
+
+192
+00:00:00,000 --> 00:00:00,000
+在某种程度上，我们能处理的最好的密钥交换方法，就我所知
+
+193
+00:07:28,726 --> 00:07:32,868
+Merkle puzzles. So now let's look at
+our second example. The second example is
+
+194
+00:00:00,000 --> 00:00:00,000
+是Merkle 拼图。所以我们看一下我们的第二个例子。它是说
+
+195
+00:07:32,868 --> 00:07:37,200
+what I'm gonna call the discrete log one
+way function. So let's fix a group, a
+
+196
+00:00:00,000 --> 00:00:00,000
+我把这个离散日志称作单向函数。所以我们确定一个组
+
+197
+00:07:37,200 --> 00:07:41,971
+cyclic group of order N the group G and
+let g be some generator of the group
+
+198
+00:00:00,000 --> 00:00:00,000
+一个循环组的序列n和组G，并且令g是大写字母G的一些生成器
+
+199
+00:07:41,971 --> 00:07:46,987
+capital G so again I remind you that all
+that means is, if I look at all powers of
+
+200
+00:00:00,000 --> 00:00:00,000
+我想提醒的是这些意思是如果我看了g的所有指数
+
+201
+00:07:46,987 --> 00:07:51,335
+g, then I basically span the entire group
+capital G. And now let's define the
+
+202
+00:00:00,000 --> 00:00:00,000
+之后我就可以揣测整个大写字母G的值。现在让我们定义一下
+
+203
+00:07:51,335 --> 00:07:56,068
+following function. The function goes from
+ZN to G and it's defined basically as the
+
+204
+00:00:00,000 --> 00:00:00,000
+下列函数。这些函数从Zn到G，随着g的幂次方x的变化而定义的。
+
+205
+00:07:56,068 --> 00:08:00,802
+exponentiation to the power of X. Okay, so
+this maps any element between zero and n-1
+
+206
+00:00:00,000 --> 00:00:00,000
+好的这个就把0到n-1之间的所有元素
+
+207
+00:08:00,802 --> 00:08:04,915
+to an element of the group capital G
+simply by raising g, little g to the
+
+208
+00:00:00,000 --> 00:00:00,000
+以g倍的倍数增长映射到G中的元素。小g是恰当的增长速度
+
+209
+00:08:04,915 --> 00:08:09,197
+appropriate power. And it's kind of
+obvious that if the discrete log problem
+
+210
+00:00:00,000 --> 00:00:00,000
+这个很明显的是如果G组中离散日志
+
+211
+00:08:09,197 --> 00:08:13,310
+in the group capital G is hard, then in
+fact f is one way. In fact, the one
+
+212
+00:00:00,000 --> 00:00:00,000
+是接近的，那么f就是单向函数。实际上，
+
+213
+00:08:13,310 --> 00:08:17,134
+wayness of f is the discrete log
+assumption. So if the discrete log is
+
+214
+00:00:00,000 --> 00:00:00,000
+f的一种方式是离散日志的一种假设。所以说如果离散日志
+
+215
+00:08:17,134 --> 00:08:21,324
+hard, f is one way. Now the interesting
+thing about this one-way functions is it's
+
+216
+00:00:00,000 --> 00:00:00,000
+是接近的，那么f就是一个单向函数。现在关于单向函数的一个有趣的事是
+
+217
+00:08:21,324 --> 00:08:25,800
+got some interesting properties. In
+particular, if I give you f(x) and f(y)
+
+218
+00:00:00,000 --> 00:00:00,000
+它具有一些有趣的属性。例如，如果我给出函数f（x）和f(y)
+
+219
+00:08:25,800 --> 00:08:31,119
+I claim that it's very easy to compute
+f(x + y). Even though we have no idea
+
+220
+00:00:00,000 --> 00:00:00,000
+很容易算出函数f(x+y)。即使我们不知道
+
+221
+00:08:31,119 --> 00:08:36,118
+what x or y are. All we're given is just f(x) and f(y), nevertheless, we can
+
+222
+00:00:00,000 --> 00:00:00,000
+x，y是什么。所给我们的仅仅是函数f(x)和f(y)，因此，
+
+223
+00:08:36,118 --> 00:08:41,763
+compute f(x + y). Let me ask you, how
+would you do that? Well, just by rules of
+
+224
+00:00:00,000 --> 00:00:00,000
+我们可以计算出f（x+y）.我问一下，你们是怎样做到的呢？根据指数规律
+
+225
+00:08:41,763 --> 00:08:46,732
+exponentiation, basically, f(x + y)
+is simply f(x) times f(y). And again,
+
+226
+00:00:00,000 --> 00:00:00,000
+实际上f(x+y)就是f(x)乘f(y)。
+
+227
+00:08:46,732 --> 00:08:51,826
+this is all done inside the group G. If
+you're not convinced, simply recall that f(x + y)
+
+228
+00:00:00,000 --> 00:00:00,000
+这些都是在组G中操作的。如果你们不相信，简单回顾一下
+
+229
+00:08:51,826 --> 00:08:57,046
+is g to the (x + y). Which is
+simply g to the x times g to the y, which
+
+230
+00:00:00,000 --> 00:00:00,000
+f(x+y)是g的（x+y）的次方。这就是简单的g的x次方乘g的y次方
+
+231
+00:08:57,046 --> 00:09:02,161
+is exactly what we have here. And this
+simple property, this simple fact that the
+
+232
+00:00:00,000 --> 00:00:00,000
+这刚好就是我们这里所说的。这个简单的属性，是
+
+233
+00:09:02,161 --> 00:09:06,936
+function has this additive property, if
+you think about it, is exactly what
+
+234
+00:00:00,000 --> 00:00:00,000
+这个函数具有这种加法的属性。如果你考虑一下
+
+235
+00:09:06,936 --> 00:09:11,722
+enables key exchange and public key
+encryption. So, this additional property
+
+236
+00:00:00,000 --> 00:00:00,000
+这实际可以用于密钥交换和公开密钥加密。所以，单向函数的
+
+237
+00:09:11,722 --> 00:09:16,602
+of the one-way function is what enabled
+all of public key cryptography. So let's
+
+238
+00:00:00,000 --> 00:00:00,000
+这种加法属性就是启用所有公钥加密
+
+239
+00:09:16,602 --> 00:09:21,723
+look at our next example the RSA one way
+function so here we're going to choose two
+
+240
+00:00:00,000 --> 00:00:00,000
+所以让我们看一下另一个例子-RSA单向函数。这里我们将选择
+
+241
+00:09:21,723 --> 00:09:27,093
+primes p and q we're going to set N to be p
+times q then were going to choose e that's
+
+242
+00:00:00,000 --> 00:00:00,000
+两个素数p和q，我们设置N等于p乘q，之后选择e使得e与
+
+243
+00:09:27,093 --> 00:09:31,612
+relatively prime to phi(N). And then, we
+define the functions, and simply as a
+
+244
+00:00:00,000 --> 00:00:00,000
+P模pi（N）互素.现在我们定义函数，
+
+245
+00:09:31,612 --> 00:09:36,156
+function from ZN star to ZN star,
+simply as f(x) equals x to the e. Okay,
+
+246
+00:00:00,000 --> 00:00:00,000
+作为一个从Zn*到Zn*的函数，使f(x)等于x的e次方。
+
+247
+00:09:36,156 --> 00:09:40,312
+so raising x to the power of e. And again
+we say that this function is one way,
+
+248
+00:00:00,000 --> 00:00:00,000
+即使x以e的指数形式增长。我们说这个函数在RSA假设下是单向函数
+
+249
+00:09:40,312 --> 00:09:44,575
+simply under the RSA assumption. Again,
+the RSA assumption is the assumption that
+
+250
+00:00:00,000 --> 00:00:00,000
+再者，RSA假设是指这个函数就是单向函数的假设
+
+251
+00:09:44,575 --> 00:09:48,519
+this function is one way. And the
+interesting thing about this function is
+
+252
+00:00:00,000 --> 00:00:00,000
+有关这个函数的一个有趣的问题是
+
+253
+00:09:48,519 --> 00:09:52,941
+that it has properties similar to the one
+that we saw on the previous slide, namely
+
+254
+00:00:00,000 --> 00:00:00,000
+它与我们之前看的单向函数具有相似的属性。即
+
+255
+00:09:52,941 --> 00:09:57,258
+the given f(x) and f(y), now we can
+compute f(x  y) as opposed to f(x + y)
+
+256
+00:00:00,000 --> 00:00:00,000
+给出f(x)和f(y)，就可以算出函数f(x*y)与f（x+y）相对立.
+
+257
+00:09:57,258 --> 00:10:01,627
+So we say that this function has
+a multiplicative property as opposed to
+
+258
+00:00:00,000 --> 00:00:00,000
+所以我们说这个函数乘法倍增的属性，与
+
+259
+00:10:01,627 --> 00:10:05,438
+the additive property on the previous
+slide. But more importantly this is kind of
+
+260
+00:00:00,000 --> 00:00:00,000
+前面的加法属性相对立。但是这不是
+
+261
+00:10:05,438 --> 00:10:09,213
+not the most interesting thing about this
+function. The really exciting thing about
+
+262
+00:00:00,000 --> 00:00:00,000
+有关函数最有趣的。最有趣的是
+
+263
+00:10:09,213 --> 00:10:12,708
+this function is it in fact has a
+trapdoor. In other words there's a secret
+
+264
+00:00:00,000 --> 00:00:00,000
+这个函数有一个后门。换句话说存在
+
+265
+00:10:12,708 --> 00:10:16,505
+key that all of a sudden allows us to
+invert this function. Even though without
+
+266
+00:00:00,000 --> 00:00:00,000
+一个秘密的密钥可以使我们转置这个函数。即使没有
+
+267
+00:10:16,505 --> 00:10:20,679
+the secret key the function is one way. As
+far as we know. And this property, I'll
+
+268
+00:00:00,000 --> 00:00:00,000
+这个密钥这个函数还是单向函数。就我所知，这种属性
+
+269
+00:10:20,679 --> 00:10:24,337
+say, the fact that it has a trap door,
+again, enabled all of public key
+
+270
+00:00:00,000 --> 00:00:00,000
+实际就有一个后门启用所有的公钥加密。
+
+271
+00:10:24,337 --> 00:10:28,632
+cryptography. I'll say that this trap door
+also makes the RSA function especially
+
+272
+00:00:00,000 --> 00:00:00,000
+并且这个后门也使得RSA函数很适合用于数字签名。
+
+273
+00:10:28,632 --> 00:10:32,820
+well suited for digital signatures. In
+week seven, we're gonna see that both the
+
+274
+00:00:00,000 --> 00:00:00,000
+在第7周，我们已经看了
+
+275
+00:10:32,820 --> 00:10:36,478
+RSA function and the discrete log
+functions let us construct digital
+
+276
+00:00:00,000 --> 00:00:00,000
+RSA函数和离散日志函数使得我们构想出了数字签名
+
+277
+00:10:36,478 --> 00:10:40,614
+signatures. But the RSA function, because
+it has a trap door, makes it very, very
+
+278
+00:00:00,000 --> 00:00:00,000
+但是RSA函数，由于它有后门，使得很容易从
+
+279
+00:10:40,614 --> 00:10:44,484
+easy to construct digital signatures from
+it. And so, in fact, most digital
+
+280
+00:00:00,000 --> 00:00:00,000
+它构造出数字签名。实际上
+
+281
+00:10:44,484 --> 00:10:48,301
+signatures out there in the world, in
+fact, rely on the RSA function just
+
+282
+00:00:00,000 --> 00:00:00,000
+现在的大多数数字签名依赖于RSA函数仅仅是
+
+283
+00:10:48,301 --> 00:10:52,459
+because it's so simple to build digital
+signatures from it. So again, we see that
+
+284
+00:00:00,000 --> 00:00:00,000
+因为从它很容易构建出数字签名。接下来
+
+285
+00:10:52,459 --> 00:10:56,085
+this one-way function with the special
+properties. It has a multiplicative
+
+286
+00:00:00,000 --> 00:00:00,000
+我们看一下这个单向函数的特殊属性。它具有倍数增长的属性
+
+287
+00:10:56,085 --> 00:10:59,859
+property and a trap door. Essentially
+again, enables all of public key crypto. So
+
+288
+00:00:00,000 --> 00:00:00,000
+和一个后门。主要的是，启用公开密钥加密。
+
+289
+00:10:59,859 --> 00:11:03,682
+to summarize, the reason we are able to
+build public key cryptography namely, the
+
+290
+00:00:00,000 --> 00:00:00,000
+现在总结一下，我们能构建公开密钥加密的原因，
+
+291
+00:11:03,682 --> 00:11:07,416
+reason we're able to do key exchange and
+public key encryption and so on, is
+
+292
+00:00:00,000 --> 00:00:00,000
+和操作密钥交换的原因以及公钥加密的原因等等
+
+293
+00:11:07,416 --> 00:11:11,485
+because we're able to construct one-way
+functions that have very, very special
+
+294
+00:00:00,000 --> 00:00:00,000
+是因为我们可以构造单向函数并且它具有非常非常特殊的性质
+
+295
+00:11:11,485 --> 00:11:15,555
+properties. In particular, they have these
+properties that are sometimes called
+
+296
+00:00:00,000 --> 00:00:00,000
+特别地，它们的这些性质有时叫做
+
+297
+00:11:15,555 --> 00:11:20,476
+homomorphic properties, namely they're
+given f(x) and f(y). We can construct
+
+298
+00:00:00,000 --> 00:00:00,000
+同态属性，即给出f(x),f(y），我们可以构造出
+
+299
+00:11:20,476 --> 00:11:26,759
+a f(x + y) or, f(x  y), and
+some functions, like RSA, even have trap
+
+300
+00:00:00,000 --> 00:00:00,000
+f(x+y)或者f(x*y)或者其他一些函数，例如RSA
+
+301
+00:11:26,759 --> 00:11:32,059
+doors, which let us build digital
+signatures very, very easily. But the main
+
+302
+00:00:00,000 --> 00:00:00,000
+甚至拥有一个后门，这后门使得我们很容易建立起数字签名。
+
+303
+00:11:32,059 --> 00:11:36,283
+thing I wanted to show you is that the
+magic of public key crypto is basically made
+
+304
+00:00:00,000 --> 00:00:00,000
+但是我想告诉你们最核心的是这个公钥加密的神奇之处是
+
+305
+00:11:36,283 --> 00:11:40,250
+possible because of these one-way
+functions with their special properties. So
+
+306
+00:00:00,000 --> 00:00:00,000
+实际由于这些单向函数所具有的特殊性质，
+
+307
+00:11:40,250 --> 00:11:44,268
+that's the end of this module and then
+in week seven, we'll start with digital signatures.
+
+308
+00:11:44,268 --> 00:11:44,268
+好的，这就是这个模块的所有内容，在第7周，我们将开始学习数字签名
+

@@ -1,0 +1,403 @@
+Now that we understand stream ciphers,
+we're gonna move on and talk about a more
+powerful primitive called a block cipher.
+So a block cipher is made up of two
+algorithms, E and D. These are encryption
+and decryption algorithms. And both of
+these algorithms take, as input, a key K.
+Now, the point of a block cipher is that
+it takes an N bit plain text as input, and
+it outputs exactly the same number of bits
+as outputs. So it maps N bits on inputs to
+exactly N bits of outputs. Now there are
+two canonical examples of block ciphers.
+The first one is called triple-DES. In
+triple-DES the block size, namely the
+number of input bits, is 64. So triple-DES
+will map 64-bit blocks to 64-bit blocks
+and it does it using a key that's 168 bits long.
+We're gonna talk about how Triple DES is built in the next segment.
+Another block cipher, which is more
+recent, is called AES. Now, AES has
+slightly different parameters. So, here
+the block size is 128 bits.
+So, AES will map a 128 bits of input to 128 bits of output.
+And it actually has three possible sizes of keys, and I wrote down these sizes over here.
+Basically the longer the key, the slower the cipher is,
+but presumably the
+more secure it is to break and we're gonna
+talk about what it means for block ciphers
+to be secure in just a minute. Now block
+ciphers are typically built by iteration. They
+take in as input a key K, for example
+in the case of AES the key could be 128
+bits long, and the first thing that
+happens to the key is that it gets expanded
+into a sequence of keys K1 to Kn called
+round keys. Now, the way the cipher
+uses these round keys is by iteratively
+encrypting the message again and again and
+again using what's called a round
+function. So here we have this function R
+that take two inputs. This function R is
+gonna be called a round function. It takes
+as input the round key, and it takes as
+input the current state of the message.
+So here we have our input message. Say,
+for AES, the message would be 128 bits
+exactly, because each block in AES is
+exactly 128 bits. And then the first thing
+that happens is we apply the first round
+function using the key K1 to the
+message. And we get some new message out,
+as a result. Then we take this message m1, we apply the next round function to
+it using a different key, using the key k2.
+Then we get the next round message out.
+And so on and so forth until all the
+rounds have been applied and then the
+final output is actually the result of the
+cipher. And again this would be also
+in the case of AES, this was 128 bits. And
+the resulting cipher text would also be
+128 bits. Now, different ciphers have
+different number of rounds, and they have
+different round functions. So, for
+example, for triple DES the number
+of rounds is 48. And we're gonna see
+exactly how the round function for triple
+DES works. For AES, for
+example, the number of rounds
+is only ten, and again, we're gonna look
+at how the round functions for AES
+work as well in just a minute.
+Before we do that, I just wanted to mention performance numbers.
+So you can see here, these are the performance numbers
+for the two typical block ciphers, triple DES and AES.
+And these are the corresponding numbers for the stream ciphers
+that we looked at in the previous module.
+And if you see that the block ciphers are
+considerably slower than stream ciphers. But we'll see that we can
+do many things with block ciphers that we
+couldn't do very efficiently with,
+constructions like RC4. Now my goal for
+this week is to show you how block ciphers work,
+but more importantly I want to show
+you how to use block ciphers correctly,
+for either encryption or integrity or
+whatever application you have in mind.
+So to show you how to use block ciphers correctly, it actually
+makes a lot of sense
+to abstract the concept a little bit so we have a clean,
+abstract concept of a block cipher
+to work with. And then we can argue and reason
+about what constructions are correct and
+what constructions are incorrect. And so
+an abstraction, it's a very elegant abstraction of a
+block cipher is what's called a pseudorandom function, a pseudorandom
+permutation. So let me explain what these
+things are. So a pseudorandom function
+basically is defined over a key space, an
+input space, and an output space.
+And all it is, is basically a function that takes
+a key and an input as inputs and outputs
+some element in the output space. Okay, so
+it takes an element in K, an element in X,
+and outputs an element in Y. And the only
+requirement essentially, is that there's
+an efficient way to evaluate the function.
+For functions we're not requiring that
+they be invertible, we just need them to
+be evaluatable, given the key and the input x.
+Now, a related concept that more accurately captures what a block cipher is
+it's called a pseudo-random
+permutation. So a pseudo-random
+permutation is, again, defined over a key
+space, and then just a set X. And what it
+does is it takes an element in the key
+space, an element of X, and outputs,
+basically, one element in X. Now, as
+usual, the function E should be easy to
+evaluate. So there should be an algorithm
+to evaluate the function E. But more
+importantly, once we fix the key K, it's
+important that this function E be one-to-one.
+In other words, if you think of the
+space X as the set here, and here's the
+same set X again, then basically the
+function E, what it does, is, it's a one-to-one
+function, so every element in X
+gets mapped to exactly one element in X.
+And then because it's one to one, of
+course it's also invertible. So given some
+output there's only one input that maps to
+that output. And the requirement is that
+there is an efficient inversion algorithm,
+call it D, that given a particular output,
+will output the original preimage that
+mapped to that output. So really, a
+pseudorandom permutation captures very
+accurately and syntactically what a block
+cipher is, and often I'll use the terms
+interchangeably, either a block cipher or
+a pseudorandom permutation. I'll use
+whichever term depending on the context
+where we're discussing things. Okay,
+so we have two examples, as we said, of
+pseudorandom permutations, triple DES and
+AES, say for AES-128. The key space would
+be 128 bits and the output space would be
+128 bits. For Triple DES, as we said, the
+block size is only 64 bits. And the key
+size is 168 bits, okay. So we'll use
+these running examples actually throughout, so whenever I say a PRP, concretely
+you should be thinking AES or
+triple DES. Now one thing that I
+wanted to point out is that in fact any
+pseudo-random permutation, namely any block
+cipher, you can also think of it as a PRF.
+In fact a PRP is a PRF that has more structure.
+In particular, a PRP is a PRF where
+the input space and the output space are
+the same, so X is equal to Y, and in
+fact is efficiently invertible once you
+have the secret key k. Okay. So
+in some sense a PRP is a special case of a
+PRF, although that's not entirely accurate, and we'll see why in just a second.
+So, so far, we just described the,
+kind of, the syntactic definition of what
+is a pseudo random permutation and a
+pseudo random function? So now, let's talk
+about what it means for a PRF or a PRP to
+be secure. And this concept will
+essentially capture what it means for a
+block cipher to be secure, okay? So this
+is why I wanted to show you these
+definitions, before we look at actual
+block cipher constructions, so at least
+it's clear in your mind what it is we're
+trying to construct. Okay, so here we have
+a PRF. And I'm gonna need a little bit of
+notation, not too much though, so I'm gonna
+need to define the set "Funs of X, Y".
+This is basically the set of all functions from
+the set X to the set Y, denoted here as a
+big circle, Funs[X, Y]. Now this set is
+gigantic. Its size is basically, you know,
+the size of Y to the size of X, so for
+example for AES, remember both X and Y
+would be 2 to the 128, so for AES the
+size of the set is enormous. It'll be
+2 to the 128 times 2 to the 128.
+So it's kind of a double exponential.
+So this is a gigantic number, this is more
+particles than there are in the universe.
+But regardless, we can kind of think of this set abstractly. We never have to kind of
+write it down, we can just keep it in our head and not worry about computing on it.
+So this is a particular gigantic set of the set of all functions from X to Y.
+Now we're gonna look at a much smaller set of functions, namely I'll call this set
+S sub F, and that's gonna denote the
+set of all functions from X to Y that are
+specified by the PRF as soon as we
+fix the particular key k. Okay so,
+we fixed the key k, we let the second
+argument float, and that basically defines
+a function from X to Y. Then we're going
+to look at the set of all such functions
+for all possible keys in the key space.
+Okay, so, if you think about it again,
+for AES, if we're using 128-bit keys, the size of
+this, I'll say S-AES, is basically going to be
+2 to the 128, so much, much, much
+smaller than the set of all possible
+functions from X to Y. And now, we say
+that a PRF is secure, basically if a
+random function in, from X to Y. So we
+literally, we pick some arbitrary function
+in this gigantic set of all functions from
+X to Y. And we say that the PRF is secure,
+if, in fact, a random function from X to Y
+is indistinguishable from a pseudo-random
+function from X to Y. Namely, when we pick
+a random function from the set SF.
+Okay. So, more precisely basically again,
+the uniform distribution on the set of pseudorandom functions
+is indistinguishable from the uniform distribution on the set of all functions.
+Let me be just a little bit more precise,
+just to give you a little bit more intuition about what I mean by that and then we'll
+move on to actual constructions. So let me
+a bit more precise about what it means for
+a PRF to be secure. And so what we'll do
+is basically the following. So we have our
+adversary, who's trying to distinguish
+truly random function from a pseudo-random
+function. So what we'll do is let them
+interact with one of the two. So here in
+the top cloud, we're choosing a truly
+random function. In the bottom cloud,
+we're just choosing a random key for a
+pseudo-random function. And now what this
+adversary's gonna do is he's gonna submit
+points in X. So he's gonna submit a bunch
+of Xs. In fact, he's gonna do this again
+and again and again. So he's gonna
+submit X1, X2. X3, X4, and then for each
+one of, of those queries, we're gonna give him
+either the value of the truly random
+function at the point X, or the value of
+the pseudorandom function at the point X.
+Okay, so the adversary doesn't know which
+ones he's getting. By the way, for all
+queries, he's always getting either the truly
+random function, or the pseudorandom function. In other words, he's either
+interacting with a truly random function
+for all his queries, or he's interacting
+with a pseudorandom function for all his
+queries. And we say that the PRF is
+secure if this poor adversary can't tell the
+difference. He cannot tell whether he's
+interacting with a truly random function
+or interacting with a pseudo random
+function. Okay, and we're gonna come back
+actually later on and define PRFs more
+precisely but for now, I wanted to give
+you the intuition for what it means for PRFs to be secure
+so you'll understand what it is that we're
+trying to construct when we construct
+these pseudorandom functions. And I
+should say that the definition for a
+pseudorandom permutation is pretty much
+the same, except instead of choosing a
+random function, we're going to choose a
+random permutation on the set X. In other
+words, a random one-to-one function on the
+set X. The adversary can either query this
+random function on the set X, or he can
+query a pseudorandom permutation, and the
+PRP is secure if the adversary cannot
+tell the difference. Okay, so again the
+goal is to make these functions and
+permutations look like truly random
+functions or permutations. Okay. So let's
+look at a simple question. So suppose we
+have a secure PRF. So we know this PRF
+F. Happens to be defined in the set X. And
+it so happens, you know, it outputs 128
+bits every time. It so happens that this
+PRF cannot be distinguished from a truly
+random function from X to {0,1} to the 128.
+Now we're gonna build a new PRF. Let's
+call this PRF G. And the PRF G is gonna be
+defined as follows. We say, if x is equal
+to zero, always output zero. Otherwise,
+if x is not equal to zero, just output the
+value of F. So, my question to you is,
+do you think this G is a secure PRF?
+Well, so, the answer, of course, is that its very easy
+to distinguish the function G from a random function. All the adversary has to do
+is just query the function at X=0.
+For a random function, the probability
+that the result is gonna be zero is one
+over 2 to the 128. Whereas for the
+pseudo-random function, he's always gonna
+get zero. Because at zero, the function is
+always defined to be zero, no matter what
+the key. And so all he would do is he
+would say, hey, I'm interacting with a
+pseudo-random function if he gets zero at X=0,
+and he'll say I'm interacting with
+a random function if he gets nonzero at X=0.
+So it's very easy to distinguish
+this G from random. So what this example shows
+is that even if you have a secure PRF, it's enough that on just one known input
+the output is kinda not random, the
+output is fixed, and already the PRF is broken,
+even though you realize that
+everywhere else the PRF is perfectly
+indistinguishable from random. Okay, so
+let's just show you the power of PRFs.
+Let's look at a very easy application. I want to
+show you that in fact pseudorandom functions
+directly give us a pseudorandom generator. Okay. So, let's assume we have
+a pseudo random function. So this one
+happens to go from N bits to N bits. And then,
+let's define the following generator. Its seed space is going to be the
+key space for the PRF, and its output
+space is gonna be, basically, t blocks of
+n bits each. Okay, so you can see the
+output is a total of n times t bits for
+some parameter T that we can choose. And
+it turns out, basically, you can do this
+very simple construction, this is
+sometimes called counter mode,
+where essentially, you take the PRF and you
+evaluate it at zero, you evaluate it at one,
+you evaluate it at two, at three, at
+four, up to T, and you concatenate all these values.
+That's the generator, okay?
+So we basically took the key for the PRF
+and we expanded it into n times t bits.
+Okay. A key property of this generator is
+that it's parallelizable. What I mean by that
+is if you have two processors or two cores
+that you can compute on, then you can have
+one core compute the even entries of the
+output, and you can have another core
+compute the odd entries of the output.
+So basically, if you have two cores, you can
+make this generator run twice as fast as
+it would if you only have a single core.
+So the nice thing about this is, of
+course, we know that pseudo-random
+generators give us stream ciphers, and so
+this is an example of a parallelizable stream
+cipher. And I just wanted to point out
+that many of the stream ciphers that we
+looked at before, for example, RC4,
+those were inherently sequential. So even if you
+had two processors, you couldn't make the
+stream cipher work any faster than if you
+just had a single processor. Now the main
+question is why is this generator secure?
+And so here I'm only gonna give you a
+little bit of intuition and we're gonna
+come back and argue this more precisely
+later on. But I'll just say that security
+basically falls directly from the PRF property.
+And the way we reason about security, is we say, well this PRF by definition
+is indistinguishable from a truly random function on 128 bits.
+So in other words, if I take this generator and
+instead I define a generator using a truly
+random function, in other words, I'll
+write the output of the generator as
+f(0) concatenated f(1), and so on
+and so forth, using a truly random function,
+then the output of the
+generator using the truly random function
+would be indistinguishable from
+the output of the generator using
+a pseudorandom function. That is the essence of
+the security property of a PRF. But with
+a truly random function, you notice that
+the output is just truly random. Because
+for a truly random function, f(0) is
+a random value. f(1) is an independent
+random value. f(2) is an independent
+random value, and so on and so forth.
+So the entire output is a truly random
+output. And so with a truly random function,
+a generator produces truly random outputs,
+and is therefore a perfectly secure
+generator. And so you see how the PRF
+security property lets us argue security.
+Basically, we argue that when we replace
+the PRF with a truly random function, the
+construction is necessarily secure, and
+that says that the construction with a
+pseudorandom function is also secure.
+Okay? And we're gonna see a couple more
+examples like this later on. So now you
+understand what a block cipher is, and you
+have intuition for what security
+properties it's trying to achieve.
+And in the next segment, we're gonna look at
+constructions for block ciphers.

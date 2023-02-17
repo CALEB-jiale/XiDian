@@ -1,0 +1,1106 @@
+1
+00:00:00,000 --> 00:00:04,262
+Now that we've seen a few examples of
+historic ciphers, all of which are badly
+
+2
+00:00:04,262 --> 00:00:07,130
+broken, we're going to switch gears and
+talk about ciphers that are much better
+
+3
+00:00:10,122 --> 00:00:13,115
+designed. But before we do that, I want to,
+first of all, define more precisely what a
+
+4
+00:00:13,115 --> 00:00:17,432
+cipher is. So first of all, a cipher is
+actually, remember a cipher is made up of
+
+5
+00:00:17,432 --> 00:00:21,694
+two algorithms. There's an encryption
+algorithm and a decryption algorithm. But
+
+6
+00:00:21,694 --> 00:00:26,012
+in fact, a cipher is defined over a
+triple. So the set of all possible keys,
+
+7
+00:00:26,012 --> 00:00:31,292
+which I'm going to denote by script K, and
+sometimes I'll call this the key space,
+
+8
+00:00:31,292 --> 00:00:35,968
+it's the set of all possible keys. There's
+this set of all possible messages and this
+
+9
+00:00:35,968 --> 00:00:40,365
+set of all possible ciphertexts. Okay, so
+this triple in some sense defines the
+
+10
+00:00:40,365 --> 00:00:44,756
+environment over which the cipher is
+defined. And then the cipher itself is a
+
+11
+00:00:44,756 --> 00:00:49,236
+pair of efficient algorithms E and D. E is
+the encryption algorithm; D is the
+
+12
+00:00:49,236 --> 00:00:57,762
+decryption algorithm. Of course, E takes
+keys and messages. And outputs ciphertexts.
+
+13
+00:00:57,762 --> 00:01:06,770
+And the decryption algorithm takes
+keys and ciphertexts. Then outputs messages.
+
+14
+00:01:06,770 --> 00:01:12,282
+And the only requirements is that these
+algorithms are consistent. They satisfy
+
+15
+00:01:12,282 --> 00:01:17,933
+what's called the correctness property. So
+for every message in the message space.
+
+16
+00:01:17,933 --> 00:01:23,593
+And every key. In the key space, it had
+better be the case that if I encrypt the
+
+17
+00:01:23,593 --> 00:01:29,185
+message with the key K and then I decrypt
+using the same key K I had better get back
+
+18
+00:01:29,185 --> 00:01:34,711
+the original message that I started with.
+So this equation here is what's called the
+
+19
+00:01:34,711 --> 00:01:39,974
+consistency equation and every cipher has
+to satisfy it in order to be a cipher
+
+20
+00:01:39,974 --> 00:01:44,970
+otherwise it's not possible to decrypt.
+One thing I wanted to point out is that I
+
+21
+00:01:44,970 --> 00:01:49,782
+put the word efficient here in quotes. And
+the reason I do that is because efficient
+
+22
+00:01:49,782 --> 00:01:54,041
+means different things to different
+people. If you're more inclined towards
+
+23
+00:01:54,041 --> 00:01:58,811
+theory, efficient means runs in polynomial
+time. So algorithms E and D have to run in
+
+24
+00:01:58,811 --> 00:02:02,842
+polynomial time in the size of their
+inputs. If you're more practically
+
+25
+00:02:02,842 --> 00:02:07,045
+inclined, efficient means runs within a
+certain time period. So for example,
+
+26
+00:02:07,045 --> 00:02:11,474
+algorithm E might be required to take
+under a minute to encrypt a gigabyte of
+
+27
+00:02:11,474 --> 00:02:16,073
+data. Now either way, the word efficient
+kind of captures both notions and you can
+
+28
+00:02:16,073 --> 00:02:20,158
+interpret it in your head whichever way
+you'd like. I'm just going to keep
+
+29
+00:02:20,158 --> 00:02:24,139
+referring to it as efficient and put
+quotes in it as I said if you're theory
+
+30
+00:02:24,189 --> 00:02:27,964
+inclined think of it as polynomial time,
+otherwise think of it as
+
+31
+00:02:27,964 --> 00:02:32,100
+concrete time constraints. Another comment
+I want to make is in fact algorithm E.
+
+32
+00:02:32,100 --> 00:02:36,455
+It's often a randomized algorithm. What
+that means is that as your encrypting
+
+33
+00:02:36,455 --> 00:02:40,981
+messages, algorithm E is gonna generate
+random bits for itself, and it's going to
+
+34
+00:02:40,981 --> 00:02:45,676
+use those random bits to actually encrypt
+the messages that are given to it. On the
+
+35
+00:02:45,676 --> 00:02:50,258
+other hand the decrypting algorithm is
+always deterministic. In other words given
+
+36
+00:02:50,258 --> 00:02:54,558
+the key and the ciphertext output is
+always the same. Doesn't depend on any
+
+37
+00:02:54,558 --> 00:02:58,970
+randomness that's used by the algorithm.
+Okay, so now that we understand what a
+
+38
+00:02:58,970 --> 00:03:03,552
+cipher is better, I want to kind of show
+you the first example of a secure cipher.
+
+39
+00:03:03,552 --> 00:03:08,364
+It's called a one time pad It was designed
+by Vernam back at the beginning of the
+
+40
+00:03:08,364 --> 00:03:12,724
+twentieth century. Before I actually
+explain what the cipher is, let's just
+
+41
+00:03:12,724 --> 00:03:17,383
+state it in the terminology that we've
+just seen. So the message space for the
+
+42
+00:03:17,383 --> 00:03:22,221
+Vernam cipher for the one-time pad is the
+same as the ciphertext space which is
+
+43
+00:03:22,221 --> 00:03:27,653
+just the set of all ended binary strings.
+This, this just means all sequences of
+
+44
+00:03:27,653 --> 00:03:33,854
+bits, of zero one characters. The key
+space is basically the same as the message
+
+45
+00:03:33,854 --> 00:03:40,134
+space which is again simply the embed of
+all binary strings. So a key in the one
+
+46
+00:03:40,134 --> 00:03:46,290
+time pad is simply a random big string,
+it's a random sequence of bits. That's as
+
+47
+00:03:46,290 --> 00:03:51,508
+long as the message to be encrypted, as
+long as the message. Okay, now that we've
+
+48
+00:03:51,508 --> 00:03:56,726
+specified kind of what's the cipher's
+defined over we can actually specify how
+
+49
+00:03:56,726 --> 00:04:02,010
+the cipher works and it's actually really
+simple. So essentially the ciphertexts.
+
+50
+00:04:02,010 --> 00:04:07,812
+Which is the result of encrypting a
+message with a particular key, is simply
+
+51
+00:04:07,812 --> 00:04:13,766
+the XOR of the two. Simply K XOR M. [inaudible] see a quick example of
+
+52
+00:04:13,766 --> 00:04:20,026
+this. Remember that XOR, this plus
+with a circle. XOR means addition
+
+53
+00:04:20,026 --> 00:04:26,825
+modulo two. So if I take a particular
+message, say, 0110111. And it take a
+
+54
+00:04:26,825 --> 00:04:33,871
+particular key, say 1011001. When I
+compute the encryption of the message
+
+55
+00:04:33,871 --> 00:04:38,838
+using this key, all I do is I
+compute the XOR of these two
+
+56
+00:04:38,838 --> 00:04:43,942
+strings. In other words, I do addition
+module or two bit by bit. So I get one,
+
+57
+00:04:43,942 --> 00:04:48,645
+one, zero, one, one, one, zero. That's a
+ciphertext. And then how do I decrypt? I
+
+58
+00:04:48,645 --> 00:04:52,893
+guess they could do kind of the same
+thing. So they decrypt a cipher text using
+
+59
+00:04:52,893 --> 00:04:57,248
+a particular key. What I do is I XOR the
+key and the ciphertext again. And so all
+
+60
+00:04:57,248 --> 00:05:01,819
+we have to verify is that it satisfies the
+consistency requirements. And I'm going to
+
+61
+00:05:01,819 --> 00:05:06,443
+do this slowly once and then from now on
+I'm going to assume this is all, simple to
+
+62
+00:05:06,443 --> 00:05:10,798
+you. So we're gonna make, we're gonna have
+to make sure that if I decrypt a cipher
+
+63
+00:05:10,798 --> 00:05:14,893
+text, that was encrypted using a
+particular key, I had better get. Back the
+
+64
+00:05:14,893 --> 00:05:20,481
+message M. So what happens here? Well,
+let's see. So if I look at the encryption
+
+65
+00:05:20,481 --> 00:05:25,996
+of k and m, this is just k XOR m by
+definition. What's the decryption of k XOR
+
+66
+00:05:25,996 --> 00:05:31,628
+m using k? That's just k XOR (k XOR
+m). And so since I said that XOR is
+
+67
+00:05:31,628 --> 00:05:36,948
+addition modulo two, addition is
+associative, so this is the same as (k XOR k)
+
+68
+00:05:36,948 --> 00:05:43,007
+XOR m, which is simply as you know k XOR k is a zero, and zero XOR anything
+
+69
+00:05:43,007 --> 00:05:49,066
+is simply m. Okay, so this actually shows
+that the one-time pad is in fact a cipher,
+
+70
+00:05:49,066 --> 00:05:54,277
+but it doesn't say anything about the
+security of the cipher. And we'll talk
+
+71
+00:05:54,277 --> 00:05:58,319
+about security of the cipher in just a
+minute. First of all, let me quickly ask
+
+72
+00:05:58,319 --> 00:06:02,205
+you a question, just to make sure we're
+all in sync. Suppose you are given a
+
+73
+00:06:02,205 --> 00:06:06,092
+message m and the encryption of that
+message using the one time pad. So all
+
+74
+00:06:06,092 --> 00:06:10,522
+you're given is the message and the cipher
+text. My question to you is, given this
+
+75
+00:06:10,522 --> 00:06:15,467
+pair m and c, can you actually figure out
+the one-time pad key that was used in the
+
+76
+00:06:15,467 --> 00:06:20,588
+creation of c from m?
+
+77
+00:06:20,588 --> 00:06:23,030
+So I hope all of you
+realize that in fact, given the message in
+
+78
+00:06:23,030 --> 00:06:25,473
+the cipher text it's very easy to recover
+what the key is. In particular the key is
+
+79
+00:06:25,473 --> 00:06:30,241
+simply M XOR C. Then we'll see that if
+it's not immediately obvious to you we'll
+
+80
+00:06:30,241 --> 00:06:35,238
+see why that's, the case, a little later
+in the talk, in the lecture. Okay alright
+
+81
+00:06:35,238 --> 00:06:40,198
+so the 1-time pad is a really cool from a
+performance point of view all you're doing
+
+82
+00:06:40,198 --> 00:06:44,656
+is you exo-ring the key in the message so
+it's a super, super fast. Cypher for
+
+83
+00:06:44,656 --> 00:06:48,464
+encrypting and decrypting very long
+messages. Unfortunately it's very
+
+84
+00:06:48,464 --> 00:06:52,768
+difficult to use in practice. The reason
+it's difficult to use is the keys are
+
+85
+00:06:52,768 --> 00:06:56,907
+essentially as long as the message. So if
+Alice and Bob want to communicate
+
+86
+00:06:56,907 --> 00:07:01,321
+securely, so you know Alice wants to send
+a message end to Bob, before she begins
+
+87
+00:07:01,321 --> 00:07:06,011
+even sending the first bit of the message,
+she has to transmit a key to Bob that's as
+
+88
+00:07:06,011 --> 00:07:10,536
+long as that message. Well, if she has a
+way to transmit a secure key to Bob that's
+
+89
+00:07:10,536 --> 00:07:15,061
+as long as the message, she might as well
+use that same mechanism to also transmit
+
+90
+00:07:15,061 --> 00:07:19,439
+the message itself. So the fact that the
+key is as long as the message is quite
+
+91
+00:07:19,439 --> 00:07:23,490
+problematic and makes the one-time pad
+very difficult to use in practice.
+
+92
+00:07:23,490 --> 00:07:28,040
+Although we'll see that the idea behind
+the one-time pad is actually quite useful
+
+93
+00:07:28,040 --> 00:07:32,590
+and we'll see that a little bit later. But
+for now I want to focus a little bit on
+
+94
+00:07:32,590 --> 00:07:36,918
+security. So the obvious questions are,
+you know, why is the one-time pad secure?
+
+95
+00:07:36,918 --> 00:07:41,195
+Why is it a good cypher? Then to answer
+that question, the first thing we have to
+
+96
+00:07:41,195 --> 00:07:45,191
+answer is, what is a secure cipher to
+begin with? What is a, what makes cipher
+
+97
+00:07:45,191 --> 00:07:49,759
+secure? Okay, so the study, security of
+ciphers, we have to talk a little bit
+
+98
+00:07:49,759 --> 00:07:54,962
+about information theory. And in fact the
+first person, to study security of ciphers
+
+99
+00:07:55,150 --> 00:08:00,076
+rigorously. Is very famous, you know, the
+father of information theory, Claude
+
+100
+00:08:00,076 --> 00:08:05,042
+Shannon, and he published a famous paper
+back in 1949 where he analyzes the
+
+101
+00:08:05,042 --> 00:08:10,603
+security of the one-time pad. So the idea
+behind Shannon's definition of security is
+
+102
+00:08:10,603 --> 00:08:15,182
+the following. Basically, if all you get
+to see is the cypher text, then you should
+
+103
+00:08:15,182 --> 00:08:19,379
+learn absolutely nothing about the plain
+text. In other words, the cypher text
+
+104
+00:08:19,379 --> 00:08:23,413
+should reveal no information about the
+plain text. And you see why it took
+
+105
+00:08:23,413 --> 00:08:28,047
+someone who invented information theory to
+come up with this notion because you have
+
+106
+00:08:28,047 --> 00:08:32,517
+to formulize, formally explain what does
+information about the plain text actually
+
+107
+00:08:32,517 --> 00:08:37,653
+mean. Okay so that's what Shannon did and
+so lemme show you Shannon's definition,
+
+108
+00:08:37,653 --> 00:08:42,841
+I'll, I'll write it out slowly first. So
+what Shannon said is you know suppose we
+
+109
+00:08:42,841 --> 00:08:48,029
+have a cypher E D that's defined over
+triple K M and C just as before. So KM and
+
+110
+00:08:48,029 --> 00:08:53,411
+C define the key space, the message space
+and the cypher text space. And when we say
+
+111
+00:08:53,411 --> 00:08:58,404
+that the cypher text sorry we say that the
+cypher has perfect secrecy if the
+
+112
+00:08:58,404 --> 00:09:03,592
+following condition holds. It so happens
+for every two messages M zero and M1 in
+
+113
+00:09:03,592 --> 00:09:08,684
+the message space. For every two messages
+the only requirement I'm gonna put on
+
+114
+00:09:08,684 --> 00:09:13,831
+these messages is they have the same
+length. Yeah so we're only, we'll see why
+
+115
+00:09:13,831 --> 00:09:19,106
+this requirement is necessary in just a
+minute. And for every cyphertext, in the
+
+116
+00:09:19,106 --> 00:09:25,221
+cyphertext space. Okay? So for every pair
+of method messages and for every cipher
+
+117
+00:09:25,221 --> 00:09:31,118
+text, it had better be the case that, if I
+ask, what is the probability that,
+
+118
+00:09:31,357 --> 00:09:37,096
+encrypting N zero with K, woops.
+Encrypting N zero with K gives C, okay? So
+
+119
+00:09:37,096 --> 00:09:43,551
+how likely is it, if we pick a random key?
+How likely is it that when we encrypt N
+
+120
+00:09:43,551 --> 00:09:49,819
+zero, we get C. That probability should be
+the same as when we encrypt N1. Okay, so
+
+121
+00:09:49,819 --> 00:09:54,920
+the probability of encrypting n one and
+getting c is exactly the same as the
+
+122
+00:09:54,920 --> 00:09:59,955
+probability of encrypting n zero and
+getting c. And just as I said where the
+
+123
+00:09:59,955 --> 00:10:04,658
+key, the distribution, is over the
+distribution on the key. So, the key is
+
+124
+00:10:04,658 --> 00:10:10,157
+uniform in the key space. So k is uniform
+in k. And I'm often going to write k arrow
+
+125
+00:10:10,157 --> 00:10:15,390
+with a little r above it to denote the
+fact that k is a random variable that's
+
+126
+00:10:15,390 --> 00:10:20,491
+uniformly sampled in the key space k.
+Okay, this is the main part of Shannon's
+
+127
+00:10:20,491 --> 00:10:25,892
+definition. And let's think a little bit
+about what this definition actually says.
+
+128
+00:10:25,892 --> 00:10:30,965
+So what does it mean that these two
+probabilities are the same? Well, what it
+
+129
+00:10:30,965 --> 00:10:36,304
+says is that if I'm an attacker and I
+intercept a particular cypher text c, then
+
+130
+00:10:36,304 --> 00:10:41,577
+in reality, the probability that the
+cypher text is the encryption of n zero is
+
+131
+00:10:41,577 --> 00:10:46,798
+exactly the same as the probability that
+it's the incryption of n one. Because
+
+132
+00:10:46,798 --> 00:10:52,219
+those probabilities are equal. So if I
+have, all I have the cypher text C that's
+
+133
+00:10:52,219 --> 00:10:57,639
+all I have intercepted I have no idea
+whether the cypher text came from M zero
+
+134
+00:10:57,639 --> 00:11:03,196
+or the cypher text came from M one because
+again the probability of getting C is
+
+135
+00:11:03,196 --> 00:11:08,651
+equally likely whether M zero is being
+encrypted or M one is being encrypted. So
+
+136
+00:11:08,651 --> 00:11:13,286
+here, we have the definition stated again.
+And I just wanna write these properties
+
+137
+00:11:13,286 --> 00:11:17,749
+again more precisely. So let's write this
+again. So what [inaudible] definition
+
+138
+00:11:17,749 --> 00:11:22,326
+means is that if I am given a particular
+cipher text, I can't tell where it came
+
+139
+00:11:22,326 --> 00:11:27,125
+from. I can't tell if it's, if the message
+that was encrypted. Is either N zero or N
+
+140
+00:11:27,125 --> 00:11:32,090
+one and in fact, this property is true for
+all messages. For all these N zero, for
+
+141
+00:11:32,090 --> 00:11:37,117
+all N zero and N ones. So not only can I
+not tell if'c' came from N zero or N one,
+
+142
+00:11:37,117 --> 00:11:42,144
+I can't tell if it came from N two or N
+three or N four or N five because all of
+
+143
+00:11:42,144 --> 00:11:47,109
+them are equally likely to produce the
+cypher text'c'. So what this means really
+
+144
+00:11:47,109 --> 00:11:52,074
+is that if you're encrypting messages with
+a one time pad then in fact the most
+
+145
+00:11:52,074 --> 00:11:56,729
+powerful adversary, I don't really care
+how smart you are, the most powerful
+
+146
+00:11:56,729 --> 00:12:02,530
+adversary. Can learn nothing about the
+plain text, learns nothing about the plain
+
+147
+00:12:02,530 --> 00:12:09,624
+text. From the cypher text. So to say it
+in one more way, basically what this
+
+148
+00:12:09,624 --> 00:12:16,315
+proves is that there's no, there's no
+cypher text-only attack on a cypher that
+
+149
+00:12:16,315 --> 00:12:23,263
+has perfect secrecy. Now, cypher attacks
+actually aren't the only attacks possible.
+
+150
+00:12:23,263 --> 00:12:29,440
+And in fact, other attacks may be
+possible, other attacks may be possible.
+
+151
+00:12:32,160 --> 00:12:36,772
+Okay. Now that we understand what perfect
+secrecy, means, the question is, can we
+
+152
+00:12:36,772 --> 00:12:41,327
+build ciphers that actually have perfect
+secrecy? And it turns out that we don't
+
+153
+00:12:41,327 --> 00:12:45,517
+have to look very far, the one time
+pattern fact has perfect secrecy. So I
+
+154
+00:12:45,517 --> 00:12:50,719
+want to prove to you this is Shannon's first
+results and I wanna prove this fact to
+
+155
+00:12:50,719 --> 00:12:55,858
+you, it's very simple proof so let's go
+ahead and look at it and just do it. So we
+
+156
+00:12:55,858 --> 00:13:01,061
+need to kind of interpret what does that
+mean, what is this probability that E K M
+
+157
+00:13:01,061 --> 00:13:06,200
+Z is equal to C. So it's actually not that
+hard to see that for every message and
+
+158
+00:13:06,200 --> 00:13:11,022
+every cyphertext the probability that the
+encryption of N under a key K the
+
+159
+00:13:11,022 --> 00:13:16,161
+probability that, that's equal to C, the
+probability that our random choice of key
+
+160
+00:13:16,161 --> 00:13:23,720
+by definition. All that is, is basically
+the number of keys. Kay, instruct Kay.
+
+161
+00:13:24,758 --> 00:13:31,533
+Such that, well. If I encrypt. And with k
+I get c. So I literally count the number
+
+162
+00:13:31,533 --> 00:13:37,207
+of keys and I divide by the total number
+of keys. Right? That's what it means, that
+
+163
+00:13:37,207 --> 00:13:42,833
+if I choose a random key, that key maps m
+to c. Right. So it's basically the number
+
+164
+00:13:42,833 --> 00:13:47,707
+of key that map n to c divided by the
+total number of keys. This is its
+
+165
+00:13:47,707 --> 00:13:53,406
+probability. So now suppose that we had a
+cypher such that for all messages and all
+
+166
+00:13:53,406 --> 00:13:58,967
+cypher texts, it so happens that if I look
+at this number, the number of k, k, and k,
+
+167
+00:13:58,967 --> 00:14:04,391
+such that e, k, m is equal to c. In other
+words, I'm looking at the number of keys
+
+168
+00:14:04,391 --> 00:14:09,259
+that map m to c. Suppose this number
+happens to be a constant. So say it
+
+169
+00:14:09,259 --> 00:14:14,079
+happens to be two, three, or ten or
+fifteen. It just hap, happens to be an
+
+170
+00:14:14,079 --> 00:14:19,332
+absolute constance. If that's the case,
+then by definition, for all n0 and n1 and
+
+171
+00:14:19,332 --> 00:14:24,747
+for all c, this probability has to be the
+same because the denominator is the same,
+
+172
+00:14:24,747 --> 00:14:30,097
+the numerator is the same, it's just as
+constant, and therefore the probability is
+
+173
+00:14:30,097 --> 00:14:35,644
+always the same for all n and c. And so if
+this property is true, then the cypher has
+
+174
+00:14:35,644 --> 00:14:43,616
+to have, the cypher has perfect secrecy.
+Okay, so lets see what can we say about
+
+175
+00:14:43,616 --> 00:14:48,804
+this quantity for the one time pad. So the
+sec-, so, the question to you is, if I
+
+176
+00:14:48,804 --> 00:14:54,770
+have a message in a cipher-text, how many
+one time pad keys are there [inaudible]
+
+177
+00:14:54,770 --> 00:15:00,381
+map, this message ends, so the [inaudible]
+C? So, in other words, how many keys are
+
+178
+00:15:00,381 --> 00:15:06,101
+there, such that M XOR K is equal to C?
+So I hope you've all answered one. And
+
+179
+00:15:06,101 --> 00:15:12,683
+let's see why that's the case. For the one
+time pad, if we have that, the encryption
+
+180
+00:15:12,683 --> 00:15:18,303
+of K of M under K is equal to C. But
+basically, well, by definition, that
+
+181
+00:15:18,303 --> 00:15:24,885
+implies that K XOR M is equal to C. But
+that also simply says that K has to equal
+
+182
+00:15:24,885 --> 00:15:31,766
+to M XOR C. Yes, I just X over both
+sides by M and I get that K must equal the
+
+183
+00:15:31,766 --> 00:15:37,561
+M XOR C. Okay? So what that says is
+that, for the one time pad, in fact, the
+
+184
+00:15:37,561 --> 00:15:43,707
+number of keys, in K, shows the EKM, is
+equal to C. That simply is one, and this
+
+185
+00:15:43,707 --> 00:15:49,852
+holds for all messages in cipher text. And
+so, again, by what we said before, it just
+
+186
+00:15:49,852 --> 00:15:54,987
+says that the one time pad has, perfect
+secrecy. Perfect secrecy and that
+
+187
+00:15:54,987 --> 00:15:59,093
+completes the proof of this [inaudible]
+very, very simple. Very, very simple
+
+188
+00:15:59,093 --> 00:16:03,644
+lemma. Now the funny thing is that
+even though this lemma is so simple to
+
+189
+00:16:03,644 --> 00:16:08,194
+prove in fact it proves a pretty powerful
+statement again. This basically says for
+
+190
+00:16:08,194 --> 00:16:12,328
+the one time [inaudible] there is no
+cypher text only attack. So, unlike the
+
+191
+00:16:12,328 --> 00:16:16,393
+substitution cipher, or the vigenere
+cipher, or the roller machines, all those
+
+192
+00:16:16,393 --> 00:16:20,778
+could be broken by ciphertext-only attack.
+We've just proved that for the one-time
+
+193
+00:16:20,778 --> 00:16:25,110
+pad, that's simply impossible. Given the
+cyphertext, you simply learn nothing about
+
+194
+00:16:25,110 --> 00:16:29,281
+the plaintext. However, as we can see,
+this is simply not the end of the story. I
+
+195
+00:16:29,281 --> 00:16:33,131
+mean, are we done? I mean, basically,
+we're done with the course now, cuz we
+
+196
+00:16:33,131 --> 00:16:37,359
+have a way. To encrypt, so that an
+attacker can't recover anything about our
+
+197
+00:16:37,359 --> 00:16:41,206
+method. So maybe we're done with the
+course. But in fact, as we'll see, there
+
+198
+00:16:41,206 --> 00:16:45,261
+are other attacks. And, in fact, the one
+time pad is actually not such a
+
+199
+00:16:45,261 --> 00:16:49,316
+secure cipher. And in fact, there are
+other attacks that are possible, and we'll
+
+200
+00:16:49,316 --> 00:16:54,075
+see that shortly. Okay? I emphasize again
+the fact that it has perfect secrecy does
+
+201
+00:16:54,075 --> 00:16:58,785
+not mean that the one time pad is the
+secure cypher to use. Okay. But as we said
+
+202
+00:16:58,785 --> 00:17:03,733
+the problem with the one time pad is that
+the secret key is really long. If you had
+
+203
+00:17:03,733 --> 00:17:08,071
+a way of. Communicating the secret key
+over to the other side. You might as well
+
+204
+00:17:08,071 --> 00:17:12,253
+use that exact same method to also
+communicate the message to the other side,
+
+205
+00:17:12,253 --> 00:17:16,652
+in which case you wouldn't need a cypher
+to begin with. Okay? So the problem again
+
+206
+00:17:16,652 --> 00:17:21,105
+is the one time pad had really long keys
+and so the obvious question is are there
+
+207
+00:17:21,105 --> 00:17:25,450
+other cyphers that has perfect secrecy and
+possibly have much, much shorter keys?
+
+208
+00:17:25,450 --> 00:17:30,136
+Well, so the bad news is the Shannon,
+after proving that the one-time pad has
+
+209
+00:17:30,136 --> 00:17:34,945
+perfect secrecy, proved another theorem
+that says that in fact if a cypher has
+
+210
+00:17:34,945 --> 00:17:39,878
+perfect secrecy, the number of keys in the
+cypher must be at least the number of
+
+211
+00:17:39,878 --> 00:17:44,935
+messages that the cypher can handle. Okay,
+so in particular, what this means is if I
+
+212
+00:17:44,935 --> 00:17:51,037
+have perfect secrecy. Then necessarily the
+number of keys, or rather the length of my
+
+213
+00:17:51,037 --> 00:17:56,309
+key, must be greater than the length of
+the message. So, in fact, since the one
+
+214
+00:17:56,309 --> 00:18:00,834
+time pad satisfies us with equality, the
+one time pad is an optimal, cipher that
+
+215
+00:18:00,834 --> 00:18:04,862
+has perfect secrecy, okay? So basically,
+what this shows is that this is an
+
+216
+00:18:04,862 --> 00:18:09,056
+interesting notion. The one time pad is an
+interesting cipher. But, in fact, in
+
+217
+00:18:09,056 --> 00:18:13,360
+reality, it's actually quite hard to use.
+It's hard to use in practice, again,
+
+218
+00:18:13,360 --> 00:18:17,790
+because of these long keys. And so this
+notion of perfect secrecy, even though
+
+219
+00:18:17,790 --> 00:18:21,840
+it's quite interesting, basically says
+that it doesn't really tell us the
+
+220
+00:18:21,840 --> 00:18:26,279
+practical cyphers are going to be secure.
+And we're gonna see, but, as we said, the
+
+221
+00:18:26,279 --> 00:18:30,994
+idea behind the one time pad is quite good.
+And we're gonna see, in the next lecture,
+
+222
+00:18:30,994 --> 00:18:33,547
+how to make that into a practical
+system.

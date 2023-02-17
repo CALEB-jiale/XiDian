@@ -1,0 +1,563 @@
+1
+00:00:00,000 --> 00:00:03,765
+So our goal for this segment is to build
+secure compression functions. So
+
+2
+00:00:03,765 --> 00:00:07,736
+compression functions are collision
+resistant. So just to remind you where we
+
+3
+00:00:07,736 --> 00:00:11,449
+are we looked at this Merkle Damguard
+construction which takes a little
+
+4
+00:00:11,449 --> 00:00:15,421
+compression function and builds from it a
+hash function for much, much larger
+
+5
+00:00:15,421 --> 00:00:19,702
+inputs. We proved this cute theorem that
+in fact if a little compression function h
+
+6
+00:00:19,702 --> 00:00:23,725
+is collision resistant then plugging in
+into the Merkle Damguard construction
+
+7
+00:00:23,725 --> 00:00:27,748
+gives us a collision resistant hash
+function for larger inputs. So now in this
+
+8
+00:00:27,748 --> 00:00:31,874
+segment our goal is basically to build a
+compression function that is collision
+
+9
+00:00:31,874 --> 00:00:35,785
+resistant. So we're going to see a couple
+of constructions. And so the first
+
+10
+00:00:35,785 --> 00:00:39,755
+question that comes to mind is well, can
+we build compression functions from
+
+11
+00:00:39,755 --> 00:00:43,516
+primitives that we already have? In
+particular, we spent a lot of work to
+
+12
+00:00:43,516 --> 00:00:47,694
+build block cyphers and the question is
+can we build compression functions from
+
+13
+00:00:47,694 --> 00:00:51,978
+block cyphers. And the answer is yes. And
+let me show you how to do it. So assume we
+
+14
+00:00:51,978 --> 00:00:56,157
+have a certain block cypher here that
+operates on N bits blocks, so the input is
+
+15
+00:00:56,157 --> 00:01:00,335
+an N bits, output is N bits. And then
+there's this classic construction called a
+
+16
+00:01:00,335 --> 00:01:04,600
+Davies-Meyer construction which I wrote
+down in symbols here. Basically says that
+
+17
+00:01:04,600 --> 00:01:09,181
+what you would do is, given the message
+block and the chaining variable, all we do
+
+18
+00:01:09,181 --> 00:01:13,874
+is we encrypt the chaining variable using
+the message block as the key. And then we
+
+19
+00:01:13,874 --> 00:01:18,254
+kind of do one more xor on the output. So
+this might seem a little bizarre, because
+
+20
+00:01:18,254 --> 00:01:22,356
+remember the message block is something
+that's completely under the control of the
+
+21
+00:01:22,356 --> 00:01:25,963
+adversary. He's trying to find the
+collision so he can choose the message
+
+22
+00:01:25,963 --> 00:01:30,664
+blocks however he wants. And yet we're
+using this message block as a key into a
+
+23
+00:01:30,664 --> 00:01:35,456
+block cypher. But nevertheless, we can
+argue that this construction, at least
+
+24
+00:01:35,456 --> 00:01:40,695
+when E is what's called an ideal cypher,
+we can argue that this construction is in
+
+25
+00:01:40,695 --> 00:01:45,807
+fact as collision resistant as possible.
+So let me state the theorem. The theorem
+
+26
+00:01:45,807 --> 00:01:50,855
+states that, as I said, if E is an ideal
+block cypher, meaning that it's a random
+
+27
+00:01:50,855 --> 00:01:55,793
+collection of K random permutations from
+01 to the N to 01 to the N. Then under
+
+28
+00:01:55,793 --> 00:02:00,160
+that assumption that E's an ideal block
+cypher, in fact, finding the collision for
+
+29
+00:02:00,160 --> 00:02:04,366
+this compression function H takes time,
+two to the N over two. In particular, we
+
+30
+00:02:04,366 --> 00:02:08,572
+can show that anyone who is finding
+collisions has to evaluate the encryption
+
+31
+00:02:08,572 --> 00:02:12,832
+and decryption functions at least 2 to
+the N over 2 times. And if you think
+
+32
+00:02:12,832 --> 00:02:17,361
+about what that means, since the output of
+this compression function is only N bytes
+
+33
+00:02:17,361 --> 00:02:21,135
+long, we know that there's always a
+generic birthday attack that finds
+
+34
+00:02:21,135 --> 00:02:25,557
+collisions in time 2 to the N over 2.
+So basically this theorem says that this
+
+35
+00:02:25,557 --> 00:02:29,497
+collision resistant function is as
+collision resistant as possible. We can
+
+36
+00:02:29,497 --> 00:02:33,332
+find the collision in time 2 to the N
+over 2 using the birthday attack but
+
+37
+00:02:33,332 --> 00:02:37,411
+there is no algorithm that will do better
+than 2 to the n over 2. So this
+
+38
+00:02:37,411 --> 00:02:41,728
+is actually a very common compression
+function used in collision resistance
+
+39
+00:02:41,728 --> 00:02:45,901
+hashing in fact of a SHA
+functions all used Davies-Mayer. It turns
+
+40
+00:02:45,901 --> 00:02:50,178
+out that there is something special about
+the Davies-Mayer construction that
+
+41
+00:02:50,178 --> 00:02:54,670
+makes collision resistant. If you just try
+to guess the construction very likely you
+
+42
+00:02:54,670 --> 00:02:59,001
+will end up with something that is not
+collision resistant. And so let me ask you
+
+43
+00:02:59,001 --> 00:03:03,064
+the following puzzle. Suppose we actually
+define the compression function as
+
+44
+00:03:03,064 --> 00:03:07,395
+follows, namely all we do is we encrypt
+the chaining variable H using the current
+
+45
+00:03:07,395 --> 00:03:11,352
+message block as the key. So the
+difference is that we dropped this 'xor' H
+
+46
+00:03:11,352 --> 00:03:15,608
+in Davies-Mayer, we simply ignored it. So
+it's not there. And the puzzle for you
+
+47
+00:03:15,608 --> 00:03:19,976
+is show me that this compression function
+then is actually not collision resistant.
+
+48
+00:03:19,976 --> 00:03:24,133
+So, let's see, so we're trying to build a
+collision, namely a distinct pair of HM
+
+49
+00:03:24,133 --> 00:03:28,554
+and H' M' that happen to collide
+under this later function H. And my
+
+50
+00:03:28,554 --> 00:03:32,974
+question to you is how would you do it? So
+I'm already going to tell you that you're
+
+51
+00:03:32,974 --> 00:03:37,013
+going to choose H, M, and M'
+arbitrarily. The only requirement is that
+
+52
+00:03:37,013 --> 00:03:41,766
+M and M' are distinct. And then my
+question is, how would you construct an H'
+
+53
+00:03:41,766 --> 00:03:47,534
+that would cause a collision to pop
+out? So the answer is the first choice and
+
+54
+00:03:47,534 --> 00:03:53,200
+an easy way to see it is if we apply the
+encryption function using M' to both
+
+55
+00:03:53,200 --> 00:03:57,994
+sides. Then we get that this is basically
+E of M' applied to H', right.
+
+56
+00:03:57,994 --> 00:04:02,978
+this is what we get by applying encryption
+using M' to the left hand side. And
+
+57
+00:04:02,978 --> 00:04:07,482
+if we imply encryption using M' to
+the right hand side, the decryption
+
+58
+00:04:07,482 --> 00:04:12,287
+operator cancels out and we simply are
+left with the encryption of M, H, which is
+
+59
+00:04:12,287 --> 00:04:16,729
+exactly the collision that we wanted to
+find. So there. You can see that it's
+
+60
+00:04:16,729 --> 00:04:21,441
+basically by using the decryption function
+D, it's very easy to build collisions for
+
+61
+00:04:21,441 --> 00:04:25,720
+this compression function. Now I should
+tell you that in fact Davies-Meyer is not
+
+62
+00:04:25,720 --> 00:04:29,771
+unique. There are other ways to build
+collision resistant compression functions
+
+63
+00:04:29,771 --> 00:04:33,976
+from block ciphers. For example, here's a
+method called Miyaguchi Preneel. Miyaguchi
+
+64
+00:04:33,976 --> 00:04:38,079
+Preneel actually is used in WHIRLPOOL hash
+function that we saw earlier. Here is
+
+65
+00:04:38,079 --> 00:04:42,387
+another method that happens to result in a
+collision resistant compression function.
+
+66
+00:04:42,387 --> 00:04:46,182
+And there are twelve variants like this
+playing with XORs and placing the
+
+67
+00:04:46,182 --> 00:04:50,028
+variables in different slots that will
+actually give a collision resistant
+
+68
+00:04:50,028 --> 00:04:53,874
+mechanism. But there are also many, many
+variants of this like we saw in the
+
+69
+00:04:53,874 --> 00:04:57,647
+previous puzzle that are not collision
+resistant. So here's. Another example,
+
+70
+00:04:57,647 --> 00:05:01,477
+that's not collision resistant. And I'm
+gonna leave it as a homework problem to
+
+71
+00:05:01,477 --> 00:05:04,949
+figure out a collision for this
+construction. So now, basically, we have
+
+72
+00:05:04,949 --> 00:05:09,110
+all the ingredients to describe the
+[inaudible] 256 hash function. I'll tell
+
+73
+00:05:09,110 --> 00:05:13,218
+you that it's a Merkel-Damgard
+construction, exactly as the one that we
+
+74
+00:05:13,218 --> 00:05:17,051
+saw before. It uses a Davies-Mayer
+compression function. And so the only
+
+75
+00:05:17,051 --> 00:05:21,322
+question is, what's the underlying block
+cipher for Davies-Mayer? And that block
+
+76
+00:05:21,322 --> 00:05:26,236
+cipher is called SHACAL-2. And I'll
+just tell you it's parameters. It uses a
+
+77
+00:05:26,236 --> 00:05:31,498
+512 bit key. And remember the key is taken
+from the message block. So, this is really
+
+78
+00:05:31,688 --> 00:05:36,443
+what the message block is. And it so
+happens to be 512 bits. Which means the
+
+79
+00:05:36,443 --> 00:05:41,452
+SHA-256 will process its input
+message 512 bits at a time. And in the
+
+80
+00:05:41,452 --> 00:05:46,270
+block size, for this block cipher is
+256 bits. And these are the chaining variable.
+
+81
+00:05:46,270 --> 00:05:51,469
+So this would be H i-1.
+And this would be successive chaining variable.
+
+82
+00:05:51,469 --> 00:05:55,896
+So now you have a complete
+understanding of how SHA-256 works.
+
+83
+00:05:55,896 --> 00:05:59,635
+Module of this cipher SHACAL-2 I'm not going to describe here.
+
+84
+00:05:59,789 --> 00:06:04,560
+So as I said, one class of compression functions is built from block cyphers. It
+turns out there's another class of
+
+85
+00:06:04,560 --> 00:06:09,032
+compression functions that's built using
+hard problems from number theory, and I
+
+86
+00:06:09,032 --> 00:06:13,530
+want to very briefly show you one example.
+And we call these compression functions
+
+87
+00:06:13,530 --> 00:06:17,616
+provable because if you can find the
+collision on this compression function
+
+88
+00:06:17,616 --> 00:06:21,971
+then you're going to be able to solve a
+very hard number theoretic problem which
+
+89
+00:06:21,971 --> 00:06:26,165
+is believed to be intractable. And as a
+result, if the number theory problem is
+
+90
+00:06:26,165 --> 00:06:29,982
+intractable, the resulting compression
+function is provably a collision
+
+91
+00:06:29,982 --> 00:06:34,337
+resistant. So here's how this compression
+function works. Basically we're going to
+
+92
+00:06:34,337 --> 00:06:38,692
+choose a large prime piece, so this is a
+gigantic prime, something like 700 digits,
+
+93
+00:06:38,692 --> 00:06:42,832
+2,000 bits. And then we're going to
+choose two random values, U and V, between
+
+94
+00:06:42,832 --> 00:06:47,118
+one and P. And now let's define the
+compression function as follows. It takes
+
+95
+00:06:47,118 --> 00:06:51,775
+two numbers between 0, and p-1,
+and it's gonna output one number between
+
+96
+00:06:51,775 --> 00:06:56,236
+0, and  p-1. So it's compression
+ratio is 2 to 1. And takes two
+
+97
+00:06:56,236 --> 00:07:00,349
+numbers. And outputs one number. In the
+range 0 to p-1.
+
+98
+00:07:00,349 --> 00:07:07,180
+And it does it basically by computing double exponentiation. It
+computes u to the H times v to the n.
+
+99
+00:07:07,180 --> 00:07:11,084
+And the theorem, which, right now, I'm just
+gonna state as a fact. This fact actually
+
+100
+00:07:11,084 --> 00:07:15,238
+turns out to be fairly straightforward to
+prove, and we're gonna do it later on when
+
+101
+00:07:15,238 --> 00:07:19,343
+we get to the number theoretic part of the
+course. The fact is, that if you can find
+
+102
+00:07:19,343 --> 00:07:23,247
+a collision for this compression function,
+then you can solve a standard heart
+
+103
+00:07:23,247 --> 00:07:27,541
+problem in number theory called a discreet
+log problem. Everyone believes discrete
+
+104
+00:07:27,541 --> 00:07:31,881
+log is hard, and as a result, this
+compression function is provably collision
+
+105
+00:07:31,881 --> 00:07:36,335
+resistant. So you might ask me why do
+people not use this compression function
+
+106
+00:07:36,335 --> 00:07:40,845
+in practice. Why would we not use this for
+SHA-256? And the answer is that this
+
+107
+00:07:40,845 --> 00:07:45,470
+gives very slow performance in comparison
+to what you get from a block cipher. So
+
+108
+00:07:45,470 --> 00:07:49,410
+this is not really used for any
+compression functions. However, if for
+
+109
+00:07:49,410 --> 00:07:53,778
+some reason you really only want to, say,
+MAC or sign. Just one long message, and
+
+110
+00:07:53,778 --> 00:07:57,544
+you have a whole day to do it, then
+certainly you can use this type of
+
+111
+00:07:57,544 --> 00:08:02,064
+compression function. And even though it's
+slow, you'll get something that's provably
+
+112
+00:08:02,064 --> 00:08:05,714
+collision resistant. Okay, so that's the
+end of this segment. And now we're finally
+
+113
+00:08:05,714 --> 00:08:08,542
+ready to talk about HMAC, which we're
+gonna do in the next segments.

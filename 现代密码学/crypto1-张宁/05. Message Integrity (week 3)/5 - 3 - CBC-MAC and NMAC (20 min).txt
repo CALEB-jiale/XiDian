@@ -1,0 +1,499 @@
+In this segment, we're going to construct
+two classic MACS, the CBC-MAC and the
+NMAC. Recall in the last segment, we said
+that if you give me a secure PRF, then
+that secure PRF can actually be used to
+construct a secure MAC, simply by defining
+the signature on the message m as the
+value of the function at the point m. The
+only caveat was that the output of the
+PRF F had to be large. For example, it
+could be 80 bits or 128 bits, and that
+would generate a secure MAC Now we also
+said that because AES is a secure PRF,
+essentially AES already gives us a secure
+MAC, except that it can only process
+sixteen byte messages. And the question
+now is, given a PRF for short messages
+like AES for sixteen byte messages, can we
+construct a PRF for long messages that are
+potentially gigabytes long? And this is
+shorthand for what's coming. I'm going to
+denote by X, the set {0,1} to the N where N
+is the block size for the underlying PRF.
+So since we're always going to be thinking
+of AES as the underlying PRF, you can
+think of N as essentially 128 bits. So
+the first construction is called the
+encrypted CBC MAC, or ECBC for short.
+Encrypted CBC MAC. So ECBC uses a PRF that
+takes messages in the set X {0,1} to the N
+and outputs messages in the same set X.
+And what we're going to be building is a
+PRF that basically takes pairs of keys. It
+takes very long messages, in fact
+arbitrarily long messages, and I'll
+explain this in just a second and it
+outputs also tags in {0,1} to the N. So
+that's our goal. Now what is this X to the
+less than or equal to L? The point here is
+that in fact CBC MAC can take very long
+messages up to L blocks. L could be a
+million or a billion. But it could also
+take variable length messages as inputs.
+In other words, X less than or equal to L
+means that we allow the input to be
+messages that contain an arbitrary number
+of blocks between one and L. So each CBC
+can process messages that are one block
+long, two blocks long, ten blocks long,
+100 blocks long. It's perfectly fine to
+give it variable size inputs. But just to
+keep the discussion simple, we up our
+bounds the maximum length by capital L. So
+let's see how ECBC works. Well, we start
+by taking our message and breaking it into
+blocks, each block is as long as a block
+of the underlying function f, and then
+essentially we run through the CBC chain
+except that we don't output intermediate
+values. So you notice we basically encrypt
+the first block and then feed the results
+into the XOR with the second block and
+then feed that into f again, and we do
+that again and again and again and finally
+we get a value out here. Which is called
+the CBC outputs of this long chain. And
+then, I would like to point your attention
+to the fact that we do one more encryption
+step. And this step is actually done using
+an independent key, K1. That's different
+and chosen independently of the key K, and
+finally the output gives us the tag. So in
+this case the tag would be N bits long,
+but we also mentioned in the previous
+segment that it's fine to truncate the tag
+to less than N bits long as long as one
+over two to the end is negligible. So now
+you can see that FECBC takes a pair of
+keys as inputs, it can process
+variable length messages and it produces
+an output in the set X. So you might be
+wondering what this last encryption step
+is for. And I'll tell you that the
+function that's defined without this last
+encryption step is called the raw CBC
+function. In other words, if we simply
+stop processing over here, and we take
+that as the output, that's called raw CBC.
+And as we'll see in a minute, raw CBC is
+actually not a secure MAC. So this last
+step is actually critical for making
+the MAC secure. So another class of
+construction for converting a small PRF
+into a large PRF is called NMAC,
+for Nested MAC. Now, the NMAC starts
+from PRF that, as before, takes inputs
+in X, but outputs elements in the key
+space. And remember that for CBC, the
+output has to be in the set X. Here, the
+output needs to be in the key space K. And
+again, we basically obtain the PRF F-NMAC, which takes pairs of keys as inputs.
+Again, can process variable length
+messages up until L blocks. And the output
+is an element in the key space. And the
+way NMAC works is kind of, starts as
+before. We take our message, and we break
+it into blocks. Each block is, again, as
+big as the block length of the underlying
+PRF. And now we take our key and we feed
+our key as the key input into the function
+F. And the message block is given as the
+data input into the function F. What comes
+out is the key for the next block of NMAC.
+So now we have a new key for the next
+evaluation of the PRF. And the data for
+the next evaluation is the next message
+block and so on and so forth until we
+reach the final output. The final output
+is gonna be an element in K. Okay? And
+just as before, in fact, if we stop here.
+The function that we obtain is called a
+cascade function. And we're gonna look at
+cascade in more detail in just a minute.
+So cascade will output an element in K.
+However, that, as we'll see again, is not
+a secure MAC. To get a secure MAC, what we
+do is we need to map this element T,
+which is in K, into the set X. And so,
+typically, as we'll see, NMAC is used
+with, PRFs, where the block length, X, is
+much bigger than the key length. And so
+what we do is we simply append fixed pad.
+fpad is called a fixed pad that gets
+appended to this tag T. And then this
+becomes, this input here, this block here
+becomes an element of X. We feed this into
+the function, and again, notice here that
+there's an independent key that's being
+used for the last encryption step. And
+then finally, the last tag is an element
+of K which we output as the output of
+NMAC. So remember without the last
+encryption step, the function is called a
+cascade. With the last step as we'll see
+which is necessary for security, we
+actually get a PRF which outputs elements
+in K, and can process variable length
+messages that are up to L blocks long.
+Alright so that is the NMAC
+construction. So now we have two MACs. That
+we can use to build a large PRF, from AES,
+basically. So before I analyze the
+security of MAC constructions, I'd like
+you to understand better what the last
+encryption step is for. So, let's start
+with NMAC. So I explained that it
+is actually very easy too see that if we
+omitted the last encryption step. In other
+words, if we just use the cascade
+function, then the MAC will be completely
+insecure. Okay so suppose we look at this
+MAC to find over here. In other words, all
+we do is we output directly the cascade
+applied to m without the last encryption
+step. So let me ask you how do you forge
+tags in this MAC. And I guess I've kinda
+given it away that this answer isn't
+correct. So I hope everybody sees that the
+answer is, that, in fact, given one chosen
+message query, you can mount an
+existential forgery. And the reason is,
+I'll show you in a second in the diagram,
+but let me write it out in symbols first.
+The reason if, if you're given the output
+of the cascade function applied to a
+message M. I can derive from it, me being
+the adversary, I can derive from it the
+cascade applied to the message M
+concatenated W for any message W, for any
+W. So first of all, it should be clear
+that this is enough to mount an
+existential forgery because essentially by
+asking for a tag on this message I obtain
+the tag on this longer message which I can
+then output as my forgery. Okay, so the
+MAC is insecure because given a MAC in one
+message, I can produce the MAC in another
+message. But let's go back to the diagram
+describing cascade, and see why this is
+true. And so let's see what happens if
+this last step isn't there. As an
+attacker, what I can do, I can add one
+more block here, which we called W. And
+then, then basically, I can take the
+output of cascade, which is this value T.
+And we can simply apply the function F to
+it again. So here I'll take this T value.
+I'll plug it in to F. And plug my last
+block W into it and what I'll get is T
+prime which is, well, the evaluation of
+cascade on the message M concatenated W.
+In [inaudible] calculated t prime, which I can use
+for my existential forgery. Okay, so this
+kind of shows you why this property of
+cascade holes. This is called an extension
+attack, Where giving a tag of the message
+m I can deduce the tag for the extension
+of m. And in fact for any extension of my
+choice. So basically, Cascade is
+completely insecure if we don't do this
+last encryption step, and the last
+encryption step here basically prevents
+this type of extension attack. I can tell
+you by the way that in fact extension
+attacks are the only attacks on a cascade
+and that could be made to precise. But I'm
+not gonna do that here. The next question
+is, why did we have the extra encryption
+block in the ECBC construction? So again,
+let me show you that without this extra
+encryption block ECBC is insecure. So
+let's define a map that uses raw CBC. In
+other words, it's the same as CBC MAC, but
+without the last encryption step. And
+let's see that, that MAC is also insecure.
+Except now, the attack is a little bit
+more difficult than a simple extension
+attack. So suppose the attacker is given
+this value, the raw CBC value for a
+particular message M. And now, the
+attacker wants to extend and compute the
+MAC on some message M, concatenated on
+with some word W. So here's our W well the
+core attacker can take this value and try
+to XOR the two together but now you
+realize he has to evaluate the function.
+At this point. But he doesn't know what
+this key K is. And as a result, he doesn't
+know what the output of the function is.
+So he simply can't just depend on
+block W, and compute the value of
+raw CBC on N concatenated W. However, it
+turns out they he can actually evaluate
+this function. By using the chosen message
+attack. And I wanna show you how to do
+that. Okay, so we said that basically so
+our goal is to show raw CBC is insecure.
+So let's look at a particular attack. So
+in the attack, the adversary is going to
+start by requesting the tag on a
+particular message m that's a one-block
+message. So what does it mean to apply CBC
+to a one-block message? Well basically,
+all you do is you just apply the function
+f directly. So what you get is the tag,
+which is just the application of f
+directly to the one-block message m. Good,
+so now the adversary has this value T. And
+now I claim that he can define this
+message, M prime, which contains two
+blocks. The first block is M, the second
+block is T XOR M. And I claim that the
+value T that he just received is a valid
+tag for this two block message, M Prime.
+So let's see why that's true. Well, so
+suppose we apply the raw CBC construction
+to this message M prime. So if you plug it
+in directly what, let's see. The way it
+would work is first of all, the first
+message M is processed by encrypting it
+directly using the function F. Then we XOR
+the results with the second block
+with is T-XOR-M. And then we apply F to
+the results of that. That is the
+definition of raw CBC. Now what do we know about
+F(k,m)? F(k,m) is simply this value T by
+definition. So the next step we get is
+essentially T-XOR-T-XOR-M. But
+this T- XOR-T simply goes away and what
+we get is F(k,m). Which is, of course, T.
+And as a result, T is a valid MAC for the
+two block message, (M, T-XOR-M). So
+the adversary was able to produce this
+valid tag T for this two block message
+that he never queried. And therefore, he
+was able to break the MAC. So let's look
+at the ECBC diagram for just one more
+second. And let me point out that if you
+don't include this last encryption step in
+the computation of the MAC, essentially,
+the MAC would be insecure because of the
+attack that we just saw. And I'll tell you
+that there are many products that do this
+incorrectly. And, in fact, there are even
+standards that do this incorrectly, so
+that the resulting MAC is insecure. You
+now know that this needs to be done, and
+you won't make this mistake yourself. So
+let's state the CBC and NMAC security
+theorems. And so the statement is as usual
+for any message length that we'd like to,
+apply the MAC to. Essentially for every
+PRF adversary A, there's an efficient
+adversary B and, you know, these are kind
+of the usual statements. Where, the facts
+that you need to know are the error terms
+which are kind of similar in both cases.
+By the way, I'd like to point out that the
+analysis for CBC actually uses the fact
+that F is a PRP even though we never had
+to invert F during the computation of
+ECBC, the analysis is better if you assume
+that F is actually a PRP. In other words,
+it's invertible, not just a function. For
+a MAC, the PRF need not be invertible.
+So what these error terms basically say
+is that these MACs are secure, as long as,
+key is not used to MAC more than square
+root of X or square root of K messages. So
+for AES of course this would be a two to
+the 64. But I want to show you an example
+of how you would use these bounds. So
+here, I've stated the security theorem again
+for the CBC MAC, and Q here, again, is the
+number of messages that are MACed with a
+particular key. So suppose we wanted to
+ensure that for all adversaries that the
+adversary has an advantage of less than
+one over two to the 32 in distinguishing
+the PRF from a truly random function.
+Suppose that is our goal. Well, by the
+security theorem, what that means is we
+need to ensure that Q squared over X is
+less than one over two to the 32, right.
+We want this term to be, well, I'm going
+to ignore this two here just for
+simplicity. We want to ensure this term is
+less than one over two to the 32 and this
+term, of course, is negligible, so we can
+just ignore it. This would imply that this
+term is also less than one over two to the
+32. Okay, so if we want to ensure that the
+advantage is less than one over two to the
+32, we need to ensure that Q squared over
+X is less than one over two to the 32. For
+AES, basically this means that after MACing
+two to the 48 messages, you have to
+change your key. Otherwise, you won't
+achieve the security level. So you can
+MAC, at most, two to the 48 messages. You
+notice that if I plug in triple DES, which
+has a much shorter block, only 64 bits.
+The same result says you now have to
+change your key every 65,000 messages. So
+this basically is quite problematic
+whereas this is fine. This is actually a,
+a very fairly large number. For
+AES this means you have to change
+your key only every 16 billion
+messages which is perfectly reasonable.
+And so this is one of the reasons why AES
+has a larger block, than triple DES. Some of these modes remain
+secure and you don't have to change your
+key as often as you would with triple
+DES. Okay, so I want to show you
+that in fact these attacks are not just in
+the statements in the security theorem, in
+fact there really are real attacks that
+correspond to these values. Now the macs
+really do become insecure after you sign,
+you know, square root of X or square root
+of K messages. So I'm going to show you an
+attack on both PRFs so either ECBC or
+NMAC. Assuming that the underlying
+function is a PRP, is actually a block
+cipher like AES. Let's call F big, let's
+say that F big is either F ECBC or F NMAC.
+So F big means that it's a PRF for large
+messages. Now, it turns out both
+constructions have the following extension
+property. Namely, if you give me a
+collision. On messages X and Y. Then, in
+fact, that also implies a collision on an
+extension of X and Y. In other words, if I
+append W to both X and Y, I'll also get a
+collision on the resulting words. So it's
+fairly easy to convince yourself that this
+extension property holds, you do it just
+by staring at the diagram for a second.
+And so imagine I give you two messages
+that happen to collide at this point. Now
+remember, I assumed that F is a PRP. So
+once you fix K1, it's a one to one
+function. So if the two messages happen to
+map to the same value at the output. This
+means they also happen to map to the same
+value at the output of the raw CBC
+function. But if they map to the same
+value at the output of the raw CBC
+function, that means that if I add another
+block, let's call it a W. And I take this
+output here. Then I'm computing the same
+value for both messages. And I'll get, for
+both messages, I'll get the same value at
+this point, too. And when I encrypt,
+again, with K1, I'll also get, you know,
+so there's one more F here. I'll also get
+the same output, final output, after I've
+appended the block W. Okay, so if the two
+values happen to be the same for two
+distinct messages. If I appended block W
+to both messages, I'm still gonna get the
+same value out. It's easy to convince
+yourself that the same is true for NMAC
+as well. Okay, so both of these, PRFs have
+this extension property. So based on this,
+we can define an attack. So here's the
+extension property stated again. And the
+attack would work as follows. Suppose I
+issued square of Y chosen message
+queries. So, for AES, remember, the value
+of Y is basically {0,1} to the 128. So this
+would mean that I would be asking, two to
+the 64 shows in message queries. For just
+arbitrary messages in the input space.
+Well, what will happen is, I'll obtain,
+well, I'll obtain two to the 64 message
+MAC pairs. Now, we're gonna see in the
+next module, actually, there's something
+called a birthday paradox. Some of you may
+have heard of it already. It basically
+says that if I have two to the 64 random
+elements of a space of size two to the
+128, there's a good chance that two of
+them are the same. So I'm gonna look for
+two distinct messages. MU and MV, for
+which the corresponding MACs are the same.
+Okay, and as I said, by the birthday
+paradox, these are very likely to exist.
+Once I have that, now I've basically found
+MU and MV to have the same MAC. And as a
+result, what I can do is, I can extend MU
+with an arbitrary word W, and ask for the
+tag for the word MU concatenated W. But
+because NU and NV happen to have the same
+output, I know that NU concatenated W has
+the same output as NV concatenated W. So
+now that I've obtained the output for NU
+concatenated W, I also have the output for
+NV concatenated W. And therefore I have
+obtained my forgery. Okay, so now T is
+also a forgery for the message MV
+concatenated W which I've never asked
+before. And therefore, this is as valid as
+a potential forgery. Okay, so this is kind
+of an acute attack and the bottom line
+here is that in fact after square root of
+Y queries, I am able to forge a MAC with
+fairly good probability. Okay, so what
+does square root of Y mean? If we go back
+to the security theorems, this means that
+basically for ECBC after square root of X
+or for NMAC after square root of K,
+messages have been MACed, the MAC becomes
+insecure and the attacker can actually
+find new MACs for messages for which he
+was never given a MAC for. So again, this
+is an acute attack that shows the bounds
+of the theorem really are real. And as a
+result these downs that derived in this
+example are real and you should never use
+a single key to MAC more than, say, two
+to 48 messages with AES based CBC. So to
+conclude, I'll just mention that we've
+seen two examples. We saw ECBC and NMAC.
+ECBC is in fact, a very commonly used MAC
+that's built from AES. 80211I, for example,
+uses ECBC with AES for integrity.
+There's also a NIST standard called CMAC,
+that we'll talk in the next segment, that
+also is based on the ECBC MAC. NMAC with
+contrast is not typically used with a
+block cipher. And the main reason is, in
+order to [inaudible] in the NMAC construction,
+the key changes from block to block. That
+means that the whole AES key expansion has
+to be computed and recomputed on every
+block. And AES is not designed to perform
+well when he changes key very rapidly. And
+so, typically, when you use NMAC, you use
+block ciphers that are better at changing
+their keys on every block. And as a
+result, NMAC typically is not used with
+AES. But in fact, N Mac is a basis of a
+very popular MAC called HMAC, which we're
+also gonna look at next. And you'll see
+very clearly, the NMAC underlying the HMAC construction. Okay, so that's the end
+of this segment, and we'll talk about more
+MACs in the next segment.

@@ -1,0 +1,264 @@
+Now that we know what MACs are, let's go
+ahead and build our first secure MACs.
+First I want to remind you that a MAC is a
+pair of algorithms. The first is a signing
+algorithm that's given a message and a key
+will generate a corresponding tag And the
+second is verification algorithms are
+given a key message and a tag while
+outputs zero or one depending on whether
+the tag is valid or not. And we said that
+a MAC is secure if it is existentially
+unforgeable under a chosen message attack.
+In other words, the attackers allow to
+mount a chosen message attack where he can
+submit arbitrary messages of his choice
+and obtain the corresponding tags for
+those messages, and then despite the
+ability to generate arbitrary tags The
+attacker cannot create a new message-tag pair that was not given to him
+during the chosen message attack. Okay so
+we've already seen this definition in the
+last segment and now the question is how
+do we build secure MACs? So the first
+example I want to give you is basically
+showing that any secure PRF directly gives
+us a secure MAC as well. So let's see how
+we do it. So suppose we have a pseudo
+random function so the pseudo random
+function takes and inputs X and outputs in
+Y. And let's define the following MAC. So
+the way we sign a message 'M' is basically
+by simply evaluating the function at the
+point 'M' So the tag for the message M is
+simply the value of the function at the
+point M and then the way we verify a
+message to that pair is by recomputing the
+value of the function at the message M and
+checking whether that is equal to the tag
+given to us. We say yes if so and we
+reject otherwise. So here you have in
+pictures basically that when Alice wants
+to send a message to Bob she computes a
+tag by the value of PRF and then she
+appends this tag to the message, Bob
+receives the corresponding tab pair, he
+recomputes the value of the function and
+tests whether the given tag is actually
+equal to the value of the function at the
+point M. So let's look at a bad example of
+this instruction. And so suppose that we
+have a pseudo-random function that happens
+to output only ten bits. Okay, so this is
+a fine pseudo-random function and it just
+so happens that for any message 'M' it
+only outputs ten bits value. My question
+to you is if we use this function 'F' to
+construct a MAC, is that going to be a
+secure MAC? So the answer is no, this MAC
+is insecure. In particular because the
+tags are too short. So consider the
+following simple adversary. What the
+adversary will do is simply choose an
+arbitrary message M and just guess the
+value of the MAC for that particular
+message. Now, because the tag is only ten
+bits long, the adversary has a chance of
+one in two to the ten in guessing the MAC
+correctly. In other words, the advantage
+of the guessing adversary, one distinctly
+guesses a random tag for a given message.
+That adversary is going to have an
+advantage against the mac that's basically
+one over two to the ten which is one over
+a thousand twenty four and that's
+definitely non negligible. So the adversary
+basically will successfully forge the mac
+on a given message with probability one
+on a thousand which is insecure. However
+it turns out this is the only example that
+where things can go wrong, only when the
+output of the function is small can things
+go wrong. If the output of the PRF is
+large Then we get a secure MAC out of this
+function. And let's state the security
+theorem here. So suppose we have a
+function 'F' that takes messages in 'X'
+and outputs tags in 'Y', then the MAC
+that's derived from this PRF in fact is a
+secure MAC. In particular, if you look at
+the security theorem here, you'll see very
+clearly the era bounds, in other words
+since the PRF is secure we know that this
+quantity here is negligible. And so if we
+want this quantity to be negligible, this
+is what we want, we want to say that no
+adversary can defeat the MAC 'I sub F',
+that implies that we want this quantity to
+be negligible, in other words we want the
+output space to be large. And so for
+example, taking a PRF that outputs eighty
+bits is perfectly fine. That will generate
+an eighty bit MAC and therefore the
+advantage of any adversary will be at most
+one over two to the eighty. So now the proof
+of this theorem is really simple, so lets
+just go ahead and do it. So in fact lets
+start by saying that suppose instead of a
+PRF we have a truly random function from
+the message space to the tag space so this
+is just a random function from X to Y
+that's chosen at random from the set of
+all such functions. Now lets see if that
+function can give us a secure mac. So what
+the adversary says is, 'I want a tag on
+the message M1'. What he gets back is the
+tag which just happens to be the function
+evaluated at the point M1. Notice there is
+no key here because F is just a truly
+random function from X to Y. And then the
+adversary gets to choose a message from M2
+and he obtains the tag from M2, he choose
+M3, M4 up to MQ and he obtains all the
+corresponding tags. Now his goal is to
+produce a message tag pair and we say that
+he wins, remember that this is an
+existential forgery, in other words first
+of all T has to be equal to F of M This
+means that 'T' is a valid tag for the
+message 'M'. And second of all, the
+message 'M' has to be new. So the message
+'M' had better not be one of M-one to M-Q.
+But let's just think about this for a
+minute, what does this mean? So the
+adversary got to see the value of a truly
+random function at the points M-one to M-Q
+and now he?s suppose to predict the value
+of this function as some new point, M
+However, for a truly random function, the
+value of the function at the point M is
+independent of its value at the points M-1
+to M-Q. So the best the adversary can do
+at predicting the value of the function at
+the point M is just guess the value,
+because he has no information about F of
+M. And as a result his advantage if he
+guesses the value of the function at the
+point M he'll guess it right with
+probability exactly one over Y. And then
+the tag that he produced will be correct
+with probability exactly one over Y. Okay,
+again he had no information about the
+value of the function of M and so the best
+he could do is guess. And if he guesses,
+he'll get it right with probability one
+over Y. And now of course, because the
+function capital F is a pseudo random
+function The adversary is gonna behave the
+same whether we give him the truly random
+function or the pseudo random function.
+The adversary can't tell the difference
+and as a result even if we use a pseudo
+random function, the adversary is gonna
+have advantages at most one over Y in
+winning the game. Okay, so you can see
+exactly the security theorem, let's go
+back there for just a second. Essentially
+this is basically why we got an error term
+of one over Y because of the guessing
+attack and that's the only way that the
+attacker can win the game. So now that we
+know that any secure PRF is also a secure
+MAC, we already know that we have our
+first example MAC. In particular, we know
+that AES, or at least we believe that AES
+is a secure PRF, therefore, AES since it
+takes sixteen byte inputs, right the
+message space for AES is 128 bits, which
+is sixteen bytes. Therefore the AES cipher
+essentially gives us a MAC that can match
+messages that are exactly sixteen bytes.
+Okay, so that's our first example of a
+MAC. But now the question is if we have a
+PRF for small inputs like AES that only
+acts on sixteen bytes, can we build a MAC
+for big messages that can act on gigabytes
+of data? Sometimes I call this the
+McDonald's problem. Basically given a
+small MAC and we build a big MAC out of
+it. In other words, given a MAC for small
+messages and we build a MAC for large
+messages. So we're gonna look at two
+constructions for doing so. The first
+example is called a CBC MAC that again
+takes PRF for small messages as input
+and produces a PRF for very large
+messages. As outputs. The second one we'll
+see is HMAC which does the same thing
+again takes a PRF for small inputs and
+generates a PRF for very large inputs. Now
+the two are used in very different
+contexts. Cbc-mac is actually very
+commonly used in the banking industry. For
+example, there's a system called the
+Automatic Clearing House, ACH, which banks
+use to clear checks with one another and
+that system, CBC-MAC, is used to ensure
+integrity of the checks as they're
+transferred from bank to bank. On the
+Internet, protocols like SSL and IPsec and
+SSH, those all use HMAC for integrity. Two
+different MACs and were gonna discuss them
+in the next couple of segments. And as I
+said were also gonna start from a PRF for
+small messages and produce PRF for
+messages that are gigabytes long and in
+particular they can both be substantiated
+with AES as the underlying cipher. So the
+last comment I want to make about these
+PRF based MACs is that in fact their
+output can be truncated. So suppose we
+have a PRF that outputs N bit outputs. So
+again for AES this would be a PRF that
+outputs 128 bits as outputs. Its an easy
+lemma to show that in fact if you have an
+N bit PRF if you truncated, in other words
+if you only output first key bits The
+result is also a secure PRF and the
+intuition here is if the big PRF outputs N
+bits of randomness for any inputs that you
+give to the PRF then certainly chopping it
+off and truncating it to T bits is still
+gonna look random. The attacker now gets
+less information so his job of
+distinguishing the outputs from random
+just became harder. In other words, if the
+N bit PRF is secure, then the T less than
+N bit PRF, the truncated PRF, would also
+be secure. So this is an easy lemma and
+since any secure PRF also gives us a
+secure MAC, what this means is if you give
+me a MAC that's based on a PRF and what I
+can do is I can truncate it to W bits,
+however, because of the error term in the
+MAC based PRF theorem we know that
+truncating to W bits will only be secure
+as long as one over two to the W is
+negligible. So if you truncate the PRF to
+only three bits, the resulting MAC is not
+going to be secure. However, if you
+truncate it to say 80 bits or maybe even
+64 bits, then the resulting MAC is still
+gonna be a secure MAC. Okay, so the thing
+to remember here is that even though we
+use AES to construct larger PRFs and the
+output of these PRFs is gonna be 128 bits,
+it doesn't mean that the MAC itself has to
+produce 128 bit tags We can always
+truncate the outputs to 90 bits or 80
+bits, and as a result, we would get still
+secure MACs but now the output tag is
+gonna be more reasonable size and doesn't
+have to be the full 128 bits. Okay, so in
+the next segment we're gonna look at how
+the CBC-MAC works.

@@ -1,0 +1,871 @@
+1
+00:00:00,000 --> 00:00:04,819
+Over the years it became clear that DES
+and triple DES are simply not designed for
+
+2
+00:00:04,819 --> 00:00:09,116
+modern hardware and are too slow. As a
+result, NIS started a new process to
+
+3
+00:00:09,116 --> 00:00:13,820
+standardize in a new block cypher called
+the Advanced Encryption Standard or AES
+
+4
+00:00:13,820 --> 00:00:18,640
+for short. Nis started it's effort in 1997
+when it requested, proposals for a new
+
+5
+00:00:18,640 --> 00:00:22,821
+block cipher. It received fifteen
+submissions a year later. And finally in
+
+6
+00:00:22,821 --> 00:00:27,350
+the year 2000, it adopted the cypher
+called Rindall as the advanced encryption
+
+7
+00:00:27,350 --> 00:00:32,471
+standard. This was a cypher designed in
+Belgium. We already said that it's block
+
+8
+00:00:32,471 --> 00:00:38,301
+size is 128 bits and it has three possible
+key sizes. 128 bits, 192, and 256. Now,
+
+9
+00:00:38,301 --> 00:00:44,504
+the assumption is that the larger the key
+size is, the more secure the block cipher
+
+10
+00:00:44,504 --> 00:00:50,409
+is as a pseudo random permutation. But
+because it also has more rounds involved
+
+11
+00:00:50,409 --> 00:00:56,160
+in its operation. The slower the cipher
+becomes. So the larger the key supposedly,
+
+12
+00:00:56,160 --> 00:01:01,920
+the more secure the cipher, but also the
+slower it becomes. So for example, AES 128
+
+13
+00:01:01,920 --> 00:01:07,483
+is the fastest of these ciphers and AES
+256 is the slowest. Now AES is built as
+
+14
+00:01:07,483 --> 00:01:11,751
+what?s called a substitution permutation
+network. It's not a Faistl network.
+
+15
+00:01:11,751 --> 00:01:16,135
+Remember that in a Faistl network, half
+the bit were unchanged from round to
+
+16
+00:01:16,135 --> 00:01:20,634
+round. In a substitution permutation
+network all the bits are changed in every
+
+17
+00:01:20,634 --> 00:01:25,132
+round. And the network works as follows,
+so here we have the first round of the
+
+18
+00:01:25,132 --> 00:01:29,516
+substitution permutation network, where
+the first thing we do is we X or the
+
+19
+00:01:29,516 --> 00:01:34,245
+current state with the round key. In this
+case the first round key. Then we go thru
+
+20
+00:01:34,245 --> 00:01:38,687
+a substitution layer, where blocks of Date
+are replaced with other blocks based on
+
+21
+00:01:38,687 --> 00:01:43,269
+what the substitution table says. And then
+we go through a permutation layer where
+
+22
+00:01:43,269 --> 00:01:47,921
+bits are permuted and shuffled around. And
+then we do this again. We XR with an X
+
+23
+00:01:47,921 --> 00:01:52,285
+round key, we go thru a substitution
+phase, and we're permute to dance around.
+
+24
+00:01:52,285 --> 00:01:56,892
+And so on, and so on, and so forth Until
+we reach the final round where we x or
+
+25
+00:01:56,892 --> 00:02:01,675
+with the very last around key, and then
+out comes the output. Now, and important
+
+26
+00:02:01,675 --> 00:02:06,336
+point about this design. Is that, in fact,
+because of how it's built, every step in
+
+27
+00:02:06,336 --> 00:02:10,829
+this network needs to be reversible, so
+that the whole thing is reversible. And so
+
+28
+00:02:10,829 --> 00:02:15,544
+the way we would, decrypt, essentially, is
+we would take the output and simply apply
+
+29
+00:02:15,544 --> 00:02:20,203
+each step of the network in reverse order.
+So we start with the permutation step, and
+
+30
+00:02:20,203 --> 00:02:23,809
+we have to make sure that step is
+reversible. Then we look at the
+
+31
+00:02:23,809 --> 00:02:28,246
+substitution layer, and we have to make
+sure this step is reversible. And this is
+
+32
+00:02:28,246 --> 00:02:32,684
+very different from DES. In DES, if you
+remember, the substitution tables were not
+
+33
+00:02:32,684 --> 00:02:36,716
+reversible at all. In fact, they
+map six bits to four bits. Whereas
+
+34
+00:02:36,716 --> 00:02:40,604
+here, everything has to be reversible,
+otherwise it would be impossible to
+
+35
+00:02:40,604 --> 00:02:45,174
+decrypt. And of course the x or with the
+round key is reversible as well. Okay? So
+
+36
+00:02:45,174 --> 00:02:51,064
+inversion of a substitution permutation
+network is simply done by applying all of
+
+37
+00:02:51,064 --> 00:02:56,020
+the steps in the reverse order. So now
+that we understand the generic
+
+38
+00:02:56,020 --> 00:03:01,766
+construction. Lets look at the specifics
+of AS. So AS operates on a 128 bit block.
+
+39
+00:03:01,766 --> 00:03:07,656
+Which is sixteen bytes. So what we do with
+AS is we write those sixteen bytes as a
+
+40
+00:03:07,656 --> 00:03:12,771
+four by four matrix. Each cell in the
+matrix contains one byte. And then we
+
+41
+00:03:12,771 --> 00:03:17,292
+start with the first round so we X over
+with the first round key and then apply a
+
+42
+00:03:17,292 --> 00:03:21,437
+certain function. That, includes
+substitutions and permutations and other
+
+43
+00:03:21,437 --> 00:03:26,027
+operations on the state. And again, these
+three functions that are applied here have
+
+44
+00:03:26,027 --> 00:03:30,286
+to be invertible so that in fact the
+cypher can be decrypted. And then we xor
+
+45
+00:03:30,286 --> 00:03:34,655
+with the next round key and we do that
+again. Again we apply the round function
+
+46
+00:03:34,655 --> 00:03:38,858
+and xor the round key. And we do that
+again and again and again. We do it ten
+
+47
+00:03:38,858 --> 00:03:43,227
+times. Although interestingly in the last
+round, the mix column step is actually
+
+48
+00:03:43,227 --> 00:03:48,691
+missing. And then finally, we XOR with the
+last rounds key, and out comes the output.
+
+49
+00:03:48,691 --> 00:03:53,644
+Again, in every phase here, we always,
+always, always keep this four by four
+
+50
+00:03:53,644 --> 00:03:59,140
+array. And so the output is also four by
+four, which is sixteen bytes, which is 128
+
+51
+00:03:59,140 --> 00:04:04,639
+bits. Now the long key themselves of
+course come from a sixteen byte AS key
+
+52
+00:04:04,860 --> 00:04:10,831
+using key expansion. So the key expansion
+maps from a sixteen bytes AS key
+
+53
+00:04:10,831 --> 00:04:16,875
+into eleven keys, each one being sixteen
+bytes. So these keys themselves are also a
+
+54
+00:04:16,875 --> 00:04:21,915
+four by four array that's XORed into the
+current state. Okay, so that's the
+
+55
+00:04:21,915 --> 00:04:26,116
+schematic of how AES works. And the only
+thing that's left to do is specify these
+
+56
+00:04:26,116 --> 00:04:30,318
+three functions, byte sub, shift row, and
+mixed column. And those are fairly easy to
+
+57
+00:04:30,318 --> 00:04:34,415
+explain. So I'm just gonna give you the
+high level description of what they are.
+
+58
+00:04:34,415 --> 00:04:39,055
+And, those interested in the details can
+look it up online. So the way byte
+
+59
+00:04:39,055 --> 00:04:45,169
+substitution works, is literally it's one
+S box containing 256 bytes. And
+
+60
+00:04:45,169 --> 00:04:50,721
+essentially, what it does is it applies
+the S box to every byte in the current
+
+61
+00:04:50,721 --> 00:04:56,273
+states. So, let me explain what I mean by
+that. So the current state is gonna be
+
+62
+00:04:56,273 --> 00:05:01,826
+this four by four, table. So here we have
+the four by four table. And to each
+
+63
+00:05:01,826 --> 00:05:07,449
+element in this table, we apply the S box.
+So let's call it the A table. And then
+
+64
+00:05:07,449 --> 00:05:12,859
+what we do is, essentially, for all four
+by four entries, essentially, the next
+
+65
+00:05:12,859 --> 00:05:19,050
+step, Aij. Becomes the current step
+evaluated at the look up table. So we use
+
+66
+00:05:19,050 --> 00:05:24,904
+the current cell as an entry, as an index,
+into the look up table. And then the value
+
+67
+00:05:24,904 --> 00:05:30,144
+of the look up table is what's output.
+Okay. So, that's the first step. The next
+
+68
+00:05:30,144 --> 00:05:35,316
+step that happens is a shift pro step,
+which is basically just a permutation. So
+
+69
+00:05:35,316 --> 00:05:40,492
+essentially we kind of do a stick lick
+shift on each one of the rows. So you can
+
+70
+00:05:40,492 --> 00:05:45,157
+see the second row is stick lick shifted
+by one position. This third row is
+
+71
+00:05:45,157 --> 00:05:49,556
+[inaudible] shifted by two positions and
+the third row is [inaudible] shifted by
+
+72
+00:05:49,556 --> 00:05:54,064
+three positions. And the last thing we do
+is mix columns where literally we apply a
+
+73
+00:05:54,064 --> 00:05:58,626
+linear transformation to each one of these
+columns. So there's a certain matrix that
+
+74
+00:05:58,626 --> 00:06:02,971
+multiplies each one of these columns and
+it becomes, the next column. So these
+
+75
+00:06:02,971 --> 00:06:06,990
+linear transformation is applied
+independently to each one of the columns.
+
+76
+00:06:06,990 --> 00:06:12,138
+Now, I should point out that, so far,
+shift rows and mixed columns are very easy
+
+77
+00:06:12,138 --> 00:06:17,286
+to implement in code. And I should say
+that the [inaudible] institution itself is
+
+78
+00:06:17,286 --> 00:06:22,370
+also easily computable, so that you can
+actually write code that takes less than
+
+79
+00:06:22,370 --> 00:06:27,582
+256 bytes to write. And you can kind of
+shrink the description of AES by literally
+
+80
+00:06:27,582 --> 00:06:32,666
+storing code that computes the table
+rather than hardwiring the table into your
+
+81
+00:06:32,666 --> 00:06:38,231
+implementation. And in fact, this is kind
+of a generic fact about AES, that if you
+
+82
+00:06:38,231 --> 00:06:43,906
+can have allowed no pre computation at
+all, including computing the S box on the
+
+83
+00:06:43,906 --> 00:06:48,548
+fly. Then in fact you get a fairly small
+implementation of AES, so it, it could fit
+
+84
+00:06:48,548 --> 00:06:52,567
+on very constrained environments where
+there isn't enough room to hold,
+
+85
+00:06:52,737 --> 00:06:56,925
+complicated code. But of course, this will
+be the slowest implementation, because
+
+86
+00:06:56,925 --> 00:07:00,724
+everything is computed now on the fly, and
+as a result, the implementation,
+
+87
+00:07:00,724 --> 00:07:05,100
+obviously, is gonna be, slower than things
+that were pre-computed. And then there is
+
+88
+00:07:05,100 --> 00:07:09,060
+this trade off. For example if you have a
+lot of space, and you can support large
+
+89
+00:07:09,060 --> 00:07:12,821
+code. You can actually precompute quite a
+bit of the three steps that I just
+
+90
+00:07:12,821 --> 00:07:16,681
+mentioned. In fact, there are multiple
+options of pre-computation, you can build
+
+91
+00:07:16,681 --> 00:07:20,640
+a table that's only four kilobyte big. You
+can build a table that is even longer,
+
+92
+00:07:20,640 --> 00:07:24,154
+maybe 24 kilobytes. So basically you will
+have these big tables in your
+
+93
+00:07:24,154 --> 00:07:27,866
+implementation. But then your actual
+performance is going to be really good,
+
+94
+00:07:27,866 --> 00:07:31,776
+because all your doing is just table
+look-ups and XORs. You're not doing
+
+95
+00:07:31,776 --> 00:07:35,339
+any other complicated arithmetic. And as a
+result, if you can do a lot of
+
+96
+00:07:35,339 --> 00:07:39,376
+pre-computation, these three steps here,
+[inaudible] should. [inaudible] and mixed
+
+97
+00:07:39,376 --> 00:07:43,406
+columns can be converted just into a
+number, a small number of table lookups
+
+98
+00:07:43,406 --> 00:07:48,073
+and some [inaudible]. All you can do is
+just compute the S box, so now your
+
+99
+00:07:48,073 --> 00:07:53,002
+implementation would just have 256 bytes.
+Hard coded The rest would just be code
+
+100
+00:07:53,002 --> 00:07:57,124
+that's actually computing these three
+functions. The performance would be slower
+
+101
+00:07:57,124 --> 00:08:01,091
+than in the previous step but the code
+footprint would also be smaller. So in
+
+102
+00:08:01,091 --> 00:08:04,955
+overall, there's this nice tradeoff
+between code size and performance. So on
+
+103
+00:08:04,955 --> 00:08:08,870
+high-end machines, on high-end servers,
+where you can afford to have a lot of
+
+104
+00:08:08,870 --> 00:08:12,992
+code, you can precompute and store these
+big tables and get the best performance.
+
+105
+00:08:12,992 --> 00:08:17,216
+Whereas on low-end machines like eight
+byte smart cards or think of like an eight
+
+106
+00:08:17,216 --> 00:08:21,390
+byte wristwatch, you would actually have a
+relatively small implementation of AES.
+
+107
+00:08:21,390 --> 00:08:25,910
+But as a result of course it won't be so
+fast. So here's an example that's a little
+
+108
+00:08:25,910 --> 00:08:30,266
+unusual, suppose you wanted to implement
+AES in Javascript so you can send an AES
+
+109
+00:08:30,266 --> 00:08:34,351
+library to the browser and have the
+browser actually do AES by itself. So in
+
+110
+00:08:34,351 --> 00:08:38,871
+this case what you'd like to, to is you'd
+like to both shrink the code size, so that
+
+111
+00:08:38,871 --> 00:08:43,445
+on the network there's minimum traffic to
+send a library over to the browser but, at
+
+112
+00:08:43,445 --> 00:08:47,751
+the same time, you'd like the browser
+performance to be as fast as possible. And
+
+113
+00:08:47,751 --> 00:08:52,347
+so this is something that we did a while
+ago essentially the idea is that the code
+
+114
+00:08:52,347 --> 00:08:56,888
+that actually gets send to the browser
+doesn't have any pre computer table and as
+
+115
+00:08:56,888 --> 00:09:01,263
+a result is fairly small code. But then
+the minute it lands on the browser, what
+
+116
+00:09:01,263 --> 00:09:05,471
+the browser will do is actually pre
+compute all the tables. So in some sense
+
+117
+00:09:05,471 --> 00:09:09,651
+the code goes from just being small and
+compact. It gets bloated with all these
+
+118
+00:09:09,651 --> 00:09:13,626
+precomputed tables. But those are stored
+on the laptop, which presumably has a lot
+
+119
+00:09:13,626 --> 00:09:17,404
+of memory. And then once you have the
+precomputed tables you actually encrypt
+
+120
+00:09:17,404 --> 00:09:21,232
+using them. And that's how you get the
+best performance. Okay? So if you have to
+
+121
+00:09:21,232 --> 00:09:24,913
+stand in implementation AES over the
+network, you can kind of get the best of
+
+122
+00:09:24,913 --> 00:09:28,740
+all worlds. Whereas, the code over the
+network is small, but when it reaches the
+
+123
+00:09:28,740 --> 00:09:32,985
+target client, it can kind of inflate
+itself. And then get the best performance
+
+124
+00:09:32,985 --> 00:09:37,832
+as it's doing encryption on the clients.
+Now AES is such a popular block cipher,
+
+125
+00:09:37,832 --> 00:09:42,986
+now essentially when you build crypto into
+products essentially your supposed to be
+
+126
+00:09:42,986 --> 00:09:48,078
+using AES, and as a result Intel actually
+put AES support into the processor itself.
+
+127
+00:09:48,078 --> 00:09:52,679
+So since Westmere there are special
+instructions in the Intel processor to
+
+128
+00:09:52,679 --> 00:09:57,771
+help accelerate AES. And so I listed these
+instructions here. They come in two pairs,
+
+129
+00:09:57,771 --> 00:10:02,955
+aesenc and aesenclast. And then, there's aesekygenassist. So, let me explain
+
+130
+00:10:02,955 --> 00:10:07,992
+what they do. So, aesenc essentially
+implements one round of AES. Namely, apply
+
+131
+00:10:07,992 --> 00:10:13,005
+the three functions in the XOR with the
+round key. And aesenclast basically
+
+132
+00:10:13,005 --> 00:10:17,480
+implements the last round of AES.
+Remember, the last round didn't have the
+
+133
+00:10:17,480 --> 00:10:22,262
+mix columns phase. It only had the subs
+bytes and shift rows. And so that's why
+
+134
+00:10:22,262 --> 00:10:27,167
+the aesenclast does. And the way you
+call these instructions is using 128 byte
+
+135
+00:10:27,167 --> 00:10:32,255
+registers which correspond to the states
+of AES. And so you would have one register
+
+136
+00:10:32,255 --> 00:10:37,241
+containing the states and one register
+containing the current round key. And then
+
+137
+00:10:37,241 --> 00:10:42,383
+when you call AES on these two registers,
+basically, they would run one round of AES
+
+138
+00:10:42,383 --> 00:10:47,589
+and place the result inside of this XMM
+one state register. And as a result if you
+
+139
+00:10:47,589 --> 00:10:52,731
+wanted to implement the whole AES. All you
+would do is, call aesenc nine times. Then
+
+140
+00:10:52,731 --> 00:10:58,064
+you would call aesenclast one time. These
+ten instructions are basically the entire
+
+141
+00:10:58,064 --> 00:11:03,029
+implementation of AES. That's it. It's that
+easy to implement AES on this hardware
+
+142
+00:11:03,029 --> 00:11:07,164
+and they claim because these operations
+are now done inside the processor not
+
+143
+00:11:07,164 --> 00:11:11,246
+using external instructions that are
+implemented in the processor. They claim
+
+144
+00:11:11,246 --> 00:11:15,540
+that they can get a fourteen X speedup
+over say an implementation that's running
+
+145
+00:11:15,540 --> 00:11:19,888
+in the same hardware but implementing AES without these special instructions. So
+
+146
+00:11:19,888 --> 00:11:24,182
+this is quite a significant speed up and
+the facts are now lots of. Products that
+
+147
+00:11:24,182 --> 00:11:28,160
+make use of these special instructions.
+And let's just say that this is not
+
+148
+00:11:28,160 --> 00:11:31,819
+specific to Intel, if you're in
+[inaudible], and they also implemented
+
+149
+00:11:31,819 --> 00:11:36,009
+exactly kinda similar instructions in
+their bulldozer architecture and further
+
+150
+00:11:36,009 --> 00:11:40,146
+and future architectures. Okay, so let's
+talk about the security of AES. I wanna
+
+151
+00:11:40,146 --> 00:11:44,442
+mention just two attacks here. Obviously,
+AES has been studied quite a bit. But the
+
+152
+00:11:44,442 --> 00:11:48,579
+only two attacks on the full AES are the
+following two. So, first of all, if you
+
+153
+00:11:48,579 --> 00:11:52,504
+wanted to do key recovery, the best
+attack, basically, is only four times
+
+154
+00:11:52,504 --> 00:11:56,923
+faster than exhaustive search. Which mean
+that instead of a hundred and. 28 bits
+
+155
+00:11:56,923 --> 00:12:02,665
+key, really you should be thinking of AES.
+Is 126 bit key. Cause exhaustive search,
+
+156
+00:12:02,665 --> 00:12:07,641
+really it's gonna four times faster than
+it should. Of course due to the 126, it's
+
+157
+00:12:07,641 --> 00:12:12,546
+still. More time than we have to compute,
+and this really does not hurt the security
+
+158
+00:12:12,546 --> 00:12:17,490
+alias. The more significant attack is,
+actually, on AES-256. It turns out there's a
+
+159
+00:12:17,490 --> 00:12:22,662
+weakness in the key expansion design of
+aes which allows for, what's called a
+
+160
+00:12:22,662 --> 00:12:27,641
+related key attack. So, what's a related
+key attack? Essentially, if you give me
+
+161
+00:12:27,641 --> 00:12:32,684
+about two to the 100 input output pairs
+for aes, but from four related keys. So,
+
+162
+00:12:32,684 --> 00:12:37,680
+these are keys that are very closely
+related, namely key number one. Is just
+
+163
+00:12:37,680 --> 00:12:42,272
+one bit flip of key #two, which is just
+one flip, bit flip of key #three, which is
+
+164
+00:12:42,272 --> 00:12:47,157
+just one flip bit flip of key #four. These
+are very closely related keys, if you like
+
+165
+00:12:47,157 --> 00:12:51,925
+your [inaudible] distances very short. But
+if you do that, then, in fact, there is a
+
+166
+00:12:51,925 --> 00:12:56,752
+two to the 100 attack. Now you should say,
+well, two to the 100 is still impractical.
+
+167
+00:12:56,752 --> 00:13:01,117
+This is still more time than we can
+actually run today. But nevertheless, the
+
+168
+00:13:01,117 --> 00:13:05,198
+fact that it's so much better than an
+exhaustive search attack, it's so much
+
+169
+00:13:05,198 --> 00:13:09,386
+better than two to the 56, is kind of a
+limitation of the cipher. But generally,
+
+170
+00:13:09,386 --> 00:13:13,521
+it's not a significant limitation, because
+it requires related keys. And so, in
+
+171
+00:13:13,521 --> 00:13:17,924
+practice, of course, you're supposed to be
+choosing your keys at random, so that you
+
+172
+00:13:17,924 --> 00:13:22,166
+have no related keys in your system. And
+as a result, this attack wouldn't apply.
+
+173
+00:13:22,166 --> 00:13:26,200
+But if you do have related keys, then
+there's a problem. So this is the end of
+
+174
+00:13:26,200 --> 00:13:30,130
+the segment, and in the next segment we're
+gonna talk about more provably secure
+
+175
+00:13:30,130 --> 00:13:31,702
+constructions for block ciphers.

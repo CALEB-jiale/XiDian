@@ -1,0 +1,414 @@
+My goal for the next few segments is to
+show you that if we use a secure PRG We'll
+get a secure stream safer. The first thing
+we have to do is define is, what does it
+mean for a stream safer to be secure? So
+whenever we define security we always
+define it in terms of what can the
+attacker do? And what is the attacker
+trying to do? In the context of
+stream ciphers remember these are only used
+with a onetime key, and as a result the
+most the attacker is ever going to see is
+just one cypher text encrypted using the
+key that we're using. And so we're gonna
+limit the attackers? ability to basically
+obtain just one cypher text. And in
+fact later on we're going to allow the
+attacker to do much, much, much more, but
+for now we're just gonna give him one
+cypher text. And we wanted to find,
+what does it mean for the cypher to
+be secure? So the first definition that
+comes to mind is basically to say, well
+maybe we wanna require that the attacker
+can't actually recover the secret key.
+Okay so given ciphertext you
+shouldn't be able to recover the secret
+key. But that's a terrible definition
+because think about the falling brilliant
+cipher but the way we encrypt the
+message using a key K is basically
+we just output the message. Okay this
+is a brilliant cipher yeah of course it
+doesn't do anything given a message just
+output a message as the cipher text.
+This is not a particularly good encryption
+scheme; however, given the cipher text,
+mainly the message the poor attacker
+cannot recover the key because he doesn't
+know what the key is. And so as a result
+this cipher which clearly is insecure,
+would be considered secure under this
+requirement for security. So this
+definition will be no good. Okay so it's
+recovering the secret key is the wrong way
+to define security. So the next thing we
+can kinda attempt is basically just say,
+well maybe the attacker doesn't care about
+the secret key, what he really cares about
+are the plain text. So maybe it should be
+hard for the attacker to recover the
+entire plain text. But even that doesn't
+work because let's think about the
+following encryption scheme. So suppose
+what this encryption scheme does is it
+takes two messages, so I'm gonna use two
+lines to denote concatenation of two
+messages M0 line, line M1 means
+concatenate M0 and M1. And imagine
+what the scheme does is really it outputs
+M0 in the clear and concatenate to
+that the encryption of M1. Perhaps even
+using the One Time Pad okay? And
+so here the attacker is gonna be given one
+cipher text. And his goal would be to
+recover the entire plain texts. But the
+poor attacker can't do that because here
+maybe we've encrypted M1 using the One
+Time Pad so the attacker can't
+actually recover M1 because we know the
+One Time Pad is secure given just
+one cipher text. So this construction
+would satisfy the definition but
+unfortunately clearly this is not a secure
+encryption scheme because we just leaked
+half of the plain text. M0 is
+completely available to the attacker so
+even though he can't recover all of the
+plain text he might be able to recover
+most of the plain text, and that's clearly
+unsecured. So of course we already know
+the solution to this and we talked about
+Shanon definition of security perfect
+secrecy where Shannon's idea was that in
+fact when the attacker intercepts a cipher
+text he should learn absolutely no
+information about the plain texts. He
+shouldn't even learn one bit about the
+plain text or even he shouldn't learn, he
+shouldn't even be able to predict a little
+bit about a bid of the plain text.
+Absolutely no information about the plain text.
+So let's recall very briefly
+Shannon's concept of perfect secrecy
+basically we said that you know given a
+cipher We said the cipher has perfect
+secrecy if given two messages of the same
+length it so happens that the distribution
+of cipher texts. Yet if we pick a random
+key and we look into distribution of
+cipher texts we encrypt M0 we get
+exactly the same distribution as when we
+encrypt M1. The intuition here was that if
+the advisory observes the cipher texts
+then he doesn't know whether it came from
+the distribution the result of encrypting
+M0 or it came from the distribution as
+the result of encrypting M1. And as a
+result he can't tell whether we encrypted
+M0 or M1. And that's true for all
+messages of the same length and as a
+result a poor attacker doesn't really know
+what message was encrypted. Of course we
+already said that this definition is too
+strong in the sense that it requires
+really long keys if cipher has short
+keys can't possibly satisfy this
+definition in a particular stream ciphers
+can satisfy this definition. Okay so let's
+try to weaken the definition a little bit
+and let's think to the previous segment,
+and we can say that instead of requiring
+the two distributions to be absolutely
+identical what we can require is, is that
+two distributions just be computationally
+indistinguishable. In other words a poor,
+efficient attacker cannot distinguish the
+two distributions even though the
+distributions might be very, very, very
+different. That just given a sample for
+one distribution and a sample for another
+distribution the attacker can't tell which
+distribution he was given a sample from.
+It turns out this definition is actually
+almost right, but it's still a little too
+strong, that still cannot be satisfied, so
+we have to add one more constraint, and
+that is that instead of saying that this
+definition should have hold for all M0 and M1. It is to hold for only pairs M0 M1
+that the attackers could
+actually exhibit. Okay so this actually
+leads us to the definition of semantics
+security. And so, again this is semantics
+security for one time key in other words
+when the attacker is only given one cipher
+text. And so the way we define semantic
+security is by defining two experiments,
+okay we'll define experiment 0 and
+experiment 1. And more generally we will
+think of these as experiments parentheses
+B, where B can be zero or one. Okay so the
+way the experiment is defined is as
+follows, we have an adversary that's
+trying to break the system. An adversary
+A, that's kinda the analog of statistical
+tests in the world of pseudo random
+generators. And then the challenger does
+the following, so really we have two
+challengers, but the challengers are so
+similar that we can just describe them as
+a single challenger that in one case takes
+his inputs bits set to zero, and the other
+case takes his inputs bits set to
+one. And let me show you what these
+challengers do. The first thing the
+challenger is gonna do is it's gonna pick
+a random key and then the adversary
+basically is going to output two messages
+M0 and M1. Okay so this is an explicit
+pair of messages that the attacker wants
+to be challenged on and as usual we're not
+trying to hide the length of the messages,
+we require that the messages be equal
+length. And then the challenger basically
+will output either the encryption of M0
+or the encryption of M1, okay so in
+experiment 0 the challenger will output
+the encryption of M0. In experiment 1 the challenger will output the encryption
+of M1. Okay so that the difference between
+the two experiments. And then the
+adversary is trying to guess basically
+whether he was given the encryption of M0
+or given the encryption of M1. Okay so
+here's a little bit of notation let's
+define the events Wb to be the events that
+an experiment B the adversary output one.
+Okay so that is just an event that
+basically in experiment zero W0 means that
+the adversary output one and in experiment
+one W1 means the adversary output one. And
+now we can define the advantage of this
+adversary, basically to say that this is
+called the semantics security advantage of
+the adversary A against the scheme E,
+to be the difference of the probability of
+these two events. In other words we are
+looking at whether the adversary behaves
+differently when he was given the
+encryption of M0 from when he was given
+the encryption of M1. And I wanna make
+sure this is clear so I'm gonna say it one
+more time. So in experiment zero he was
+given the encryption of M0 and in
+experiment one he was given the encryption
+of M1. Now we're just interested in
+whether the adversary output 1 or not.
+... In these experiments. If in both
+experiments the adversary output 1 with
+the same probability that means the
+adversary wasn't able to distinguish the
+two experiments. Experiments zero
+basically looks to the adversary the same
+as experiment one because in both cases
+upload one with the same probability.
+However if the adversary is able to output
+1 in one experiment with significantly
+different probability than in the other
+experiment, then the adversary was
+actually able to distinguish the two
+experiments. Okay so... To say this more
+formally, essentially the advantage again
+because it's the difference of two
+probabilities the advantage is a number
+between zero and one. If the advantage is
+close to zero that means that the
+adversary was not able to distinguish
+experiment zero from experiment one.
+However if the advantage is close to one,
+that means the adversary was very well
+able to distinguish experiment zero from
+experiment one and that really means that
+he was able to distinguish an encryption
+of M0 from an encryption of M1, okay?So that's out definition. Actually
+that is just the definition of the
+advantage and the definition is just what
+you would expect basically we'll say that
+a symmetric encryption scheme is
+semantically secure if for all efficient
+adversaries here I'll put these in quotes
+again, "For all efficient adversaries the
+advantage is negligible." In other words,
+no efficient adversary can distinguish the
+encryption of M0 from the encryption
+of M1 and basically this is what it
+says repeatedly that for these two
+messages that the adversary was able to
+exhibit he wasn't able to distinguish
+these two distributions. Now I want to
+show you this, this is actually a very
+elegant definition. It might not seem so
+right away, but I want to show you some
+implications of this definition and you'll
+see exactly why the definition is the way
+it is. Okay so let's look at some
+examples. So the first example is suppose
+we have a broken encryption scheme, in
+other words suppose we have an adversary A
+that somehow given the cipher text he is
+always able to deduce the least
+significant bit of the plain text. Okay so
+given the encryption of M0, this adversary
+is able to deduce the least significant
+bit of M0. So that is a terrible
+encryption scheme because it basically
+leaks the least significant bit of the
+plain text just given the cipher text. So
+I want to show you that this scheme is
+therefore semantically secure so that kind
+of shows that if a system is semantically
+secure than there is no attacker of this
+type. Okay so let's see why is the system
+not semantically secure well so what we
+are gonna do is we're gonna basically use
+our adversary who is able to learn our
+most insignificant bits, we're going to
+use him to break semantic security so
+we're going to use him to distinguish
+experiment zero from experiment one Okay
+so here is what we are going to do. We are
+algorithm B, we are going to be algorithm
+B and this algorithm B is going to use
+algorithm A in its belly. Okay so the
+first thing that is going to happen is of
+course the challenger is going to choose a
+random key. The first thing that is going
+to happen is that we need to output two
+messages. The messages that we are going
+to output basically are going to have
+differently significant bits. So one
+message is going to end with zero and one
+message is going to end with one. Now what
+is the challenger going to do? The
+challenger is going to give us the
+encryption of either M0 or M1,
+depending on whether in experiment 0 or
+in experiment 1. And then we just
+forward this cipher text to the adversary
+okay so the adversary A. Now what is the
+property of adversary A? Given the cipher
+text, adversary A can tell us what the
+least significant bits of the plain text is.
+In other words the adversary is going
+to output the least significant bits of M0 or M1
+but low and behold that's
+basically the bit B. And then we're just
+going to output that as our guest so let?s
+call this thing B prime Okay so now this
+describes the semantic security adversary.
+And now you tell me what is the semantic
+security advantage of this adversary? Well
+so let's see. In experiment zero, what is
+the probability that adversary B outputs
+one? Well in experiment zero it is always
+given the encryption of M zero and
+therefore adversary A is always output the
+least significant bit of M zero which
+always happens to be zero. In experiment
+zero, B always outputs zero. So the
+probability that outputs one is zero.
+However in experiment one, we're given the
+encryption of M1. So how likely is
+adversary B to output one in experiment
+one well it always outputs one, again by
+the properties of algorithm A and
+therefore the advantage basically is one.
+So this is a huge advantage, it's as big
+as it's gonna get. Which means that this
+adversary completely broke the system.
+Okay so we consider, so under semantic
+security basically just deducing the least
+significant bits is enough to completely
+break the system under a semantic security
+definition. Okay, now the interesting
+thing here of course is that this is not
+just about the least significant bit, in
+fact of the message for
+example the most significant bit, you know
+bit number seven Maybe the XOR of all the bits in the message and so on
+and so forth any kind of information, any
+bit about the plain text they can be
+learned basically would mean that the
+system is not semantically secure. So
+basically all the adversary would have to
+do would be to come up with two messages
+M0 and M1 such that under one thing that
+they learned it's the value zero and then
+the other thing, the value, is one. So for
+example if A was able to learn the XOR
+bits of the message then M0
+and M1 would just have different
+XOR for all the bits of their
+messages and then this adversary A would
+also be sufficient to break semantic
+security. Okay so, basically for cipher
+is semantically secure then no
+bit of information is revealed to an
+efficient adversary. Okay so this is
+exactly a concept of perfect secrecy only
+applied just efficient adversaries
+rather than all adversaries. So the next
+thing I wanna show you is that in fact the
+one time pad in fact is
+semantically secure, they better be
+semantically secure because it's in fact,
+it's more than that it's perfectly secure.
+So let's see why that's true. Well so
+again it's one of these experiments, so
+suppose we have an adversary that claims
+to break semantic security of the one time
+pad. The first the adversary is gonna do
+is he's gonna output two messages M0
+and M1 of the same length.
+Now what does he get back as a challenge? As a
+challenge, he gets either the encryption
+of M0 or the encryption of M1 under
+the one time pad.
+And he's trying to distinguish between those two possible
+cipher texts that he gets, right?
+In experiment zero, he gets the encryption of
+M0 and in experiment one, he gets the
+encryption of M1. Well so let me ask
+you, so what is the advantage of adversary
+A against the one time patent? So I
+remember that the property of the ones I
+had is that, that K, XOR M0 is
+distributed identically to K, XOR M1.
+In other words, these distributions are
+absolutely identical distribution,
+distributions, identical. This is a
+property of XOR. If we XOR the random pad
+K with anything, either M0 or M1,
+we get uniform distribution. So in both
+cases, algorithm A is given as in input
+exactly the same distribution. Maybe the
+uniform distribution on cipher texts. And
+therefore it's gonna behave exactly the
+same in both cases because it was given
+the exact distribution as input. And as a
+result, its advantage is zero, which means
+that the onetime pad is semantically
+secure. Now the interesting thing here is
+not only is it semantically secure, it's
+semantically secure for all adversaries.
+We don't even have to restrict the
+adversaries to be efficient. No adversary,
+doesn't matter how smart you are, no
+adversary will be able to distinguish K XOR M0 from K XOR M1 because the two
+distributions are identical. Okay, so the
+one time pad is semantically secure. Okay,
+so that completes our definition of
+semantic security so the next thing we're
+going to do is prove to the secure PRG,
+in fact implies that the stream cipher is
+semantically secure.
